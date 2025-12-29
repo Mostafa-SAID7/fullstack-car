@@ -10,11 +10,13 @@ namespace Infrastructure.Services
         private readonly ILogger<LocalizationService> _logger;
         private readonly Dictionary<string, Dictionary<string, string>> _resourceCache;
         private readonly string[] _supportedLanguages = { "en-US", "ar-EG", "ar-SA", "ar-AE" };
+        private readonly string _resourcesPath;
 
         public LocalizationService(ILogger<LocalizationService> logger)
         {
             _logger = logger;
             _resourceCache = new Dictionary<string, Dictionary<string, string>>();
+            _resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Localization");
             LoadAllResources();
         }
 
@@ -173,10 +175,66 @@ namespace Infrastructure.Services
 
         private void LoadAllResources()
         {
-            _resourceCache["en-US"] = GetEnglishUSResources();
-            _resourceCache["ar-EG"] = GetArabicEgyptResources();
-            _resourceCache["ar-SA"] = GetArabicSaudiResources();
-            _resourceCache["ar-AE"] = GetArabicUAEResources();
+            foreach (var language in _supportedLanguages)
+            {
+                try
+                {
+                    var filePath = Path.Combine(_resourcesPath, $"{language}.json");
+                    if (File.Exists(filePath))
+                    {
+                        var jsonContent = File.ReadAllText(filePath);
+                        var jsonDocument = JsonDocument.Parse(jsonContent);
+                        _resourceCache[language] = FlattenJsonObject(jsonDocument.RootElement);
+                        _logger.LogInformation("Loaded {Count} resources for language {Language}", _resourceCache[language].Count, language);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Resource file not found for language {Language} at path {Path}", language, filePath);
+                        _resourceCache[language] = GetFallbackResources(language);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error loading resources for language {Language}", language);
+                    _resourceCache[language] = GetFallbackResources(language);
+                }
+            }
+        }
+
+        private Dictionary<string, string> FlattenJsonObject(JsonElement element, string prefix = "")
+        {
+            var result = new Dictionary<string, string>();
+
+            foreach (var property in element.EnumerateObject())
+            {
+                var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+
+                if (property.Value.ValueKind == JsonValueKind.Object)
+                {
+                    var nested = FlattenJsonObject(property.Value, key);
+                    foreach (var kvp in nested)
+                    {
+                        result[kvp.Key] = kvp.Value;
+                    }
+                }
+                else if (property.Value.ValueKind == JsonValueKind.String)
+                {
+                    result[key] = property.Value.GetString() ?? "";
+                }
+            }
+
+            return result;
+        }
+
+        private Dictionary<string, string> GetFallbackResources(string language)
+        {
+            return language switch
+            {
+                "ar-EG" => GetArabicEgyptResources(),
+                "ar-SA" => GetArabicSaudiResources(),
+                "ar-AE" => GetArabicUAEResources(),
+                _ => GetEnglishUSResources()
+            };
         }
 
         private Dictionary<string, string> GetEnglishUSResources()

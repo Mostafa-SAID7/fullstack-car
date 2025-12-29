@@ -37,6 +37,16 @@ namespace Infrastructure.Repositories
             return await _dbSet.ToListAsync(cancellationToken);
         }
 
+        public async Task<IReadOnlyList<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _dbSet.ToListAsync(cancellationToken);
+        }
+
         public async Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();

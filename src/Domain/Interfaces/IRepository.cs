@@ -9,6 +9,8 @@ namespace Domain.Interfaces
         Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IReadOnlyList<T>> ListAllAsync();
         Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken);
+        Task<IReadOnlyList<T>> GetAllAsync(); // Add this method
+        Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken); // Add this method
         Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec);
         Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec, CancellationToken cancellationToken);
         Task<T?> FirstOrDefaultAsync(BaseSpecification<T> spec);

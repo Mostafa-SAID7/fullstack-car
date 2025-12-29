@@ -34,7 +34,7 @@ namespace Application.Features.Posts.Commands
                 return Result<bool>.Failure(new[] { "Post not found" });
             }
 
-            if (post.Status == PostStatus.Deleted)
+            if (post.Status == PostStatus.Flagged)
             {
                 return Result<bool>.Failure(new[] { "Post is already rejected" });
             }

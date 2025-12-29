@@ -47,30 +47,19 @@ namespace WebAPI.Extensions
                     policy.RequireRole("Admin", "Moderator"));
             });
 
-            // Add HttpClient for AI Agent
-            services.AddHttpClient<AIAgentController>(client =>
-            {
-                var aiServiceUrl = configuration["AIAgent:PythonServiceUrl"];
-                if (!string.IsNullOrEmpty(aiServiceUrl))
-                {
-                    client.BaseAddress = new Uri(aiServiceUrl);
-                    client.Timeout = TimeSpan.FromSeconds(30);
-                }
-            });
+            // Add HttpClient for external services
+            services.AddHttpClient();
 
             // Add SignalR for real-time features
             services.AddSignalR();
 
-            // Add API versioning
-            services.AddApiVersioning(options =>
-            {
-                options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.ApiVersionReader = Microsoft.AspNetCore.Mvc.ApiVersionReader.Combine(
-                    new Microsoft.AspNetCore.Mvc.QueryStringApiVersionReader("version"),
-                    new Microsoft.AspNetCore.Mvc.HeaderApiVersionReader("X-Version")
-                );
-            });
+            return services;
+        }
+
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        {
+            // Add Infrastructure services
+            services.AddScoped<Application.Common.Interfaces.ILocalizationService, Infrastructure.Services.LocalizationService>();
 
             return services;
         }

@@ -41,8 +41,8 @@ namespace Application.Features.Posts.Queries
             {
                 TotalPosts = posts.Count(),
                 PublishedPosts = posts.Count(p => p.Status == PostStatus.Published),
-                PendingPosts = posts.Count(p => p.Status == PostStatus.Pending),
-                RejectedPosts = posts.Count(p => p.Status == PostStatus.Rejected),
+                PendingPosts = posts.Count(p => p.Status == PostStatus.UnderReview),
+                RejectedPosts = posts.Count(p => p.Status == PostStatus.Flagged),
                 DraftPosts = posts.Count(p => p.Status == PostStatus.Draft),
                 TotalViews = posts.Sum(p => p.ViewsCount),
                 TotalLikes = posts.Sum(p => p.LikesCount),
