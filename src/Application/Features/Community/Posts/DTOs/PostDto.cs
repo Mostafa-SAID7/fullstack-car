@@ -1,4 +1,4 @@
-using Domain.Enums;
+using Domain.Enums.Community.Posts;
 
 namespace Application.Features.Community.Posts.DTOs
 {
@@ -15,12 +15,12 @@ namespace Application.Features.Community.Posts.DTOs
         public int CommentsCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        
+
         public Guid UserId { get; set; }
         public string UserFirstName { get; set; } = string.Empty;
         public string UserLastName { get; set; } = string.Empty;
         public string? UserProfileImageUrl { get; set; }
-        
+
         public Guid? GroupId { get; set; }
         public string? GroupName { get; set; }
     }

@@ -1,6 +1,8 @@
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
-using Domain.Enums;
+using Domain.Enums.Community.Posts;
+using Domain.Enums.Identity;
+using Domain.Enums.Community.Groups;
 
 namespace Domain.Policies
 {

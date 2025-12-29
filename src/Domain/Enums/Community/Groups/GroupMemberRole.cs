@@ -1,4 +1,4 @@
-namespace Domain.Enums
+namespace Domain.Enums.Community.Groups
 {
     public enum GroupMemberRole
     {

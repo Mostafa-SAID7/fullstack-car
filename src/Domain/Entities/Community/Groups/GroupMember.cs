@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums;
+using Domain.Enums.Community.Groups;
 using Domain.Entities.Identity;
 
 namespace Domain.Entities.Community.Groups

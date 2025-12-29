@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums;
+using Domain.Enums.Community.Reviews;
 using Domain.Entities.Identity;
 
 namespace Domain.Entities.Community.Reviews

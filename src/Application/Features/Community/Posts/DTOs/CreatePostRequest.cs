@@ -1,4 +1,4 @@
-using Domain.Enums;
+using Domain.Enums.Community.Posts;
 
 namespace Application.Features.Community.Posts.DTOs
 {

@@ -4,7 +4,7 @@ using Application.Features.Identity.DTOs.Responses;
 using Application.Common.Interfaces.Identity;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
-using Domain.Enums;
+using Domain.Enums.Identity;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 

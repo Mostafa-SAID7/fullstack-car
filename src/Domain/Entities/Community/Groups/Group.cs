@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums;
+using Domain.Enums.Community.Groups;
 using System.Collections.Generic;
 using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;

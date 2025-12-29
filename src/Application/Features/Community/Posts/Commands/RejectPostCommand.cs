@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
-using Domain.Enums;
+using Domain.Enums.Community.Posts;
 using Domain.Interfaces;
 using MediatR;
 

@@ -3,6 +3,7 @@ using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
+using Domain.Enums.Community.Posts;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Queries
@@ -36,7 +37,7 @@ namespace Application.Features.Community.Posts.Queries
             // Apply filters
             if (!string.IsNullOrEmpty(request.Status))
             {
-                if (Enum.TryParse<Domain.Enums.PostStatus>(request.Status, true, out var statusEnum))
+                if (Enum.TryParse<PostStatus>(request.Status, true, out var statusEnum))
                 {
                     posts = posts.Where(p => p.Status == statusEnum).ToList();
                 }

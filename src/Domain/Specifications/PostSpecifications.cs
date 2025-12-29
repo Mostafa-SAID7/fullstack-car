@@ -1,5 +1,5 @@
 using Domain.Entities.Community.Posts;
-using Domain.Enums;
+using Domain.Enums.Community.Posts;
 
 namespace Domain.Specifications
 {
