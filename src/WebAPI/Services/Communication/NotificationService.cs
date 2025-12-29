@@ -1,10 +1,11 @@
 using Application.Common.Interfaces.Communication;
-using Domain.Entities.Community.Notifications;
+using Domain.Entities.Shared;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using WebAPI.Hubs;
 
-namespace Infrastructure.Services.Communication
+namespace WebAPI.Services.Communication
 {
     public class NotificationService : INotificationService
     {
@@ -43,7 +44,7 @@ namespace Infrastructure.Services.Communication
             };
 
             await _notificationRepository.AddAsync(notification, cancellationToken);
-
+            
             _logger.LogInformation("Sending real-time notification to user {UserId}: {Title}", userId, title);
 
             await _hubContext.Clients.User(userId).ReceiveNotification(new
@@ -80,7 +81,6 @@ namespace Infrastructure.Services.Communication
         {
             if (!Guid.TryParse(userId, out var userGuid)) return Enumerable.Empty<object>();
 
-            // Ideally we'd have a specification here, but let's keep it simple for now or use ListAsync
             var notifications = await _notificationRepository.ListAllAsync(cancellationToken);
             return notifications.Where(n => n.UserId == userGuid && !n.IsDeleted)
                                .OrderByDescending(n => n.CreatedAt)

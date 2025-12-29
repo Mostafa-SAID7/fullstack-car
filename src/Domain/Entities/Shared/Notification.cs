@@ -1,8 +1,8 @@
 using Domain.Base;
-using Domain.Enums.Community.Notifications;
+using Domain.Enums.Shared;
 using Domain.Entities.Identity;
 
-namespace Domain.Entities.Community.Notifications
+namespace Domain.Entities.Shared
 {
     public class Notification : BaseAuditableEntity
     {

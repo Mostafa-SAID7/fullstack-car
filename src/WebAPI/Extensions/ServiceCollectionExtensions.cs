@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Filters;
+using Application.Common.Interfaces.Communication;
+using WebAPI.Services.Communication;
 
 namespace WebAPI.Extensions
 {
@@ -84,6 +86,9 @@ namespace WebAPI.Extensions
 
             // Add SignalR for real-time features
             services.AddSignalR();
+
+            // Add Communication Services
+            services.AddScoped<INotificationService, NotificationService>();
 
             return services;
         }

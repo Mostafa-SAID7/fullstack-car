@@ -2,7 +2,7 @@ using Application.Common.Interfaces.Communication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Infrastructure.Services.Communication
+namespace WebAPI.Hubs
 {
     [Authorize]
     public class NotificationHub : Hub<INotificationHub>

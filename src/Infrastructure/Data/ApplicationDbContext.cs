@@ -2,7 +2,7 @@ using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
-using Domain.Entities.Community.Notifications;
+using Domain.Entities.Shared;
 using Domain.Entities.Community.Social;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;

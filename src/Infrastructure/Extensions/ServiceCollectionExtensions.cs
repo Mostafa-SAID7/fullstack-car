@@ -67,7 +67,6 @@ namespace Infrastructure.Extensions
             services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
 
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileService, FileService>();
 
             // Caching Services

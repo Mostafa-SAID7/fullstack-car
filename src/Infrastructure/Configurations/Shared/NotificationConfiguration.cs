@@ -1,8 +1,8 @@
-using Domain.Entities.Community.Notifications;
+using Domain.Entities.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations.Community.Notifications
+namespace Infrastructure.Configurations.Shared
 {
     public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
     {

@@ -1,4 +1,4 @@
-using Infrastructure.Services.Communication;
+using WebAPI.Hubs;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 

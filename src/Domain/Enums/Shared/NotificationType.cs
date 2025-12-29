@@ -1,4 +1,4 @@
-namespace Domain.Enums.Community.Notifications
+namespace Domain.Enums.Shared
 {
     public enum NotificationType
     {
