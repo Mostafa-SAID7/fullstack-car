@@ -1,14 +1,17 @@
-using Application.Features.Community.Chat.Commands;
-using Application.Features.Community.Chat.DTOs;
-using Application.Features.Community.Chat.Queries;
+using Application.Features.Shared.Chat.Commands;
+using Application.Features.Shared.Chat.DTOs;
+using Application.Features.Shared.Chat.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace WebAPI.Controllers.Community.Chat
+using Asp.Versioning;
+
+namespace WebAPI.Controllers.Shared.Chat
 {
     [Authorize]
-    [Route("api/community/[controller]")]
+    [ApiVersion("4.0")]
+    [Route("api/v{version:apiVersion}/shared/chat")]
     public class ChatController : BaseController
     {
         [HttpGet("conversations")]
@@ -47,6 +50,17 @@ namespace WebAPI.Controllers.Community.Chat
 
             var result = await Mediator.Send(new SendMessageCommand { UserId = userGuid, Request = request });
             if (result.Succeeded) return Ok(result.Data);
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPost("conversations/{id}/read")]
+        public async Task<IActionResult> MarkAsRead(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userId, out var userGuid)) return Unauthorized();
+
+            var result = await Mediator.Send(new MarkConversationAsReadCommand { UserId = userGuid, ConversationId = id });
+            if (result.Succeeded) return NoContent();
             return BadRequest(result.Errors);
         }
     }

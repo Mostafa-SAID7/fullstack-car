@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Community.Notifications
 {
     [Authorize]
-    [Route("api/community/[controller]")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/community/[controller]")]
     public class NotificationsController : ControllerBase
     {
         private readonly INotificationService _notificationService;

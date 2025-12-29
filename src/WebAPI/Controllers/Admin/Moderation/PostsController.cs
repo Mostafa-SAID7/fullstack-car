@@ -5,10 +5,13 @@ using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Admin.Moderation
 {
     [Authorize(Roles = "Admin,Moderator")]
-    [Route("api/admin/moderation/posts")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/admin/moderation/posts")]
     public class PostsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

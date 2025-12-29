@@ -1,12 +1,13 @@
 using Application.Common.Interfaces.Communication;
 using Application.Common.Models;
-using Application.Features.Community.Chat.DTOs;
-using Domain.Entities.Community.Chat;
+using Application.Features.Shared.Chat.DTOs;
+using Domain.Entities.Shared.Chat;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
+using Domain.Enums.Shared.Chat;
 
-namespace Application.Features.Community.Chat.Commands
+namespace Application.Features.Shared.Chat.Commands
 {
     public class SendMessageCommand : IRequest<Result<ChatMessageDto>>
     {
@@ -76,7 +77,6 @@ namespace Application.Features.Community.Chat.Commands
                 Type = (int)message.Type
             };
 
-            // Broadcast to the SignalR group
             await _chatNotificationService.NotifyNewMessage(message.ConversationId, dto);
 
             return Result<ChatMessageDto>.Success(dto);

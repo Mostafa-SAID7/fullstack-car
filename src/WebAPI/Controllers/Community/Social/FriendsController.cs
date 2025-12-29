@@ -7,6 +7,8 @@ using Application.Features.Community.Friends.Commands;
 using Application.Features.Community.Friends.DTOs;
 using Application.Features.Community.Friends.Queries;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Community.Social
 {
     /// <summary>
@@ -14,7 +16,8 @@ namespace WebAPI.Controllers.Community.Social
     /// </summary>
     [Authorize]
     [ApiController]
-    [Route("api/community/social/friends")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/community/social/friends")]
     [Tags("Community - Social")]
     public class FriendsController : BaseController
     {

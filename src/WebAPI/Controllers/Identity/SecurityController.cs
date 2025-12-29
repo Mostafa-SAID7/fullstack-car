@@ -7,10 +7,13 @@ using Application.Features.Identity.Security.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Identity
 {
     [Authorize]
-    [Route("api/identity/security")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/identity/security")]
     public class SecurityController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

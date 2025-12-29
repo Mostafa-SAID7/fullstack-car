@@ -91,6 +91,21 @@ namespace WebAPI.Extensions
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IChatNotificationService, ChatNotificationService>();
 
+            // Add API Versioning
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new Asp.Versioning.UrlSegmentApiVersionReader();
+            })
+            .AddMvc()
+            .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             return services;
         }
 
@@ -99,24 +114,25 @@ namespace WebAPI.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc(
-                    "v1",
-                    new Microsoft.OpenApi.Models.OpenApiInfo
+                // Defined versions
+                var versions = new[]
+                {
+                    new { Version = "v1", Title = "Identity API (v1)" },
+                    new { Version = "v2", Title = "Community API (v2)" },
+                    new { Version = "v3", Title = "Admin API (v3)" },
+                    new { Version = "v4", Title = "Shared API (v4)" },
+                    new { Version = "v5", Title = "AI Agent API (v5)" }
+                };
+
+                foreach (var v in versions)
+                {
+                    options.SwaggerDoc(v.Version, new Microsoft.OpenApi.Models.OpenApiInfo
                     {
-                        Title = "Community Car API",
-                        Version = "v1",
-                        Description = "A robust API for the Community Car platform, featuring AI-powered agents, real-time communications, and secure identity management.",
-                        Contact = new Microsoft.OpenApi.Models.OpenApiContact
-                        {
-                            Name = "Community Car Team",
-                            Email = "support@communitycar.com"
-                        },
-                        License = new Microsoft.OpenApi.Models.OpenApiLicense
-                        {
-                            Name = "MIT",
-                            Url = new Uri("https://opensource.org/licenses/MIT")
-                        }
+                        Title = v.Title,
+                        Version = v.Version,
+                        Description = $"Community Car API - {v.Title}",
                     });
+                }
 
                 // Use full type names for schema IDs to avoid naming conflicts
                 options.CustomSchemaIds(type => type.FullName);
@@ -150,7 +166,6 @@ namespace WebAPI.Extensions
                         },
                     });
 
-                // Add XSRF Token support to Swagger UI (optional but helpful if Swagger tests need it)
                 options.AddSecurityDefinition("XSRF-TOKEN", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Description = "Anti-forgery token header",

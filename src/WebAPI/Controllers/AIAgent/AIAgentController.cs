@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text;
+using Asp.Versioning;
 
 namespace WebAPI.Controllers.AIAgent
 {
     [Authorize]
-    [Route("api/ai-agent")]
+    [ApiVersion("5.0")]
+    [Route("api/v{version:apiVersion}/ai-agent")]
     public class AIAgentController : BaseController
     {
         private readonly HttpClient _httpClient;

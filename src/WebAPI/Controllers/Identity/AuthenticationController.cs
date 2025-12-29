@@ -8,10 +8,13 @@ using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Identity
 {
     [ApiController]
-    [Route("api/auth")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/auth")]
     [Tags("Identity - Authentication")]
     [Produces("application/json")]
     public class AuthenticationController : BaseController

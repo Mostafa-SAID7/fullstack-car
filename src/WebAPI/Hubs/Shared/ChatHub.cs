@@ -1,13 +1,23 @@
 using Application.Common.Interfaces.Communication;
-using Application.Features.Community.Chat.DTOs;
+using Application.Features.Shared.Chat.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace WebAPI.Hubs
+namespace WebAPI.Hubs.Shared
 {
     [Authorize]
     public class ChatHub : Hub<IChatHub>
     {
+        public override async Task OnConnectedAsync()
+        {
+            var userId = Context.UserIdentifier;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+            }
+            await base.OnConnectedAsync();
+        }
+
         public async Task JoinConversation(Guid conversationId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());

@@ -1,4 +1,4 @@
-using Application.Features.Community.Chat.DTOs;
+using Application.Features.Shared.Chat.DTOs;
 
 namespace Application.Common.Interfaces.Communication
 {

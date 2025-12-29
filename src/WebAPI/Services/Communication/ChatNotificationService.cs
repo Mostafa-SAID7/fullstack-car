@@ -1,7 +1,7 @@
 using Application.Common.Interfaces.Communication;
-using Application.Features.Community.Chat.DTOs;
+using Application.Features.Shared.Chat.DTOs;
 using Microsoft.AspNetCore.SignalR;
-using WebAPI.Hubs;
+using WebAPI.Hubs.Shared;
 
 namespace WebAPI.Services.Communication
 {

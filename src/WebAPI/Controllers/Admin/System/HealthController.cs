@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
-namespace WebAPI.Controllers.Shared.Common
+using Asp.Versioning;
+
+namespace WebAPI.Controllers.Admin.System
 {
-    [Route("api/shared/health")]
+    [Authorize(Roles = "Admin")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/admin/system/health")]
     public class HealthController : BaseController
     {
         [HttpGet]
@@ -17,7 +22,7 @@ namespace WebAPI.Controllers.Shared.Common
                 Version = "1.0.0",
                 Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development"
             };
-            
+
             return Ok(health);
         }
 
@@ -45,7 +50,7 @@ namespace WebAPI.Controllers.Shared.Common
                     Uptime = DateTime.UtcNow.Subtract(Process.GetCurrentProcess().StartTime).ToString(@"dd\.hh\:mm\:ss")
                 }
             };
-            
+
             return Ok(health);
         }
 

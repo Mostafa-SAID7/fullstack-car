@@ -1,7 +1,7 @@
 using Domain.Base;
 using Domain.Entities.Identity;
 
-namespace Domain.Entities.Community.Chat
+namespace Domain.Entities.Shared.Chat
 {
     public class Conversation : BaseAuditableEntity
     {

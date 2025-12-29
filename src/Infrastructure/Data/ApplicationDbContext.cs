@@ -3,7 +3,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Shared;
-using Domain.Entities.Community.Chat;
+using Domain.Entities.Shared.Chat;
 using Domain.Entities.Community.Social;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;

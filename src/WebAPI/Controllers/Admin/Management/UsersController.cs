@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Admin.Management
 {
     [Authorize(Roles = "Admin")]
-    [Route("api/admin/users")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/admin/users")]
     public class UsersController : BaseController
     {
         [HttpGet]

@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Community.Posts
 {
     [Authorize]
-    [Route("api/community/posts")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/community/posts")]
     public class PostsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using MediatR;
 using Application.Features.Shared.Localization.Queries;
 using Application.Features.Shared.Localization.Commands;
+using Asp.Versioning;
 
 namespace WebAPI.Controllers.Shared.Localization
 {
-    [Route("api/shared/localization")]
+    [ApiVersion("4.0")]
+    [Route("api/v{version:apiVersion}/shared/localization")]
     public class LocalizationController : BaseController
     {
         private readonly IMediator _mediator;

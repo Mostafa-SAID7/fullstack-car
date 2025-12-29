@@ -1,4 +1,5 @@
 using WebAPI.Hubs;
+using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 
@@ -14,7 +15,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Community Car API V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity (v1)");
+    c.SwaggerEndpoint("/swagger/v2/swagger.json", "Community (v2)");
+    c.SwaggerEndpoint("/swagger/v3/swagger.json", "Admin (v3)");
+    c.SwaggerEndpoint("/swagger/v4/swagger.json", "Shared (v4)");
+    c.SwaggerEndpoint("/swagger/v5/swagger.json", "AI Agent (v5)");
     c.RoutePrefix = string.Empty;
 });
 
@@ -44,6 +49,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Add SignalR hubs
+// ...
+
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
 

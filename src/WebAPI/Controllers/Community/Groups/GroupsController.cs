@@ -7,10 +7,13 @@ using Application.Features.Community.Groups.DTOs;
 using Application.Features.Community.Groups.Queries;
 using Application.Features.Community.Posts.Queries;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Community.Groups
 {
     [Authorize]
-    [Route("api/community/groups")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/community/groups")]
     public class GroupsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

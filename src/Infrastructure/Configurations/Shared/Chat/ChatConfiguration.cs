@@ -1,8 +1,8 @@
-using Domain.Entities.Community.Chat;
+using Domain.Entities.Shared.Chat;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations.Community.Chat
+namespace Infrastructure.Configurations.Shared.Chat
 {
     public class ConversationConfiguration : IEntityTypeConfiguration<Conversation>
     {

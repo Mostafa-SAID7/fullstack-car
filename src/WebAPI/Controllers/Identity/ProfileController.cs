@@ -7,10 +7,13 @@ using Application.Features.Identity.Profile.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Identity
 {
     [Authorize]
-    [Route("api/identity/profile")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/identity/profile")]
     public class ProfileController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

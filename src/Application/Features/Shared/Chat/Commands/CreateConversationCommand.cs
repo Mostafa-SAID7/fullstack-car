@@ -1,11 +1,11 @@
 using Application.Common.Models;
-using Application.Features.Community.Chat.DTOs;
-using Domain.Entities.Community.Chat;
+using Application.Features.Shared.Chat.DTOs;
+using Domain.Entities.Shared.Chat;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
 
-namespace Application.Features.Community.Chat.Commands
+namespace Application.Features.Shared.Chat.Commands
 {
     public class CreateConversationCommand : IRequest<Result<ConversationDto>>
     {
@@ -38,16 +38,13 @@ namespace Application.Features.Community.Chat.Commands
             if (!request.Request.IsGroup && request.Request.ParticipantIds.Count == 1)
             {
                 var otherUserId = request.Request.ParticipantIds[0];
-                // Simplify: check for a conversation where both are members
-                // In a real app, use a more efficient query/specification
                 var existing = (await _conversationRepository.ListAllAsync(cancellationToken))
-                    .FirstOrDefault(c => !c.IsGroup && 
-                                        c.Members.Any(m => m.UserId == request.UserId) && 
+                    .FirstOrDefault(c => !c.IsGroup &&
+                                        c.Members.Any(m => m.UserId == request.UserId) &&
                                         c.Members.Any(m => m.UserId == otherUserId));
-                
+
                 if (existing != null)
                 {
-                    // Map existing to DTO (simplified)
                     return Result<ConversationDto>.Success(new ConversationDto { Id = existing.Id });
                 }
             }
@@ -61,7 +58,6 @@ namespace Application.Features.Community.Chat.Commands
 
             await _conversationRepository.AddAsync(conversation, cancellationToken);
 
-            // Add members
             var allParticipantIds = new HashSet<Guid>(request.Request.ParticipantIds) { request.UserId };
             foreach (var participantId in allParticipantIds)
             {
@@ -76,8 +72,8 @@ namespace Application.Features.Community.Chat.Commands
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<ConversationDto>.Success(new ConversationDto 
-            { 
+            return Result<ConversationDto>.Success(new ConversationDto
+            {
                 Id = conversation.Id,
                 Title = conversation.Title,
                 IsGroup = conversation.IsGroup

@@ -5,10 +5,13 @@ using Application.Common.Constants;
 using Application.Common.Interfaces.Localization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Identity
 {
     [ApiController]
-    [Route("api/account")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/account")]
     [Tags("Identity - Account Management")]
     [Produces("application/json")]
     public class AccountController : BaseController

@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Asp.Versioning;
+
 namespace WebAPI.Controllers.Admin.Dashboard
 {
     [Authorize(Roles = "Admin")]
-    [Route("api/admin/dashboard")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/admin/dashboard")]
     public class DashboardController : BaseController
     {
         [HttpGet]
