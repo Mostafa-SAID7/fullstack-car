@@ -2,6 +2,7 @@ using WebAPI.Hubs;
 using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,5 +54,12 @@ app.MapControllers();
 
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
+
+using (var scope = app.Services.CreateScope())
+{
+    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+    await initialiser.InitialiseAsync();
+    await initialiser.SeedAsync();
+}
 
 app.Run();

@@ -1,4 +1,10 @@
 using Infrastructure.Data;
+using Infrastructure.Data.Seeds.Identity;
+using Infrastructure.Data.Seeds.Community;
+using Infrastructure.Data.Seeds.Community.Groups;
+using Infrastructure.Data.Seeds.Community.Posts;
+using Infrastructure.Data.Seeds.Community.Reviews;
+using Infrastructure.Data.Seeds.Shared;
 using Infrastructure.Repositories;
 using Infrastructure.Services.Identity;
 using Infrastructure.Services.Localization;
@@ -11,12 +17,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Domain.Interfaces;
-using Application.Common.Interfaces.Identity;
-using Application.Common.Interfaces.Localization;
-using Application.Common.Interfaces.Communication;
-using Application.Common.Interfaces.Storage;
-using Application.Common.Interfaces.Caching;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -126,6 +126,15 @@ namespace Infrastructure.Extensions
                 options.ClientSecret = configuration["Authentication:GitHub:ClientSecret"] ?? "placeholder";
                 options.Scope.Add("user:email");
             });
+
+            // Add Initialiser & Seeders
+            services.AddScoped<ApplicationDbContextInitialiser>();
+            services.AddScoped<IdentitySeeder>();
+            services.AddScoped<CommunitySeeder>();
+            services.AddScoped<GroupsSeeder>();
+            services.AddScoped<PostsSeeder>();
+            services.AddScoped<ReviewsSeeder>();
+            services.AddScoped<SharedSeeder>();
 
             return services;
         }
