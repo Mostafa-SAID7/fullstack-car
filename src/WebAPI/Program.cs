@@ -1,3 +1,4 @@
+using Infrastructure.Services.Communication;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 
@@ -43,6 +44,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Add SignalR hubs
-// app.MapHub<NotificationHub>("/hubs/notifications");
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.Run();

@@ -1,4 +1,7 @@
 using Application.Common.Interfaces.Communication;
+using Domain.Entities.Community.Notifications;
+using Domain.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.Communication
@@ -6,22 +9,53 @@ namespace Infrastructure.Services.Communication
     public class NotificationService : INotificationService
     {
         private readonly ILogger<NotificationService> _logger;
+        private readonly IRepository<Notification> _notificationRepository;
+        private readonly IHubContext<NotificationHub, INotificationHub> _hubContext;
 
-        public NotificationService(ILogger<NotificationService> logger)
+        public NotificationService(
+            ILogger<NotificationService> logger,
+            IRepository<Notification> notificationRepository,
+            IHubContext<NotificationHub, INotificationHub> hubContext)
         {
             _logger = logger;
+            _notificationRepository = notificationRepository;
+            _hubContext = hubContext;
         }
 
-        public async Task SendNotificationAsync(string userId, string title, string message)
+        public async Task SendNotificationAsync(string userId, string title, string message, string? targetUrl = null, Guid? sourceUserId = null)
         {
-            await SendNotificationAsync(userId, title, message, CancellationToken.None);
+            await SendNotificationAsync(userId, title, message, targetUrl, sourceUserId, CancellationToken.None);
         }
 
-        public async Task SendNotificationAsync(string userId, string title, string message, CancellationToken cancellationToken)
+        public async Task SendNotificationAsync(string userId, string title, string message, string? targetUrl, Guid? sourceUserId, CancellationToken cancellationToken)
         {
-            // TODO: Implement notification sending logic
-            _logger.LogInformation("Sending notification to user {UserId}: {Title}", userId, title);
-            await Task.CompletedTask;
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+
+            var notification = new Notification
+            {
+                UserId = userGuid,
+                Title = title,
+                Message = message,
+                TargetUrl = targetUrl,
+                SourceUserId = sourceUserId,
+                CreatedAt = DateTime.UtcNow,
+                IsRead = false
+            };
+
+            await _notificationRepository.AddAsync(notification, cancellationToken);
+
+            _logger.LogInformation("Sending real-time notification to user {UserId}: {Title}", userId, title);
+
+            await _hubContext.Clients.User(userId).ReceiveNotification(new
+            {
+                notification.Id,
+                notification.Title,
+                notification.Message,
+                notification.CreatedAt,
+                notification.IsRead,
+                notification.TargetUrl,
+                notification.SourceUserId
+            });
         }
 
         public async Task SendBulkNotificationAsync(IEnumerable<string> userIds, string title, string message)
@@ -31,9 +65,10 @@ namespace Infrastructure.Services.Communication
 
         public async Task SendBulkNotificationAsync(IEnumerable<string> userIds, string title, string message, CancellationToken cancellationToken)
         {
-            // TODO: Implement bulk notification sending
-            _logger.LogInformation("Sending bulk notification to {Count} users: {Title}", userIds.Count(), title);
-            await Task.CompletedTask;
+            foreach (var userId in userIds)
+            {
+                await SendNotificationAsync(userId, title, message, null, null, cancellationToken);
+            }
         }
 
         public async Task<IEnumerable<object>> GetUserNotificationsAsync(string userId)
@@ -43,9 +78,21 @@ namespace Infrastructure.Services.Communication
 
         public async Task<IEnumerable<object>> GetUserNotificationsAsync(string userId, CancellationToken cancellationToken)
         {
-            // TODO: Implement get user notifications
-            _logger.LogInformation("Getting notifications for user {UserId}", userId);
-            return await Task.FromResult(Enumerable.Empty<object>());
+            if (!Guid.TryParse(userId, out var userGuid)) return Enumerable.Empty<object>();
+
+            // Ideally we'd have a specification here, but let's keep it simple for now or use ListAsync
+            var notifications = await _notificationRepository.ListAllAsync(cancellationToken);
+            return notifications.Where(n => n.UserId == userGuid && !n.IsDeleted)
+                               .OrderByDescending(n => n.CreatedAt)
+                               .Select(n => new
+                               {
+                                   n.Id,
+                                   n.Title,
+                                   n.Message,
+                                   n.CreatedAt,
+                                   n.IsRead,
+                                   n.TargetUrl
+                               });
         }
 
         public async Task MarkAsReadAsync(string notificationId)
@@ -55,9 +102,14 @@ namespace Infrastructure.Services.Communication
 
         public async Task MarkAsReadAsync(string notificationId, CancellationToken cancellationToken)
         {
-            // TODO: Implement mark as read
-            _logger.LogInformation("Marking notification {NotificationId} as read", notificationId);
-            await Task.CompletedTask;
+            if (!Guid.TryParse(notificationId, out var idGuid)) return;
+
+            var notification = await _notificationRepository.GetByIdAsync(idGuid, cancellationToken);
+            if (notification != null)
+            {
+                notification.IsRead = true;
+                await _notificationRepository.UpdateAsync(notification, cancellationToken);
+            }
         }
     }
 }

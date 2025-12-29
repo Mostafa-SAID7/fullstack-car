@@ -8,7 +8,7 @@ namespace Domain.Specifications
         public PostsByUserSpecification(Guid userId) : base(p => p.UserId == userId && !p.IsDeleted)
         {
             AddInclude(p => p.User);
-            AddInclude(p => p.Group);
+            AddInclude(p => p.Group!);
             ApplyOrderByDescending(p => p.CreatedAt);
         }
     }
@@ -18,7 +18,7 @@ namespace Domain.Specifications
         public PostsByGroupSpecification(Guid groupId) : base(p => p.GroupId == groupId && !p.IsDeleted && p.Status == PostStatus.Published)
         {
             AddInclude(p => p.User);
-            AddInclude(p => p.Group);
+            AddInclude(p => p.Group!);
             ApplyOrderByDescending(p => p.CreatedAt);
         }
     }
@@ -28,7 +28,7 @@ namespace Domain.Specifications
         public PublicPostsSpecification(int skip, int take) : base(p => !p.IsDeleted && p.Status == PostStatus.Published)
         {
             AddInclude(p => p.User);
-            AddInclude(p => p.Group);
+            AddInclude(p => p.Group!);
             ApplyOrderByDescending(p => p.CreatedAt);
             ApplyPaging(skip, take);
         }
@@ -39,7 +39,7 @@ namespace Domain.Specifications
         public PostWithDetailsSpecification(Guid id) : base(p => p.Id == id && !p.IsDeleted)
         {
             AddInclude(p => p.User);
-            AddInclude(p => p.Group);
+            AddInclude(p => p.Group!);
         }
     }
 }

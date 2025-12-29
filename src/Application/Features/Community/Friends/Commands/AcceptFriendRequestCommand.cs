@@ -1,8 +1,10 @@
 using Application.Common.Models;
 using Domain.Entities.Community.Social;
+using Domain.Entities.Identity;
 using Domain.Enums.Community.Social;
 using Domain.Interfaces;
 using Application.Common.Interfaces.Caching;
+using Application.Common.Interfaces.Communication;
 using MediatR;
 
 namespace Application.Features.Community.Friends.Commands
@@ -16,17 +18,23 @@ namespace Application.Features.Community.Friends.Commands
     public class AcceptFriendRequestCommandHandler : IRequestHandler<AcceptFriendRequestCommand, Result<bool>>
     {
         private readonly IRepository<UserFriend> _friendRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
+        private readonly INotificationService _notificationService;
 
         public AcceptFriendRequestCommandHandler(
             IRepository<UserFriend> friendRepository,
+            IRepository<User> userRepository,
             IUnitOfWork unitOfWork,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            INotificationService notificationService)
         {
             _friendRepository = friendRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _cacheService = cacheService;
+            _notificationService = notificationService;
         }
 
         public async Task<Result<bool>> Handle(AcceptFriendRequestCommand command, CancellationToken cancellationToken)
@@ -48,6 +56,17 @@ namespace Application.Features.Community.Friends.Commands
 
             await _friendRepository.UpdateAsync(request, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send notification to the requester
+            var acceptor = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
+            var acceptorName = acceptor != null ? $"{acceptor.FirstName} {acceptor.LastName}" : "Someone";
+            await _notificationService.SendNotificationAsync(
+                request.UserId.ToString(),
+                "Friend Request Accepted",
+                $"{acceptorName} accepted your friend request.",
+                $"/users/{command.UserId}",
+                command.UserId,
+                cancellationToken);
 
             // Invalidate caches for both users
             await _cacheService.RemoveByTagAsync($"Friends_{request.UserId}", cancellationToken);

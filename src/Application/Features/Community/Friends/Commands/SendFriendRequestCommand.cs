@@ -5,6 +5,7 @@ using Domain.Enums.Community.Social;
 using Domain.Interfaces;
 using Domain.Specifications;
 using Application.Common.Interfaces.Caching;
+using Application.Common.Interfaces.Communication;
 using MediatR;
 
 namespace Application.Features.Community.Friends.Commands
@@ -21,17 +22,20 @@ namespace Application.Features.Community.Friends.Commands
         private readonly IRepository<User> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
+        private readonly INotificationService _notificationService;
 
         public SendFriendRequestCommandHandler(
             IRepository<UserFriend> friendRepository,
             IRepository<User> userRepository,
             IUnitOfWork unitOfWork,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            INotificationService notificationService)
         {
             _friendRepository = friendRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _cacheService = cacheService;
+            _notificationService = notificationService;
         }
 
         public async Task<Result<bool>> Handle(SendFriendRequestCommand command, CancellationToken cancellationToken)
@@ -71,6 +75,17 @@ namespace Application.Features.Community.Friends.Commands
 
             await _friendRepository.AddAsync(friendship, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send notification
+            var sender = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
+            var senderName = sender != null ? $"{sender.FirstName} {sender.LastName}" : "Someone";
+            await _notificationService.SendNotificationAsync(
+                command.FriendId.ToString(),
+                "New Friend Request",
+                $"{senderName} sent you a friend request.",
+                "/friends/requests",
+                command.UserId,
+                cancellationToken);
 
             await _cacheService.RemoveByTagAsync($"Requests_{command.FriendId}", cancellationToken);
 

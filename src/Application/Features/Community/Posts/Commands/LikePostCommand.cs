@@ -1,6 +1,8 @@
 using Application.Common.Models;
 using Domain.Entities.Community.Posts;
 using Domain.Interfaces;
+using Application.Common.Interfaces.Communication;
+using Domain.Entities.Identity;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 
@@ -16,19 +18,25 @@ namespace Application.Features.Community.Posts.Commands
     {
         private readonly IRepository<Post> _postRepository;
         private readonly IRepository<PostLike> _likeRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
+        private readonly INotificationService _notificationService;
 
         public LikePostCommandHandler(
             IRepository<Post> postRepository,
             IRepository<PostLike> likeRepository,
+            IRepository<User> userRepository,
             IUnitOfWork unitOfWork,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            INotificationService notificationService)
         {
             _postRepository = postRepository;
             _likeRepository = likeRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _cacheService = cacheService;
+            _notificationService = notificationService;
         }
 
         public async Task<Result<bool>> Handle(LikePostCommand request, CancellationToken cancellationToken)
@@ -39,8 +47,7 @@ namespace Application.Features.Community.Posts.Commands
                 return Result<bool>.Failure(new[] { "Post not found" });
             }
 
-            // Check if already liked using a simple check for now
-            // In a real app, we'd use a specification or a unique constraint catch
+            // Check if already liked
             var existingLike = (await _likeRepository.GetAllAsync(cancellationToken))
                 .FirstOrDefault(l => l.PostId == request.PostId && l.UserId == request.UserId);
 
@@ -60,6 +67,20 @@ namespace Application.Features.Community.Posts.Commands
             await _postRepository.UpdateAsync(post, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send notification
+            if (post.UserId != request.UserId)
+            {
+                var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+                var userName = user != null ? $"{user.FirstName} {user.LastName}" : "Someone";
+                await _notificationService.SendNotificationAsync(
+                    post.UserId.ToString(),
+                    "New Post Like",
+                    $"{userName} liked your post: {post.Title}",
+                    $"/posts/{post.Id}",
+                    request.UserId,
+                    cancellationToken);
+            }
 
             await _cacheService.RemoveAsync($"Post_{post.Id}", cancellationToken);
             await _cacheService.RemoveByTagAsync("Posts", cancellationToken);

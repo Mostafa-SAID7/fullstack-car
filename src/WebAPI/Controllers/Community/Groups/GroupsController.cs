@@ -195,7 +195,7 @@ namespace WebAPI.Controllers.Community.Groups
 
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPut("{id}/moderate")]
-        public async Task<IActionResult> ModerateGroup(Guid id, [FromBody] ModerateGroupRequest request)
+        public IActionResult ModerateGroup(Guid id, [FromBody] ModerateGroupRequest request)
         {
             return Ok(new { Message = "Group moderated successfully" });
         }
