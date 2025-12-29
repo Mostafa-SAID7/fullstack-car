@@ -33,4 +33,13 @@ namespace Domain.Specifications
             ApplyPaging(skip, take);
         }
     }
+
+    public class PostWithDetailsSpecification : BaseSpecification<Post>
+    {
+        public PostWithDetailsSpecification(Guid id) : base(p => p.Id == id && !p.IsDeleted)
+        {
+            AddInclude(p => p.User);
+            AddInclude(p => p.Group);
+        }
+    }
 }

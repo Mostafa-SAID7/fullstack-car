@@ -1,4 +1,5 @@
 using Infrastructure.Extensions;
+using Application.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -14,6 +15,15 @@ namespace WebAPI.Extensions
         {
             // Add Infrastructure Services
             services.AddInfrastructureServices(configuration);
+
+            // Add Application Services
+            services.AddApplicationServices();
+
+            // Add Response Caching
+            services.AddResponseCaching();
+
+            // Add Output Caching
+            services.AddOutputCache();
 
             // Add HttpContextAccessor for CurrentUserService
             services.AddHttpContextAccessor();

@@ -24,6 +24,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseResponseCaching();
+app.UseOutputCache();
+
 app.UseCors("AllowAngularApp");
 
 app.UseMiddleware<AntiforgeryMiddleware>();

@@ -1,28 +1,29 @@
 using Application.Common.Models;
 using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
-using Domain.Entities.Identity;
 using Domain.Interfaces;
-using Application.Common.Interfaces.Identity;
+using Domain.Policies;
+using Domain.Entities.Identity;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Commands
 {
-    public class CreatePostCommand : IRequest<Result<PostDto>>
+    public class UpdatePostCommand : IRequest<Result<PostDto>>
     {
-        public CreatePostRequest Request { get; set; } = null!;
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
+        public UpdatePostRequest Request { get; set; } = null!;
     }
 
-    public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Result<PostDto>>
+    public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, Result<PostDto>>
     {
         private readonly IRepository<Post> _postRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
 
-        public CreatePostCommandHandler(
+        public UpdatePostCommandHandler(
             IRepository<Post> postRepository,
             IRepository<User> userRepository,
             IUnitOfWork unitOfWork,
@@ -34,26 +35,36 @@ namespace Application.Features.Community.Posts.Commands
             _cacheService = cacheService;
         }
 
-        public async Task<Result<PostDto>> Handle(CreatePostCommand command, CancellationToken cancellationToken)
+        public async Task<Result<PostDto>> Handle(UpdatePostCommand command, CancellationToken cancellationToken)
         {
+            var post = await _postRepository.GetByIdAsync(command.Id, cancellationToken);
+            if (post == null)
+            {
+                return Result<PostDto>.Failure(new[] { "Post not found" });
+            }
+
             var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if (user == null)
             {
                 return Result<PostDto>.Failure(new[] { "User not found" });
             }
 
-            var post = new Post
+            if (!PostPolicy.CanEdit(post, user))
             {
-                Title = command.Request.Title,
-                Content = command.Request.Content,
-                ImageUrl = command.Request.ImageUrl,
-                Type = command.Request.Type,
-                UserId = command.UserId,
-                GroupId = command.Request.GroupId
-            };
+                return Result<PostDto>.Failure(new[] { "You are not authorized to edit this post" });
+            }
 
-            await _postRepository.AddAsync(post, cancellationToken);
+            post.Title = command.Request.Title;
+            post.Content = command.Request.Content;
+            post.ImageUrl = command.Request.ImageUrl;
+            post.Type = command.Request.Type;
+            post.Status = command.Request.Status;
+
+            await _postRepository.UpdateAsync(post, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _cacheService.RemoveAsync($"Post_{post.Id}", cancellationToken);
+            await _cacheService.RemoveByTagAsync("Posts", cancellationToken);
 
             var postDto = new PostDto
             {
@@ -63,9 +74,6 @@ namespace Application.Features.Community.Posts.Commands
                 ImageUrl = post.ImageUrl,
                 Type = post.Type,
                 Status = post.Status,
-                ViewsCount = post.ViewsCount,
-                LikesCount = post.LikesCount,
-                CommentsCount = post.CommentsCount,
                 CreatedAt = post.CreatedAt,
                 UpdatedAt = post.UpdatedAt,
                 UserId = user.Id,
@@ -74,8 +82,6 @@ namespace Application.Features.Community.Posts.Commands
                 UserProfileImageUrl = user.ProfileImageUrl,
                 GroupId = post.GroupId
             };
-
-            await _cacheService.RemoveByTagAsync("Posts", cancellationToken);
 
             return Result<PostDto>.Success(postDto);
         }

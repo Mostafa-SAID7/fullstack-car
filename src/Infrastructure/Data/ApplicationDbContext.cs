@@ -26,6 +26,7 @@ namespace Infrastructure.Data
         public DbSet<UserFriend> UserFriends { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
+        public DbSet<PostReport> PostReports { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

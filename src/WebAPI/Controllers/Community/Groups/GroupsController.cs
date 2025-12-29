@@ -1,124 +1,209 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.AspNetCore.OutputCaching;
+using Application.Common.Interfaces.Identity;
+using Application.Features.Community.Groups.Commands;
+using Application.Features.Community.Groups.DTOs;
+using Application.Features.Community.Groups.Queries;
+using Application.Features.Community.Posts.Queries;
 
 namespace WebAPI.Controllers.Community.Groups
 {
     [Authorize]
-    [Route("api/community/[controller]")]
+    [Route("api/community/groups")]
     public class GroupsController : BaseController
     {
+        private readonly ICurrentUserService _currentUserService;
+
+        public GroupsController(ICurrentUserService currentUserService)
+        {
+            _currentUserService = currentUserService;
+        }
+
         [HttpGet]
+        [OutputCache(Duration = 60, Tags = new[] { "Groups" })]
         public async Task<IActionResult> GetGroups([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting groups
-            return Ok();
+            var result = await Mediator.Send(new GetGroupsQuery { PageNumber = page, PageSize = pageSize });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGroup(Guid id)
         {
-            // Implementation for getting single group
-            return Ok();
+            var result = await Mediator.Send(new GetGroupByIdQuery { Id = id });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
 
-            // Implementation for creating group
-            return Ok();
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new CreateGroupCommand
+            {
+                OwnerId = userGuid,
+                Request = request
+            });
+
+            if (result.Succeeded)
+                return CreatedAtAction(nameof(GetGroup), new { id = result.Data.Id }, result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGroup(Guid id, [FromBody] UpdateGroupRequest request)
         {
-            // Implementation for updating group
-            return Ok();
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new UpdateGroupCommand
+            {
+                Id = id,
+                UserId = userGuid,
+                Request = request
+            });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroup(Guid id)
         {
-            // Implementation for deleting group
-            return NoContent();
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new DeleteGroupCommand
+            {
+                Id = id,
+                UserId = userGuid
+            });
+
+            if (result.Succeeded)
+                return NoContent();
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("{id}/join")]
         public async Task<IActionResult> JoinGroup(Guid id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
 
-            // Implementation for joining group
-            return Ok(new { Message = "Successfully joined group" });
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new JoinGroupCommand { GroupId = id, UserId = userGuid });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Successfully joined group" });
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("{id}/leave")]
         public async Task<IActionResult> LeaveGroup(Guid id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
 
-            // Implementation for leaving group
-            return Ok(new { Message = "Successfully left group" });
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new LeaveGroupCommand { GroupId = id, UserId = userGuid });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Successfully left group" });
+
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("{id}/members")]
         public async Task<IActionResult> GetGroupMembers(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting group members
-            return Ok();
+            var result = await Mediator.Send(new GetGroupMembersQuery
+            {
+                GroupId = id,
+                PageNumber = page,
+                PageSize = pageSize
+            });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("{id}/posts")]
         public async Task<IActionResult> GetGroupPosts(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting group posts
-            return Ok();
+            var result = await Mediator.Send(new GetPostsQuery
+            {
+                GroupId = id,
+                PageNumber = page,
+                PageSize = pageSize
+            });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
-        // Admin functionality for groups
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPut("{id}/moderate")]
         public async Task<IActionResult> ModerateGroup(Guid id, [FromBody] ModerateGroupRequest request)
         {
-            // Implementation for moderating group
             return Ok(new { Message = "Group moderated successfully" });
         }
     }
 
-    public class CreateGroupRequest
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string? ImageUrl { get; set; }
-        public string Privacy { get; set; } = "Public";
-        public string Type { get; set; } = "General";
-    }
-
-    public class UpdateGroupRequest
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string? ImageUrl { get; set; }
-        public string Privacy { get; set; } = "Public";
-    }
-
     public class ModerateGroupRequest
     {
-        public string Action { get; set; } = string.Empty; // "suspend", "activate", "delete"
+        public string Action { get; set; } = string.Empty;
         public string Reason { get; set; } = string.Empty;
     }
 }

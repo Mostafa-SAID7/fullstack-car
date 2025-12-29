@@ -1,39 +1,37 @@
 using Application.Common.Models;
 using Domain.Entities.Community.Posts;
 using Domain.Interfaces;
-using Domain.Policies;
-using Domain.Entities.Identity;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Commands
 {
-    public class DeletePostCommand : IRequest<Result<bool>>
+    public class LikePostCommand : IRequest<Result<bool>>
     {
         public Guid PostId { get; set; }
         public Guid UserId { get; set; }
     }
 
-    public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, Result<bool>>
+    public class LikePostCommandHandler : IRequestHandler<LikePostCommand, Result<bool>>
     {
         private readonly IRepository<Post> _postRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<PostLike> _likeRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
 
-        public DeletePostCommandHandler(
-            IRepository<Post> postRepository, 
-            IRepository<User> userRepository,
+        public LikePostCommandHandler(
+            IRepository<Post> postRepository,
+            IRepository<PostLike> likeRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService)
         {
             _postRepository = postRepository;
-            _userRepository = userRepository;
+            _likeRepository = likeRepository;
             _unitOfWork = unitOfWork;
             _cacheService = cacheService;
         }
 
-        public async Task<Result<bool>> Handle(DeletePostCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(LikePostCommand request, CancellationToken cancellationToken)
         {
             var post = await _postRepository.GetByIdAsync(request.PostId, cancellationToken);
             if (post == null)
@@ -41,18 +39,26 @@ namespace Application.Features.Community.Posts.Commands
                 return Result<bool>.Failure(new[] { "Post not found" });
             }
 
-            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
-            if (user == null)
+            // Check if already liked using a simple check for now
+            // In a real app, we'd use a specification or a unique constraint catch
+            var existingLike = (await _likeRepository.GetAllAsync(cancellationToken))
+                .FirstOrDefault(l => l.PostId == request.PostId && l.UserId == request.UserId);
+
+            if (existingLike != null)
             {
-                return Result<bool>.Failure(new[] { "User not found" });
+                return Result<bool>.Failure(new[] { "Post already liked" });
             }
 
-            if (!PostPolicy.CanDelete(post, user))
+            var like = new PostLike
             {
-                return Result<bool>.Failure(new[] { "You are not authorized to delete this post" });
-            }
+                PostId = request.PostId,
+                UserId = request.UserId
+            };
 
-            await _postRepository.DeleteAsync(post, cancellationToken);
+            await _likeRepository.AddAsync(like, cancellationToken);
+            post.LikesCount++;
+            await _postRepository.UpdateAsync(post, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheService.RemoveAsync($"Post_{post.Id}", cancellationToken);

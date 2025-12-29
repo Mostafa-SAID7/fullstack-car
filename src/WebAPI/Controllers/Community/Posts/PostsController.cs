@@ -4,6 +4,7 @@ using Application.Features.Community.Posts.Queries;
 using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace WebAPI.Controllers.Community.Posts
 {
@@ -19,21 +20,26 @@ namespace WebAPI.Controllers.Community.Posts
         }
 
         [HttpGet]
+        [OutputCache(Duration = 60, Tags = new[] { "Posts" })]
         public async Task<IActionResult> GetPosts([FromQuery] GetPostsQuery query)
         {
             var result = await Mediator.Send(query);
-            
+
             if (result.Succeeded)
                 return Ok(result.Data);
-                
+
             return BadRequest(result.Errors);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPost(Guid id)
         {
-            // Implementation for getting single post
-            return Ok();
+            var result = await Mediator.Send(new GetPostByIdQuery { Id = id });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost]
@@ -56,25 +62,62 @@ namespace WebAPI.Controllers.Community.Posts
             };
 
             var result = await Mediator.Send(command);
-            
+
             if (result.Succeeded)
                 return CreatedAtAction(nameof(GetPost), new { id = result.Data.Id }, result.Data);
-                
+
             return BadRequest(result.Errors);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePostRequest request)
         {
-            // Implementation for updating post
-            return Ok();
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new UpdatePostCommand
+            {
+                Id = id,
+                UserId = userGuid,
+                Request = request
+            });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(Guid id)
         {
-            // Implementation for deleting post
-            return NoContent();
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new DeletePostCommand
+            {
+                PostId = id,
+                UserId = userGuid
+            });
+
+            if (result.Succeeded)
+                return NoContent();
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("{id}/like")]
@@ -85,8 +128,17 @@ namespace WebAPI.Controllers.Community.Posts
                 return Unauthorized();
             }
 
-            // Implementation for liking post
-            return Ok(new { Message = "Post liked successfully" });
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new LikePostCommand { PostId = id, UserId = userGuid });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Post liked successfully" });
+
+            return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}/like")]
@@ -97,15 +149,33 @@ namespace WebAPI.Controllers.Community.Posts
                 return Unauthorized();
             }
 
-            // Implementation for unliking post
-            return Ok(new { Message = "Post unliked successfully" });
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new UnlikePostCommand { PostId = id, UserId = userGuid });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Post unliked successfully" });
+
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("{id}/comments")]
         public async Task<IActionResult> GetPostComments(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting post comments
-            return Ok();
+            var result = await Mediator.Send(new GetPostCommentsQuery
+            {
+                PostId = id,
+                PageNumber = page,
+                PageSize = pageSize
+            });
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("{id}/comments")]
@@ -116,8 +186,22 @@ namespace WebAPI.Controllers.Community.Posts
                 return Unauthorized();
             }
 
-            // Implementation for adding comment
-            return Ok();
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new AddCommentCommand
+            {
+                PostId = id,
+                UserId = userGuid,
+                Request = request
+            });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Comment added successfully" });
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("{id}/report")]
@@ -128,8 +212,22 @@ namespace WebAPI.Controllers.Community.Posts
                 return Unauthorized();
             }
 
-            // Implementation for reporting post
-            return Ok(new { Message = "Post reported successfully" });
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var result = await Mediator.Send(new ReportPostCommand
+            {
+                PostId = id,
+                UserId = userGuid,
+                Request = request
+            });
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Post reported successfully" });
+
+            return BadRequest(result.Errors);
         }
     }
 }

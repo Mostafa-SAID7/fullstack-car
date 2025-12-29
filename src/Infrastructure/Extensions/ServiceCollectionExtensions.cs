@@ -4,6 +4,8 @@ using Infrastructure.Services.Identity;
 using Infrastructure.Services.Localization;
 using Infrastructure.Services.Communication;
 using Infrastructure.Services.Storage;
+using Infrastructure.Services.Caching;
+using Infrastructure.Common;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ using Application.Common.Interfaces.Identity;
 using Application.Common.Interfaces.Localization;
 using Application.Common.Interfaces.Communication;
 using Application.Common.Interfaces.Storage;
+using Application.Common.Interfaces.Caching;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -66,6 +69,25 @@ namespace Infrastructure.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileService, FileService>();
+
+            // Caching Services
+            services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+            services.AddMemoryCache();
+
+            var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
+            if (cacheSettings.Enabled && cacheSettings.UseRedis)
+            {
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = cacheSettings.RedisConnectionString;
+                });
+            }
+            else
+            {
+                services.AddDistributedMemoryCache();
+            }
+
+            services.AddSingleton<ICacheService, CacheService>();
 
             // Add JWT Authentication
             var secret = configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");

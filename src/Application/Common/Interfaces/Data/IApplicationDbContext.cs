@@ -16,6 +16,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<Group> Groups { get; }
         DbSet<GroupMember> GroupMembers { get; }
         DbSet<PostLike> PostLikes { get; }
+        DbSet<PostReport> PostReports { get; }
         DbSet<Review> Reviews { get; }
         DbSet<UserFriend> UserFriends { get; }
 

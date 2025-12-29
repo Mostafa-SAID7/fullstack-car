@@ -3,13 +3,19 @@ using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
+using Domain.Specifications;
+using Application.Common.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Queries
 {
-    public class GetPostByIdQuery : IRequest<Result<PostDto>>
+    public class GetPostByIdQuery : IRequest<Result<PostDto>>, ICacheableRequest
     {
         public Guid Id { get; set; }
+
+        public string CacheKey => $"Post_{Id}";
+        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
+        public string? CacheTag => "Posts";
     }
 
     public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, Result<PostDto>>
@@ -23,7 +29,9 @@ namespace Application.Features.Community.Posts.Queries
 
         public async Task<Result<PostDto>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
         {
-            var post = await _postRepository.GetByIdAsync(request.Id, cancellationToken);
+            var specification = new PostWithDetailsSpecification(request.Id);
+            var post = await _postRepository.FirstOrDefaultAsync(specification, cancellationToken);
+
             if (post == null)
             {
                 return Result<PostDto>.Failure(new[] { "Post not found" });
@@ -40,10 +48,14 @@ namespace Application.Features.Community.Posts.Queries
                 ViewsCount = post.ViewsCount,
                 LikesCount = post.LikesCount,
                 CommentsCount = post.CommentsCount,
-                UserId = post.UserId,
-                GroupId = post.GroupId,
                 CreatedAt = post.CreatedAt,
-                UpdatedAt = post.UpdatedAt
+                UpdatedAt = post.UpdatedAt,
+                UserId = post.User.Id,
+                UserFirstName = post.User.FirstName,
+                UserLastName = post.User.LastName,
+                UserProfileImageUrl = post.User.ProfileImageUrl,
+                GroupId = post.GroupId,
+                GroupName = post.Group?.Name
             };
 
             return Result<PostDto>.Success(postDto);

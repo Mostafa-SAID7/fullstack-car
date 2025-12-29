@@ -33,10 +33,10 @@ namespace WebAPI.Controllers.Admin.Moderation
             };
 
             var result = await Mediator.Send(command);
-            
+
             if (result.Succeeded)
                 return Ok(new { Message = "Post approved successfully" });
-                
+
             return BadRequest(result.Errors);
         }
 
@@ -56,10 +56,10 @@ namespace WebAPI.Controllers.Admin.Moderation
             };
 
             var result = await Mediator.Send(command);
-            
+
             if (result.Succeeded)
                 return Ok(new { Message = "Post rejected successfully" });
-                
+
             return BadRequest(result.Errors);
         }
 
@@ -76,10 +76,10 @@ namespace WebAPI.Controllers.Admin.Moderation
             };
 
             var result = await Mediator.Send(query);
-            
+
             if (result.Succeeded)
                 return Ok(result.Data);
-                
+
             return BadRequest(result.Errors);
         }
 
@@ -96,10 +96,10 @@ namespace WebAPI.Controllers.Admin.Moderation
             };
 
             var result = await Mediator.Send(query);
-            
+
             if (result.Succeeded)
                 return Ok(result.Data);
-                
+
             return BadRequest(result.Errors);
         }
 
@@ -107,27 +107,28 @@ namespace WebAPI.Controllers.Admin.Moderation
         public async Task<IActionResult> GetAllPostsForAdmin([FromQuery] GetAllPostsForAdminQuery query)
         {
             var result = await Mediator.Send(query);
-            
+
             if (result.Succeeded)
                 return Ok(result.Data);
-                
+
             return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(Guid id)
         {
+            var userGuid = Guid.Parse(_currentUserService.UserId!);
             var command = new DeletePostCommand
             {
                 PostId = id,
-                DeletedBy = _currentUserService.UserId
+                UserId = userGuid
             };
 
             var result = await Mediator.Send(command);
-            
+
             if (result.Succeeded)
                 return NoContent();
-                
+
             return BadRequest(result.Errors);
         }
     }

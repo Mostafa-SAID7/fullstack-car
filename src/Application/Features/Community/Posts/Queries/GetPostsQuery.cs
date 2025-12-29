@@ -4,16 +4,21 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Domain.Specifications;
+using Application.Common.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Queries
 {
-    public class GetPostsQuery : IRequest<Result<PaginatedList<PostDto>>>
+    public class GetPostsQuery : IRequest<Result<PaginatedList<PostDto>>>, ICacheableRequest
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public Guid? UserId { get; set; }
         public Guid? GroupId { get; set; }
+
+        public string CacheKey => $"GetPosts_{PageNumber}_{PageSize}_{UserId}_{GroupId}";
+        public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
+        public string? CacheTag => "Posts";
     }
 
     public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, Result<PaginatedList<PostDto>>>
