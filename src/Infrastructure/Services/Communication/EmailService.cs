@@ -47,5 +47,19 @@ namespace Infrastructure.Services.Communication
             _logger.LogInformation("Sending bulk email to {Count} recipients with subject {Subject}", recipients.Count(), subject);
             await Task.CompletedTask;
         }
+
+        public async Task SendPasswordResetEmailAsync(string to, string token)
+        {
+             // TODO: Implement actual email sending with link
+            _logger.LogInformation("Sending password reset email to {To} with token {Token}", to, token);
+            await Task.CompletedTask;
+        }
+
+        public async Task SendEmailConfirmationAsync(string to, string token)
+        {
+            // TODO: Implement actual email sending with link
+            _logger.LogInformation("Sending email confirmation to {To} with token {Token}", to, token);
+            await Task.CompletedTask;
+        }
     }
 }

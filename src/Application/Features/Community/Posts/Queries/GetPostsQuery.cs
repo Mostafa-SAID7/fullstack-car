@@ -1,6 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Community.Posts.DTOs;
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
+using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Domain.Specifications;
 using MediatR;

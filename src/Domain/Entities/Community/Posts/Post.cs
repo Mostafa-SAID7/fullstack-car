@@ -1,8 +1,10 @@
 using Domain.Base;
 using Domain.Enums;
 using System.Collections.Generic;
+using Domain.Entities.Identity;
+using Domain.Entities.Community.Groups;
 
-namespace Domain.Entities
+namespace Domain.Entities.Community.Posts
 {
     public class Post : BaseAuditableEntity
     {
@@ -14,11 +16,11 @@ namespace Domain.Entities
         public int ViewsCount { get; set; } = 0;
         public int LikesCount { get; set; } = 0;
         public int CommentsCount { get; set; } = 0;
-        
+
         // Foreign Keys
         public Guid UserId { get; set; }
         public Guid? GroupId { get; set; }
-        
+
         // Navigation Properties
         public virtual User User { get; set; } = null!;
         public virtual Group? Group { get; set; }

@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
 using Domain.Enums;
 
 namespace Domain.Specifications

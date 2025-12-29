@@ -1,4 +1,5 @@
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
+using Domain.Entities.Identity;
 using Domain.Enums;
 
 namespace Domain.Policies

@@ -1,7 +1,7 @@
 using Domain.Base;
 using Domain.Enums;
 
-namespace Domain.Entities
+namespace Domain.Entities.Identity
 {
     public class UserFriend : BaseEntity
     {

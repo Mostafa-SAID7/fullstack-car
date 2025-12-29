@@ -1,5 +1,5 @@
 using Application.Common.Models;
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
 using Domain.Interfaces;
 using MediatR;
 
@@ -31,7 +31,7 @@ namespace Application.Features.Community.Posts.Commands
 
             // Note: You might want to add a IsFeatured property to the Post entity
             // For now, we'll assume this functionality exists or will be added
-            
+
             await _postRepository.UpdateAsync(post, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

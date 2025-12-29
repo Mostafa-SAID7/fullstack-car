@@ -1,4 +1,5 @@
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
+using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,11 +10,11 @@ namespace Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Post> builder)
         {
             builder.HasKey(p => p.Id);
-            
+
             builder.Property(p => p.Title)
                 .IsRequired()
                 .HasMaxLength(200);
-                
+
             builder.Property(p => p.Content)
                 .IsRequired()
                 .HasMaxLength(5000);

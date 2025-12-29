@@ -1,7 +1,8 @@
 using Domain.Base;
 using Domain.Enums;
+using Domain.Entities.Identity;
 
-namespace Domain.Entities
+namespace Domain.Entities.Community.Groups
 {
     public class GroupMember : BaseEntity
     {
@@ -9,7 +10,7 @@ namespace Domain.Entities
         public Guid GroupId { get; set; }
         public GroupMemberRole Role { get; set; } = GroupMemberRole.Member;
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
-        
+
         // Navigation Properties
         public virtual User User { get; set; } = null!;
         public virtual Group Group { get; set; } = null!;

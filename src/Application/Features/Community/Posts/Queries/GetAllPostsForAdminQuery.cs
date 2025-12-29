@@ -1,6 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Community.Posts.DTOs;
-using Domain.Entities;
+using Domain.Entities.Community.Posts;
+using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
 
@@ -27,11 +28,11 @@ namespace Application.Features.Community.Posts.Queries
         {
             // For admin, we want to see ALL posts regardless of status
             var skip = (request.PageNumber - 1) * request.PageSize;
-            
+
             // This would need a proper specification implementation
             // For now, we'll use a simple approach
             var posts = await _postRepository.GetAllAsync(cancellationToken);
-            
+
             // Apply filters
             if (!string.IsNullOrEmpty(request.Status))
             {

@@ -1,4 +1,7 @@
-using Domain.Entities;
+using Domain.Entities.Identity;
+using Domain.Entities.Community.Posts;
+using Domain.Entities.Community.Groups;
+using Domain.Entities.Community.Reviews;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces.Data

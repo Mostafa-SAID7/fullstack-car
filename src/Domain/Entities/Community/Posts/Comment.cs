@@ -1,19 +1,20 @@
 using Domain.Base;
 using System.Collections.Generic;
+using Domain.Entities.Identity;
 
-namespace Domain.Entities
+namespace Domain.Entities.Community.Posts
 {
     public class Comment : BaseAuditableEntity
     {
         public string Content { get; set; } = string.Empty;
         public int LikesCount { get; set; } = 0;
         public int RepliesCount { get; set; } = 0;
-        
+
         // Foreign Keys
         public Guid UserId { get; set; }
         public Guid PostId { get; set; }
         public Guid? ParentCommentId { get; set; }
-        
+
         // Navigation Properties
         public virtual User User { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
