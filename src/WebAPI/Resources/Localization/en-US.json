@@ -1,0 +1,79 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "posts": "Posts",
+    "groups": "Groups",
+    "reviews": "Reviews",
+    "friends": "Friends",
+    "profile": "Profile",
+    "settings": "Settings",
+    "admin": "Admin",
+    "aiAgent": "AI Assistant"
+  },
+  "posts": {
+    "create": "Create Post",
+    "title": "Title",
+    "content": "Content",
+    "publish": "Publish",
+    "draft": "Save as Draft",
+    "like": "Like",
+    "unlike": "Unlike",
+    "comment": "Comment",
+    "share": "Share",
+    "report": "Report"
+  },
+  "groups": {
+    "create": "Create Group",
+    "join": "Join Group",
+    "leave": "Leave Group",
+    "members": "Members",
+    "description": "Description",
+    "privacy": "Privacy",
+    "public": "Public",
+    "private": "Private"
+  },
+  "ai": {
+    "chat": "Chat with AI",
+    "recommendations": "Car Recommendations",
+    "maintenance": "Maintenance Advice",
+    "analysis": "Market Analysis",
+    "askQuestion": "Ask a question about cars..."
+  },
+  "car": {
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "mileage": "Mileage",
+    "condition": "Condition",
+    "price": "Price",
+    "fuel": "Fuel Type",
+    "transmission": "Transmission"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "content": "Content",
+    "reports": "Reports",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  }
+}

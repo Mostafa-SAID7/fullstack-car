@@ -1,0 +1,79 @@
+{
+  "common": {
+    "welcome": "أهلاً وسهلاً",
+    "login": "دخول",
+    "logout": "خروج",
+    "register": "تسجيل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "مسح",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "دور",
+    "loading": "بيحمل...",
+    "error": "غلط",
+    "success": "تمام",
+    "yes": "أيوة",
+    "no": "لأ",
+    "ok": "ماشي",
+    "close": "قفل"
+  },
+  "navigation": {
+    "home": "البيت",
+    "posts": "البوستات",
+    "groups": "الجروبات",
+    "reviews": "التقييمات",
+    "friends": "الأصحاب",
+    "profile": "البروفايل",
+    "settings": "الإعدادات",
+    "admin": "الإدارة",
+    "aiAgent": "الذكي"
+  },
+  "posts": {
+    "create": "اعمل بوست",
+    "title": "العنوان",
+    "content": "الكلام",
+    "publish": "انشر",
+    "draft": "احفظ مسودة",
+    "like": "عجبني",
+    "unlike": "مش عاجبني",
+    "comment": "علق",
+    "share": "شارك",
+    "report": "بلغ"
+  },
+  "groups": {
+    "create": "اعمل جروب",
+    "join": "ادخل الجروب",
+    "leave": "اطلع من الجروب",
+    "members": "الأعضاء",
+    "description": "الوصف",
+    "privacy": "الخصوصية",
+    "public": "عام",
+    "private": "خاص"
+  },
+  "ai": {
+    "chat": "كلم الذكي",
+    "recommendations": "ترشيحات العربيات",
+    "maintenance": "نصايح الصيانة",
+    "analysis": "تحليل السوق",
+    "askQuestion": "اسأل عن العربيات..."
+  },
+  "car": {
+    "make": "الماركة",
+    "model": "الموديل",
+    "year": "السنة",
+    "mileage": "الكيلو",
+    "condition": "الحالة",
+    "price": "السعر",
+    "fuel": "نوع البنزين",
+    "transmission": "الفتيس"
+  },
+  "admin": {
+    "dashboard": "لوحة التحكم",
+    "users": "اليوزرز",
+    "content": "المحتوى",
+    "reports": "التقارير",
+    "analytics": "الإحصائيات",
+    "settings": "الإعدادات"
+  }
+}

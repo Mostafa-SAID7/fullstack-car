@@ -6,6 +6,8 @@ namespace Application.Common.Models
         public int PageNumber { get; }
         public int TotalPages { get; }
         public int TotalCount { get; }
+        public bool HasPreviousPage => PageNumber > 1;
+        public bool HasNextPage => PageNumber < TotalPages;
 
         public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
         {
@@ -15,10 +17,7 @@ namespace Application.Common.Models
             Items = items;
         }
 
-        public bool HasPreviousPage => PageNumber > 1;
-        public bool HasNextPage => PageNumber < TotalPages;
-
-        public static PaginatedList<T> Create(IEnumerable<T> source, int pageNumber, int pageSize)
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
             var count = source.Count();
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();

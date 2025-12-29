@@ -1,0 +1,79 @@
+{
+  "common": {
+    "welcome": "مرحباً وأهلاً",
+    "login": "دخول",
+    "logout": "خروج",
+    "register": "تسجيل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث",
+    "loading": "يحمل...",
+    "error": "خطأ",
+    "success": "تم بنجاح",
+    "yes": "إي",
+    "no": "لا",
+    "ok": "ماشي",
+    "close": "سكر"
+  },
+  "navigation": {
+    "home": "الصفحة الرئيسية",
+    "posts": "المنشورات",
+    "groups": "المجموعات",
+    "reviews": "المراجعات",
+    "friends": "الأصدقاء",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "admin": "الإدارة",
+    "aiAgent": "المساعد الذكي"
+  },
+  "posts": {
+    "create": "إنشاء منشور",
+    "title": "العنوان",
+    "content": "المحتوى",
+    "publish": "نشر",
+    "draft": "حفظ كمسودة",
+    "like": "إعجاب",
+    "unlike": "إلغاء الإعجاب",
+    "comment": "تعليق",
+    "share": "مشاركة",
+    "report": "بلاغ"
+  },
+  "groups": {
+    "create": "إنشاء مجموعة",
+    "join": "انضمام للمجموعة",
+    "leave": "مغادرة المجموعة",
+    "members": "الأعضاء",
+    "description": "الوصف",
+    "privacy": "الخصوصية",
+    "public": "عامة",
+    "private": "خاصة"
+  },
+  "ai": {
+    "chat": "محادثة مع المساعد الذكي",
+    "recommendations": "توصيات السيارات",
+    "maintenance": "نصائح الصيانة",
+    "analysis": "تحليل السوق",
+    "askQuestion": "اسأل عن السيارات..."
+  },
+  "car": {
+    "make": "الصانع",
+    "model": "الطراز",
+    "year": "سنة الصنع",
+    "mileage": "المسافة المقطوعة",
+    "condition": "حالة السيارة",
+    "price": "السعر",
+    "fuel": "نوع الوقود",
+    "transmission": "ناقل الحركة"
+  },
+  "admin": {
+    "dashboard": "لوحة المراقبة",
+    "users": "المستخدمون",
+    "content": "المحتوى",
+    "reports": "التقارير",
+    "analytics": "التحليلات",
+    "settings": "الإعدادات"
+  }
+}

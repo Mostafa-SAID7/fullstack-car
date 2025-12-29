@@ -1,105 +1,75 @@
-using Application.Common.Behaviors;
-using Application.Common.Interfaces;
-using Domain.Interfaces;
-using FluentValidation;
-using Infrastructure.Data;
-using Infrastructure.Identity;
-using Infrastructure.Repositories;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using System.Text;
-using WebAPI.Filters;
-using WebAPI.Services;
 
 namespace WebAPI.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            
-            return services;
-        }
-
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]!);
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddApiServices(this IServiceCollection services)
-        {
-            services.AddControllers(options =>
-            {
-                options.Filters.Add<ApiExceptionFilterAttribute>();
-            });
-
+            // Add CORS
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
+                options.AddPolicy("AllowAngularApp", policy =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
+            });
+
+            // Add JWT Authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["JwtSettings:Issuer"],
+                        ValidAudience = configuration["JwtSettings:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!))
+                    };
+                });
+
+            // Add Authorization
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole("Admin"));
+                
+                options.AddPolicy("ModeratorOrAdmin", policy =>
+                    policy.RequireRole("Admin", "Moderator"));
+            });
+
+            // Add HttpClient for AI Agent
+            services.AddHttpClient<AIAgentController>(client =>
+            {
+                var aiServiceUrl = configuration["AIAgent:PythonServiceUrl"];
+                if (!string.IsNullOrEmpty(aiServiceUrl))
+                {
+                    client.BaseAddress = new Uri(aiServiceUrl);
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                }
+            });
+
+            // Add SignalR for real-time features
+            services.AddSignalR();
+
+            // Add API versioning
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ApiVersionReader = Microsoft.AspNetCore.Mvc.ApiVersionReader.Combine(
+                    new Microsoft.AspNetCore.Mvc.QueryStringApiVersionReader("version"),
+                    new Microsoft.AspNetCore.Mvc.HeaderApiVersionReader("X-Version")
+                );
             });
 
             return services;
@@ -107,32 +77,34 @@ namespace WebAPI.Extensions
 
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Title = "Community Car API",
                     Version = "v1",
-                    Description = "API for Community Car Social Platform"
+                    Description = "API for Community Car platform with AI-powered features"
                 });
 
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                // Add JWT authentication to Swagger
+                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme",
                     Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecurityScheme
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
                             {
-                                Type = ReferenceType.SecurityScheme,
+                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
                         },

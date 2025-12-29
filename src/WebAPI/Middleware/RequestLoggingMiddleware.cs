@@ -16,11 +16,15 @@ namespace WebAPI.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             var stopwatch = Stopwatch.StartNew();
-            
-            _logger.LogInformation("Request started: {Method} {Path} {QueryString}",
+            var requestId = Guid.NewGuid().ToString();
+
+            // Log request
+            _logger.LogInformation(
+                "Request {RequestId}: {Method} {Path} started",
+                requestId,
                 context.Request.Method,
-                context.Request.Path,
-                context.Request.QueryString);
+                context.Request.Path
+            );
 
             try
             {
@@ -29,12 +33,16 @@ namespace WebAPI.Middleware
             finally
             {
                 stopwatch.Stop();
-                
-                _logger.LogInformation("Request completed: {Method} {Path} {StatusCode} in {ElapsedMilliseconds}ms",
+
+                // Log response
+                _logger.LogInformation(
+                    "Request {RequestId}: {Method} {Path} completed in {ElapsedMs}ms with status {StatusCode}",
+                    requestId,
                     context.Request.Method,
                     context.Request.Path,
-                    context.Response.StatusCode,
-                    stopwatch.ElapsedMilliseconds);
+                    stopwatch.ElapsedMilliseconds,
+                    context.Response.StatusCode
+                );
             }
         }
     }
