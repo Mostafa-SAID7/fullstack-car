@@ -1,0 +1,41 @@
+{
+  "posts": {
+    "title": "المنشورات",
+    "create": "إنشاء منشور",
+    "edit": "تعديل المنشور",
+    "delete": "حذف المنشور",
+    "publish": "نشر",
+    "draft": "حفظ كمسودة",
+    "preview": "معاينة",
+    "postTitle": "عنوان المنشور",
+    "postContent": "محتوى المنشور",
+    "tags": "العلامات",
+    "category": "الفئة",
+    "visibility": "الرؤية",
+    "public": "عام",
+    "private": "خاص",
+    "friends": "الأصدقاء فقط"
+  },
+  "interactions": {
+    "like": "إعجاب",
+    "unlike": "إلغاء الإعجاب",
+    "comment": "تعليق",
+    "share": "مشاركة",
+    "report": "إبلاغ",
+    "bookmark": "إشارة مرجعية",
+    "unbookmark": "إزالة الإشارة المرجعية",
+    "likeCount": "الإعجابات",
+    "commentCount": "التعليقات",
+    "shareCount": "المشاركات"
+  },
+  "comments": {
+    "addComment": "إضافة تعليق",
+    "editComment": "تعديل التعليق",
+    "deleteComment": "حذف التعليق",
+    "replyToComment": "رد",
+    "showReplies": "إظهار الردود",
+    "hideReplies": "إخفاء الردود",
+    "commentPlaceholder": "اكتب تعليقاً...",
+    "noComments": "لا توجد تعليقات بعد"
+  }
+}

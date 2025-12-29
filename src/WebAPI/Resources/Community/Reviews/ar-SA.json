@@ -1,0 +1,45 @@
+{
+  "reviews": {
+    "title": "المراجعات",
+    "writeReview": "كتابة مراجعة",
+    "editReview": "تعديل المراجعة",
+    "deleteReview": "حذف المراجعة",
+    "viewReviews": "عرض المراجعات",
+    "myReviews": "مراجعاتي",
+    "rating": "التقييم",
+    "comment": "التعليق",
+    "reviewTitle": "عنوان المراجعة",
+    "reviewContent": "محتوى المراجعة",
+    "submitReview": "إرسال المراجعة",
+    "updateReview": "تحديث المراجعة",
+    "helpful": "مفيد",
+    "notHelpful": "غير مفيد",
+    "reportReview": "الإبلاغ عن المراجعة",
+    "verifiedPurchase": "شراء موثق",
+    "reviewDate": "تاريخ المراجعة",
+    "reviewerName": "اسم المراجع"
+  },
+  "ratings": {
+    "overall": "التقييم العام",
+    "averageRating": "متوسط التقييم",
+    "totalReviews": "إجمالي المراجعات",
+    "fiveStars": "5 نجوم",
+    "fourStars": "4 نجوم",
+    "threeStars": "3 نجوم",
+    "twoStars": "نجمتان",
+    "oneStar": "نجمة واحدة",
+    "ratingBreakdown": "تفصيل التقييمات",
+    "rateThis": "قيم هذا",
+    "yourRating": "تقييمك"
+  },
+  "filters": {
+    "allReviews": "جميع المراجعات",
+    "mostRecent": "الأحدث",
+    "mostHelpful": "الأكثر فائدة",
+    "highestRated": "الأعلى تقييماً",
+    "lowestRated": "الأقل تقييماً",
+    "verifiedOnly": "الموثقة فقط",
+    "withPhotos": "مع الصور",
+    "filterByRating": "تصفية حسب التقييم"
+  }
+}

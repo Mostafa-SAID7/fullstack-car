@@ -1,0 +1,40 @@
+{
+  "groups": {
+    "title": "Groups",
+    "create": "Create Group",
+    "edit": "Edit Group",
+    "delete": "Delete Group",
+    "join": "Join Group",
+    "leave": "Leave Group",
+    "invite": "Invite Members",
+    "groupName": "Group Name",
+    "groupDescription": "Group Description",
+    "groupRules": "Group Rules",
+    "privacy": "Privacy Settings",
+    "public": "Public Group",
+    "private": "Private Group",
+    "secret": "Secret Group"
+  },
+  "members": {
+    "title": "Members",
+    "admins": "Administrators",
+    "moderators": "Moderators",
+    "members": "Members",
+    "pending": "Pending Requests",
+    "invite": "Invite",
+    "remove": "Remove",
+    "promote": "Promote to Admin",
+    "demote": "Remove Admin",
+    "ban": "Ban Member",
+    "unban": "Unban Member",
+    "memberCount": "Member Count"
+  },
+  "activities": {
+    "recentPosts": "Recent Posts",
+    "events": "Events",
+    "discussions": "Discussions",
+    "announcements": "Announcements",
+    "files": "Shared Files",
+    "photos": "Photos"
+  }
+}

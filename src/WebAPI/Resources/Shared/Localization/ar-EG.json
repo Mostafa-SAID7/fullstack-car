@@ -1,0 +1,50 @@
+{
+  "localization": {
+    "title": "التوطين",
+    "language": "اللغة",
+    "languages": "اللغات",
+    "selectLanguage": "اختيار اللغة",
+    "changeLanguage": "تغيير اللغة",
+    "currentLanguage": "اللغة الحالية",
+    "defaultLanguage": "اللغة الافتراضية",
+    "supportedLanguages": "اللغات المدعومة",
+    "languageSettings": "إعدادات اللغة",
+    "autoDetect": "الكشف التلقائي عن اللغة",
+    "browserLanguage": "لغة المتصفح",
+    "userPreference": "تفضيل المستخدم",
+    "systemLanguage": "لغة النظام"
+  },
+  "translation": {
+    "title": "الترجمة",
+    "translate": "ترجمة",
+    "translation": "الترجمة",
+    "originalText": "النص الأصلي",
+    "translatedText": "النص المترجم",
+    "sourceLanguage": "اللغة المصدر",
+    "targetLanguage": "اللغة الهدف",
+    "autoTranslate": "الترجمة التلقائية",
+    "manualTranslation": "الترجمة اليدوية",
+    "translationQuality": "جودة الترجمة",
+    "improveTranslation": "تحسين الترجمة",
+    "reportTranslation": "الإبلاغ عن مشكلة في الترجمة"
+  },
+  "resources": {
+    "title": "موارد اللغة",
+    "loadResources": "تحميل الموارد",
+    "resourcesLoaded": "تم تحميل الموارد",
+    "resourcesError": "خطأ في تحميل الموارد",
+    "missingTranslation": "ترجمة مفقودة",
+    "fallbackLanguage": "اللغة الاحتياطية",
+    "resourceCache": "ذاكرة التخزين المؤقت للموارد",
+    "clearCache": "مسح ذاكرة التخزين المؤقت",
+    "refreshResources": "تحديث الموارد"
+  },
+  "validation": {
+    "languageRequired": "اللغة مطلوبة",
+    "unsupportedLanguage": "لغة غير مدعومة",
+    "translationMissing": "ترجمة مفقودة للمفتاح",
+    "invalidLanguageCode": "رمز لغة غير صحيح",
+    "resourceNotFound": "المورد غير موجود",
+    "loadingFailed": "فشل في تحميل موارد اللغة"
+  }
+}

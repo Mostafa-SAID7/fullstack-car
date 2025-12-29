@@ -1,0 +1,49 @@
+{
+  "files": {
+    "title": "إدارة الملفات",
+    "upload": "رفع ملف",
+    "download": "تحميل ملف",
+    "delete": "حذف ملف",
+    "rename": "إعادة تسمية الملف",
+    "move": "نقل الملف",
+    "copy": "نسخ الملف",
+    "share": "مشاركة الملف",
+    "preview": "معاينة الملف",
+    "properties": "خصائص الملف",
+    "permissions": "صلاحيات الملف",
+    "history": "تاريخ الملف",
+    "versions": "إصدارات الملف",
+    "restore": "استعادة الإصدار"
+  },
+  "upload": {
+    "selectFiles": "اختيار الملفات",
+    "dragAndDrop": "اسحب وأفلت الملفات هنا",
+    "browseFiles": "تصفح الملفات",
+    "uploadProgress": "تقدم الرفع",
+    "uploadComplete": "اكتمل الرفع",
+    "uploadFailed": "فشل الرفع",
+    "maxFileSize": "الحد الأقصى لحجم الملف",
+    "allowedTypes": "أنواع الملفات المسموحة",
+    "multipleFiles": "ملفات متعددة مسموحة",
+    "singleFile": "ملف واحد فقط"
+  },
+  "storage": {
+    "totalSpace": "المساحة الإجمالية",
+    "usedSpace": "المساحة المستخدمة",
+    "freeSpace": "المساحة الحرة",
+    "storageQuota": "حصة التخزين",
+    "upgradeStorage": "ترقية التخزين",
+    "manageStorage": "إدارة التخزين",
+    "storageWarning": "التخزين ممتلئ تقريباً",
+    "storageExceeded": "تم تجاوز حصة التخزين"
+  },
+  "validation": {
+    "fileRequired": "يرجى اختيار ملف",
+    "fileTooLarge": "حجم الملف يتجاوز الحد الأقصى",
+    "invalidFileType": "نوع ملف غير صحيح",
+    "fileExists": "الملف موجود بالفعل",
+    "uploadError": "خطأ في رفع الملف",
+    "downloadError": "خطأ في تحميل الملف",
+    "deleteError": "خطأ في حذف الملف"
+  }
+}

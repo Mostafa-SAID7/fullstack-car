@@ -1,0 +1,45 @@
+{
+  "reviews": {
+    "title": "Reviews",
+    "writeReview": "Write a Review",
+    "editReview": "Edit Review",
+    "deleteReview": "Delete Review",
+    "viewReviews": "View Reviews",
+    "myReviews": "My Reviews",
+    "rating": "Rating",
+    "comment": "Comment",
+    "reviewTitle": "Review Title",
+    "reviewContent": "Review Content",
+    "submitReview": "Submit Review",
+    "updateReview": "Update Review",
+    "helpful": "Helpful",
+    "notHelpful": "Not Helpful",
+    "reportReview": "Report Review",
+    "verifiedPurchase": "Verified Purchase",
+    "reviewDate": "Review Date",
+    "reviewerName": "Reviewer Name"
+  },
+  "ratings": {
+    "overall": "Overall Rating",
+    "averageRating": "Average Rating",
+    "totalReviews": "Total Reviews",
+    "fiveStars": "5 Stars",
+    "fourStars": "4 Stars",
+    "threeStars": "3 Stars",
+    "twoStars": "2 Stars",
+    "oneStar": "1 Star",
+    "ratingBreakdown": "Rating Breakdown",
+    "rateThis": "Rate This",
+    "yourRating": "Your Rating"
+  },
+  "filters": {
+    "allReviews": "All Reviews",
+    "mostRecent": "Most Recent",
+    "mostHelpful": "Most Helpful",
+    "highestRated": "Highest Rated",
+    "lowestRated": "Lowest Rated",
+    "verifiedOnly": "Verified Only",
+    "withPhotos": "With Photos",
+    "filterByRating": "Filter by Rating"
+  }
+}

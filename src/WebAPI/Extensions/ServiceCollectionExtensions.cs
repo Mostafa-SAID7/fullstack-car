@@ -1,3 +1,4 @@
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -6,18 +7,28 @@ namespace WebAPI.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddWebAPIServices(
+            this IServiceCollection services, 
+            IConfiguration configuration)
         {
+            // Add Infrastructure Services
+            services.AddInfrastructureServices(configuration);
+
+            // Add HttpContextAccessor for CurrentUserService
+            services.AddHttpContextAccessor();
+
             // Add CORS
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAngularApp", policy =>
-                {
-                    policy.WithOrigins("http://localhost:4200")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                });
+                options.AddPolicy(
+                    "AllowAngularApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials();
+                    });
             });
 
             // Add JWT Authentication
@@ -43,8 +54,9 @@ namespace WebAPI.Extensions
                 options.AddPolicy("AdminOnly", policy =>
                     policy.RequireRole("Admin"));
                 
-                options.AddPolicy("ModeratorOrAdmin", policy =>
-                    policy.RequireRole("Admin", "Moderator"));
+                options.AddPolicy(
+                    "ModeratorOrAdmin",
+                    policy => policy.RequireRole("Admin", "Moderator"));
             });
 
             // Add HttpClient for external services
@@ -56,50 +68,47 @@ namespace WebAPI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
-        {
-            // Add Infrastructure services
-            services.AddScoped<Application.Common.Interfaces.ILocalizationService, Infrastructure.Services.LocalizationService>();
-
-            return services;
-        }
-
         public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-                {
-                    Title = "Community Car API",
-                    Version = "v1",
-                    Description = "API for Community Car platform with AI-powered features"
-                });
+                options.SwaggerDoc(
+                    "v1",
+                    new Microsoft.OpenApi.Models.OpenApiInfo
+                    {
+                        Title = "Community Car API",
+                        Version = "v1",
+                        Description = "API for Community Car platform with AI-powered features",
+                    });
 
                 // Add JWT authentication to Swagger
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme",
-                    Name = "Authorization",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-                {
+                options.AddSecurityDefinition(
+                    "Bearer",
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        Description = "JWT Authorization header using the Bearer scheme",
+                        Name = "Authorization",
+                        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer",
+                    });
+
+                options.AddSecurityRequirement(
+                    new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                    {
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                             {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
+                                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                                {
+                                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                    Id = "Bearer",
+                                }
+                            },
+                            Array.Empty<string>()
                         },
-                        Array.Empty<string>()
-                    }
-                });
+                    });
             });
 
             return services;

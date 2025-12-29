@@ -1,0 +1,40 @@
+{
+  "friends": {
+    "title": "Friends",
+    "friendsList": "Friends List",
+    "friendRequests": "Friend Requests",
+    "sentRequests": "Sent Requests",
+    "suggestions": "Friend Suggestions",
+    "mutualFriends": "Mutual Friends",
+    "addFriend": "Add Friend",
+    "removeFriend": "Remove Friend",
+    "acceptRequest": "Accept Request",
+    "declineRequest": "Decline Request",
+    "cancelRequest": "Cancel Request",
+    "blockUser": "Block User",
+    "unblockUser": "Unblock User",
+    "reportUser": "Report User"
+  },
+  "messaging": {
+    "messages": "Messages",
+    "newMessage": "New Message",
+    "sendMessage": "Send Message",
+    "messageHistory": "Message History",
+    "onlineStatus": "Online Status",
+    "lastSeen": "Last Seen",
+    "typing": "Typing...",
+    "delivered": "Delivered",
+    "read": "Read"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "friendRequest": "Friend Request",
+    "messageReceived": "New Message",
+    "postLiked": "Post Liked",
+    "postCommented": "Post Commented",
+    "groupInvite": "Group Invitation",
+    "markAsRead": "Mark as Read",
+    "markAllAsRead": "Mark All as Read",
+    "clearAll": "Clear All"
+  }
+}

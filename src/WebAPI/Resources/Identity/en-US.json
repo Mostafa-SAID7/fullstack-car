@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "title": "Authentication",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "changePassword": "Change Password",
+    "confirmEmail": "Confirm Email",
+    "resendConfirmation": "Resend Confirmation",
+    "twoFactorAuth": "Two-Factor Authentication",
+    "enableTwoFactor": "Enable Two-Factor Authentication",
+    "disableTwoFactor": "Disable Two-Factor Authentication",
+    "verifyCode": "Verify Code",
+    "backupCodes": "Backup Codes",
+    "generateBackupCodes": "Generate Backup Codes"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "preferences": "Preferences",
+    "privacy": "Privacy Settings",
+    "security": "Security Settings",
+    "notifications": "Notification Settings",
+    "updateProfile": "Update Profile",
+    "deleteAccount": "Delete Account",
+    "accountVerification": "Account Verification"
+  },
+  "validation": {
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Account is locked. Please try again later",
+    "emailNotConfirmed": "Please confirm your email address",
+    "passwordMismatch": "Passwords do not match",
+    "weakPassword": "Password is too weak",
+    "emailAlreadyExists": "Email address is already registered",
+    "invalidToken": "Invalid or expired token",
+    "twoFactorRequired": "Two-factor authentication is required"
+  }
+}

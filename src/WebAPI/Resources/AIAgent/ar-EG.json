@@ -1,0 +1,43 @@
+{
+  "aiAgent": {
+    "title": "الوكيل الذكي",
+    "chat": "محادثة مع الذكاء الاصطناعي",
+    "conversation": "المحادثة",
+    "newConversation": "محادثة جديدة",
+    "conversationHistory": "تاريخ المحادثات",
+    "clearHistory": "مسح التاريخ",
+    "exportConversation": "تصدير المحادثة",
+    "settings": "إعدادات الذكاء الاصطناعي",
+    "model": "نموذج الذكاء الاصطناعي",
+    "temperature": "درجة الحرارة",
+    "maxTokens": "الحد الأقصى للرموز",
+    "systemPrompt": "موجه النظام",
+    "userMessage": "رسالتك...",
+    "aiResponse": "رد الذكاء الاصطناعي",
+    "thinking": "الذكاء الاصطناعي يفكر...",
+    "error": "خطأ في الذكاء الاصطناعي",
+    "retry": "إعادة المحاولة",
+    "feedback": "تقديم ملاحظات",
+    "helpful": "مفيد",
+    "notHelpful": "غير مفيد",
+    "reportIssue": "الإبلاغ عن مشكلة"
+  },
+  "features": {
+    "textGeneration": "توليد النصوص",
+    "codeAssistance": "مساعدة البرمجة",
+    "translation": "الترجمة",
+    "summarization": "التلخيص",
+    "questionAnswering": "الإجابة على الأسئلة",
+    "creativeWriting": "الكتابة الإبداعية",
+    "dataAnalysis": "تحليل البيانات",
+    "problemSolving": "حل المشاكل"
+  },
+  "limits": {
+    "dailyLimit": "الحد اليومي للاستخدام",
+    "monthlyLimit": "الحد الشهري للاستخدام",
+    "tokensUsed": "الرموز المستخدمة",
+    "tokensRemaining": "الرموز المتبقية",
+    "upgradeRequired": "الترقية مطلوبة",
+    "limitExceeded": "تم تجاوز حد الاستخدام"
+  }
+}

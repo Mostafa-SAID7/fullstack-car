@@ -1,0 +1,40 @@
+{
+  "friends": {
+    "title": "الأصدقاء",
+    "friendsList": "قائمة الأصدقاء",
+    "friendRequests": "طلبات الصداقة",
+    "sentRequests": "الطلبات المرسلة",
+    "suggestions": "اقتراحات الأصدقاء",
+    "mutualFriends": "الأصدقاء المشتركون",
+    "addFriend": "إضافة صديق",
+    "removeFriend": "إزالة صديق",
+    "acceptRequest": "قبول الطلب",
+    "declineRequest": "رفض الطلب",
+    "cancelRequest": "إلغاء الطلب",
+    "blockUser": "حظر المستخدم",
+    "unblockUser": "إلغاء حظر المستخدم",
+    "reportUser": "الإبلاغ عن المستخدم"
+  },
+  "messaging": {
+    "messages": "الرسائل",
+    "newMessage": "رسالة جديدة",
+    "sendMessage": "إرسال رسالة",
+    "messageHistory": "تاريخ الرسائل",
+    "onlineStatus": "حالة الاتصال",
+    "lastSeen": "آخر ظهور",
+    "typing": "يكتب...",
+    "delivered": "تم التسليم",
+    "read": "تم القراءة"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "friendRequest": "طلب صداقة",
+    "messageReceived": "رسالة جديدة",
+    "postLiked": "إعجاب بالمنشور",
+    "postCommented": "تعليق على المنشور",
+    "groupInvite": "دعوة للمجموعة",
+    "markAsRead": "تحديد كمقروء",
+    "markAllAsRead": "تحديد الكل كمقروء",
+    "clearAll": "مسح الكل"
+  }
+}

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Localization;
 
 namespace WebAPI.Controllers.Shared.Localization
 {

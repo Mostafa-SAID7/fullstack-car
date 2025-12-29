@@ -1,0 +1,30 @@
+{
+  "posts": {
+    "title": "Post Moderation",
+    "pending": "Pending Posts",
+    "flagged": "Flagged Posts",
+    "approved": "Approved Posts",
+    "rejected": "Rejected Posts",
+    "approve": "Approve",
+    "reject": "Reject",
+    "flag": "Flag",
+    "unflag": "Unflag",
+    "viewDetails": "View Details",
+    "moderationHistory": "Moderation History",
+    "reportReason": "Report Reason",
+    "moderatorNotes": "Moderator Notes",
+    "actionTaken": "Action Taken",
+    "actionDate": "Action Date"
+  },
+  "content": {
+    "title": "Content Moderation",
+    "reports": "Content Reports",
+    "violations": "Policy Violations",
+    "warnings": "User Warnings",
+    "suspensions": "Account Suspensions",
+    "appeals": "Appeals",
+    "reviewAppeal": "Review Appeal",
+    "approveAppeal": "Approve Appeal",
+    "rejectAppeal": "Reject Appeal"
+  }
+}

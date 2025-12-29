@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "title": "المصادقة",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "التسجيل",
+    "forgotPassword": "نسيت كلمة المرور",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "changePassword": "تغيير كلمة المرور",
+    "confirmEmail": "تأكيد البريد الإلكتروني",
+    "resendConfirmation": "إعادة إرسال التأكيد",
+    "twoFactorAuth": "المصادقة الثنائية",
+    "enableTwoFactor": "تفعيل المصادقة الثنائية",
+    "disableTwoFactor": "إلغاء المصادقة الثنائية",
+    "verifyCode": "التحقق من الرمز",
+    "backupCodes": "رموز النسخ الاحتياطي",
+    "generateBackupCodes": "إنشاء رموز النسخ الاحتياطي"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "personalInfo": "المعلومات الشخصية",
+    "contactInfo": "معلومات الاتصال",
+    "preferences": "التفضيلات",
+    "privacy": "إعدادات الخصوصية",
+    "security": "إعدادات الأمان",
+    "notifications": "إعدادات الإشعارات",
+    "updateProfile": "تحديث الملف الشخصي",
+    "deleteAccount": "حذف الحساب",
+    "accountVerification": "التحقق من الحساب"
+  },
+  "validation": {
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "accountLocked": "الحساب مقفل. يرجى المحاولة مرة أخرى لاحقاً",
+    "emailNotConfirmed": "يرجى تأكيد عنوان البريد الإلكتروني",
+    "passwordMismatch": "كلمات المرور غير متطابقة",
+    "weakPassword": "كلمة المرور ضعيفة جداً",
+    "emailAlreadyExists": "عنوان البريد الإلكتروني مسجل بالفعل",
+    "invalidToken": "رمز غير صحيح أو منتهي الصلاحية",
+    "twoFactorRequired": "المصادقة الثنائية مطلوبة"
+  }
+}

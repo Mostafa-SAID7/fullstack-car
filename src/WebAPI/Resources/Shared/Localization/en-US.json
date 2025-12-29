@@ -1,0 +1,50 @@
+{
+  "localization": {
+    "title": "Localization",
+    "language": "Language",
+    "languages": "Languages",
+    "selectLanguage": "Select Language",
+    "changeLanguage": "Change Language",
+    "currentLanguage": "Current Language",
+    "defaultLanguage": "Default Language",
+    "supportedLanguages": "Supported Languages",
+    "languageSettings": "Language Settings",
+    "autoDetect": "Auto Detect Language",
+    "browserLanguage": "Browser Language",
+    "userPreference": "User Preference",
+    "systemLanguage": "System Language"
+  },
+  "translation": {
+    "title": "Translation",
+    "translate": "Translate",
+    "translation": "Translation",
+    "originalText": "Original Text",
+    "translatedText": "Translated Text",
+    "sourceLanguage": "Source Language",
+    "targetLanguage": "Target Language",
+    "autoTranslate": "Auto Translate",
+    "manualTranslation": "Manual Translation",
+    "translationQuality": "Translation Quality",
+    "improveTranslation": "Improve Translation",
+    "reportTranslation": "Report Translation Issue"
+  },
+  "resources": {
+    "title": "Language Resources",
+    "loadResources": "Load Resources",
+    "resourcesLoaded": "Resources Loaded",
+    "resourcesError": "Error Loading Resources",
+    "missingTranslation": "Missing Translation",
+    "fallbackLanguage": "Fallback Language",
+    "resourceCache": "Resource Cache",
+    "clearCache": "Clear Cache",
+    "refreshResources": "Refresh Resources"
+  },
+  "validation": {
+    "languageRequired": "Language is required",
+    "unsupportedLanguage": "Unsupported language",
+    "translationMissing": "Translation missing for key",
+    "invalidLanguageCode": "Invalid language code",
+    "resourceNotFound": "Resource not found",
+    "loadingFailed": "Failed to load language resources"
+  }
+}

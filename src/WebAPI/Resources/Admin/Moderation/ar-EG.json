@@ -1,0 +1,30 @@
+{
+  "posts": {
+    "title": "إشراف المنشورات",
+    "pending": "المنشورات المعلقة",
+    "flagged": "المنشورات المبلغ عنها",
+    "approved": "المنشورات المعتمدة",
+    "rejected": "المنشورات المرفوضة",
+    "approve": "اعتماد",
+    "reject": "رفض",
+    "flag": "إبلاغ",
+    "unflag": "إلغاء الإبلاغ",
+    "viewDetails": "عرض التفاصيل",
+    "moderationHistory": "تاريخ الإشراف",
+    "reportReason": "سبب الإبلاغ",
+    "moderatorNotes": "ملاحظات المشرف",
+    "actionTaken": "الإجراء المتخذ",
+    "actionDate": "تاريخ الإجراء"
+  },
+  "content": {
+    "title": "إشراف المحتوى",
+    "reports": "تقارير المحتوى",
+    "violations": "انتهاكات السياسة",
+    "warnings": "تحذيرات المستخدمين",
+    "suspensions": "تعليق الحسابات",
+    "appeals": "الاستئنافات",
+    "reviewAppeal": "مراجعة الاستئناف",
+    "approveAppeal": "قبول الاستئناف",
+    "rejectAppeal": "رفض الاستئناف"
+  }
+}

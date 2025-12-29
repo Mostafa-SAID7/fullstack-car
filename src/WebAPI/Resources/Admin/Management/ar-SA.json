@@ -1,0 +1,27 @@
+{
+  "users": {
+    "title": "إدارة المستخدمين",
+    "list": "قائمة المستخدمين",
+    "create": "إنشاء مستخدم",
+    "edit": "تعديل المستخدم",
+    "delete": "حذف المستخدم",
+    "activate": "تفعيل المستخدم",
+    "deactivate": "إلغاء تفعيل المستخدم",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "assignRole": "تعيين دور",
+    "removeRole": "إزالة الدور",
+    "viewProfile": "عرض الملف الشخصي",
+    "userDetails": "تفاصيل المستخدم",
+    "accountStatus": "حالة الحساب",
+    "lastLogin": "آخر تسجيل دخول",
+    "registrationDate": "تاريخ التسجيل",
+    "totalPosts": "إجمالي المنشورات",
+    "totalGroups": "إجمالي المجموعات"
+  },
+  "roles": {
+    "admin": "مدير",
+    "moderator": "مشرف",
+    "user": "مستخدم",
+    "premium": "مستخدم مميز"
+  }
+}

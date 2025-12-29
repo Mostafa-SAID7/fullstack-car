@@ -1,9 +1,9 @@
-using Application.Features.Posts.Commands;
-using Application.Features.Posts.DTOs;
-using Application.Features.Posts.Queries;
+using Application.Features.Community.Posts.Commands;
+using Application.Features.Community.Posts.DTOs;
+using Application.Features.Community.Posts.Queries;
+using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace WebAPI.Controllers.Community.Posts
 {
@@ -11,6 +11,13 @@ namespace WebAPI.Controllers.Community.Posts
     [Route("api/community/posts")]
     public class PostsController : BaseController
     {
+        private readonly ICurrentUserService _currentUserService;
+
+        public PostsController(ICurrentUserService currentUserService)
+        {
+            _currentUserService = currentUserService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetPosts([FromQuery] GetPostsQuery query)
         {
@@ -32,8 +39,12 @@ namespace WebAPI.Controllers.Community.Posts
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostRequest request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
             {
                 return Unauthorized();
             }
@@ -69,8 +80,7 @@ namespace WebAPI.Controllers.Community.Posts
         [HttpPost("{id}/like")]
         public async Task<IActionResult> LikePost(Guid id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -82,8 +92,7 @@ namespace WebAPI.Controllers.Community.Posts
         [HttpDelete("{id}/like")]
         public async Task<IActionResult> UnlikePost(Guid id)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -102,8 +111,7 @@ namespace WebAPI.Controllers.Community.Posts
         [HttpPost("{id}/comments")]
         public async Task<IActionResult> AddComment(Guid id, [FromBody] AddCommentRequest request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -115,8 +123,7 @@ namespace WebAPI.Controllers.Community.Posts
         [HttpPost("{id}/report")]
         public async Task<IActionResult> ReportPost(Guid id, [FromBody] ReportPostRequest request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -124,112 +131,5 @@ namespace WebAPI.Controllers.Community.Posts
             // Implementation for reporting post
             return Ok(new { Message = "Post reported successfully" });
         }
-
-        // Admin functionality integrated into community controller
-        [Authorize(Roles = "Admin,Moderator")]
-        [HttpPut("{id}/approve")]
-        public async Task<IActionResult> ApprovePost(Guid id)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
-            var command = new ApprovePostCommand
-            {
-                PostId = id,
-                ApprovedBy = userId
-            };
-
-            var result = await Mediator.Send(command);
-            
-            if (result.Succeeded)
-                return Ok(new { Message = "Post approved successfully" });
-                
-            return BadRequest(result.Errors);
-        }
-
-        [Authorize(Roles = "Admin,Moderator")]
-        [HttpPut("{id}/reject")]
-        public async Task<IActionResult> RejectPost(Guid id, [FromBody] RejectPostRequest request)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
-            var command = new RejectPostCommand
-            {
-                PostId = id,
-                RejectedBy = userId,
-                RejectionReason = request.Reason
-            };
-
-            var result = await Mediator.Send(command);
-            
-            if (result.Succeeded)
-                return Ok(new { Message = "Post rejected successfully" });
-                
-            return BadRequest(result.Errors);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("pending")]
-        public async Task<IActionResult> GetPendingPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            // Implementation for getting posts pending approval
-            var query = new GetPostsQuery
-            {
-                PageNumber = page,
-                PageSize = pageSize
-                // Add filter for pending status
-            };
-
-            var result = await Mediator.Send(query);
-            
-            if (result.Succeeded)
-                return Ok(result.Data);
-                
-            return BadRequest(result.Errors);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("flagged")]
-        public async Task<IActionResult> GetFlaggedPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            // Implementation for getting flagged posts
-            var query = new GetPostsQuery
-            {
-                PageNumber = page,
-                PageSize = pageSize
-                // Add filter for flagged status
-            };
-
-            var result = await Mediator.Send(query);
-            
-            if (result.Succeeded)
-                return Ok(result.Data);
-                
-            return BadRequest(result.Errors);
-        }
-    }
-
-    public class RejectPostRequest
-    {
-        public string Reason { get; set; } = string.Empty;
-    }
-
-    public class AddCommentRequest
-    {
-        public string Content { get; set; } = string.Empty;
-        public Guid? ParentCommentId { get; set; }
-    }
-
-    public class ReportPostRequest
-    {
-        public string Reason { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
     }
 }

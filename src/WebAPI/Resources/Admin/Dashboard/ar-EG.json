@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "title": "لوحة المراقبة",
+    "overview": "نظرة عامة",
+    "statistics": "الإحصائيات",
+    "recentActivity": "النشاط الأخير",
+    "systemHealth": "صحة النظام",
+    "userCount": "إجمالي المستخدمين",
+    "postCount": "إجمالي المنشورات",
+    "groupCount": "إجمالي المجموعات",
+    "activeUsers": "المستخدمون النشطون",
+    "pendingReviews": "المراجعات المعلقة",
+    "systemStatus": "حالة النظام",
+    "serverLoad": "حمولة الخادم",
+    "databaseStatus": "حالة قاعدة البيانات",
+    "cacheStatus": "حالة التخزين المؤقت",
+    "storageUsage": "استخدام التخزين"
+  }
+}

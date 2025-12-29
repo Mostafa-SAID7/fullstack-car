@@ -1,0 +1,49 @@
+{
+  "files": {
+    "title": "File Management",
+    "upload": "Upload File",
+    "download": "Download File",
+    "delete": "Delete File",
+    "rename": "Rename File",
+    "move": "Move File",
+    "copy": "Copy File",
+    "share": "Share File",
+    "preview": "Preview File",
+    "properties": "File Properties",
+    "permissions": "File Permissions",
+    "history": "File History",
+    "versions": "File Versions",
+    "restore": "Restore Version"
+  },
+  "upload": {
+    "selectFiles": "Select Files",
+    "dragAndDrop": "Drag and drop files here",
+    "browseFiles": "Browse Files",
+    "uploadProgress": "Upload Progress",
+    "uploadComplete": "Upload Complete",
+    "uploadFailed": "Upload Failed",
+    "maxFileSize": "Maximum file size",
+    "allowedTypes": "Allowed file types",
+    "multipleFiles": "Multiple files allowed",
+    "singleFile": "Single file only"
+  },
+  "storage": {
+    "totalSpace": "Total Space",
+    "usedSpace": "Used Space",
+    "freeSpace": "Free Space",
+    "storageQuota": "Storage Quota",
+    "upgradeStorage": "Upgrade Storage",
+    "manageStorage": "Manage Storage",
+    "storageWarning": "Storage almost full",
+    "storageExceeded": "Storage quota exceeded"
+  },
+  "validation": {
+    "fileRequired": "Please select a file",
+    "fileTooLarge": "File size exceeds maximum limit",
+    "invalidFileType": "Invalid file type",
+    "fileExists": "File already exists",
+    "uploadError": "Error uploading file",
+    "downloadError": "Error downloading file",
+    "deleteError": "Error deleting file"
+  }
+}

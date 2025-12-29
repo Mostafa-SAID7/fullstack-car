@@ -1,0 +1,27 @@
+{
+  "users": {
+    "title": "User Management",
+    "list": "User List",
+    "create": "Create User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "activate": "Activate User",
+    "deactivate": "Deactivate User",
+    "resetPassword": "Reset Password",
+    "assignRole": "Assign Role",
+    "removeRole": "Remove Role",
+    "viewProfile": "View Profile",
+    "userDetails": "User Details",
+    "accountStatus": "Account Status",
+    "lastLogin": "Last Login",
+    "registrationDate": "Registration Date",
+    "totalPosts": "Total Posts",
+    "totalGroups": "Total Groups"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "moderator": "Moderator",
+    "user": "User",
+    "premium": "Premium User"
+  }
+}

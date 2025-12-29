@@ -1,18 +1,24 @@
+using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace WebAPI.Controllers.Community.Social
 {
     [Authorize]
-    [Route("api/community/[controller]")]
+    [Route("api/community/social/friends")]
     public class FriendsController : BaseController
     {
+        private readonly ICurrentUserService _currentUserService;
+
+        public FriendsController(ICurrentUserService currentUserService)
+        {
+            _currentUserService = currentUserService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetFriends([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -24,8 +30,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpGet("requests")]
         public async Task<IActionResult> GetFriendRequests([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -37,8 +42,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpPost("request/{friendId}")]
         public async Task<IActionResult> SendFriendRequest(Guid friendId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -50,8 +54,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpPut("request/{requestId}/accept")]
         public async Task<IActionResult> AcceptFriendRequest(Guid requestId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -63,8 +66,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpPut("request/{requestId}/decline")]
         public async Task<IActionResult> DeclineFriendRequest(Guid requestId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -76,8 +78,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpDelete("{friendId}")]
         public async Task<IActionResult> RemoveFriend(Guid friendId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -89,8 +90,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpPost("{friendId}/block")]
         public async Task<IActionResult> BlockUser(Guid friendId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -102,8 +102,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpGet("suggestions")]
         public async Task<IActionResult> GetFriendSuggestions([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
@@ -115,8 +114,7 @@ namespace WebAPI.Controllers.Community.Social
         [HttpGet("mutual/{friendId}")]
         public async Task<IActionResult> GetMutualFriends(Guid friendId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }

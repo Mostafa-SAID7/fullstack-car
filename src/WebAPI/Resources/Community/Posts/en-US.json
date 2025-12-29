@@ -1,0 +1,41 @@
+{
+  "posts": {
+    "title": "Posts",
+    "create": "Create Post",
+    "edit": "Edit Post",
+    "delete": "Delete Post",
+    "publish": "Publish",
+    "draft": "Save as Draft",
+    "preview": "Preview",
+    "postTitle": "Post Title",
+    "postContent": "Post Content",
+    "tags": "Tags",
+    "category": "Category",
+    "visibility": "Visibility",
+    "public": "Public",
+    "private": "Private",
+    "friends": "Friends Only"
+  },
+  "interactions": {
+    "like": "Like",
+    "unlike": "Unlike",
+    "comment": "Comment",
+    "share": "Share",
+    "report": "Report",
+    "bookmark": "Bookmark",
+    "unbookmark": "Remove Bookmark",
+    "likeCount": "Likes",
+    "commentCount": "Comments",
+    "shareCount": "Shares"
+  },
+  "comments": {
+    "addComment": "Add Comment",
+    "editComment": "Edit Comment",
+    "deleteComment": "Delete Comment",
+    "replyToComment": "Reply",
+    "showReplies": "Show Replies",
+    "hideReplies": "Hide Replies",
+    "commentPlaceholder": "Write a comment...",
+    "noComments": "No comments yet"
+  }
+}
