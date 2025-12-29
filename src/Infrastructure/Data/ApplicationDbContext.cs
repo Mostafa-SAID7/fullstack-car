@@ -3,6 +3,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Shared;
+using Domain.Entities.Community.Chat;
 using Domain.Entities.Community.Social;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +31,9 @@ namespace Infrastructure.Data
         public DbSet<PostReport> PostReports { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<ConversationMember> ConversationMembers { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

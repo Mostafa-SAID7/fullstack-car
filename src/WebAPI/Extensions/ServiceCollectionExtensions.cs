@@ -89,6 +89,7 @@ namespace WebAPI.Extensions
 
             // Add Communication Services
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IChatNotificationService, ChatNotificationService>();
 
             return services;
         }
