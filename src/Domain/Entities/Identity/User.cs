@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
+using Domain.Entities.Community.Social;
 
 namespace Domain.Entities.Identity
 {
@@ -34,5 +35,6 @@ namespace Domain.Entities.Identity
         public virtual ICollection<UserFriend> Friends { get; set; } = new List<UserFriend>();
         public virtual ICollection<UserFriend> FriendOf { get; set; } = new List<UserFriend>();
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public virtual ICollection<GroupMember> GroupMemberships { get; set; } = new List<GroupMember>();
     }
 }

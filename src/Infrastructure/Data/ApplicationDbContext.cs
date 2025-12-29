@@ -2,6 +2,7 @@ using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
+using Domain.Entities.Community.Social;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Infrastructure.Data
         public DbSet<UserFriend> UserFriends { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

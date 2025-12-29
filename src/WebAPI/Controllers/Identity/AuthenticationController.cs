@@ -2,6 +2,8 @@ using Application.Features.Identity.Commands;
 using Application.Features.Identity.DTOs.Requests;
 using Application.Features.Identity.DTOs.Responses;
 using Application.Common.Models;
+using Application.Common.Interfaces.Localization;
+using Application.Common.Constants;
 using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +17,25 @@ namespace WebAPI.Controllers.Identity
     public class AuthenticationController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
+        private readonly ILocalizationProvider _localizationProvider;
+        private readonly ILanguageDetector _languageDetector;
 
         public AuthenticationController(
-            ICurrentUserService currentUserService)
+            ICurrentUserService currentUserService,
+            ILocalizationProvider localizationProvider,
+            ILanguageDetector languageDetector)
         {
             _currentUserService = currentUserService;
+            _localizationProvider = localizationProvider;
+            _languageDetector = languageDetector;
+        }
+
+        private async Task<string> T(string key)
+        {
+            var acceptLanguage = Request.Headers["Accept-Language"].ToString() ?? "en-US";
+            var userAgent = Request.Headers["User-Agent"].ToString() ?? "";
+            var language = await _languageDetector.DetectLanguageAsync(acceptLanguage, userAgent);
+            return await _localizationProvider.GetTranslationAsync(language, key);
         }
 
         [HttpPost("register")]
@@ -117,7 +133,7 @@ namespace WebAPI.Controllers.Identity
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
-                return Ok(new ApiResponse { Message = "Logout successful", Success = true });
+                return Ok(new ApiResponse { Message = await T(LocalizationKeys.Identity.Auth.LogoutSuccess), Success = true });
 
             return BadRequest(result.Errors);
         }

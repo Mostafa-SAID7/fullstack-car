@@ -2,7 +2,7 @@ using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations
+namespace Infrastructure.Configurations.Identity
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
@@ -12,11 +12,11 @@ namespace Infrastructure.Configurations
 
             builder.Property(u => u.FirstName)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(u => u.LastName)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(u => u.Email)
                 .IsRequired()
@@ -28,18 +28,21 @@ namespace Infrastructure.Configurations
             builder.Property(u => u.PhoneNumber)
                 .HasMaxLength(20);
 
-            builder.Property(u => u.Bio)
+            builder.Property(u => u.ProfileImageUrl)
                 .HasMaxLength(500);
 
-            builder.HasMany(u => u.Posts)
-                .WithOne(p => p.User)
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(u => u.Bio)
+                .HasMaxLength(1000);
 
-            builder.HasMany(u => u.Reviews)
-                .WithOne(r => r.User)
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(u => u.Status)
+                .IsRequired()
+                .HasConversion<string>();
+
+            builder.Property(u => u.EmailVerificationToken)
+                .HasMaxLength(500);
+
+            builder.Property(u => u.PasswordResetToken)
+                .HasMaxLength(500);
         }
     }
 }

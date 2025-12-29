@@ -2,6 +2,7 @@ using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
+using Domain.Entities.Community.Social;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces.Data

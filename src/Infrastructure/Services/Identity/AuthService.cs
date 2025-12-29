@@ -1,5 +1,7 @@
 using Application.Common.Interfaces.Identity;
 using Application.Common.Models;
+using Application.Common.Interfaces.Localization;
+using Application.Common.Constants;
 using Application.Features.Identity.DTOs.Requests;
 using Application.Features.Identity.DTOs.Responses;
 using Domain.Entities.Identity;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services.Identity
 {
@@ -19,6 +22,9 @@ namespace Infrastructure.Services.Identity
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IRepository<RefreshToken> _refreshTokenRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILocalizationProvider _localizationProvider;
+        private readonly ILanguageDetector _languageDetector;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
@@ -26,7 +32,10 @@ namespace Infrastructure.Services.Identity
             RoleManager<IdentityRole<Guid>> roleManager,
             IJwtTokenService jwtTokenService,
             IRepository<RefreshToken> refreshTokenRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ILocalizationProvider localizationProvider,
+            ILanguageDetector languageDetector,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -34,6 +43,17 @@ namespace Infrastructure.Services.Identity
             _jwtTokenService = jwtTokenService;
             _refreshTokenRepository = refreshTokenRepository;
             _unitOfWork = unitOfWork;
+            _localizationProvider = localizationProvider;
+            _languageDetector = languageDetector;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private async Task<string> T(string key)
+        {
+            var acceptLanguage = _httpContextAccessor.HttpContext?.Request.Headers["Accept-Language"].ToString() ?? "en-US";
+            var userAgent = _httpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString() ?? "";
+            var language = await _languageDetector.DetectLanguageAsync(acceptLanguage, userAgent);
+            return await _localizationProvider.GetTranslationAsync(language, key);
         }
 
         public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request)
@@ -61,7 +81,7 @@ namespace Infrastructure.Services.Identity
             }
             await _userManager.AddToRoleAsync(user, "User");
 
-            return await GenerateAuthResponse(user, "Registration successful");
+            return await GenerateAuthResponse(user, await T(LocalizationKeys.Identity.Auth.RegistrationSuccess));
         }
 
         public async Task<Result<AuthResponse>> LoginAsync(LoginRequest request)
@@ -69,18 +89,18 @@ namespace Infrastructure.Services.Identity
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                return Result<AuthResponse>.Failure(new[] { "Invalid email or password." });
+                return Result<AuthResponse>.Failure(new[] { await T(LocalizationKeys.Identity.Validation.InvalidCredentials) });
             }
 
             if (!user.IsActive)
             {
-                return Result<AuthResponse>.Failure(new[] { "User account is disabled." });
+                return Result<AuthResponse>.Failure(new[] { await T(LocalizationKeys.Identity.Validation.AccountDisabled) });
             }
 
             user.LastLoginAt = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
-            return await GenerateAuthResponse(user, "Login successful");
+            return await GenerateAuthResponse(user, await T(LocalizationKeys.Identity.Auth.LoginSuccess));
         }
 
         public async Task<Result<AuthResponse>> RefreshTokenAsync(string accessToken, string refreshToken)
@@ -111,7 +131,7 @@ namespace Infrastructure.Services.Identity
             // but usually it should. I'll stick to previous logic for now to avoid breaking simplified flows, 
             // but ideally we should check _refreshTokenRepository.
 
-            return await GenerateAuthResponse(user, "Token refreshed successfully");
+            return await GenerateAuthResponse(user, await T(LocalizationKeys.Identity.Auth.RefreshSuccess));
         }
 
         public async Task<Result<AuthResponse>> ExternalLoginCallBackAsync()

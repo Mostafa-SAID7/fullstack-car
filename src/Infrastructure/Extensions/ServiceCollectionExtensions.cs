@@ -51,13 +51,18 @@ namespace Infrastructure.Extensions
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // Add Infrastructure Services
+            // Infrastructure Services
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddScoped<ILocalizationService, LocalizationService>();
+
+            // Localization Services
+            services.AddScoped<ILocalizationProvider, LocalizationProvider>();
+            services.AddScoped<ILanguageDetector, LanguageDetector>();
+            services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
+
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFileService, FileService>();

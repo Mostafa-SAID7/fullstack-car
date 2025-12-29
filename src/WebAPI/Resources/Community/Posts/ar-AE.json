@@ -1,41 +1,41 @@
 {
   "posts": {
-    "title": "المنشورات",
-    "create": "إنشاء منشور",
-    "edit": "تعديل المنشور",
-    "delete": "حذف المنشور",
-    "publish": "نشر",
-    "draft": "حفظ كمسودة",
+    "title": "المشاركات",
+    "create": "أضف مشاركة",
+    "edit": "عدل المشاركة",
+    "delete": "احذف المشاركة",
+    "publish": "انشر",
+    "draft": "احفظ مسودة",
     "preview": "معاينة",
-    "postTitle": "عنوان المنشور",
-    "postContent": "محتوى المنشور",
-    "tags": "العلامات",
-    "category": "الفئة",
-    "visibility": "الرؤية",
-    "public": "عام",
+    "postTitle": "العنوان",
+    "postContent": "وش تفكر فيه؟",
+    "tags": "وسوم",
+    "category": "التصنيف",
+    "visibility": "الظهور",
+    "public": "الكل",
     "private": "خاص",
-    "friends": "الأصدقاء فقط"
+    "friends": "الأصدقاء"
   },
   "interactions": {
     "like": "إعجاب",
-    "unlike": "إلغاء الإعجاب",
+    "unlike": "شيل الإعجاب",
     "comment": "تعليق",
     "share": "مشاركة",
     "report": "إبلاغ",
-    "bookmark": "إشارة مرجعية",
-    "unbookmark": "إزالة الإشارة المرجعية",
+    "bookmark": "حفظ",
+    "unbookmark": "إلغاء الحفظ",
     "likeCount": "الإعجابات",
     "commentCount": "التعليقات",
     "shareCount": "المشاركات"
   },
   "comments": {
-    "addComment": "إضافة تعليق",
+    "addComment": "أضف تعليق",
     "editComment": "تعديل التعليق",
     "deleteComment": "حذف التعليق",
     "replyToComment": "رد",
-    "showReplies": "إظهار الردود",
+    "showReplies": "عرض الردود",
     "hideReplies": "إخفاء الردود",
-    "commentPlaceholder": "اكتب تعليقاً...",
-    "noComments": "لا توجد تعليقات بعد"
+    "commentPlaceholder": "اكتب تعليقك هنا...",
+    "noComments": "ما فيه تعليقات للحين"
   }
 }

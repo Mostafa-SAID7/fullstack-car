@@ -3,7 +3,7 @@ using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations
+namespace Infrastructure.Configurations.Community.Posts
 {
     public class PostConfiguration : IEntityTypeConfiguration<Post>
     {
@@ -19,10 +19,21 @@ namespace Infrastructure.Configurations
                 .IsRequired()
                 .HasMaxLength(5000);
 
+            builder.Property(p => p.ImageUrl)
+                .HasMaxLength(500);
+
+            builder.Property(p => p.Type)
+                .IsRequired()
+                .HasConversion<string>();
+
+            builder.Property(p => p.Status)
+                .IsRequired()
+                .HasConversion<string>();
+
             builder.HasOne(p => p.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Group)
                 .WithMany(g => g.Posts)
@@ -32,12 +43,12 @@ namespace Infrastructure.Configurations
             builder.HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(p => p.Likes)
                 .WithOne(l => l.Post)
                 .HasForeignKey(l => l.PostId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,6 +1,8 @@
 using Application.Features.Identity.Commands;
 using Application.Features.Identity.DTOs.Requests;
 using Application.Common.Models;
+using Application.Common.Constants;
+using Application.Common.Interfaces.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.Identity
@@ -11,6 +13,24 @@ namespace WebAPI.Controllers.Identity
     [Produces("application/json")]
     public class AccountController : BaseController
     {
+        private readonly ILocalizationProvider _localizationProvider;
+        private readonly ILanguageDetector _languageDetector;
+
+        public AccountController(
+            ILocalizationProvider localizationProvider,
+            ILanguageDetector languageDetector)
+        {
+            _localizationProvider = localizationProvider;
+            _languageDetector = languageDetector;
+        }
+
+        private async Task<string> T(string key)
+        {
+            var acceptLanguage = Request.Headers["Accept-Language"].ToString() ?? "en-US";
+            var userAgent = Request.Headers["User-Agent"].ToString() ?? "";
+            var language = await _languageDetector.DetectLanguageAsync(acceptLanguage, userAgent);
+            return await _localizationProvider.GetTranslationAsync(language, key);
+        }
         [HttpPost("forgot-password")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -24,7 +44,7 @@ namespace WebAPI.Controllers.Identity
             if (result.Succeeded)
                 return Ok(new ApiResponse
                 {
-                    Message = "If the email exists, a password reset link has been sent",
+                    Message = await T(LocalizationKeys.Identity.Auth.ForgotPasswordSuccess),
                     Success = true
                 });
 
@@ -42,7 +62,7 @@ namespace WebAPI.Controllers.Identity
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
-                return Ok(new ApiResponse { Message = "Password reset successful", Success = true });
+                return Ok(new ApiResponse { Message = await T(LocalizationKeys.Identity.Auth.ResetPasswordSuccess), Success = true });
 
             return BadRequest(result.Errors);
         }
@@ -56,14 +76,14 @@ namespace WebAPI.Controllers.Identity
         {
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
             {
-                return BadRequest(new ErrorResponse { Message = "Token and email are required", Success = false });
+                return BadRequest(new ErrorResponse { Message = await T(LocalizationKeys.Identity.Validation.TokenAndEmailRequired), Success = false });
             }
 
             var command = new VerifyEmailCommand { Token = token, Email = email };
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
-                return Ok(new ApiResponse { Message = "Email verified successfully", Success = true });
+                return Ok(new ApiResponse { Message = await T(LocalizationKeys.Identity.Auth.EmailVerifiedSuccess), Success = true });
 
             return BadRequest(result.Errors);
         }

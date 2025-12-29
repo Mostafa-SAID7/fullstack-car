@@ -1,7 +1,8 @@
 using Domain.Base;
 using Domain.Enums;
+using Domain.Entities.Identity;
 
-namespace Domain.Entities.Identity
+namespace Domain.Entities.Community.Social
 {
     public class UserFriend : BaseEntity
     {
