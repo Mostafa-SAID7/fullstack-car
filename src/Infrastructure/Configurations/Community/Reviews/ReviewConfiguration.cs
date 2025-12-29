@@ -31,6 +31,12 @@ namespace Infrastructure.Configurations.Community.Reviews
             builder.Property(r => r.ImageUrl)
                 .HasMaxLength(500);
 
+            builder.Property(r => r.IsFlagged)
+                .HasDefaultValue(false);
+
+            builder.Property(r => r.FlagReason)
+                .HasMaxLength(500);
+
             builder.HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId)

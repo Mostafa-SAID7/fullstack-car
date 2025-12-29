@@ -14,6 +14,7 @@ namespace Application.Common
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
                 cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
+                cfg.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
                 // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 

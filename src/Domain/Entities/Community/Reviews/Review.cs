@@ -13,6 +13,8 @@ namespace Domain.Entities.Community.Reviews
         public string? ImageUrl { get; set; }
         public bool IsVerified { get; set; } = false;
         public int HelpfulCount { get; set; } = 0;
+        public bool IsFlagged { get; set; } = false;
+        public string? FlagReason { get; set; }
 
         // Foreign Keys
         public Guid UserId { get; set; }

@@ -1,3 +1,6 @@
+using Application.Features.Community.Reviews.Commands;
+using Application.Features.Community.Reviews.DTOs;
+using Application.Features.Community.Reviews.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,15 +14,23 @@ namespace WebAPI.Controllers.Community.Reviews
         [HttpGet]
         public async Task<IActionResult> GetReviews([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? carBrand = null, [FromQuery] string? carModel = null)
         {
-            // Implementation for getting reviews with filtering
-            return Ok();
+            var query = new GetReviewsQuery
+            {
+                PageNumber = page,
+                PageSize = pageSize,
+                CarBrand = carBrand,
+                CarModel = carModel
+            };
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReview(Guid id)
         {
-            // Implementation for getting single review
-            return Ok();
+            var query = new GetReviewByIdQuery { Id = id };
+            var result = await Mediator.Send(query);
+            return result.IsSuccess ? Ok(result) : NotFound(result.ErrorMessage);
         }
 
         [HttpPost]
@@ -31,26 +42,13 @@ namespace WebAPI.Controllers.Community.Reviews
                 return Unauthorized();
             }
 
-            // Implementation for creating review
-            return Ok();
+            var command = new CreateReviewCommand { Request = request, UserId = userGuid };
+            var result = await Mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview(Guid id, [FromBody] UpdateReviewRequest request)
-        {
-            // Implementation for updating review
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview(Guid id)
-        {
-            // Implementation for deleting review
-            return NoContent();
-        }
-
-        [HttpPost("{id}/helpful")]
-        public async Task<IActionResult> MarkHelpful(Guid id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
@@ -58,22 +56,58 @@ namespace WebAPI.Controllers.Community.Reviews
                 return Unauthorized();
             }
 
-            // Implementation for marking review as helpful
-            return Ok(new { Message = "Review marked as helpful" });
+            var command = new UpdateReviewCommand { Id = id, Request = request, UserId = userGuid };
+            var result = await Mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteReview(Guid id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            var isAdmin = User.IsInRole("Admin");
+            var command = new DeleteReviewCommand { Id = id, UserId = userGuid, IsAdmin = isAdmin };
+            var result = await Mediator.Send(command);
+            return result.IsSuccess ? NoContent() : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPost("{id}/helpful")]
+        public async Task<IActionResult> MarkHelpful(Guid id)
+        {
+            var result = await Mediator.Send(new MarkReviewHelpfulCommand { Id = id });
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
         [HttpGet("car/{brand}/{model}")]
         public async Task<IActionResult> GetCarReviews(string brand, string model, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting reviews for specific car
-            return Ok();
+            var query = new GetReviewsQuery
+            {
+                PageNumber = page,
+                PageSize = pageSize,
+                CarBrand = brand,
+                CarModel = model
+            };
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
 
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetUserReviews(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting user's reviews
-            return Ok();
+            var query = new GetReviewsQuery
+            {
+                PageNumber = page,
+                PageSize = pageSize,
+                UserId = userId
+            };
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
 
         // Admin functionality for reviews
@@ -81,41 +115,17 @@ namespace WebAPI.Controllers.Community.Reviews
         [HttpPut("{id}/verify")]
         public async Task<IActionResult> VerifyReview(Guid id)
         {
-            // Implementation for verifying review
-            return Ok(new { Message = "Review verified successfully" });
+            var result = await Mediator.Send(new VerifyReviewCommand { Id = id });
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPut("{id}/flag")]
         public async Task<IActionResult> FlagReview(Guid id, [FromBody] FlagReviewRequest request)
         {
-            // Implementation for flagging review
-            return Ok(new { Message = "Review flagged successfully" });
+            var command = new FlagReviewCommand { Id = id, Request = request };
+            var result = await Mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
-    }
-
-    public class CreateReviewRequest
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public int Rating { get; set; } // 1-5 stars
-        public string ReviewType { get; set; } = "CarReview";
-        public string? ImageUrl { get; set; }
-        public string? CarBrand { get; set; }
-        public string? CarModel { get; set; }
-        public int? CarYear { get; set; }
-    }
-
-    public class UpdateReviewRequest
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public int Rating { get; set; }
-        public string? ImageUrl { get; set; }
-    }
-
-    public class FlagReviewRequest
-    {
-        public string Reason { get; set; } = string.Empty;
     }
 }

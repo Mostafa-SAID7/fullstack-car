@@ -9,7 +9,9 @@ namespace Application.Common.Models
         }
 
         public bool Succeeded { get; set; }
+        public bool IsSuccess => Succeeded;
         public string[] Errors { get; set; }
+        public string? ErrorMessage => Errors?.FirstOrDefault();
 
         public static Result Success()
         {
@@ -19,6 +21,11 @@ namespace Application.Common.Models
         public static Result Failure(IEnumerable<string> errors)
         {
             return new Result(false, errors);
+        }
+
+        public static Result Failure(string error)
+        {
+            return new Result(false, new[] { error });
         }
     }
 
@@ -39,6 +46,11 @@ namespace Application.Common.Models
         public static new Result<T> Failure(IEnumerable<string> errors)
         {
             return new Result<T>(false, default!, errors);
+        }
+
+        public static new Result<T> Failure(string error)
+        {
+            return new Result<T>(false, default!, new[] { error });
         }
     }
 }

@@ -21,4 +21,10 @@ namespace Application.Features.Community.Reviews.DTOs
         public int Rating { get; set; }
         public string? ImageUrl { get; set; }
     }
+
+    public class FlagReviewRequest
+    {
+        public string Reason { get; set; } = string.Empty;
+        public string? AdditionalComments { get; set; }
+    }
 }
