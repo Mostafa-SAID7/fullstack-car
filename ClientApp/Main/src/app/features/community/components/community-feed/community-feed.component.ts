@@ -9,13 +9,13 @@ import { PostListComponent } from '../post-list/post-list.component';
     standalone: true,
     imports: [CommonModule, StoryListComponent, CreatePostComponent, PostListComponent],
     template: `
-    <main class="flex-1 min-w-0 md:px-8 py-6 lg:ml-72 lg:mr-72">
-        <div class="max-w-[680px] mx-auto">
+    <div class="flex-1 min-w-0 py-6">
+        <div class="max-w-[680px] mx-auto space-y-4">
             <app-story-list></app-story-list>
             <app-create-post></app-create-post>
             <app-post-list></app-post-list>
         </div>
-    </main>
+    </div>
   `
 })
 export class CommunityFeedComponent { }

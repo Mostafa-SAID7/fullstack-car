@@ -1,11 +1,37 @@
-<div class="min-h-screen bg-[#f0f2f5] dark:bg-[#09090b] flex flex-col">
+<div class="min-h-screen bg-background text-foreground flex flex-col pt-3.5">
     <app-header></app-header>
 
-    <div class="flex-1 flex max-w-[1920px] mx-auto w-full">
-        <app-sidebar-left></app-sidebar-left>
+    <div class="flex-1 flex max-w-[1920px] mx-auto w-full pt-4">
+        <!-- Left Sidebar: Hidden on mobile/tablet, visible on large desktops -->
+        <app-sidebar-left
+            class="hidden xl:block w-[360px] fixed left-0 top-14 h-[calc(100vh-3.5rem)] overflow-y-auto pl-4 pb-4 custom-scrollbar"></app-sidebar-left>
 
-        <router-outlet></router-outlet>
+        <!-- Main Content Area: Centered, full width on mobile, adjusted margins on large screens -->
+        <main
+            class="flex-1 w-full xl:ml-[360px] xl:mr-[360px] px-2 sm:px-4 md:px-8 lg:px-16 xl:px-8 2xl:px-16 min-h-[calc(100vh-3.5rem)] pb-8 flex justify-center">
+            <div class="w-full max-w-[700px]">
+                <router-outlet></router-outlet>
+            </div>
+        </main>
 
-        <app-sidebar-right></app-sidebar-right>
+        <!-- Right Sidebar: Hidden on mobile/tablet/laptops, visible on extra large screens -->
+        <app-sidebar-right
+            class="hidden xl:block w-[360px] fixed right-0 top-14 h-[calc(100vh-3.5rem)] overflow-y-auto pr-4 pb-4 custom-scrollbar"></app-sidebar-right>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div *ngIf="layoutService.isMobileMenuOpen()" class="fixed inset-0 z-40 xl:hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            (click)="layoutService.closeMobileMenu()"></div>
+
+        <!-- Menu Content -->
+        <div
+            class="absolute right-0 top-0 h-full w-[280px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 overflow-y-auto">
+            <div class="mb-4">
+                <app-sidebar-left></app-sidebar-left>
+            </div>
+            <!-- Mobile Config/Profile Links could go here if separate from sidebar -->
+        </div>
     </div>
 </div>

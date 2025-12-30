@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 import { HeaderComponent } from './layout/components/header/header.component';
 import { SidebarLeftComponent } from './layout/components/sidebar-left/sidebar-left.component';
 import { SidebarRightComponent } from './layout/components/sidebar-right/sidebar-right.component';
+import { LayoutService } from './core/services/layout.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +15,8 @@ import { SidebarRightComponent } from './layout/components/sidebar-right/sidebar
     SharedModule,
     HeaderComponent,
     SidebarLeftComponent,
-    SidebarRightComponent
+    SidebarRightComponent,
+    CommonModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -21,4 +24,5 @@ import { SidebarRightComponent } from './layout/components/sidebar-right/sidebar
 
 export class AppComponent {
   title = 'Community Car';
+  layoutService = inject(LayoutService);
 }
