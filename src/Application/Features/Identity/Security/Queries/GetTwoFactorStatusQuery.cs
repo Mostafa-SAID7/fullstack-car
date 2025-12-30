@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Security;
 using MediatR;
 
 namespace Application.Features.Identity.Security.Queries
@@ -10,16 +10,17 @@ namespace Application.Features.Identity.Security.Queries
 
     public class GetTwoFactorStatusQueryHandler : IRequestHandler<GetTwoFactorStatusQuery, bool>
     {
-        private readonly IUserService _userService;
+        private readonly ISecurityService _securityService;
 
-        public GetTwoFactorStatusQueryHandler(IUserService userService)
+        public GetTwoFactorStatusQueryHandler(ISecurityService securityService)
         {
-            _userService = userService;
+            _securityService = securityService;
         }
 
         public async Task<bool> Handle(GetTwoFactorStatusQuery request, CancellationToken cancellationToken)
         {
-            return await _userService.GetTwoFactorStatusAsync(request.UserId);
+            var result = await _securityService.GetTwoFactorStatusAsync(request.UserId.ToString());
+            return result.Succeeded ? result.Data : false;
         }
     }
 }

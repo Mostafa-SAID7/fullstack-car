@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Profile;
 using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Responses;
 using Application.Common.Interfaces.Caching;
@@ -17,16 +17,16 @@ namespace Application.Features.Identity.Profile.Queries
 
     public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, Result<UserProfileResponse>>
     {
-        private readonly IUserService _userService;
+        private readonly IProfileService _profileService;
 
-        public GetProfileQueryHandler(IUserService userService)
+        public GetProfileQueryHandler(IProfileService profileService)
         {
-            _userService = userService;
+            _profileService = profileService;
         }
 
         public async Task<Result<UserProfileResponse>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
         {
-            return await _userService.GetProfileAsync(request.UserId);
+            return await _profileService.GetProfileAsync(request.UserId.ToString());
         }
     }
 }

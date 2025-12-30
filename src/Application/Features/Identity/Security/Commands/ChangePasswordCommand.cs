@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Password;
 using Application.Common.Models;
 using Application.Features.Identity.Password.DTOs.Requests;
 using MediatR;
@@ -13,16 +13,16 @@ namespace Application.Features.Identity.Security.Commands
 
     public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, Result>
     {
-        private readonly IUserService _userService;
+        private readonly IPasswordService _passwordService;
 
-        public ChangePasswordCommandHandler(IUserService userService)
+        public ChangePasswordCommandHandler(IPasswordService passwordService)
         {
-            _userService = userService;
+            _passwordService = passwordService;
         }
 
         public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
-            return await _userService.ChangePasswordAsync(request.UserId, request.Request);
+            return await _passwordService.ChangePasswordAsync(request.UserId.ToString(), request.Request);
         }
     }
 }

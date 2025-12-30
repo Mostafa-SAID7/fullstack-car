@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Profile;
 using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Requests;
 using Application.Features.Identity.Profile.DTOs.Responses;
@@ -15,18 +15,18 @@ namespace Application.Features.Identity.Profile.Commands
 
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, Result<UserProfileResponse>>
     {
-        private readonly IUserService _userService;
+        private readonly IProfileService _profileService;
         private readonly ICacheService _cacheService;
 
-        public UpdateProfileCommandHandler(IUserService userService, ICacheService cacheService)
+        public UpdateProfileCommandHandler(IProfileService profileService, ICacheService cacheService)
         {
-            _userService = userService;
+            _profileService = profileService;
             _cacheService = cacheService;
         }
 
         public async Task<Result<UserProfileResponse>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            var result = await _userService.UpdateProfileAsync(request.UserId, request.Request);
+            var result = await _profileService.UpdateProfileAsync(request.UserId.ToString(), request.Request);
 
             if (result.Succeeded)
             {

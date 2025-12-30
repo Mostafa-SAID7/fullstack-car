@@ -19,13 +19,13 @@ namespace Application.Features.Community.Groups.Commands
     public class UpdateGroupCommandHandler : IRequestHandler<UpdateGroupCommand, Result<GroupDto>>
     {
         private readonly IRepository<Group> _groupRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
 
         public UpdateGroupCommandHandler(
             IRepository<Group> groupRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService)
         {

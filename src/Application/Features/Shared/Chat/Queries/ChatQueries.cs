@@ -29,13 +29,13 @@ namespace Application.Features.Shared.Chat.Queries
         private readonly IRepository<Conversation> _conversationRepository;
         private readonly IRepository<ChatMessage> _messageRepository;
         private readonly IRepository<ConversationMember> _memberRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
 
         public ChatQueriesHandler(
             IRepository<Conversation> conversationRepository,
             IRepository<ChatMessage> messageRepository,
             IRepository<ConversationMember> memberRepository,
-            IRepository<User> userRepository)
+            IRepository<ApplicationUser> userRepository)
         {
             _conversationRepository = conversationRepository;
             _messageRepository = messageRepository;

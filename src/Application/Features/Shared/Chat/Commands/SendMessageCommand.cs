@@ -19,14 +19,14 @@ namespace Application.Features.Shared.Chat.Commands
     {
         private readonly IRepository<Conversation> _conversationRepository;
         private readonly IRepository<ChatMessage> _messageRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IChatNotificationService _chatNotificationService;
 
         public SendMessageCommandHandler(
             IRepository<Conversation> conversationRepository,
             IRepository<ChatMessage> messageRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             IChatNotificationService chatNotificationService)
         {

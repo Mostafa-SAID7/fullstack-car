@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Profile;
 using Application.Common.Models;
 using MediatR;
 
@@ -14,16 +14,16 @@ namespace Application.Features.Identity.Profile.Commands
 
     public class UploadAvatarCommandHandler : IRequestHandler<UploadAvatarCommand, Result<string>>
     {
-        private readonly IUserService _userService;
+        private readonly IProfileService _profileService;
 
-        public UploadAvatarCommandHandler(IUserService userService)
+        public UploadAvatarCommandHandler(IProfileService profileService)
         {
-            _userService = userService;
+            _profileService = profileService;
         }
 
         public async Task<Result<string>> Handle(UploadAvatarCommand request, CancellationToken cancellationToken)
         {
-            return await _userService.UploadAvatarAsync(request.UserId, request.FileStream, request.FileName, request.ContentType);
+            return await _profileService.UploadAvatarAsync(request.UserId.ToString(), request.FileStream, request.FileName, request.ContentType);
         }
     }
 }

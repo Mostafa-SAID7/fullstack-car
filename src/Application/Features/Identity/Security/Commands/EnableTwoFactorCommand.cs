@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Security;
 using Application.Common.Models;
 using MediatR;
 
@@ -11,16 +11,17 @@ namespace Application.Features.Identity.Security.Commands
 
     public class EnableTwoFactorCommandHandler : IRequestHandler<EnableTwoFactorCommand, Result>
     {
-        private readonly IUserService _userService;
+        private readonly ISecurityService _securityService;
 
-        public EnableTwoFactorCommandHandler(IUserService userService)
+        public EnableTwoFactorCommandHandler(ISecurityService securityService)
         {
-            _userService = userService;
+            _securityService = securityService;
         }
 
         public async Task<Result> Handle(EnableTwoFactorCommand request, CancellationToken cancellationToken)
         {
-            return await _userService.EnableTwoFactorAsync(request.UserId);
+            var result = await _securityService.EnableTwoFactorAsync(request.UserId.ToString());
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors);
         }
     }
 }

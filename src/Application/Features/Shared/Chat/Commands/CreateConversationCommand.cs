@@ -17,13 +17,13 @@ namespace Application.Features.Shared.Chat.Commands
     {
         private readonly IRepository<Conversation> _conversationRepository;
         private readonly IRepository<ConversationMember> _memberRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateConversationCommandHandler(
             IRepository<Conversation> conversationRepository,
             IRepository<ConversationMember> memberRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork)
         {
             _conversationRepository = conversationRepository;

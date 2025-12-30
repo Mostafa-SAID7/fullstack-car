@@ -1,5 +1,6 @@
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Security;
 using Application.Common.Models;
+using Application.Features.Identity.Security.DTOs.Requests;
 using MediatR;
 
 namespace Application.Features.Identity.Security.Commands
@@ -11,16 +12,16 @@ namespace Application.Features.Identity.Security.Commands
 
     public class DisableTwoFactorCommandHandler : IRequestHandler<DisableTwoFactorCommand, Result>
     {
-        private readonly IUserService _userService;
+        private readonly ISecurityService _securityService;
 
-        public DisableTwoFactorCommandHandler(IUserService userService)
+        public DisableTwoFactorCommandHandler(ISecurityService securityService)
         {
-            _userService = userService;
+            _securityService = securityService;
         }
 
         public async Task<Result> Handle(DisableTwoFactorCommand request, CancellationToken cancellationToken)
         {
-            return await _userService.DisableTwoFactorAsync(request.UserId);
+            return await _securityService.DisableTwoFactorAsync(request.UserId.ToString(), new DisableTwoFactorRequest());
         }
     }
 }

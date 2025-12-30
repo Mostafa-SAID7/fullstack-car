@@ -9,7 +9,7 @@ namespace Application.Common.Interfaces.Data
 {
     public interface IApplicationDbContext
     {
-        DbSet<User> Users { get; }
+        DbSet<ApplicationUser> Users { get; }
         DbSet<Post> Posts { get; }
         DbSet<Comment> Comments { get; }
         DbSet<CommentLike> CommentLikes { get; }
