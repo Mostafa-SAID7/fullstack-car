@@ -19,14 +19,14 @@ namespace Application.Features.Community.Friends.Commands
     public class SendFriendRequestCommandHandler : IRequestHandler<SendFriendRequestCommand, Result<bool>>
     {
         private readonly IRepository<UserFriend> _friendRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
         private readonly INotificationService _notificationService;
 
         public SendFriendRequestCommandHandler(
             IRepository<UserFriend> friendRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService,
             INotificationService notificationService)

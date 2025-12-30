@@ -1,6 +1,6 @@
 using Domain.Entities.Shared.Chat;
 using Domain.Enums.Shared.Chat;
-using Infrastructure.Identity;
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,7 +1,7 @@
 using Application.Features.Community.Posts.Commands;
 using Application.Features.Community.Posts.DTOs;
 using Application.Features.Community.Posts.Queries;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;

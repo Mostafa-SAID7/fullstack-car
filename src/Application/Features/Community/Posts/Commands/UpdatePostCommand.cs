@@ -19,13 +19,13 @@ namespace Application.Features.Community.Posts.Commands
     public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, Result<PostDto>>
     {
         private readonly IRepository<Post> _postRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
 
         public UpdatePostCommandHandler(
             IRepository<Post> postRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService)
         {

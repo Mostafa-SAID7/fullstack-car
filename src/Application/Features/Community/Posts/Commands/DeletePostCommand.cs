@@ -17,13 +17,13 @@ namespace Application.Features.Community.Posts.Commands
     public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, Result<bool>>
     {
         private readonly IRepository<Post> _postRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
 
         public DeletePostCommandHandler(
             IRepository<Post> postRepository, 
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService)
         {

@@ -18,7 +18,7 @@ namespace Application.Features.Community.Posts.Commands
     {
         private readonly IRepository<Post> _postRepository;
         private readonly IRepository<PostLike> _likeRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
         private readonly INotificationService _notificationService;
@@ -26,7 +26,7 @@ namespace Application.Features.Community.Posts.Commands
         public LikePostCommandHandler(
             IRepository<Post> postRepository,
             IRepository<PostLike> likeRepository,
-            IRepository<User> userRepository,
+            IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService,
             INotificationService notificationService)

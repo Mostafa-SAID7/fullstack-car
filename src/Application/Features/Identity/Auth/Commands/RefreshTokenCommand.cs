@@ -25,7 +25,7 @@ namespace Application.Features.Identity.Auth.Commands
 
         public async Task<Result<TokenResponse>> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
         {
-            var result = await _authService.RefreshTokenAsync(command.Request.Token, command.Request.RefreshToken);
+            var result = await _authService.RefreshTokenAsync(command.Request);
 
             if (result.Succeeded)
             {

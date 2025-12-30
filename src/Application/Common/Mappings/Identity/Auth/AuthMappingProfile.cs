@@ -17,8 +17,7 @@ namespace Application.Common.Mappings.Identity.Auth
             CreateMap<RegisterRequest, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
 }

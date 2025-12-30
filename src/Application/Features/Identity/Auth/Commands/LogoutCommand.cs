@@ -22,7 +22,7 @@ namespace Application.Features.Identity.Auth.Commands
 
         public async Task<Result> Handle(LogoutCommand command, CancellationToken cancellationToken)
         {
-            return await _authService.LogoutAsync(command.UserId);
+            return await _authService.LogoutAsync(command.UserId.ToString());
         }
     }
 }

@@ -12,8 +12,7 @@ namespace Application.Common.Mappings.Identity.Profile
             CreateMap<ApplicationUser, UserProfileResponse>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()));
 
-            CreateMap<UpdateProfileRequest, ApplicationUser>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+            CreateMap<UpdateProfileRequest, ApplicationUser>();
 
             CreateMap<ApplicationUser, UserPrivacySettings>();
         }

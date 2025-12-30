@@ -1,7 +1,7 @@
 using Domain.Entities.Community.Groups;
 using Domain.Enums.Community.Groups;
 using Domain.Entities.Identity;
-using Infrastructure.Identity;
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
