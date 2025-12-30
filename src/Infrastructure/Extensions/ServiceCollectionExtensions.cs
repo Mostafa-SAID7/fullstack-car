@@ -2,17 +2,13 @@ using Application.Common.Interfaces.Caching;
 using Application.Common.Interfaces.Storage;
 using Application.Common.Interfaces.Communication;
 using Application.Common.Interfaces.Localization;
-using IAppPasswordHasher = Application.Common.Interfaces.Identity.IPasswordHasher;
-using IAppUserService = Application.Common.Interfaces.Identity.IUserService;
-using IAppAuthService = Application.Common.Interfaces.Identity.IAuthService;
-using IAppCurrentUserService = Application.Common.Interfaces.Identity.ICurrentUserService;
-using IAppJwtTokenService = Application.Common.Interfaces.Identity.IJwtTokenService;
-using IAppEmailService = Application.Common.Interfaces.Communication.IEmailService;
-using IAppFileService = Application.Common.Interfaces.Storage.IFileService;
-using IAppLocalizationProvider = Application.Common.Interfaces.Localization.ILocalizationProvider;
-using IAppLanguageDetector = Application.Common.Interfaces.Localization.ILanguageDetector;
-using IAppCultureInfoProvider = Application.Common.Interfaces.Localization.ICultureInfoProvider;
+using Application.Common.Interfaces.Identity.Core;
+using Application.Common.Interfaces.Identity.Auth;
+using Application.Common.Interfaces.Identity.Profile;
+using Application.Common.Interfaces.Identity.Password;
+using Application.Common.Interfaces.Identity.Security;
 using Domain.Interfaces;
+using Domain.Entities.Identity;
 using Infrastructure.Data;
 using Infrastructure.Data.Seeds;
 using Infrastructure.Data.Seeds.Identity;
@@ -22,13 +18,16 @@ using Infrastructure.Data.Seeds.Community.Posts;
 using Infrastructure.Data.Seeds.Community.Reviews;
 using Infrastructure.Data.Seeds.Shared;
 using Infrastructure.Repositories;
-using Infrastructure.Services.Identity;
+using Infrastructure.Services.Identity.Core;
+using Infrastructure.Services.Identity.Auth;
+using Infrastructure.Services.Identity.Profile;
+using Infrastructure.Services.Identity.Password;
+using Infrastructure.Services.Identity.Security;
 using Infrastructure.Services.Localization;
 using Infrastructure.Services.Communication;
 using Infrastructure.Services.Storage;
 using Infrastructure.Services.Caching;
 using Infrastructure.Common;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -54,8 +53,8 @@ namespace Infrastructure.Extensions
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // Add Identity
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            // Add Identity with custom entities
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -64,26 +63,35 @@ namespace Infrastructure.Extensions
                 options.Password.RequiredLength = 8;
 
                 options.User.RequireUniqueEmail = true;
-
                 options.SignIn.RequireConfirmedEmail = true;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // Infrastructure Services
-            services.AddScoped<IAppCurrentUserService, CurrentUserService>();
-            services.AddScoped<IAppJwtTokenService, JwtTokenService>();
-            services.AddScoped<IAppAuthService, AuthService>();
-            services.AddScoped<IAppUserService, UserService>();
-            services.AddScoped<IAppPasswordHasher, PasswordHasher>();
+            // Core Identity Services
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+            // Organized Identity Services
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IOAuthService, OAuthService>();
+            services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<ISecurityService, SecurityService>();
 
             // Localization Services
-            services.AddScoped<IAppLocalizationProvider, LocalizationProvider>();
-            services.AddScoped<IAppLanguageDetector, LanguageDetector>();
-            services.AddScoped<IAppCultureInfoProvider, CultureInfoProvider>();
+            services.AddScoped<ILocalizationProvider, LocalizationProvider>();
+            services.AddScoped<ILanguageDetector, LanguageDetector>();
+            services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
 
-            services.AddScoped<IAppEmailService, EmailService>();
-            services.AddScoped<IAppFileService, FileService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IFileService, FileService>();
 
             // Caching Services
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
@@ -128,7 +136,7 @@ namespace Infrastructure.Extensions
                     ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = "role" // Ensure role claims are correctly mapped
+                    RoleClaimType = "role"
                 };
             })
             .AddGoogle(options =>
@@ -141,6 +149,14 @@ namespace Infrastructure.Extensions
                 options.ClientId = configuration["Authentication:GitHub:ClientId"] ?? "placeholder";
                 options.ClientSecret = configuration["Authentication:GitHub:ClientSecret"] ?? "placeholder";
                 options.Scope.Add("user:email");
+            })
+            .AddFacebook(options =>
+            {
+                options.ClientId = configuration["Authentication:Facebook:ClientId"] ?? "placeholder";
+                options.ClientSecret = configuration["Authentication:Facebook:ClientSecret"] ?? "placeholder";
+                options.Scope.Add("email");
+                options.Fields.Add("name");
+                options.Fields.Add("email");
             });
 
             // Add Database Seeder & Individual Seeders

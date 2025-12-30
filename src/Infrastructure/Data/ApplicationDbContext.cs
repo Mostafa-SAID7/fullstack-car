@@ -5,7 +5,6 @@ using Domain.Entities.Community.Reviews;
 using Domain.Entities.Shared;
 using Domain.Entities.Shared.Chat;
 using Domain.Entities.Community.Social;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +12,18 @@ using System.Reflection;
 
 namespace Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, RoleClaim, IdentityUserToken<Guid>>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<User> DomainUsers { get; set; }
+        // Identity Tables (with better names)
+        public DbSet<UserClaim> UserClaims { get; set; }
+        public DbSet<UserSession> UserSessions { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        // Community Tables
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -29,7 +33,8 @@ namespace Infrastructure.Data
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        // Shared Tables
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ConversationMember> ConversationMembers { get; set; }
@@ -39,6 +44,16 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
+            // Configure Identity table names
+            builder.Entity<ApplicationUser>().ToTable("Users");
+            builder.Entity<ApplicationRole>().ToTable("Roles");
+            builder.Entity<UserRole>().ToTable("UserRoles");
+            builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
+            builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
+            builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+            builder.Entity<RoleClaim>().ToTable("RoleClaims");
+
+            // Apply all configurations
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

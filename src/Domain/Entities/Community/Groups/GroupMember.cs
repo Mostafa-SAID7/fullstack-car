@@ -12,7 +12,7 @@ namespace Domain.Entities.Community.Groups
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         public virtual Group Group { get; set; } = null!;
     }
 }

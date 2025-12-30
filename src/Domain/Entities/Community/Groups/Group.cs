@@ -20,7 +20,7 @@ namespace Domain.Entities.Community.Groups
         public Guid OwnerId { get; set; }
 
         // Navigation Properties
-        public virtual User Owner { get; set; } = null!;
+        public virtual ApplicationUser Owner { get; set; } = null!;
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<GroupMember> Members { get; set; } = new List<GroupMember>();
     }

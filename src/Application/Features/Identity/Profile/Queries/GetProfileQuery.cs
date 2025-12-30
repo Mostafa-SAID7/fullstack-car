@@ -1,6 +1,6 @@
 using Application.Common.Interfaces.Identity;
 using Application.Common.Models;
-using Application.Features.Identity.DTOs.Responses;
+using Application.Features.Identity.Profile.DTOs.Responses;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 

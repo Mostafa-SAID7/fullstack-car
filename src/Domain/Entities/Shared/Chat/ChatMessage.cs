@@ -10,7 +10,7 @@ namespace Domain.Entities.Shared.Chat
         public virtual Conversation Conversation { get; set; } = null!;
 
         public Guid SenderId { get; set; }
-        public virtual User Sender { get; set; } = null!;
+        public virtual ApplicationUser Sender { get; set; } = null!;
 
         public string Content { get; set; } = string.Empty;
         public MessageType Type { get; set; } = MessageType.Text;

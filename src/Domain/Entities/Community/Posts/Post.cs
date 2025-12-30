@@ -22,7 +22,7 @@ namespace Domain.Entities.Community.Posts
         public Guid? GroupId { get; set; }
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         public virtual Group? Group { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<PostLike> Likes { get; set; } = new List<PostLike>();

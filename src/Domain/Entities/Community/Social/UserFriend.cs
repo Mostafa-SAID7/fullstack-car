@@ -12,7 +12,7 @@ namespace Domain.Entities.Community.Social
         public DateTime? AcceptedAt { get; set; }
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
-        public virtual User Friend { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
+        public virtual ApplicationUser Friend { get; set; } = null!;
     }
 }

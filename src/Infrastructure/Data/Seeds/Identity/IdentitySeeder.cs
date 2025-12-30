@@ -1,7 +1,6 @@
 using Domain.Entities.Identity;
 using Domain.Enums.Identity;
 using Infrastructure.Data;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -10,13 +9,13 @@ namespace Infrastructure.Data.Seeds.Identity
     public class IdentitySeeder
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<IdentitySeeder> _logger;
 
         public IdentitySeeder(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             ApplicationDbContext context,
             ILogger<IdentitySeeder> logger)
         {
@@ -42,20 +41,74 @@ namespace Infrastructure.Data.Seeds.Identity
 
         private async Task SeedRolesAsync()
         {
-            var roles = new[] { "Admin", "Moderator", "User" };
-
-            foreach (var roleName in roles)
+            var roles = new[]
             {
-                if (!await _roleManager.RoleExistsAsync(roleName))
+                new { Name = "SuperAdmin", Description = "Super Administrator with full system access", Priority = 1000, IsSystemRole = true },
+                new { Name = "Admin", Description = "Administrator with management access", Priority = 900, IsSystemRole = true },
+                new { Name = "Moderator", Description = "Content moderator", Priority = 500, IsSystemRole = true },
+                new { Name = "User", Description = "Regular user", Priority = 100, IsSystemRole = true },
+                new { Name = "Premium", Description = "Premium user with additional features", Priority = 200, IsSystemRole = false }
+            };
+
+            foreach (var roleInfo in roles)
+            {
+                if (!await _roleManager.RoleExistsAsync(roleInfo.Name))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
-                    _logger.LogInformation($"Seeded role: {roleName}");
+                    var role = new ApplicationRole
+                    {
+                        Name = roleInfo.Name,
+                        Description = roleInfo.Description,
+                        Priority = roleInfo.Priority,
+                        IsSystemRole = roleInfo.IsSystemRole,
+                        IsActive = true,
+                        CreatedBy = "System"
+                    };
+
+                    var result = await _roleManager.CreateAsync(role);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation($"Seeded role: {roleInfo.Name}");
+                    }
+                    else
+                    {
+                        _logger.LogError($"Failed to seed role {roleInfo.Name}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
                 }
             }
         }
 
         private async Task SeedUsersAsync()
         {
+            // Super Admin User
+            var superAdminEmail = "superadmin@localhost";
+            var superAdmin = await _userManager.FindByEmailAsync(superAdminEmail);
+            if (superAdmin == null)
+            {
+                superAdmin = new ApplicationUser
+                {
+                    UserName = superAdminEmail,
+                    Email = superAdminEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Super",
+                    LastName = "Admin",
+                    IsActive = true,
+                    Status = UserStatus.Active,
+                    IsEmailPublic = false,
+                    AllowDirectMessages = false
+                };
+
+                var result = await _userManager.CreateAsync(superAdmin, "SuperAdmin123!");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                    _logger.LogInformation($"Seeded super admin user: {superAdminEmail}");
+                }
+                else
+                {
+                    _logger.LogError($"Failed to seed super admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+
             // Admin User
             var adminEmail = "admin@localhost";
             var adminUser = await _userManager.FindByEmailAsync(adminEmail);
@@ -68,126 +121,48 @@ namespace Infrastructure.Data.Seeds.Identity
                     EmailConfirmed = true,
                     FirstName = "System",
                     LastName = "Admin",
-                    IsActive = true
+                    IsActive = true,
+                    Status = UserStatus.Active
                 };
 
                 var result = await _userManager.CreateAsync(adminUser, "Admin123!");
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(adminUser, "Admin");
-
-                    // Create corresponding Domain User
-                    var domainUser = new User
-                    {
-                        Id = adminUser.Id, // Same ID as ApplicationUser
-                        FirstName = adminUser.FirstName,
-                        LastName = adminUser.LastName,
-                        Email = adminUser.Email,
-                        PasswordHash = adminUser.PasswordHash ?? string.Empty,
-                        PhoneNumber = adminUser.PhoneNumber ?? string.Empty,
-                        ProfileImageUrl = adminUser.ProfileImageUrl,
-                        Bio = adminUser.Bio,
-                        Status = UserStatus.Active,
-                        EmailVerified = adminUser.EmailConfirmed,
-                        LastLoginAt = adminUser.LastLoginAt,
-                        CreatedBy = adminUser.Id.ToString(),
-                        CreatedAt = adminUser.CreatedAt
-                    };
-
-                    _context.DomainUsers.Add(domainUser);
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation("Seeded admin user (Identity + Domain)");
+                    _logger.LogInformation($"Seeded admin user: {adminEmail}");
+                }
+                else
+                {
+                    _logger.LogError($"Failed to seed admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 }
             }
 
-            // Standard User
-            var userEmail = "user@localhost";
-            var normalUser = await _userManager.FindByEmailAsync(userEmail);
-            if (normalUser == null)
+            // Test User
+            var testEmail = "user@localhost";
+            var testUser = await _userManager.FindByEmailAsync(testEmail);
+            if (testUser == null)
             {
-                normalUser = new ApplicationUser
+                testUser = new ApplicationUser
                 {
-                    UserName = userEmail,
-                    Email = userEmail,
+                    UserName = testEmail,
+                    Email = testEmail,
                     EmailConfirmed = true,
-                    FirstName = "John",
-                    LastName = "Doe",
-                    IsActive = true
+                    FirstName = "Test",
+                    LastName = "User",
+                    IsActive = true,
+                    Status = UserStatus.Active,
+                    Bio = "This is a test user account for development purposes."
                 };
 
-                var result = await _userManager.CreateAsync(normalUser, "User123!");
+                var result = await _userManager.CreateAsync(testUser, "User123!");
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(normalUser, "User");
-
-                    // Create corresponding Domain User
-                    var domainUser = new User
-                    {
-                        Id = normalUser.Id,
-                        FirstName = normalUser.FirstName,
-                        LastName = normalUser.LastName,
-                        Email = normalUser.Email,
-                        PasswordHash = normalUser.PasswordHash ?? string.Empty,
-                        PhoneNumber = normalUser.PhoneNumber ?? string.Empty,
-                        ProfileImageUrl = normalUser.ProfileImageUrl,
-                        Bio = normalUser.Bio,
-                        Status = UserStatus.Active,
-                        EmailVerified = normalUser.EmailConfirmed,
-                        LastLoginAt = normalUser.LastLoginAt,
-                        CreatedBy = normalUser.Id.ToString(),
-                        CreatedAt = normalUser.CreatedAt
-                    };
-
-                    _context.DomainUsers.Add(domainUser);
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation("Seeded standard user (Identity + Domain)");
+                    await _userManager.AddToRoleAsync(testUser, "User");
+                    _logger.LogInformation($"Seeded test user: {testEmail}");
                 }
-            }
-
-            // Moderator User
-            var modEmail = "mod@localhost";
-            var modUser = await _userManager.FindByEmailAsync(modEmail);
-            if (modUser == null)
-            {
-                modUser = new ApplicationUser
+                else
                 {
-                    UserName = modEmail,
-                    Email = modEmail,
-                    EmailConfirmed = true,
-                    FirstName = "Max",
-                    LastName = "Moderator",
-                    IsActive = true
-                };
-
-                var result = await _userManager.CreateAsync(modUser, "Mod1234!");
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(modUser, "Moderator");
-
-                    // Create corresponding Domain User
-                    var domainUser = new User
-                    {
-                        Id = modUser.Id,
-                        FirstName = modUser.FirstName,
-                        LastName = modUser.LastName,
-                        Email = modUser.Email,
-                        PasswordHash = modUser.PasswordHash ?? string.Empty,
-                        PhoneNumber = modUser.PhoneNumber ?? string.Empty,
-                        ProfileImageUrl = modUser.ProfileImageUrl,
-                        Bio = modUser.Bio,
-                        Status = UserStatus.Active,
-                        EmailVerified = modUser.EmailConfirmed,
-                        LastLoginAt = modUser.LastLoginAt,
-                        CreatedBy = modUser.Id.ToString(),
-                        CreatedAt = modUser.CreatedAt
-                    };
-
-                    _context.DomainUsers.Add(domainUser);
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation("Seeded moderator user (Identity + Domain)");
+                    _logger.LogError($"Failed to seed test user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 }
             }
         }

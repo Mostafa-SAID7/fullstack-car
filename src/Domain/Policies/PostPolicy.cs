@@ -8,17 +8,17 @@ namespace Domain.Policies
 {
     public static class PostPolicy
     {
-        public static bool CanEdit(Post post, User user)
+        public static bool CanEdit(Post post, ApplicationUser user)
         {
             return post.UserId == user.Id && user.Status == UserStatus.Active;
         }
 
-        public static bool CanDelete(Post post, User user)
+        public static bool CanDelete(Post post, ApplicationUser user)
         {
             return post.UserId == user.Id && user.Status == UserStatus.Active;
         }
 
-        public static bool CanView(Post post, User? user = null)
+        public static bool CanView(Post post, ApplicationUser? user = null)
         {
             if (post.Status != PostStatus.Published)
                 return false;

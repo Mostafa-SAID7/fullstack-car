@@ -12,6 +12,6 @@ namespace Domain.Entities.Community.Posts
 
         // Navigation Properties
         public virtual Post Post { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
     }
 }

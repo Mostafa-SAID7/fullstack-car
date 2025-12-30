@@ -7,9 +7,9 @@ namespace Domain.Rules
 {
     public class UserCanCreatePostRule : BusinessRule
     {
-        private readonly User _user;
+        private readonly ApplicationUser _user;
 
-        public UserCanCreatePostRule(User user)
+        public UserCanCreatePostRule(ApplicationUser user)
         {
             _user = user;
         }
@@ -18,7 +18,7 @@ namespace Domain.Rules
 
         public override bool IsBroken()
         {
-            return _user.Status != UserStatus.Active || _user.IsDeleted;
+            return _user.Status != UserStatus.Active || !_user.IsActive;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Domain.Entities.Community.Posts
         public Guid? ParentCommentId { get; set; }
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
         public virtual Comment? ParentComment { get; set; }
         public virtual ICollection<Comment> Replies { get; set; } = new List<Comment>();

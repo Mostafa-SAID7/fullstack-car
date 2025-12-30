@@ -9,7 +9,7 @@ namespace Domain.Entities.Shared.Chat
         public virtual Conversation Conversation { get; set; } = null!;
         
         public Guid UserId { get; set; }
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastReadAt { get; set; }

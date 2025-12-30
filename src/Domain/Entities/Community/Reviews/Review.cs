@@ -23,6 +23,6 @@ namespace Domain.Entities.Community.Reviews
         public int? CarYear { get; set; }
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
     }
 }

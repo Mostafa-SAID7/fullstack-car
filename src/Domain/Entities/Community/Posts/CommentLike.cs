@@ -9,7 +9,7 @@ namespace Domain.Entities.Community.Posts
         public Guid CommentId { get; set; }
 
         // Navigation Properties
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         public virtual Comment Comment { get; set; } = null!;
     }
 }

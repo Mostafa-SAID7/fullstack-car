@@ -14,10 +14,10 @@ namespace Domain.Entities.Shared
         
         // Relationship
         public Guid UserId { get; set; }
-        public virtual User User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
         
         // Optional: Source user (who triggered the notification)
         public Guid? SourceUserId { get; set; }
-        public virtual User? SourceUser { get; set; }
+        public virtual ApplicationUser? SourceUser { get; set; }
     }
 }
