@@ -5,21 +5,20 @@ using Domain.Entities.Identity;
 
 namespace Application.Common.Mappings.Identity.Password
 {
-    public class PasswordMappingProfile : Profile
+    public class PasswordMappingProfile : AutoMapper.Profile
     {
         public PasswordMappingProfile()
         {
-            // Password Reset Token Response
-            CreateMap<ApplicationUser, PasswordResetTokenResponse>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id.ToString()))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
-
-            // Password Change Response
-            CreateMap<ApplicationUser, PasswordChangeResponse>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id.ToString()))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.LastPasswordChange, opt => opt.MapFrom(src => DateTime.UtcNow));
+            // Password Strength Result - no mapping needed as it's created directly
+            
+            // Basic user info for password operations
+            CreateMap<ApplicationUser, object>()
+                .ForMember(dest => dest, opt => opt.MapFrom(src => new 
+                { 
+                    UserId = src.Id.ToString(),
+                    Email = src.Email,
+                    FullName = $"{src.FirstName} {src.LastName}"
+                }));
         }
     }
 }

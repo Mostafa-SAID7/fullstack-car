@@ -134,8 +134,8 @@ namespace WebAPI.Extensions
                     });
                 }
 
-                // Use full type names for schema IDs to avoid naming conflicts
-                options.CustomSchemaIds(type => type.FullName);
+                // Use simple type names for schema IDs for cleaner Swagger documentation
+                options.CustomSchemaIds(type => type.Name);
 
                 // Add JWT authentication to Swagger
                 options.AddSecurityDefinition(
