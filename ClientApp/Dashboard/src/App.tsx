@@ -1,4 +1,5 @@
 import { MainLayout } from './components/layout/MainLayout';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import {
   TrendingUp,
   Users,
@@ -49,12 +50,13 @@ const StatCard = ({ title, value, change, trend, icon: Icon, index }: StatCardPr
 
 function App() {
   return (
-    <MainLayout>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="space-y-10"
-      >
+    <ProtectedRoute requiredRoles={['Admin', 'Moderator']}>
+      <MainLayout>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-10"
+        >
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <motion.div
@@ -203,6 +205,7 @@ function App() {
         </div>
       </motion.div>
     </MainLayout>
+  </ProtectedRoute>
   )
 }
 
