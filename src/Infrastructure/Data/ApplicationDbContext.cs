@@ -22,6 +22,7 @@ namespace Infrastructure.Data
         public DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<SecurityLog> SecurityLogs { get; set; }
 
         // Community Tables
         public DbSet<Post> Posts { get; set; }
@@ -52,6 +53,7 @@ namespace Infrastructure.Data
             builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
             builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
             builder.Entity<RoleClaim>().ToTable("RoleClaims");
+            builder.Entity<SecurityLog>().ToTable("SecurityLogs");
 
             // Apply all configurations
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

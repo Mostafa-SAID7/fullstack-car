@@ -14,6 +14,8 @@ export interface RegisterRequest {
 }
 
 export interface LoginResponse {
+  success: boolean;
+  message: string;
   token: string;
   refreshToken: string;
   user: UserInfo;
@@ -28,7 +30,8 @@ export interface UserInfo {
   profileImageUrl?: string;
   roles: string[];
   isActive: boolean;
-  emailConfirmed: boolean;
+  isEmailConfirmed: boolean;
+  createdAt: string;
 }
 
 export interface RefreshTokenRequest {

@@ -12,7 +12,7 @@ export class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           // Try to refresh token
@@ -52,7 +52,7 @@ export class ApiClient {
           this.handleAuthError();
           throw new Error('Authentication failed');
         }
-        
+
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
@@ -68,7 +68,7 @@ export class ApiClient {
     try {
       const token = localStorage.getItem('token');
       const refreshToken = localStorage.getItem('refreshToken');
-      
+
       if (!token || !refreshToken) {
         return false;
       }
@@ -92,7 +92,7 @@ export class ApiClient {
     } catch (error) {
       console.error('Token refresh failed:', error);
     }
-    
+
     return false;
   }
 
@@ -101,7 +101,7 @@ export class ApiClient {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     localStorage.removeItem('tokenExpiry');
-    
+
     // Redirect to login page
     window.location.href = '/login';
   }
@@ -124,14 +124,24 @@ export class ApiClient {
     });
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+  async patch<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async delete<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'DELETE',
+      body: data ? JSON.stringify(data) : undefined,
+    });
   }
 
   async upload<T>(endpoint: string, formData: FormData): Promise<T> {
     const token = localStorage.getItem('token');
     const headers: HeadersInit = {};
-    
+
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }

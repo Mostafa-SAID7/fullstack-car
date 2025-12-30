@@ -3,12 +3,28 @@ using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 using Infrastructure.Data.Seeds;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddWebAPIServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
+
+// Configure Localization
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var localizationSettings = builder.Configuration.GetSection("Localization");
+    var defaultCulture = localizationSettings["DefaultRequestCulture"] ?? "en-US";
+    var supportedCultures = localizationSettings.GetSection("SupportedCultures").Get<string[]>() ?? new[] { "en-US" };
+
+    options.SetDefaultCulture(defaultCulture)
+           .AddSupportedCultures(supportedCultures)
+           .AddSupportedUICultures(supportedCultures);
+
+    options.FallBackToParentCultures = true;
+    options.FallBackToParentUICultures = true;
+});
 
 var app = builder.Build();
 
@@ -47,6 +63,16 @@ app.UseMiddleware<AntiforgeryMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseMiddleware<RequestLoggingMiddleware>();
+}
+
+
+
+
+// Localization Middleware
+var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+if (localizationOptions != null)
+{
+    app.UseRequestLocalization(localizationOptions.Value);
 }
 
 app.UseAuthentication();

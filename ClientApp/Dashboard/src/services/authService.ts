@@ -1,5 +1,5 @@
 import { apiClient } from './api';
-import {
+import type {
   LoginRequest,
   RegisterRequest,
   LoginResponse,
@@ -8,6 +8,10 @@ import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
   ChangePasswordRequest,
+  UpdateProfileRequest,
+  ProfileResponse,
+  SecurityLogResponse,
+  UserSessionResponse,
   ApiResult
 } from '../types/auth';
 
@@ -78,6 +82,77 @@ export class AuthService {
     return apiClient.post<ApiResult<void>>('/v1/password/change', request);
   }
 
+  async updateProfile(request: UpdateProfileRequest): Promise<ApiResult<UserInfo>> {
+    const response = await apiClient.put<UserInfo>('/v1/profile', request);
+    // Update local storage if user info changed
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      const updatedUser = { ...user, ...response };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      this.currentUser = updatedUser;
+      this.notifyListeners();
+    }
+    return { succeeded: true, data: response } as any;
+  }
+
+  async getProfile(): Promise<ApiResult<ProfileResponse>> {
+    return apiClient.get<ApiResult<ProfileResponse>>('/v1/profile');
+  }
+
+  async getSecurityLogs(page = 1, pageSize = 10): Promise<ApiResult<SecurityLogResponse[]>> {
+    return apiClient.get<ApiResult<SecurityLogResponse[]>>(`/v1/security/logs?page=${page}&pageSize=${pageSize}`);
+  }
+
+  async getActiveSessions(): Promise<ApiResult<UserSessionResponse[]>> {
+    return apiClient.get<ApiResult<UserSessionResponse[]>>('/v1/security/sessions');
+  }
+
+  async revokeSession(sessionId: string): Promise<ApiResult<void>> {
+    return apiClient.delete<ApiResult<void>>(`/v1/security/sessions/${sessionId}`);
+  }
+
+  async revokeAllSessions(): Promise<ApiResult<void>> {
+    return apiClient.delete<ApiResult<void>>('/v1/security/sessions');
+  }
+
+  async getTwoFactorStatus(): Promise<ApiResult<{ isEnabled: boolean }>> {
+    return apiClient.get<ApiResult<{ isEnabled: boolean }>>('/v1/security/2fa/status');
+  }
+
+  async toggleTwoFactor(enable: boolean): Promise<ApiResult<void>> {
+    const endpoint = enable ? '/v1/security/2fa/enable' : '/v1/security/2fa/disable';
+    return apiClient.post<ApiResult<void>>(endpoint);
+  }
+
+  // --- Profile Advanced Methods ---
+
+  async uploadAvatar(file: File): Promise<ApiResult<{ url: string }>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.upload<ApiResult<{ url: string }>>('/v1/profile/avatar', formData);
+  }
+
+  async deleteAvatar(): Promise<ApiResult<void>> {
+    return apiClient.delete<ApiResult<void>>('/v1/profile/avatar');
+  }
+
+  async getPrivacySettings(): Promise<ApiResult<any>> {
+    return apiClient.get<ApiResult<any>>('/v1/profile/privacy');
+  }
+
+  async updatePrivacySettings(request: any): Promise<ApiResult<void>> {
+    return apiClient.put<ApiResult<void>>('/v1/profile/privacy', request);
+  }
+
+  async deactivateAccount(request: { reason: string }): Promise<ApiResult<void>> {
+    return apiClient.post<ApiResult<void>>('/v1/profile/deactivate', request);
+  }
+
+  async deleteAccount(request: { password: string }): Promise<ApiResult<void>> {
+    return apiClient.delete<ApiResult<void>>('/v1/profile/delete', request);
+  }
+
   async logout(): Promise<void> {
     try {
       await apiClient.post<ApiResult<void>>('/v1/auth/logout');
@@ -97,7 +172,7 @@ export class AuthService {
     localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
     localStorage.setItem('tokenExpiry', response.expiresAt);
-    
+
     this.currentUser = response.user;
     this.notifyListeners();
   }
@@ -123,7 +198,7 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     localStorage.removeItem('tokenExpiry');
-    
+
     this.currentUser = null;
     this.notifyListeners();
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OAuthService } from '../../../../core/services/oauth.service';
 
@@ -155,7 +156,7 @@ export class LoginComponent implements OnInit {
     this.error = null;
 
     try {
-      await this.authService.login(this.loginForm.value).toPromise();
+      await firstValueFrom(this.authService.login(this.loginForm.value));
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
       this.error = error.message || 'Login failed. Please try again.';
@@ -166,7 +167,7 @@ export class LoginComponent implements OnInit {
 
   async loginWithGoogle(): Promise<void> {
     try {
-      const google = await this.oauthService.initializeGoogleAuth();
+      await this.oauthService.initializeGoogleAuth();
       // Implement Google OAuth flow
       console.log('Google login not implemented yet');
     } catch (error) {
@@ -181,7 +182,7 @@ export class LoginComponent implements OnInit {
 
   async loginWithFacebook(): Promise<void> {
     try {
-      const fb = await this.oauthService.initializeFacebookAuth();
+      await this.oauthService.initializeFacebookAuth();
       // Implement Facebook OAuth flow
       console.log('Facebook login not implemented yet');
     } catch (error) {

@@ -3,51 +3,129 @@ using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Requests;
 using Application.Features.Identity.Security.DTOs.Requests;
 using Application.Features.Identity.Profile.DTOs.Responses;
+using Microsoft.AspNetCore.Identity;
+using Domain.Entities.Identity;
 
 namespace Infrastructure.Services.Identity.Profile
 {
     public class ProfileService : IProfileService
     {
-        // TODO: Implement profile management service
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ProfileService(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
         
-        public Task<Result<UserProfileResponse>> GetProfileAsync(string userId)
+        public async Task<Result<UserProfileResponse>> GetProfileAsync(string userId)
         {
-            throw new NotImplementedException("ProfileService.GetProfileAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result<UserProfileResponse>.Failure(new[] { "User not found" });
+
+            return Result<UserProfileResponse>.Success(new UserProfileResponse
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfileImageUrl = user.ProfileImageUrl,
+                Bio = user.Bio,
+                IsEmailConfirmed = user.EmailConfirmed,
+                IsTwoFactorEnabled = user.TwoFactorEnabled,
+                CreatedAt = user.CreatedAt
+            });
         }
 
-        public Task<Result<UserProfileResponse>> UpdateProfileAsync(string userId, UpdateProfileRequest request)
+        public async Task<Result<UserProfileResponse>> UpdateProfileAsync(string userId, UpdateProfileRequest request)
         {
-            throw new NotImplementedException("ProfileService.UpdateProfileAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result<UserProfileResponse>.Failure(new[] { "User not found" });
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Bio = request.Bio;
+            user.PhoneNumber = request.PhoneNumber;
+            user.IsEmailPublic = request.IsEmailPublic;
+            user.IsPhonePublic = request.IsPhonePublic;
+            user.AllowDirectMessages = request.AllowDirectMessages;
+            user.ShowOnlineStatus = request.ShowOnlineStatus;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) return Result<UserProfileResponse>.Failure(result.Errors.Select(e => e.Description));
+
+            return await GetProfileAsync(userId);
         }
 
-        public Task<Result<string>> UploadAvatarAsync(string userId, Stream fileStream, string fileName, string contentType)
+        public async Task<Result<string>> UploadAvatarAsync(string userId, Stream fileStream, string fileName, string contentType)
         {
-            throw new NotImplementedException("ProfileService.UploadAvatarAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result<string>.Failure(new[] { "User not found" });
+
+            // In a real app, upload to blob storage
+            user.ProfileImageUrl = $"/images/avatars/{userId}_{fileName}";
+            await _userManager.UpdateAsync(user);
+
+            return Result<string>.Success(user.ProfileImageUrl);
         }
 
-        public Task<Result> DeleteAvatarAsync(string userId)
+        public async Task<Result> DeleteAvatarAsync(string userId)
         {
-            throw new NotImplementedException("ProfileService.DeleteAvatarAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result.Failure(new[] { "User not found" });
+
+            user.ProfileImageUrl = null;
+            var result = await _userManager.UpdateAsync(user);
+
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
         }
 
-        public Task<Result<UserPrivacySettings>> GetPrivacySettingsAsync(string userId)
+        public async Task<Result<UserPrivacySettings>> GetPrivacySettingsAsync(string userId)
         {
-            throw new NotImplementedException("ProfileService.GetPrivacySettingsAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result<UserPrivacySettings>.Failure(new[] { "User not found" });
+
+            return Result<UserPrivacySettings>.Success(new UserPrivacySettings
+            {
+                IsEmailPublic = user.IsEmailPublic,
+                IsPhonePublic = user.IsPhonePublic,
+                AllowDirectMessages = user.AllowDirectMessages,
+                ShowOnlineStatus = user.ShowOnlineStatus
+            });
         }
 
-        public Task<Result> UpdatePrivacySettingsAsync(string userId, UpdatePrivacySettingsRequest request)
+        public async Task<Result> UpdatePrivacySettingsAsync(string userId, UpdatePrivacySettingsRequest request)
         {
-            throw new NotImplementedException("ProfileService.UpdatePrivacySettingsAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result.Failure(new[] { "User not found" });
+
+            user.IsEmailPublic = request.IsEmailPublic;
+            user.IsPhonePublic = request.IsPhonePublic;
+            user.AllowDirectMessages = request.AllowDirectMessages;
+            user.ShowOnlineStatus = request.ShowOnlineStatus;
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
         }
 
-        public Task<Result> DeactivateAccountAsync(string userId, DeactivateAccountRequest request)
+        public async Task<Result> DeactivateAccountAsync(string userId, DeactivateAccountRequest request)
         {
-            throw new NotImplementedException("ProfileService.DeactivateAccountAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result.Failure(new[] { "User not found" });
+
+            user.IsActive = false;
+            user.Status = Domain.Enums.Identity.UserStatus.Deactivated;
+            
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
         }
 
-        public Task<Result> DeleteAccountAsync(string userId, DeleteAccountRequest request)
+        public async Task<Result> DeleteAccountAsync(string userId, DeleteAccountRequest request)
         {
-            throw new NotImplementedException("ProfileService.DeleteAccountAsync needs implementation");
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Result.Failure(new[] { "User not found" });
+
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
         }
     }
 }

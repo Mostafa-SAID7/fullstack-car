@@ -21,7 +21,7 @@ namespace Infrastructure.Services.Localization
 
         public Task<Dictionary<string, string>> GetCategoryResourcesAsync(string language, string category)
         {
-             var cacheKey = $"{category}_{language}";
+            var cacheKey = $"{category}_{language}";
             if (_resourceCache.TryGetValue(cacheKey, out var cached))
             {
                 return Task.FromResult(cached);
@@ -29,8 +29,8 @@ namespace Infrastructure.Services.Localization
 
             // Fallback to English
             var fallbackKey = $"{category}_en-US";
-            return Task.FromResult(_resourceCache.TryGetValue(fallbackKey, out var fallback) 
-                ? fallback 
+            return Task.FromResult(_resourceCache.TryGetValue(fallbackKey, out var fallback)
+                ? fallback
                 : new Dictionary<string, string>());
         }
 
@@ -43,20 +43,20 @@ namespace Infrastructure.Services.Localization
             }
 
             var fallbackKey = "all_en-US";
-            return Task.FromResult(_resourceCache.TryGetValue(fallbackKey, out var fallback) 
-                ? fallback 
+            return Task.FromResult(_resourceCache.TryGetValue(fallbackKey, out var fallback)
+                ? fallback
                 : new Dictionary<string, string>());
         }
 
         public async Task<string> GetTranslationAsync(string language, string key)
         {
-             var resources = await GetResourcesAsync(language);
+            var resources = await GetResourcesAsync(language);
             return resources.TryGetValue(key, out var translation) ? translation : key;
         }
 
         public Task<bool> ValidateTranslationAsync(string language, string key, string value)
         {
-             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value))
                 return Task.FromResult(false);
 
             if (language.StartsWith("ar-") && !ContainsArabicCharacters(value))
@@ -73,7 +73,7 @@ namespace Infrastructure.Services.Localization
                 {
                     var allResources = new Dictionary<string, string>();
                     LoadHierarchicalResources(language, allResources);
-                    
+
                     var cacheKey = $"all_{language}";
                     _resourceCache[cacheKey] = allResources;
                 }
@@ -88,8 +88,8 @@ namespace Infrastructure.Services.Localization
         {
             var resourceDirectories = new[]
             {
-                "Admin/Dashboard", "Admin/Management", "Admin/Moderation",
-                "Community/Posts", "Community/Groups", "Community/Social", "Community/Reviews",
+                "Dashboard/Admin/Dashboard", "Dashboard/Admin/Management", "Dashboard/Admin/Moderation",
+                "Main/Community/Posts", "Main/Community/Groups", "Main/Community/Social", "Main/Community/Reviews",
                 "Identity/Auth", "Identity/OAuth", "Identity/Password", "Identity/Profile", "Identity/Security",
                 "AIAgent",
                 "Shared/Common", "Shared/Files", "Shared/Localization"
@@ -105,7 +105,7 @@ namespace Infrastructure.Services.Localization
                         var jsonContent = File.ReadAllText(filePath);
                         var jsonDocument = JsonDocument.Parse(jsonContent);
                         var resources = FlattenJsonObject(jsonDocument.RootElement, directory.Replace("/", ".").ToLower());
-                        
+
                         foreach (var kvp in resources)
                         {
                             allResources[kvp.Key] = kvp.Value;
@@ -128,8 +128,8 @@ namespace Infrastructure.Services.Localization
 
             foreach (var property in element.EnumerateObject())
             {
-                var key = string.IsNullOrEmpty(prefix) 
-                    ? property.Name 
+                var key = string.IsNullOrEmpty(prefix)
+                    ? property.Name
                     : $"{prefix}.{property.Name}";
 
                 if (property.Value.ValueKind == JsonValueKind.Object)
