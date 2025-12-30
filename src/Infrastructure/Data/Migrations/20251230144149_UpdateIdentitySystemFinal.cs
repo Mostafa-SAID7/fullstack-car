@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateIdentitySystem : Migration
+    public partial class UpdateIdentitySystemFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,6 +61,10 @@ namespace Infrastructure.Data.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "FK_PostReports_DomainUsers_UserId",
+                table: "PostReports");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PostReports_Posts_PostId",
                 table: "PostReports");
 
             migrationBuilder.DropForeignKey(
@@ -149,6 +153,24 @@ namespace Infrastructure.Data.Migrations
                 table: "RefreshTokens",
                 type: "nvarchar(max)",
                 nullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Reason",
+                table: "PostReports",
+                type: "nvarchar(1000)",
+                maxLength: 1000,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Category",
+                table: "PostReports",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserTokens",
@@ -305,20 +327,17 @@ namespace Infrastructure.Data.Migrations
                         name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_AssignedBy",
                         column: x => x.AssignedBy,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -359,6 +378,16 @@ namespace Infrastructure.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostReports_Category",
+                table: "PostReports",
+                column: "Category");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostReports_CreatedAt",
+                table: "PostReports",
+                column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_ClaimType",
@@ -580,12 +609,18 @@ namespace Infrastructure.Data.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_PostReports_Posts_PostId",
+                table: "PostReports",
+                column: "PostId",
+                principalTable: "Posts",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_PostReports_Users_UserId",
                 table: "PostReports",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Posts_Users_UserId",
@@ -593,7 +628,7 @@ namespace Infrastructure.Data.Migrations
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RefreshTokens_Users_UserId",
@@ -692,6 +727,10 @@ namespace Infrastructure.Data.Migrations
                 table: "PostLikes");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_PostReports_Posts_PostId",
+                table: "PostReports");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_PostReports_Users_UserId",
                 table: "PostReports");
 
@@ -745,6 +784,14 @@ namespace Infrastructure.Data.Migrations
             migrationBuilder.DropTable(
                 name: "Users");
 
+            migrationBuilder.DropIndex(
+                name: "IX_PostReports_Category",
+                table: "PostReports");
+
+            migrationBuilder.DropIndex(
+                name: "IX_PostReports_CreatedAt",
+                table: "PostReports");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserTokens",
                 table: "UserTokens");
@@ -790,6 +837,24 @@ namespace Infrastructure.Data.Migrations
                 name: "IX_UserClaims_UserId",
                 table: "AspNetUserClaims",
                 newName: "IX_AspNetUserClaims_UserId");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Reason",
+                table: "PostReports",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(1000)",
+                oldMaxLength: 1000);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Category",
+                table: "PostReports",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUserTokens",
@@ -1067,6 +1132,14 @@ namespace Infrastructure.Data.Migrations
                 table: "PostReports",
                 column: "UserId",
                 principalTable: "DomainUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_PostReports_Posts_PostId",
+                table: "PostReports",
+                column: "PostId",
+                principalTable: "Posts",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 

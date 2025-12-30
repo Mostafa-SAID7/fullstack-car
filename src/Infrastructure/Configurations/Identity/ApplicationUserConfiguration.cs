@@ -48,11 +48,11 @@ namespace Infrastructure.Configurations.Identity
             builder.HasIndex(u => u.IsActive);
             builder.HasIndex(u => new { u.ExternalProvider, u.ExternalProviderId });
 
-            // Configure relationships
+            // Configure relationships - Use Restrict for Posts to avoid cascade conflicts
             builder.HasMany(u => u.Posts)
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(u => u.Groups)
                 .WithOne(g => g.Owner)

@@ -99,9 +99,9 @@ namespace WebAPI.Controllers.Identity.Security
         // Account Lockout (Admin only)
         [Authorize(Roles = "Admin")]
         [HttpPost("lock/{userId}")]
-        public async Task<IActionResult> LockAccount(string userId, [FromBody] TimeSpan lockoutDuration, [FromBody] string reason)
+        public async Task<IActionResult> LockAccount(string userId, [FromBody] LockAccountRequest request)
         {
-            var result = await _securityService.LockAccountAsync(userId, lockoutDuration, reason);
+            var result = await _securityService.LockAccountAsync(userId, request.LockoutDuration, request.Reason);
             return result.Succeeded ? Ok(new { Message = "Account locked successfully" }) : BadRequest(result.Errors);
         }
 

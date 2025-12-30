@@ -18,21 +18,21 @@ namespace Infrastructure.Configurations.Identity
             builder.HasIndex(ur => ur.ExpiresAt);
             builder.HasIndex(ur => ur.AssignedAt);
 
-            // Relationships
+            // Relationships - Use NoAction to avoid cascade delete conflicts
             builder.HasOne(ur => ur.User)
                 .WithMany()
                 .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(ur => ur.AssignedByUser)
                 .WithMany()
                 .HasForeignKey(ur => ur.AssignedBy)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
