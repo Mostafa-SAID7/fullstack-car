@@ -19,7 +19,7 @@ namespace Infrastructure.Services.Identity.Security
             _userManager = userManager;
             _context = context;
         }
-        
+
         public async Task<Result<TwoFactorSetupResponse>> EnableTwoFactorAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -65,7 +65,7 @@ namespace Infrastructure.Services.Identity.Security
                     SessionId = s.Id.ToString(),
                     DeviceInfo = s.DeviceInfo,
                     IpAddress = s.IpAddress,
-                    LastActivity = s.LastActivityAt,
+                    LastActivity = s.LastActivity,
                     CreatedAt = s.CreatedAt,
                     ExpiresAt = s.ExpiresAt,
                     IsActive = s.IsActive

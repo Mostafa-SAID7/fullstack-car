@@ -40,4 +40,20 @@ export class PostService {
     addComment(id: string, content: string): Observable<Result<any>> {
         return this.http.post<Result<any>>(`${this.apiUrl}/${id}/comments`, { content });
     }
+
+    deletePost(id: string): Observable<Result<any>> {
+        return this.http.delete<Result<any>>(`${this.apiUrl}/${id}`);
+    }
+
+    updatePost(id: string, request: any): Observable<Result<Post>> {
+        return this.http.put<Result<Post>>(`${this.apiUrl}/${id}`, request);
+    }
+
+    reportPost(id: string, reason: string, description?: string): Observable<Result<any>> {
+        return this.http.post<Result<any>>(`${this.apiUrl}/${id}/report`, { reason, description });
+    }
+
+    getPostComments(id: string, pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<any>> {
+        return this.http.get<PaginatedResult<any>>(`${this.apiUrl}/${id}/comments?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+    }
 }

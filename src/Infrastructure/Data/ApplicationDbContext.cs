@@ -31,6 +31,7 @@ namespace Infrastructure.Data
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
+        public DbSet<UserFriend> FriendRequests { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }

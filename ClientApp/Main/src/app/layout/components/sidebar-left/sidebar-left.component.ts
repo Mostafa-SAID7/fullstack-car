@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-sidebar-left',
@@ -8,4 +9,14 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [CommonModule, TranslateModule],
     templateUrl: './sidebar-left.component.html'
 })
-export class SidebarLeftComponent { }
+export class SidebarLeftComponent implements OnInit {
+    currentUser: any;
+
+    constructor(private authService: AuthService) { }
+
+    ngOnInit(): void {
+        this.authService.currentUser$.subscribe((user: any) => {
+            this.currentUser = user;
+        });
+    }
+}

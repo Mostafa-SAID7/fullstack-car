@@ -16,7 +16,7 @@ namespace Infrastructure.Services.Identity.Profile
         {
             _userManager = userManager;
         }
-        
+
         public async Task<Result<UserProfileResponse>> GetProfileAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -44,14 +44,11 @@ namespace Infrastructure.Services.Identity.Profile
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.Bio = request.Bio;
-            user.PhoneNumber = request.PhoneNumber;
-            user.IsEmailPublic = request.IsEmailPublic;
-            user.IsPhonePublic = request.IsPhonePublic;
-            user.AllowDirectMessages = request.AllowDirectMessages;
-            user.ShowOnlineStatus = request.ShowOnlineStatus;
+            // Note: UpdateProfileRequest doesn't have PhoneNumber, IsEmailPublic, etc.
+            // These would be updated via UpdatePrivacySettingsAsync or other methods.
 
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded) return Result<UserProfileResponse>.Failure(result.Errors.Select(e => e.Description));
+            if (!result.Succeeded) return Result<UserProfileResponse>.Failure(result.Errors.Select(e => e.Description).ToArray());
 
             return await GetProfileAsync(userId);
         }
@@ -104,7 +101,7 @@ namespace Infrastructure.Services.Identity.Profile
             user.ShowOnlineStatus = request.ShowOnlineStatus;
 
             var result = await _userManager.UpdateAsync(user);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
 
         public async Task<Result> DeactivateAccountAsync(string userId, DeactivateAccountRequest request)
@@ -113,10 +110,10 @@ namespace Infrastructure.Services.Identity.Profile
             if (user == null) return Result.Failure(new[] { "User not found" });
 
             user.IsActive = false;
-            user.Status = Domain.Enums.Identity.UserStatus.Deactivated;
-            
+            user.Status = Domain.Enums.Identity.UserStatus.Inactive;
+
             var result = await _userManager.UpdateAsync(user);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
 
         public async Task<Result> DeleteAccountAsync(string userId, DeleteAccountRequest request)
@@ -125,7 +122,7 @@ namespace Infrastructure.Services.Identity.Profile
             if (user == null) return Result.Failure(new[] { "User not found" });
 
             var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
     }
 }

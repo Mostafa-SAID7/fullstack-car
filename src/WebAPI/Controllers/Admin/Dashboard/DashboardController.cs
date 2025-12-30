@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
+using Application.Common.Interfaces.Data;
+using System.Diagnostics;
 
 namespace WebAPI.Controllers.Admin.Dashboard
 {
@@ -10,40 +12,77 @@ namespace WebAPI.Controllers.Admin.Dashboard
     [Route("api/v{version:apiVersion}/admin/dashboard")]
     public class DashboardController : BaseController
     {
+        private readonly IApplicationDbContext _context;
+
+        public DashboardController(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetDashboard()
         {
-            // Admin dashboard data
+            // Admin dashboard data with actual counts
             var dashboardData = new
             {
-                TotalUsers = 0, // Implement actual counts
-                TotalPosts = 0,
-                TotalGroups = 0,
-                TotalReviews = 0,
-                PendingApprovals = 0,
-                FlaggedContent = 0,
-                ActiveUsers = 0,
+                TotalUsers = await _context.Users.CountAsync(),
+                TotalPosts = await _context.Posts.CountAsync(),
+                TotalGroups = await _context.Groups.CountAsync(),
+                TotalReviews = await _context.Reviews.CountAsync(),
+                PendingApprovals = 0, // Implement if there's an approval system
+                FlaggedContent = 0, // Implement if there's a flagging system
+                ActiveUsers = await _context.Users.CountAsync(u => u.IsActive),
                 SystemHealth = "Good",
                 LastUpdated = DateTime.UtcNow
             };
-            
+
             return Ok(dashboardData);
         }
 
         [HttpGet("analytics")]
         public async Task<IActionResult> GetAnalytics([FromQuery] string period = "week")
         {
-            // Analytics data for different periods
+            var now = DateTime.UtcNow;
+            var startDate = period switch
+            {
+                "day" => now.AddDays(-1),
+                "week" => now.AddDays(-7),
+                "month" => now.AddMonths(-1),
+                _ => now.AddDays(-7)
+            };
+
+            var previousStartDate = period switch
+            {
+                "day" => startDate.AddDays(-1),
+                "week" => startDate.AddDays(-7),
+                "month" => startDate.AddMonths(-1),
+                _ => startDate.AddDays(-7)
+            };
+
+            // Calculate User Growth
+            var currentUsers = await _context.Users.CountAsync(u => u.CreatedAt >= startDate);
+            var previousUsers = await _context.Users.CountAsync(u => u.CreatedAt >= previousStartDate && u.CreatedAt < startDate);
+            var userGrowthChange = previousUsers == 0 ? 100.0 : ((double)(currentUsers - previousUsers) / previousUsers) * 100;
+
+            // Calculate Post Activity
+            var currentPosts = await _context.Posts.CountAsync(p => p.CreatedAt >= startDate);
+            var previousPosts = await _context.Posts.CountAsync(p => p.CreatedAt >= previousStartDate && p.CreatedAt < startDate);
+            var postActivityChange = previousPosts == 0 ? 100.0 : ((double)(currentPosts - previousPosts) / previousPosts) * 100;
+
             var analytics = new
             {
                 Period = period,
-                UserGrowth = new { Current = 150, Previous = 120, Change = 25.0 },
-                PostActivity = new { Current = 89, Previous = 76, Change = 17.1 },
-                Engagement = new { Current = 4.2, Previous = 3.8, Change = 10.5 },
+                UserGrowth = new { Current = await _context.Users.CountAsync(), Growth = currentUsers, Change = Math.Round(userGrowthChange, 1) },
+                PostActivity = new { Current = await _context.Posts.CountAsync(), Activity = currentPosts, Change = Math.Round(postActivityChange, 1) },
+                Engagement = new { Current = 0, Change = 0 }, // Implement engagement logic later
                 TopCategories = new[] { "Maintenance", "Reviews", "General Discussion" },
-                RecentActivity = new List<object>()
+                RecentActivities = await _context.Posts
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(5)
+                    .Select(p => new { Type = "Post Created", Title = p.Title, User = p.User.Email, Timestamp = p.CreatedAt })
+                    .ToListAsync()
             };
-            
+
             return Ok(analytics);
         }
 
@@ -53,33 +92,51 @@ namespace WebAPI.Controllers.Admin.Dashboard
             var systemInfo = new
             {
                 Version = "1.0.0",
-                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
+                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development",
                 ServerTime = DateTime.UtcNow,
-                DatabaseStatus = "Connected", // Implement actual health check
+                DatabaseStatus = "Connected",
                 AIServiceStatus = "Connected",
                 CacheStatus = "Connected",
-                Uptime = TimeSpan.FromHours(24).ToString(@"dd\.hh\:mm\:ss")
+                Uptime = (DateTime.UtcNow - global::System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString(@"dd\.hh\:mm\:ss")
             };
-            
+
             return Ok(systemInfo);
         }
 
         [HttpGet("recent-activity")]
         public async Task<IActionResult> GetRecentActivity([FromQuery] int limit = 10)
         {
-            // Recent system activity for admin monitoring
-            var activities = new
-            {
-                Activities = new List<object>
+            var activities = await _context.Posts
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(limit)
+                .Select(p => new
                 {
-                    new { Type = "User Registration", User = "john.doe@email.com", Timestamp = DateTime.UtcNow.AddMinutes(-5) },
-                    new { Type = "Post Created", User = "jane.smith@email.com", Timestamp = DateTime.UtcNow.AddMinutes(-12) },
-                    new { Type = "Group Created", User = "mike.wilson@email.com", Timestamp = DateTime.UtcNow.AddMinutes(-18) }
-                },
-                TotalCount = 3
-            };
-            
-            return Ok(activities);
+                    Type = "Post Created",
+                    User = p.User.Email,
+                    Title = p.Title,
+                    Timestamp = p.CreatedAt
+                })
+                .ToListAsync();
+
+            var userRegistrations = await _context.Users
+                .OrderByDescending(u => u.CreatedAt)
+                .Take(limit)
+                .Select(u => new
+                {
+                    Type = "User Registered",
+                    User = u.Email,
+                    Title = $"{u.FirstName} {u.LastName}",
+                    Timestamp = u.CreatedAt
+                })
+                .ToListAsync();
+
+            var combined = activities.Cast<object>()
+                .Concat(userRegistrations.Cast<object>())
+                .OrderByDescending(a => (DateTime)((dynamic)a).Timestamp)
+                .Take(limit)
+                .ToList();
+
+            return Ok(new { Activities = combined, TotalCount = combined.Count });
         }
 
         [HttpGet("alerts")]
@@ -98,7 +155,7 @@ namespace WebAPI.Controllers.Admin.Dashboard
                     new { Message = "Daily backup completed successfully", Timestamp = DateTime.UtcNow.AddHours(-2) }
                 }
             };
-            
+
             return Ok(alerts);
         }
 
@@ -115,8 +172,30 @@ namespace WebAPI.Controllers.Admin.Dashboard
                 ResponseTimes = new { Average = 120, P95 = 250, P99 = 450 },
                 ErrorRate = 0.02
             };
-            
+
             return Ok(performance);
+        }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers([FromQuery] int limit = 10, [FromQuery] int offset = 0)
+        {
+            var users = await _context.Users
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip(offset)
+                .Take(limit)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    Name = $"{u.FirstName} {u.LastName}",
+                    Email = u.Email,
+                    Status = u.IsActive ? "Active" : "Inactive",
+                    Joined = u.CreatedAt.ToString("yyyy-MM-dd")
+                })
+                .ToListAsync();
+
+            var totalCount = await _context.Users.CountAsync();
+
+            return Ok(new { Users = users, TotalCount = totalCount });
         }
     }
 }

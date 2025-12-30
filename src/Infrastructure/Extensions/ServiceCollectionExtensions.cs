@@ -16,6 +16,7 @@ using Infrastructure.Data.Seeds.Community;
 using Infrastructure.Data.Seeds.Community.Groups;
 using Infrastructure.Data.Seeds.Community.Posts;
 using Infrastructure.Data.Seeds.Community.Reviews;
+using Infrastructure.Data.Seeds.Community.Social;
 using Infrastructure.Data.Seeds.Shared;
 using Infrastructure.Repositories;
 using Infrastructure.Services.Identity.Core;
@@ -166,6 +167,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<GroupsSeeder>();
             services.AddScoped<PostsSeeder>();
             services.AddScoped<ReviewsSeeder>();
+            services.AddScoped<SocialSeeder>();
             services.AddScoped<SharedSeeder>();
 
             return services;

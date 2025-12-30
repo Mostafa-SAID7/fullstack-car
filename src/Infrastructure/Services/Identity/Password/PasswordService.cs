@@ -2,6 +2,8 @@ using Application.Common.Interfaces.Identity.Password;
 using Application.Common.Models;
 using Application.Features.Identity.Password.DTOs.Requests;
 using Application.Features.Identity.Password.DTOs.Responses;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Services.Identity.Password
 {
@@ -13,14 +15,14 @@ namespace Infrastructure.Services.Identity.Password
         {
             _userManager = userManager;
         }
-        
+
         public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return Result.Failure(new[] { "User not found" });
 
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
 
         public async Task<Result> ForgotPasswordAsync(ForgotPasswordRequest request)
@@ -38,8 +40,8 @@ namespace Infrastructure.Services.Identity.Password
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null) return Result.Failure(new[] { "User not found" });
 
-            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
 
         public async Task<Result> ValidatePasswordAsync(string password)
@@ -47,7 +49,7 @@ namespace Infrastructure.Services.Identity.Password
             // Simple validation for now
             if (string.IsNullOrEmpty(password) || password.Length < 6)
                 return Result.Failure(new[] { "Password must be at least 6 characters" });
-            
+
             return Result.Success();
         }
 
@@ -63,7 +65,7 @@ namespace Infrastructure.Services.Identity.Password
             return Result<PasswordStrengthResult>.Success(new PasswordStrengthResult
             {
                 Score = score,
-                Suggestions = score < 4 ? new[] { "Use a longer password with mix of cases, numbers and symbols" } : Array.Empty<string>()
+                Suggestions = score < 4 ? new List<string> { "Use a longer password with mix of cases, numbers and symbols" } : new List<string>()
             });
         }
 
@@ -72,8 +74,8 @@ namespace Infrastructure.Services.Identity.Password
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return Result.Failure(new[] { "User not found" });
 
-            var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
-            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description));
+            var result = await _userManager.AddPasswordAsync(user, request.Password);
+            return result.Succeeded ? Result.Success() : Result.Failure(result.Errors.Select(e => e.Description).ToArray());
         }
 
         public async Task<Result<bool>> HasPasswordAsync(string userId)

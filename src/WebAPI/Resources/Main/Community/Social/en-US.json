@@ -13,7 +13,15 @@
     "cancelRequest": "Cancel Request",
     "blockUser": "Block User",
     "unblockUser": "Unblock User",
-    "reportUser": "Report User"
+    "reportUser": "Report User",
+    "noFriends": "No friends found",
+    "since": "Friend since"
+  },
+  "social": {
+    "requests": "Friend Requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "noRequests": "No pending requests"
   },
   "messaging": {
     "messages": "Messages",

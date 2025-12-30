@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using Application.Features.Community.Friends.Commands;
 using Application.Features.Community.Friends.DTOs;
 using Application.Features.Community.Friends.Queries;
-
 using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.Social
@@ -37,11 +36,11 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new GetFriendsQuery 
-            { 
-                UserId = CurrentUserGuid, 
-                PageNumber = page, 
-                PageSize = pageSize 
+            var result = await Mediator.Send(new GetFriendsQuery
+            {
+                UserId = CurrentUserGuid,
+                PageNumber = page,
+                PageSize = pageSize
             });
 
             return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
@@ -54,11 +53,11 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new GetFriendRequestsQuery 
-            { 
-                UserId = CurrentUserGuid, 
-                PageNumber = page, 
-                PageSize = pageSize 
+            var result = await Mediator.Send(new GetFriendRequestsQuery
+            {
+                UserId = CurrentUserGuid,
+                PageNumber = page,
+                PageSize = pageSize
             });
 
             return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
@@ -69,10 +68,10 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new SendFriendRequestCommand 
-            { 
-                UserId = CurrentUserGuid, 
-                FriendId = friendId 
+            var result = await Mediator.Send(new SendFriendRequestCommand
+            {
+                UserId = CurrentUserGuid,
+                FriendId = friendId
             });
 
             return result.Succeeded ? Ok(new { Message = "Friend request sent successfully" }) : BadRequest(result.Errors);
@@ -83,10 +82,10 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new AcceptFriendRequestCommand 
-            { 
-                RequestId = requestId, 
-                UserId = CurrentUserGuid 
+            var result = await Mediator.Send(new AcceptFriendRequestCommand
+            {
+                RequestId = requestId,
+                UserId = CurrentUserGuid
             });
 
             return result.Succeeded ? Ok(new { Message = "Friend request accepted" }) : BadRequest(result.Errors);
@@ -97,10 +96,10 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new DeclineFriendRequestCommand 
-            { 
-                RequestId = requestId, 
-                UserId = CurrentUserGuid 
+            var result = await Mediator.Send(new DeclineFriendRequestCommand
+            {
+                RequestId = requestId,
+                UserId = CurrentUserGuid
             });
 
             return result.Succeeded ? Ok(new { Message = "Friend request declined" }) : BadRequest(result.Errors);
@@ -111,10 +110,10 @@ namespace WebAPI.Controllers.Community.Social
         {
             if (CurrentUserGuid == Guid.Empty) return Unauthorized();
 
-            var result = await Mediator.Send(new RemoveFriendCommand 
-            { 
-                UserId = CurrentUserGuid, 
-                FriendId = friendId 
+            var result = await Mediator.Send(new RemoveFriendCommand
+            {
+                UserId = CurrentUserGuid,
+                FriendId = friendId
             });
 
             return result.Succeeded ? Ok(new { Message = "Friend removed successfully" }) : BadRequest(result.Errors);

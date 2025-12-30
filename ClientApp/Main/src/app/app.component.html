@@ -4,11 +4,11 @@
 
     <!-- Main Layout Container: Exactly fills viewport minus header -->
     <div
-        class="flex-1 grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6 max-w-[1920px] mx-auto w-full h-[calc(100vh-3.5rem)] mt-14 px-4 overflow-hidden bg-background/50">
+        class="flex-1 grid grid-cols-1 xl:grid-cols-[240px_1fr_240px] gap-6 w-full h-[calc(100vh-3.5rem)] mt-14 overflow-hidden bg-background/50">
 
         <!-- Left Sidebar -->
         <aside
-            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 custom-scroll border-r border-border/10">
+            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 pl-4 custom-scroll border-r border-border/10">
             <app-sidebar-left class="block animate-fade-in"></app-sidebar-left>
         </aside>
 
@@ -24,7 +24,7 @@
 
         <!-- Right Sidebar -->
         <aside
-            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 custom-scroll border-l border-border/10">
+            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 pr-4 custom-scroll border-l border-border/10">
             <app-sidebar-right class="block animate-fade-in"></app-sidebar-right>
         </aside>
     </div>
@@ -37,7 +37,7 @@
 
         <!-- Menu Content -->
         <div
-            class="absolute right-0 top-0 h-full w-[280px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 overflow-y-auto">
+            class="absolute right-0 top-0 h-full w-[240px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 overflow-y-auto">
             <div class="mb-4">
                 <app-sidebar-left></app-sidebar-left>
             </div>

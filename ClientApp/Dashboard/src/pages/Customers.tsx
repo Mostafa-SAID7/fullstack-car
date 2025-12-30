@@ -1,16 +1,37 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { UserPlus, Search, Filter } from 'lucide-react';
+import { UserPlus, Search, Filter, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { adminService } from '../services/adminService';
+import type { User } from '../services/adminService';
 
 export const Customers = () => {
   const { t } = useTranslation();
-  const customers = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active', joined: '2024-01-15' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Active', joined: '2024-02-20' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com', status: 'Inactive', joined: '2024-03-10' },
-    { id: 4, name: 'Sarah Wilson', email: 'sarah@example.com', status: 'Active', joined: '2024-04-05' },
-    { id: 5, name: 'David Brown', email: 'david@example.com', status: 'Pending', joined: '2024-04-25' },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const data = await adminService.getUsers(20);
+        setUsers(data.users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -65,9 +86,9 @@ export const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {customers.map((customer, index) => (
+              {users.map((userItem: User, index: number) => (
                 <motion.tr
-                  key={customer.id}
+                  key={userItem.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -76,21 +97,21 @@ export const Customers = () => {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-bold text-primary">
-                        {customer.name.split(' ').map(n => n[0]).join('')}
+                        {userItem.name.split(' ').map((n: string) => n[0]).join('')}
                       </div>
-                      <span className="font-medium">{customer.name}</span>
+                      <span className="font-medium">{userItem.name}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-muted-foreground">{customer.email}</td>
+                  <td className="p-4 text-muted-foreground">{userItem.email}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${customer.status === 'Active' ? 'bg-green-500/10 text-green-500' :
-                      customer.status === 'Inactive' ? 'bg-red-500/10 text-red-500' :
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${userItem.status === 'Active' ? 'bg-green-500/10 text-green-500' :
+                      userItem.status === 'Inactive' ? 'bg-red-500/10 text-red-500' :
                         'bg-yellow-500/10 text-yellow-500'
                       }`}>
-                      {customer.status}
+                      {userItem.status}
                     </span>
                   </td>
-                  <td className="p-4 text-muted-foreground">{customer.joined}</td>
+                  <td className="p-4 text-muted-foreground">{userItem.joined}</td>
                   <td className="p-4">
                     <button className="text-primary hover:text-primary/80 font-medium">
                       Edit

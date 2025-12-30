@@ -1,30 +1,75 @@
-<div class="fb-card p-5 animate-in">
-    <div class="flex gap-3 mb-4">
+<div class="fb-card p-5 animate-in relative overflow-hidden">
+    <!-- Initial State -->
+    <div *ngIf="!isExpanded" class="flex gap-3">
         <div
-            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary/20 to-primary/5 flex items-center justify-center text-primary font-black border border-primary/10 shadow-sm">
-            JD</div>
-        <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary/20 to-primary/5 flex items-center justify-center text-primary font-black border border-primary/10 shadow-sm overflow-hidden">
+            <img *ngIf="currentUser?.profileImageUrl" [src]="currentUser.profileImageUrl"
+                class="w-full h-full object-cover">
+            <span *ngIf="!currentUser?.profileImageUrl">{{ currentUser?.firstName?.[0] || 'U' }}{{
+                currentUser?.lastName?.[0] || 'P' }}</span>
+        </div>
+        <div (click)="toggleExpand()"
             class="flex-1 bg-secondary/40 rounded-xl px-4 flex items-center cursor-pointer hover:bg-secondary/60 hover:shadow-inner transition-all duration-300 group border border-transparent hover:border-border/20">
-            <span class="text-sm text-muted-foreground/80 group-hover:text-foreground transition-colors">{{
-                'main.community.posts.posts.whatsOnYourMind' | translate:{'0': 'John'} }}</span>
+            <span class="text-sm text-muted-foreground/80 group-hover:text-foreground transition-colors">
+                {{ 'main.community.posts.posts.whatsOnYourMind' | translate:{'0': currentUser?.firstName || 'User'} }}
+            </span>
         </div>
     </div>
-    <hr class="border-border/20 mx-2">
-    <div class="flex mt-3 gap-3">
-        <button
-            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-red-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-red-500 group">
-            <i class="fa-solid fa-video text-red-500 scale-110 group-hover:scale-125 transition-transform"></i>
-            {{ 'main.community.posts.posts.liveVideo' | translate }}
-        </button>
-        <button
-            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-emerald-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-emerald-500 group">
-            <i class="fa-solid fa-images text-emerald-500 scale-110 group-hover:scale-125 transition-transform"></i>
-            {{ 'main.community.posts.posts.photoVideo' | translate }}
-        </button>
-        <button
-            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-amber-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-amber-500 group">
-            <i class="fa-solid fa-face-smile text-amber-500 scale-110 group-hover:scale-125 transition-transform"></i>
-            {{ 'main.community.posts.posts.feelingActivity' | translate }}
-        </button>
+
+    <!-- Expanded Form State -->
+    <form *ngIf="isExpanded" [formGroup]="postForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-black uppercase tracking-widest text-primary">{{ 'main.community.posts.create.title'
+                | translate }}</h3>
+            <button type="button" (click)="toggleExpand()"
+                class="text-muted-foreground hover:text-primary transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="space-y-3">
+            <input formControlName="title" type="text"
+                [placeholder]="'main.community.posts.create.placeholderTitle' | translate"
+                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+
+            <textarea formControlName="content" rows="4"
+                [placeholder]="'main.community.posts.create.placeholderContent' | translate"
+                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all resize-none"></textarea>
+
+            <input formControlName="imageUrl" type="text"
+                [placeholder]="'main.community.posts.create.placeholderImage' | translate"
+                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+            <button type="submit" [disabled]="postForm.invalid || isSubmitting"
+                class="flex-1 bg-primary text-white font-black py-3 rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 uppercase tracking-widest text-[11px]">
+                <span *ngIf="!isSubmitting">{{ 'main.community.posts.create.submit' | translate }}</span>
+                <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>{{
+                    'main.community.posts.create.submitting' | translate }}</span>
+            </button>
+        </div>
+    </form>
+
+    <div *ngIf="!isExpanded">
+        <hr class="border-border/20 mx-2 my-4">
+        <div class="flex gap-3">
+            <button (click)="toggleExpand()"
+                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-red-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-red-500 group">
+                <i class="fa-solid fa-video text-red-500 scale-110 group-hover:scale-125 transition-transform"></i>
+                {{ 'main.community.posts.posts.liveVideo' | translate }}
+            </button>
+            <button (click)="toggleExpand()"
+                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-emerald-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-emerald-500 group">
+                <i class="fa-solid fa-images text-emerald-500 scale-110 group-hover:scale-125 transition-transform"></i>
+                {{ 'main.community.posts.posts.photoVideo' | translate }}
+            </button>
+            <button (click)="toggleExpand()"
+                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-amber-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-amber-500 group">
+                <i
+                    class="fa-solid fa-face-smile text-amber-500 scale-110 group-hover:scale-125 transition-transform"></i>
+                {{ 'main.community.posts.posts.feelingActivity' | translate }}
+            </button>
+        </div>
     </div>
 </div>

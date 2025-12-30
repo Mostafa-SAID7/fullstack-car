@@ -140,13 +140,15 @@
 
     html {
         scroll-behavior: smooth;
-        overflow-x: hidden;
+        overflow: hidden;
+        height: 100%;
     }
 
     body {
         @apply font-sans bg-background text-foreground transition-colors duration-300 antialiased;
         font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
-        overflow-x: hidden;
+        overflow: hidden;
+        height: 100%;
     }
 }
 

@@ -19,6 +19,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<PostReport> PostReports { get; }
         DbSet<Review> Reviews { get; }
         DbSet<UserFriend> UserFriends { get; }
+        DbSet<UserFriend> FriendRequests { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

@@ -15,6 +15,12 @@
     "private": "Private Group",
     "secret": "Secret Group"
   },
+  "publicLabel": "Public",
+  "privateLabel": "Private",
+  "membersLabel": "Members",
+  "joinLabel": "Join",
+  "suggested": "Suggested",
+  "noGroups": "No groups found",
   "members": {
     "title": "Members",
     "admins": "Administrators",

@@ -1,34 +1,51 @@
-<div class="flex flex-col p-2 space-y-0.5 animate-fade-in">
-    <div
-        class="flex items-center justify-between text-muted-foreground/60 font-black px-4 mb-4 tracking-[0.15em] text-[10px] uppercase">
-        <span>{{ 'shared.common.common.contacts' | translate }}</span>
-        <div class="flex gap-4 text-sm opacity-60">
-            <i class="fa-solid fa-video hover:text-primary cursor-pointer transition-all"></i>
-            <i class="fa-solid fa-search hover:text-primary cursor-pointer transition-all"></i>
-            <i class="fa-solid fa-ellipsis hover:text-primary cursor-pointer transition-all"></i>
-        </div>
-    </div>
+<div class="flex flex-col p-2 space-y-4 animate-fade-in">
+    <!-- Friend Requests -->
+    <app-friend-requests></app-friend-requests>
 
-    <div class="fb-sidebar-item group relative" *ngFor="let user of [1,2,3,4,5]; let i = index">
-        <div class="relative">
-            <div
-                class="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-background border border-border/50 flex items-center justify-center text-[10px] font-black text-muted-foreground group-hover:border-primary/30 group-hover:text-primary transition-all duration-300 shadow-sm">
-                CF{{user}}</div>
-            <div
-                class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-background rounded-full shadow-lg ring-1 ring-emerald-500/20">
+    <!-- Contacts / Friends List -->
+    <div class="space-y-0.5">
+        <div
+            class="flex items-center justify-between text-muted-foreground/60 font-black px-4 mb-2 tracking-[0.15em] text-[10px] uppercase">
+            <span>{{ 'shared.common.common.contacts' | translate }}</span>
+            <div class="flex gap-4 text-sm opacity-60">
+                <i class="fa-solid fa-video hover:text-primary cursor-pointer transition-all"></i>
+                <i class="fa-solid fa-search hover:text-primary cursor-pointer transition-all"></i>
+                <i class="fa-solid fa-ellipsis hover:text-primary cursor-pointer transition-all"></i>
             </div>
         </div>
-        <span class="font-bold text-foreground/80 group-hover:text-primary transition-colors">Performance User
-            {{user}}</span>
+
+        <div class="fb-sidebar-item group relative" *ngFor="let friend of friends">
+            <div class="relative">
+                <div
+                    class="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-background border border-border/50 flex items-center justify-center overflow-hidden group-hover:border-primary/30 transition-all duration-300 shadow-sm">
+                    <img *ngIf="friend.profileImageUrl" [src]="friend.profileImageUrl"
+                        class="w-full h-full object-cover">
+                    <div *ngIf="!friend.profileImageUrl"
+                        class="w-full h-full flex items-center justify-center text-[10px] font-black text-muted-foreground group-hover:text-primary transition-all">
+                        {{ friend.firstName[0] }}{{ friend.lastName[0] }}
+                    </div>
+                </div>
+                <div
+                    class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-background rounded-full shadow-lg ring-1 ring-emerald-500/20">
+                </div>
+            </div>
+            <span class="font-bold text-foreground/80 group-hover:text-primary transition-colors truncate">
+                {{ friend.firstName }} {{ friend.lastName }}
+            </span>
+        </div>
+
+        <div *ngIf="friends.length === 0"
+            class="px-4 py-2 text-[10px] text-muted-foreground/40 font-bold uppercase tracking-widest text-center">
+            {{ 'main.community.social.friends.noFriends' | translate }}
+        </div>
     </div>
 
+    <!-- Nitro CTA -->
     <div
-        class="mt-6 mx-2 p-4 mica-effect rounded-2xl border border-primary/20 flex flex-col gap-3 group/nitro overflow-hidden relative">
-        <!-- Shine Effect -->
+        class="mt-2 mx-2 p-4 mica-effect rounded-2xl border border-primary/20 flex flex-col gap-3 group/nitro overflow-hidden relative">
         <div
             class="absolute -inset-x-full top-0 h-full w-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 group-hover/nitro:animate-[shine_1.5s_ease-in-out_infinite]">
         </div>
-
         <div class="flex items-center gap-3 relative z-10">
             <div
                 class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 animate-pulse">

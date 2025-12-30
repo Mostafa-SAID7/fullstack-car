@@ -165,6 +165,42 @@ namespace Infrastructure.Data.Seeds.Identity
                     _logger.LogError($"Failed to seed test user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 }
             }
+
+            // Additional Community Users
+            var usersToSeed = new List<(string Email, string FirstName, string LastName, string Bio)>
+            {
+                ("sarah@fully2car.com", "Sarah", "Connor", "Muscle car enthusiast and drag racing fan. 🏎️💨"),
+                ("mike@fully2car.com", "Mike", "Wazowski", "Precision engineering lover. obsessed with German sports cars."),
+                ("elias@fully2car.com", "Elias", "Said", "Off-road adventurer. Living for the dunes and rocky trails."),
+                ("yasmine@fully2car.com", "Yasmine", "Ali", "Electric vehicle advocate. The future is silent and fast! ⚡"),
+                ("khalid@fully2car.com", "Khalid", "Mansour", "Classic car collector and restoration specialist."),
+                ("laura@fully2car.com", "Laura", "Vanderbilt", "Luxury car critic and high-end automotive journalist.")
+            };
+
+            foreach (var userInfo in usersToSeed)
+            {
+                if (await _userManager.FindByEmailAsync(userInfo.Email) == null)
+                {
+                    var user = new ApplicationUser
+                    {
+                        UserName = userInfo.Email,
+                        Email = userInfo.Email,
+                        EmailConfirmed = true,
+                        FirstName = userInfo.FirstName,
+                        LastName = userInfo.LastName,
+                        IsActive = true,
+                        Status = UserStatus.Active,
+                        Bio = userInfo.Bio
+                    };
+
+                    var result = await _userManager.CreateAsync(user, "User123!");
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                        _logger.LogInformation($"Seeded community user: {userInfo.Email}");
+                    }
+                }
+            }
         }
     }
 }

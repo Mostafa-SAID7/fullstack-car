@@ -10,16 +10,20 @@ import {
   Shield,
   Smartphone,
   Key,
-  ShieldAlert
+  ShieldAlert,
+  Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '../hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { adminService } from '../services/adminService';
+import type { DashboardStats, RecentActivity } from '../services/adminService';
 
 interface StatCardProps {
   title: string;
-  value: string;
+  value: string | number;
   change: string;
   trend: 'up' | 'down';
   icon: React.ElementType;
@@ -56,6 +60,56 @@ const StatCard = ({ title, value, change, trend, icon: Icon, index }: StatCardPr
 export const DashboardOverview = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [activities, setActivities] = useState<RecentActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [statsData, activityData] = await Promise.all([
+          adminService.getDashboardStats(),
+          adminService.getRecentActivity(5)
+        ]);
+        setStats(statsData);
+        setActivities(activityData.activities);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'Post Created': return CheckCircle2;
+      case 'User Registered': return Users;
+      case 'Alert': return ShieldAlert;
+      case 'Auth': return Shield;
+      default: return Activity;
+    }
+  };
+
+  const getActivityStatus = (type: string) => {
+    switch (type) {
+      case 'Post Created': return 'success';
+      case 'User Registered': return 'info';
+      case 'Alert': return 'warning';
+      case 'Auth': return 'info';
+      default: return 'success';
+    }
+  };
 
   return (
     <motion.div
@@ -85,35 +139,35 @@ export const DashboardOverview = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <StatCard
-          title="Total Revenue"
-          value="$45,231.89"
-          change="+20.1%"
+          title="Total Users"
+          value={stats?.totalUsers || 0}
+          change="+12.5%"
           trend="up"
-          icon={CreditCard}
+          icon={Users}
           index={0}
         />
         <StatCard
-          title="Active Users"
-          value="+2,350"
-          change="+180.1%"
+          title="Total Posts"
+          value={stats?.totalPosts || 0}
+          change="+8.2%"
           trend="up"
-          icon={Users}
+          icon={TrendingUp}
           index={1}
         />
         <StatCard
-          title="Sales"
-          value="+12,234"
-          change="+19%"
+          title="Total Groups"
+          value={stats?.totalGroups || 0}
+          change="+5.1%"
           trend="up"
-          icon={TrendingUp}
+          icon={Activity}
           index={2}
         />
         <StatCard
-          title="Active Groups"
-          value="573"
-          change="+201"
+          title="Total Reviews"
+          value={stats?.totalReviews || 0}
+          change="+15.3%"
           trend="up"
-          icon={Activity}
+          icon={CreditCard}
           index={3}
         />
       </div>
@@ -180,36 +234,42 @@ export const DashboardOverview = () => {
           </div>
 
           <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2">
-            {[
-              { type: 'Login', desc: 'Succeeded from Chrome/Mac', time: '2m ago', icon: CheckCircle2, status: 'success' },
-              { type: 'Alert', desc: 'New device detected', time: '1h ago', icon: Smartphone, status: 'warning' },
-              { type: 'Auth', desc: '2FA settings updated', time: '3h ago', icon: Shield, status: 'info' },
-              { type: 'Update', desc: 'Password changed', time: '1d ago', icon: Key, status: 'success' },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + (i * 0.1) }}
-                className="flex gap-4 items-start group cursor-default"
-              >
-                <div className={cn(
-                  "w-9 h-9 rounded-2xl border border-border flex-shrink-0 flex items-center justify-center transition-all group-hover:scale-105",
-                  item.status === 'success' && "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-                  item.status === 'warning' && "bg-orange-500/10 text-orange-500 border-orange-500/20",
-                  item.status === 'info' && "bg-blue-500/10 text-blue-500 border-blue-500/20",
-                )}>
-                  <item.icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center mb-0.5">
-                    <p className="text-[10px] font-black uppercase tracking-widest leading-none">{item.type}</p>
-                    <span className="text-[9px] font-bold text-muted-foreground/60 uppercase">{item.time}</span>
+            {activities.map((item, i) => {
+              const Icon = getActivityIcon(item.type);
+              const status = getActivityStatus(item.type);
+              const time = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + (i * 0.1) }}
+                  className="flex gap-4 items-start group cursor-default"
+                >
+                  <div className={cn(
+                    "w-9 h-9 rounded-2xl border border-border flex-shrink-0 flex items-center justify-center transition-all group-hover:scale-105",
+                    status === 'success' && "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+                    status === 'warning' && "bg-orange-500/10 text-orange-500 border-orange-500/20",
+                    status === 'info' && "bg-blue-500/10 text-blue-500 border-blue-500/20",
+                  )}>
+                    <Icon className="w-4 h-4" />
                   </div>
-                  <p className="text-xs font-semibold text-muted-foreground/90 leading-tight line-clamp-2">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-0.5">
+                      <p className="text-[10px] font-black uppercase tracking-widest leading-none">{item.type}</p>
+                      <span className="text-[9px] font-bold text-muted-foreground/60 uppercase">{time}</span>
+                    </div>
+                    <p className="text-xs font-semibold text-muted-foreground/90 leading-tight line-clamp-2">{item.title} ({item.user})</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+            {activities.length === 0 && (
+              <div className="flex items-center justify-center h-32 text-muted-foreground italic text-sm">
+                No recent activity
+              </div>
+            )}
           </div>
 
           <motion.button

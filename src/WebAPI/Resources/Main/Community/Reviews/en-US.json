@@ -19,6 +19,12 @@
     "reviewDate": "Review Date",
     "reviewerName": "Reviewer Name"
   },
+  "verified": "Verified Review",
+  "car": "Vehicle",
+  "peopleHelpful": "people found this helpful",
+  "helpful": "Helpful",
+  "recent": "Recent Reviews",
+  "noReviews": "No reviews yet",
   "ratings": {
     "overall": "Overall Rating",
     "averageRating": "Average Rating",
