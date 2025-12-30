@@ -2,15 +2,15 @@ using Application.Common.Interfaces.Communication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
 using Asp.Versioning;
 
-namespace WebAPI.Controllers.Community.Notifications
+namespace WebAPI.Controllers.Shared.Notifications
 {
     [Authorize]
-    [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/community/[controller]")]
-    public class NotificationsController : ControllerBase
+    [ApiVersion("4.0")]
+    [Route("api/v{version:apiVersion}/shared/notifications")]
+    [Tags("Shared - Notifications")]
+    public class NotificationsController : BaseController
     {
         private readonly INotificationService _notificationService;
 

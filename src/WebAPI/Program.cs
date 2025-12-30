@@ -2,7 +2,7 @@ using WebAPI.Hubs;
 using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
-using Infrastructure.Data;
+using Infrastructure.Data.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +22,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v4/swagger.json", "Shared (v4)");
     c.SwaggerEndpoint("/swagger/v5/swagger.json", "AI Agent (v5)");
     c.RoutePrefix = string.Empty;
+    c.InjectStylesheet("/swagger-ui/custom.css");
 });
 
 if (!app.Environment.IsDevelopment())
@@ -29,7 +30,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseStaticFiles();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseResponseCaching();
 app.UseOutputCache();
@@ -55,11 +60,12 @@ app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
 
+// Initialize and seed database
 using (var scope = app.Services.CreateScope())
 {
-    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-    await initialiser.InitialiseAsync();
-    await initialiser.SeedAsync();
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.InitializeAsync();
+    await seeder.SeedAsync();
 }
 
 app.Run();

@@ -1,4 +1,6 @@
 using Domain.Entities.Identity;
+using Domain.Enums.Identity;
+using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -9,15 +11,18 @@ namespace Infrastructure.Data.Seeds.Identity
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<IdentitySeeder> _logger;
 
         public IdentitySeeder(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
+            ApplicationDbContext context,
             ILogger<IdentitySeeder> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
             _logger = logger;
         }
 
@@ -65,12 +70,34 @@ namespace Infrastructure.Data.Seeds.Identity
                     LastName = "Admin",
                     IsActive = true
                 };
-                
+
                 var result = await _userManager.CreateAsync(adminUser, "Admin123!");
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(adminUser, "Admin");
-                    _logger.LogInformation("Seeded admin user");
+
+                    // Create corresponding Domain User
+                    var domainUser = new User
+                    {
+                        Id = adminUser.Id, // Same ID as ApplicationUser
+                        FirstName = adminUser.FirstName,
+                        LastName = adminUser.LastName,
+                        Email = adminUser.Email,
+                        PasswordHash = adminUser.PasswordHash ?? string.Empty,
+                        PhoneNumber = adminUser.PhoneNumber ?? string.Empty,
+                        ProfileImageUrl = adminUser.ProfileImageUrl,
+                        Bio = adminUser.Bio,
+                        Status = UserStatus.Active,
+                        EmailVerified = adminUser.EmailConfirmed,
+                        LastLoginAt = adminUser.LastLoginAt,
+                        CreatedBy = adminUser.Id.ToString(),
+                        CreatedAt = adminUser.CreatedAt
+                    };
+
+                    _context.DomainUsers.Add(domainUser);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Seeded admin user (Identity + Domain)");
                 }
             }
 
@@ -93,10 +120,32 @@ namespace Infrastructure.Data.Seeds.Identity
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(normalUser, "User");
-                    _logger.LogInformation("Seeded standard user");
+
+                    // Create corresponding Domain User
+                    var domainUser = new User
+                    {
+                        Id = normalUser.Id,
+                        FirstName = normalUser.FirstName,
+                        LastName = normalUser.LastName,
+                        Email = normalUser.Email,
+                        PasswordHash = normalUser.PasswordHash ?? string.Empty,
+                        PhoneNumber = normalUser.PhoneNumber ?? string.Empty,
+                        ProfileImageUrl = normalUser.ProfileImageUrl,
+                        Bio = normalUser.Bio,
+                        Status = UserStatus.Active,
+                        EmailVerified = normalUser.EmailConfirmed,
+                        LastLoginAt = normalUser.LastLoginAt,
+                        CreatedBy = normalUser.Id.ToString(),
+                        CreatedAt = normalUser.CreatedAt
+                    };
+
+                    _context.DomainUsers.Add(domainUser);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Seeded standard user (Identity + Domain)");
                 }
             }
-            
+
             // Moderator User
             var modEmail = "mod@localhost";
             var modUser = await _userManager.FindByEmailAsync(modEmail);
@@ -116,7 +165,29 @@ namespace Infrastructure.Data.Seeds.Identity
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(modUser, "Moderator");
-                    _logger.LogInformation("Seeded moderator user");
+
+                    // Create corresponding Domain User
+                    var domainUser = new User
+                    {
+                        Id = modUser.Id,
+                        FirstName = modUser.FirstName,
+                        LastName = modUser.LastName,
+                        Email = modUser.Email,
+                        PasswordHash = modUser.PasswordHash ?? string.Empty,
+                        PhoneNumber = modUser.PhoneNumber ?? string.Empty,
+                        ProfileImageUrl = modUser.ProfileImageUrl,
+                        Bio = modUser.Bio,
+                        Status = UserStatus.Active,
+                        EmailVerified = modUser.EmailConfirmed,
+                        LastLoginAt = modUser.LastLoginAt,
+                        CreatedBy = modUser.Id.ToString(),
+                        CreatedAt = modUser.CreatedAt
+                    };
+
+                    _context.DomainUsers.Add(domainUser);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Seeded moderator user (Identity + Domain)");
                 }
             }
         }

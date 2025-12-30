@@ -14,6 +14,7 @@ using IAppLanguageDetector = Application.Common.Interfaces.Localization.ILanguag
 using IAppCultureInfoProvider = Application.Common.Interfaces.Localization.ICultureInfoProvider;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Seeds;
 using Infrastructure.Data.Seeds.Identity;
 using Infrastructure.Data.Seeds.Community;
 using Infrastructure.Data.Seeds.Community.Groups;
@@ -142,8 +143,8 @@ namespace Infrastructure.Extensions
                 options.Scope.Add("user:email");
             });
 
-            // Add Initialiser & Seeders
-            services.AddScoped<ApplicationDbContextInitialiser>();
+            // Add Database Seeder & Individual Seeders
+            services.AddScoped<DatabaseSeeder>();
             services.AddScoped<IdentitySeeder>();
             services.AddScoped<CommunitySeeder>();
             services.AddScoped<GroupsSeeder>();
