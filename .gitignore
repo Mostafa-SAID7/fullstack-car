@@ -374,6 +374,7 @@ ClientApp/npm-debug.log*
 ClientApp/yarn-error.log
 ClientApp/yarn.lock
 ClientApp/package-lock.json
+ClientApp/**/.angular/cache/
 
 # IDEs and editors
 /.idea
