@@ -1,0 +1,28 @@
+{
+  "title": "Security Settings",
+  "twoFactorAuth": "Two-Factor Authentication",
+  "enableTwoFactor": "Enable Two-Factor Authentication",
+  "disableTwoFactor": "Disable Two-Factor Authentication",
+  "backupCodes": "Backup Codes",
+  "generateBackupCodes": "Generate Backup Codes",
+  "sessions": "Active Sessions",
+  "deviceManagement": "Device Management",
+  "securityLogs": "Security Logs",
+  "loginHistory": "Login History",
+  "revokeSession": "Revoke Session",
+  "revokeAllSessions": "Revoke All Sessions",
+  "lockAccount": "Lock Account",
+  "unlockAccount": "Unlock Account",
+  "twoFactorEnabled": "Two-factor authentication enabled",
+  "twoFactorDisabled": "Two-factor authentication disabled",
+  "sessionRevoked": "Session revoked successfully",
+  "allSessionsRevoked": "All sessions revoked successfully",
+  "accountLocked": "Account locked successfully",
+  "accountUnlocked": "Account unlocked successfully",
+  "validation": {
+    "twoFactorRequired": "Two-factor authentication is required",
+    "invalidBackupCode": "Invalid backup code",
+    "sessionNotFound": "Session not found",
+    "cannotRevokeCurrentSession": "Cannot revoke current session"
+  }
+}

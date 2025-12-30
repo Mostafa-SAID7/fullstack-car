@@ -1,0 +1,19 @@
+{
+  "title": "External Login",
+  "google": "Sign in with Google",
+  "facebook": "Sign in with Facebook",
+  "github": "Sign in with GitHub",
+  "microsoft": "Sign in with Microsoft",
+  "twitter": "Sign in with Twitter",
+  "externalLoginSuccess": "External login successful",
+  "linkAccount": "Link Account",
+  "unlinkAccount": "Unlink Account",
+  "accountLinked": "Account linked successfully",
+  "accountUnlinked": "Account unlinked successfully",
+  "validation": {
+    "externalLoginFailed": "External login failed",
+    "providerNotSupported": "Login provider not supported",
+    "accountAlreadyLinked": "Account is already linked to another user",
+    "cannotUnlinkLastProvider": "Cannot unlink the last login provider"
+  }
+}

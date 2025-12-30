@@ -1,0 +1,28 @@
+{
+  "title": "إعدادات الأمان",
+  "twoFactorAuth": "تحقق بخطوتين",
+  "enableTwoFactor": "تفعيل التحقق بخطوتين",
+  "disableTwoFactor": "إيقاف التحقق بخطوتين",
+  "backupCodes": "رموز احتياطية",
+  "generateBackupCodes": "إصدار رموز جديدة",
+  "sessions": "الجلسات النشطة",
+  "deviceManagement": "إدارة الأجهزة",
+  "securityLogs": "سجل الأمان",
+  "loginHistory": "تاريخ تسجيل الدخول",
+  "revokeSession": "إلغاء الجلسة",
+  "revokeAllSessions": "إلغاء كل الجلسات",
+  "lockAccount": "قفل الحساب",
+  "unlockAccount": "فتح الحساب",
+  "twoFactorEnabled": "تم تفعيل التحقق بخطوتين",
+  "twoFactorDisabled": "تم إيقاف التحقق بخطوتين",
+  "sessionRevoked": "تم إلغاء الجلسة بنجاح",
+  "allSessionsRevoked": "تم إلغاء كل الجلسات بنجاح",
+  "accountLocked": "تم قفل الحساب بنجاح",
+  "accountUnlocked": "تم فتح الحساب بنجاح",
+  "validation": {
+    "twoFactorRequired": "مطلوب التحقق بخطوتين",
+    "invalidBackupCode": "الرمز الاحتياطي غلط",
+    "sessionNotFound": "الجلسة غير موجودة",
+    "cannotRevokeCurrentSession": "ما تقدر تلغي الجلسة الحالية"
+  }
+}

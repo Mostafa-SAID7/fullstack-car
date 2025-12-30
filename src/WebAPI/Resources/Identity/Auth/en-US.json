@@ -1,0 +1,23 @@
+{
+  "title": "Authentication",
+  "login": "Login",
+  "logout": "Logout",
+  "register": "Register",
+  "confirmEmail": "Confirm Email",
+  "resendConfirmation": "Resend Confirmation",
+  "verifyCode": "Verify Code",
+  "loginSuccess": "Login successful",
+  "registrationSuccess": "Registration successful",
+  "refreshSuccess": "Token refreshed successfully",
+  "logoutSuccess": "Logout successful",
+  "emailVerifiedSuccess": "Email verified successfully",
+  "validation": {
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Account is locked. Please try again later",
+    "emailNotConfirmed": "Please confirm your email address",
+    "userNotFound": "User not found",
+    "accountDisabled": "User account is disabled",
+    "tokenAndEmailRequired": "Token and email are required",
+    "invalidToken": "Invalid or expired token"
+  }
+}

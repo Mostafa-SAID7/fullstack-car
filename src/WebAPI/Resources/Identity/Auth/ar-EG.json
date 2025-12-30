@@ -1,0 +1,23 @@
+{
+  "title": "المصادقة",
+  "login": "تسجيل الدخول",
+  "logout": "تسجيل الخروج",
+  "register": "إنشاء حساب",
+  "confirmEmail": "تأكيد البريد الإلكتروني",
+  "resendConfirmation": "إعادة إرسال التأكيد",
+  "verifyCode": "التحقق من الرمز",
+  "loginSuccess": "تم تسجيل الدخول بنجاح",
+  "registrationSuccess": "تم إنشاء الحساب بنجاح",
+  "refreshSuccess": "تم تحديث الرمز المميز بنجاح",
+  "logoutSuccess": "تم تسجيل الخروج بنجاح",
+  "emailVerifiedSuccess": "تم التحقق من البريد الإلكتروني بنجاح",
+  "validation": {
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "accountLocked": "الحساب مقفل. يرجى المحاولة لاحقاً",
+    "emailNotConfirmed": "يرجى تأكيد عنوان البريد الإلكتروني",
+    "userNotFound": "المستخدم غير موجود",
+    "accountDisabled": "حساب المستخدم معطل",
+    "tokenAndEmailRequired": "الرمز والبريد الإلكتروني مطلوبان",
+    "invalidToken": "رمز غير صالح أو منتهي الصلاحية"
+  }
+}

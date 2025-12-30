@@ -1,0 +1,19 @@
+{
+  "title": "تسجيل دخول خارجي",
+  "google": "دخول بجوجل",
+  "facebook": "دخول بفيسبوك",
+  "github": "دخول بجيت هب",
+  "microsoft": "دخول بمايكروسوفت",
+  "twitter": "دخول بتويتر",
+  "externalLoginSuccess": "تم تسجيل الدخول الخارجي بنجاح",
+  "linkAccount": "ربط الحساب",
+  "unlinkAccount": "إلغاء ربط الحساب",
+  "accountLinked": "تم ربط الحساب بنجاح",
+  "accountUnlinked": "تم إلغاء ربط الحساب بنجاح",
+  "validation": {
+    "externalLoginFailed": "فشل تسجيل الدخول الخارجي",
+    "providerNotSupported": "مقدم الخدمة غير مدعوم",
+    "accountAlreadyLinked": "الحساب مربوط بمستخدم آخر",
+    "cannotUnlinkLastProvider": "ما تقدر تلغي آخر طريقة دخول"
+  }
+}

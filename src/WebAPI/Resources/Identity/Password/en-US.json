@@ -1,0 +1,25 @@
+{
+  "title": "Password Management",
+  "forgotPassword": "Forgot Password",
+  "resetPassword": "Reset Password",
+  "changePassword": "Change Password",
+  "setPassword": "Set Password",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password",
+  "forgotPasswordSuccess": "If the email exists, a password reset link has been sent",
+  "resetPasswordSuccess": "Password reset successful",
+  "changePasswordSuccess": "Password changed successfully",
+  "setPasswordSuccess": "Password set successfully",
+  "validation": {
+    "passwordMismatch": "Passwords do not match",
+    "weakPassword": "Password is too weak",
+    "invalidCurrentPassword": "Current password is incorrect",
+    "passwordRequired": "Password is required",
+    "passwordTooShort": "Password must be at least 8 characters long",
+    "passwordMustContainUppercase": "Password must contain at least one uppercase letter",
+    "passwordMustContainLowercase": "Password must contain at least one lowercase letter",
+    "passwordMustContainNumber": "Password must contain at least one number",
+    "passwordMustContainSpecialChar": "Password must contain at least one special character"
+  }
+}

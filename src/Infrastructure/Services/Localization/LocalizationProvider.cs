@@ -90,7 +90,8 @@ namespace Infrastructure.Services.Localization
             {
                 "Admin/Dashboard", "Admin/Management", "Admin/Moderation",
                 "Community/Posts", "Community/Groups", "Community/Social", "Community/Reviews",
-                "Identity", "AIAgent",
+                "Identity/Auth", "Identity/OAuth", "Identity/Password", "Identity/Profile", "Identity/Security",
+                "AIAgent",
                 "Shared/Common", "Shared/Files", "Shared/Localization"
             };
 

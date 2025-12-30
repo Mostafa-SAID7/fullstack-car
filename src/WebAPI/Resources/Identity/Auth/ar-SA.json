@@ -1,0 +1,23 @@
+{
+  "title": "الدخول",
+  "login": "تسجيل دخول",
+  "logout": "تسجيل خروج",
+  "register": "تسجيل جديد",
+  "confirmEmail": "تأكيد الإيميل",
+  "resendConfirmation": "إرسال التأكيد مرة ثانية",
+  "verifyCode": "تحقق من الرمز",
+  "loginSuccess": "تم تسجيل دخولك بنجاح",
+  "registrationSuccess": "تم تسجيل حسابك بنجاح",
+  "refreshSuccess": "تم تحديث الرمز بنجاح",
+  "logoutSuccess": "تم تسجيل خروجك بنجاح",
+  "emailVerifiedSuccess": "تم توثيق البريد الإلكتروني بنجاح",
+  "validation": {
+    "invalidCredentials": "الإيميل أو كلمة المرور غلط",
+    "accountLocked": "حسابك مقفل مؤقتاً. جرب بعد شوي",
+    "emailNotConfirmed": "لازم تأكد إيميلك",
+    "userNotFound": "المستخدم غير موجود",
+    "accountDisabled": "الحساب معطل حالياً",
+    "tokenAndEmailRequired": "الرمز والبريد الإلكتروني مطلوبان",
+    "invalidToken": "الرمز غلط أو منتهي"
+  }
+}

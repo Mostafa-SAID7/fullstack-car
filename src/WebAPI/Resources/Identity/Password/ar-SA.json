@@ -1,0 +1,25 @@
+{
+  "title": "إدارة كلمة المرور",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "changePassword": "تغيير كلمة المرور",
+  "setPassword": "تعيين كلمة المرور",
+  "currentPassword": "كلمة المرور الحالية",
+  "newPassword": "كلمة المرور الجديدة",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "forgotPasswordSuccess": "إذا كان البريد مسجلاً، فقد تم إرسال رابط استعادة كلمة المرور",
+  "resetPasswordSuccess": "تمت إعادة تعيين كلمة المرور بنجاح",
+  "changePasswordSuccess": "تم تغيير كلمة المرور بنجاح",
+  "setPasswordSuccess": "تم تعيين كلمة المرور بنجاح",
+  "validation": {
+    "passwordMismatch": "كلمات المرور مو متطابقة",
+    "weakPassword": "كلمة المرور ضعيفة مرة",
+    "invalidCurrentPassword": "كلمة المرور الحالية غلط",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordTooShort": "كلمة المرور لازم تكون ٨ أحرف على الأقل",
+    "passwordMustContainUppercase": "كلمة المرور لازم فيها حرف كبير",
+    "passwordMustContainLowercase": "كلمة المرور لازم فيها حرف صغير",
+    "passwordMustContainNumber": "كلمة المرور لازم فيها رقم",
+    "passwordMustContainSpecialChar": "كلمة المرور لازم فيها رمز خاص"
+  }
+}

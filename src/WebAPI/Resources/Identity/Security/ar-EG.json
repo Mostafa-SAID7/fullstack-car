@@ -1,0 +1,28 @@
+{
+  "title": "إعدادات الأمان",
+  "twoFactorAuth": "المصادقة الثنائية",
+  "enableTwoFactor": "تفعيل المصادقة الثنائية",
+  "disableTwoFactor": "إيقاف المصادقة الثنائية",
+  "backupCodes": "أكواد احتياطية",
+  "generateBackupCodes": "إنشاء أكواد احتياطية",
+  "sessions": "الجلسات النشطة",
+  "deviceManagement": "إدارة الأجهزة",
+  "securityLogs": "سجلات الأمان",
+  "loginHistory": "تاريخ تسجيل الدخول",
+  "revokeSession": "إلغاء الجلسة",
+  "revokeAllSessions": "إلغاء جميع الجلسات",
+  "lockAccount": "قفل الحساب",
+  "unlockAccount": "إلغاء قفل الحساب",
+  "twoFactorEnabled": "تم تفعيل المصادقة الثنائية",
+  "twoFactorDisabled": "تم إيقاف المصادقة الثنائية",
+  "sessionRevoked": "تم إلغاء الجلسة بنجاح",
+  "allSessionsRevoked": "تم إلغاء جميع الجلسات بنجاح",
+  "accountLocked": "تم قفل الحساب بنجاح",
+  "accountUnlocked": "تم إلغاء قفل الحساب بنجاح",
+  "validation": {
+    "twoFactorRequired": "المصادقة الثنائية مطلوبة",
+    "invalidBackupCode": "كود احتياطي غير صحيح",
+    "sessionNotFound": "الجلسة غير موجودة",
+    "cannotRevokeCurrentSession": "لا يمكن إلغاء الجلسة الحالية"
+  }
+}
