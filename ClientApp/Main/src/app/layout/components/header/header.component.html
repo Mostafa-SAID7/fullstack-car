@@ -1,0 +1,156 @@
+<div
+    class="h-14 mica-effect metallic-border flex items-center justify-between px-2 sm:px-4 md:px-6 transition-all duration-500">
+    <div class="flex items-center gap-2 sm:gap-3">
+        <div
+            class="w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0">
+            <span class="text-white font-black text-2xl tracking-tighter italic">f</span>
+        </div>
+
+        <!-- Mobile Search Icon -->
+        <div class="w-10 h-10 bg-secondary rounded-full flex md:hidden items-center justify-center cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+            (click)="toggleSearch()">
+            <i class="fa-solid fa-search text-foreground"></i>
+        </div>
+
+        <!-- Mobile Search Input Overlay -->
+        <div *ngIf="isSearchOpen"
+            class="absolute top-0 left-0 w-full h-14 bg-card flex items-center px-4 z-50 md:hidden animate-fade-in shadow-md">
+            <i class="fa-solid fa-arrow-left text-xl text-muted-foreground mr-4 cursor-pointer"
+                (click)="toggleSearch()"></i>
+            <input type="text" [placeholder]="'shared.common.common.search' | translate" class="fb-input w-full"
+                autoFocus>
+        </div>
+
+        <!-- Desktop Search Bar -->
+        <div class="relative hidden md:block group">
+            <i
+                class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10 group-focus-within:text-primary transition-colors"></i>
+            <input type="text" [placeholder]="'shared.common.common.search' | translate"
+                class="fb-input pl-10 w-[240px] lg:w-[280px] xl:w-[320px] transition-all focus:w-[360px] focus:pl-4 focus:ring-primary/20 focus:border-primary/50">
+        </div>
+    </div>
+
+    <nav class="flex items-center h-full hidden md:flex gap-1 lg:gap-4 xl:gap-8 flex-1 justify-center max-w-2xl px-4">
+        <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-primary transition-all duration-200 hover:bg-secondary/50 rounded-lg my-1 group nav-glow active"
+            matTooltip="Home">
+            <i class="fa-solid fa-house text-2xl group-active:scale-95 transition-transform"></i>
+        </div>
+        <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
+            [matTooltip]="'main.community.social.friends.title' | translate">
+            <i class="fa-solid fa-user-group text-2xl group-active:scale-95 transition-transform"></i>
+        </div>
+        <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
+            matTooltip="Video">
+            <div class="relative group-active:scale-95 transition-transform">
+                <i class="fa-solid fa-tv text-2xl group-hover:scale-110 transition-transform"></i>
+                <span class="notification-badge -top-1.5 -right-2">9+</span>
+            </div>
+        </div>
+        <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
+            matTooltip="Marketplace">
+            <i class="fa-solid fa-store text-2xl group-active:scale-95 transition-transform"></i>
+        </div>
+        <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
+            [matTooltip]="'main.community.groups.groups.title' | translate">
+            <i class="fa-solid fa-users text-2xl group-active:scale-95 transition-transform"></i>
+        </div>
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <!-- Language Switcher -->
+        <button class="fb-icon-btn active:scale-95 touch-manipulation" [matMenuTriggerFor]="langMenu"
+            matTooltip="Language">
+            <i class="fa-solid fa-globe text-xl"></i>
+        </button>
+        <mat-menu #langMenu="matMenu" class="custom-mat-menu">
+            <button mat-menu-item (click)="switchLanguage('en-US')" [class.bg-secondary]="currentLang === 'en-US'">
+                <span class="mr-2">🇺🇸</span> English
+            </button>
+            <button mat-menu-item (click)="switchLanguage('ar-EG')" [class.bg-secondary]="currentLang === 'ar-EG'">
+                <span class="mr-2">🇪🇬</span> العربية
+            </button>
+        </mat-menu>
+
+        <!-- Theme Toggle Button -->
+        <button class="fb-icon-btn active:scale-95 touch-manipulation"
+            [matTooltip]="themeService.isDark() ? ('dashboard.admin.dashboard.light' | translate) : ('dashboard.admin.dashboard.dark' | translate)"
+            (click)="themeService.toggleTheme()">
+            <i class="fa-solid text-xl transition-transform duration-500 rotate-0"
+                [ngClass]="themeService.isDark() ? 'fa-sun text-yellow-500 rotate-180' : 'fa-moon text-gray-600'">
+            </i>
+        </button>
+
+        <!-- Menu Button -->
+        <button class="fb-icon-btn active:scale-95 touch-manipulation lg:hidden" matTooltip="Menu"
+            (click)="layoutService.toggleMobileMenu()">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+        <button class="fb-icon-btn active:scale-95 touch-manipulation hidden lg:flex" matTooltip="Menu">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+        <button class="fb-icon-btn active:scale-95 touch-manipulation" matTooltip="Messenger">
+            <i class="fa-brands fa-facebook-messenger text-xl"></i>
+        </button>
+
+        <!-- Notifications -->
+        <button class="fb-icon-btn relative active:scale-95 touch-manipulation group"
+            [matMenuTriggerFor]="notificationMenu"
+            [matTooltip]="'main.community.social.notifications.title' | translate">
+            <i class="fa-solid fa-bell text-xl group-hover:rotate-12 transition-transform"
+                [class.text-primary]="(unreadCount$ | async)! > 0"></i>
+            <span *ngIf="(unreadCount$ | async)! > 0" class="notification-badge">
+                {{ (unreadCount$ | async)! > 99 ? '99+' : (unreadCount$ | async) }}
+            </span>
+        </button>
+
+        <div class="w-10 h-10 rounded-xl bg-secondary/80 mica-effect flex items-center justify-center cursor-pointer hover:border-primary/30 transition-all active:scale-90 ml-1 shadow-sm border border-white/5"
+            matTooltip="Account">
+            <div class="w-full h-full flex items-center justify-center text-primary font-black italic text-sm">JD</div>
+        </div>
+    </div>
+
+    <mat-menu #notificationMenu="matMenu" class="notification-menu w-80 sm:w-96">
+        <ng-template matMenuContent>
+            <div class="px-4 py-3 border-b flex items-center justify-between" (click)="$event.stopPropagation()">
+                <h3 class="font-bold text-lg">Notifications</h3>
+                <button class="text-xs text-primary hover:underline" (click)="markAllRead()">Mark all as read</button>
+            </div>
+            <div class="max-h-[70vh] overflow-y-auto">
+                <ng-container *ngIf="(notifications$ | async) as notifications">
+                    <div *ngIf="notifications.length === 0" class="p-8 text-center text-muted-foreground">
+                        <i class="fa-regular fa-bell-slash text-4xl mb-2 opacity-50"></i>
+                        <p>No notifications yet</p>
+                    </div>
+
+                    <a mat-menu-item *ngFor="let note of notifications"
+                        class="!h-auto !py-3 !px-4 border-b last:border-0 hover:bg-secondary/50 transition-colors no-underline block"
+                        [ngClass]="{
+                            'bg-blue-50': !note.isRead && !themeService.isDark(),
+                            'bg-blue-900/10': !note.isRead && themeService.isDark()
+                        }" (click)="handleNotificationClick(note)">
+                        <span class="flex items-start gap-3 w-full text-left">
+                            <span
+                                class="w-10 h-10 rounded-full bg-secondary flex-shrink-0 overflow-hidden relative block">
+                                <img *ngIf="note.sourceUserAvatar; else defaultAvatar" [src]="note.sourceUserAvatar"
+                                    class="w-full h-full object-cover" />
+                                <ng-template #defaultAvatar>
+                                    <i
+                                        class="fa-solid fa-user absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500"></i>
+                                </ng-template>
+                                <span *ngIf="!note.isRead"
+                                    class="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-card"></span>
+                            </span>
+                            <span class="flex-1 min-w-0 flex flex-col items-start">
+                                <span
+                                    class="text-sm font-medium leading-tight mb-1 truncate-2-lines line-clamp-2 whitespace-normal text-left block">
+                                    {{ note.message }}
+                                </span>
+                                <span class="text-xs text-muted-foreground">{{ note.createdAt | date:'short' }}</span>
+                            </span>
+                        </span>
+                    </a>
+                </ng-container>
+            </div>
+        </ng-template>
+    </mat-menu>
+</div>

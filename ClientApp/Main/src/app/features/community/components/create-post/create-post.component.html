@@ -1,0 +1,30 @@
+<div class="fb-card p-4 animate-in">
+    <div class="flex gap-3 mb-4">
+        <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary/20 to-primary/5 flex items-center justify-center text-primary font-black border border-primary/10 shadow-sm">
+            JD</div>
+        <div
+            class="flex-1 bg-secondary/40 rounded-xl px-4 flex items-center cursor-pointer hover:bg-secondary/60 hover:shadow-inner transition-all duration-300 group border border-transparent hover:border-border/20">
+            <span class="text-sm text-muted-foreground/80 group-hover:text-foreground transition-colors">{{
+                'main.community.posts.posts.whatsOnYourMind' | translate:{'0': 'John'} }}</span>
+        </div>
+    </div>
+    <hr class="border-border/20 mx-2">
+    <div class="flex mt-3 gap-1">
+        <button
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-red-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-red-500 group">
+            <i class="fa-solid fa-video text-red-500 scale-110 group-hover:scale-125 transition-transform"></i>
+            {{ 'main.community.posts.posts.liveVideo' | translate }}
+        </button>
+        <button
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-emerald-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-emerald-500 group">
+            <i class="fa-solid fa-images text-emerald-500 scale-110 group-hover:scale-125 transition-transform"></i>
+            {{ 'main.community.posts.posts.photoVideo' | translate }}
+        </button>
+        <button
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-amber-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-amber-500 group">
+            <i class="fa-solid fa-face-smile text-amber-500 scale-110 group-hover:scale-125 transition-transform"></i>
+            {{ 'main.community.posts.posts.feelingActivity' | translate }}
+        </button>
+    </div>
+</div>

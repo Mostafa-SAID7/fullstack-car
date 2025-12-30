@@ -8,14 +8,6 @@ import { PostListComponent } from '../post-list/post-list.component';
     selector: 'app-community-feed',
     standalone: true,
     imports: [CommonModule, StoryListComponent, CreatePostComponent, PostListComponent],
-    template: `
-    <div class="flex-1 min-w-0 py-6">
-        <div class="max-w-[680px] mx-auto space-y-4">
-            <app-story-list></app-story-list>
-            <app-create-post></app-create-post>
-            <app-post-list></app-post-list>
-        </div>
-    </div>
-  `
+    templateUrl: './community-feed.component.html'
 })
 export class CommunityFeedComponent { }

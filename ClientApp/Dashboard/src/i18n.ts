@@ -1,40 +1,33 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import HttpBackend from 'i18next-http-backend';
+import Backend from 'i18next-http-backend';
 
 i18n
-    .use(HttpBackend)
+    .use(Backend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         fallbackLng: 'en-US',
-        ns: ['translation'],
-        defaultNS: 'translation',
+        debug: true, // Enable debug to see failed loads
+
+        interpolation: {
+            escapeValue: false, // React already safe from XSS
+        },
+
         backend: {
-            loadPath: 'https://localhost:5101/api/v4.0/shared/localization/resources/{{lng}}',
+            // Endpoint to fetch translations from ASP.NET Core Backend
+            loadPath: 'http://localhost:5100/api/v4/shared/localization/resources/{{lng}}',
+
+            // Parse the response because our backend returns a flat dictionary directly
             parse: (data: string) => {
-                try {
-                    const parsed = JSON.parse(data);
-                    const translated: Record<string, string> = {};
-                    Object.keys(parsed).forEach(key => {
-                        // Strip 'admin.dashboard.' prefix to match frontend keys
-                        const cleanKey = key.replace('admin.dashboard.', '');
-                        translated[cleanKey] = parsed[key];
-                    });
-                    return translated;
-                } catch (error) {
-                    console.error('Failed to parse localization data', error);
-                    return {};
-                }
+                return JSON.parse(data);
             }
         },
-        detection: {
-            order: ['localStorage', 'navigator'],
-            caches: ['localStorage']
-        },
-        interpolation: {
-            escapeValue: false
+
+        // React-specific options
+        react: {
+            useSuspense: true, // Enable suspense for loading
         }
     });
 

@@ -29,7 +29,11 @@
     "update": "Update",
     "create": "Create",
     "add": "Add",
-    "remove": "Remove"
+    "remove": "Remove",
+    "memories": "Memories",
+    "saved": "Saved",
+    "shortcuts": "Shortcuts",
+    "contacts": "Contacts"
   },
   "validation": {
     "required": "This field is required",

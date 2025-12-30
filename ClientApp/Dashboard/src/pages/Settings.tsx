@@ -1,5 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   User, Shield, Palette, X,
   Loader2, CheckCircle2, AlertCircle, History, Smartphone,
@@ -10,6 +11,7 @@ import { authService } from '../services/authService';
 import type { UserSessionResponse, SecurityLogResponse } from '../types/auth';
 
 export const Settings = () => {
+  const { t } = useTranslation();
   const {
     user, updateProfile, changePassword, logout,
     loading, error, getActiveSessions, revokeSession,
@@ -215,8 +217,8 @@ export const Settings = () => {
     >
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">Settings</h1>
-          <p className="text-muted-foreground/80 font-medium text-lg">Manage your account and preferences</p>
+          <h1 className="text-4xl font-black tracking-tight mb-2">{t('identity.profile.title')}</h1>
+          <p className="text-muted-foreground/80 font-medium text-lg">{t('identity.profile.personalinfo')}</p>
         </div>
 
         <AnimatePresence>
@@ -246,7 +248,7 @@ export const Settings = () => {
               <div className="p-2 bg-primary/10 rounded-lg">
                 <User className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-bold text-xl">Profile Information</h3>
+              <h3 className="font-bold text-xl">{t('identity.profile.personalinfo')}</h3>
             </div>
 
             <div className="flex flex-col md:flex-row gap-8 mb-8 items-center border-b border-border/50 pb-8">
@@ -286,19 +288,19 @@ export const Settings = () => {
             <form onSubmit={handleProfileSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="First Name"
+                  label={t('identity.profile.firstname')}
                   value={profileData.firstName}
                   onChange={(v: string) => setProfileData({ ...profileData, firstName: v })}
                 />
                 <Input
-                  label="Last Name"
+                  label={t('identity.profile.lastname')}
                   value={profileData.lastName}
                   onChange={(v: string) => setProfileData({ ...profileData, lastName: v })}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-bold mb-2 ml-1">Bio</label>
+                <label className="block text-sm font-bold mb-2 ml-1">{t('identity.profile.bio')}</label>
                 <textarea
                   rows={3}
                   placeholder="Tell us about yourself..."
@@ -315,7 +317,7 @@ export const Settings = () => {
                     {error}
                   </div>
                 )}
-                <Button loading={loading} type="submit">Save Profile Changes</Button>
+                <Button loading={loading} type="submit">{t('identity.profile.updateprofile')}</Button>
               </div>
             </form>
           </motion.div>
@@ -340,7 +342,7 @@ export const Settings = () => {
                   onClick={() => setShowDeactivateModal(true)}
                   className="w-full py-2 border border-border hover:bg-muted rounded-xl text-sm font-black transition-all"
                 >
-                  Deactivate
+                  {t('identity.profile.deactivateAccount')}
                 </button>
               </div>
               <div className="p-6 bg-red-500/10 rounded-2xl border border-red-500/20">
@@ -350,7 +352,7 @@ export const Settings = () => {
                   onClick={() => setShowDeleteModal(true)}
                   className="w-full py-2 bg-red-500 text-white rounded-xl text-sm font-black hover:bg-red-600 transition-all shadow-lg"
                 >
-                  Delete Permanently
+                  {t('identity.profile.deleteAccount')}
                 </button>
               </div>
             </div>
@@ -370,7 +372,7 @@ export const Settings = () => {
               <div className="p-2 bg-blue-500/10 rounded-lg">
                 <Shield className="w-4 h-4 text-blue-500" />
               </div>
-              <h4 className="font-bold">Privacy Control</h4>
+              <h4 className="font-bold">{t('identity.profile.privacy')}</h4>
             </div>
             <div className="space-y-4">
               <PrivacyToggle
@@ -406,19 +408,19 @@ export const Settings = () => {
               <div className="p-2 bg-primary/10 rounded-lg">
                 <Shield className="w-4 h-4 text-primary" />
               </div>
-              <h4 className="font-bold">Security Access</h4>
+              <h4 className="font-bold">{t('identity.security.title')}</h4>
             </div>
             <div className="space-y-3">
               <button
                 onClick={() => setShowPasswordModal(true)}
                 className="w-full text-left font-black text-xs hover:text-primary transition-colors flex items-center justify-between group p-3 bg-muted/30 rounded-xl"
               >
-                Change Password
+                {t('identity.password.changePassword')}
                 <div className="bg-muted px-2 py-0.5 rounded text-[10px] group-hover:bg-primary/10 transition-colors uppercase">Update</div>
               </button>
 
               <div className="flex items-center justify-between group p-3 bg-muted/30 rounded-xl">
-                <span className="text-xs font-black uppercase">Two-Factor Auth</span>
+                <span className="text-xs font-black uppercase">{t('identity.security.twoFactorAuth')}</span>
                 <button
                   onClick={handleToggle2FA}
                   className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${is2FAEnabled ? 'bg-primary' : 'bg-muted'}`}
@@ -431,7 +433,7 @@ export const Settings = () => {
                 onClick={() => setShowSessionsModal(true)}
                 className="w-full text-left font-black text-xs hover:text-primary transition-colors flex items-center justify-between group p-3 bg-muted/30 rounded-xl"
               >
-                Active Sessions
+                {t('identity.security.sessions')}
                 <div className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] uppercase font-black">{sessions.length}</div>
               </button>
 
@@ -439,7 +441,7 @@ export const Settings = () => {
                 onClick={() => setShowLogsModal(true)}
                 className="w-full text-left font-black text-xs hover:text-primary transition-colors flex items-center justify-between group p-3 bg-muted/30 rounded-xl"
               >
-                Activity Log
+                {t('identity.security.securityLogs')}
                 <History className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
               </button>
             </div>
@@ -474,7 +476,7 @@ export const Settings = () => {
             }}
             className="w-full px-4 py-4 bg-red-500/10 text-red-500 rounded-2xl font-black hover:bg-red-500 hover:text-white transition-all shadow-sm uppercase text-xs tracking-widest"
           >
-            Log Out Account
+            {t('shared.common.common.logout')}
           </button>
         </div>
       </div>
@@ -482,10 +484,10 @@ export const Settings = () => {
       {/* Modals */}
       <AnimatePresence>
         {showPasswordModal && (
-          <Modal title="Change Password" icon={<Shield className="w-6 h-6 text-primary" />} onClose={() => setShowPasswordModal(false)}>
+          <Modal title={t('identity.password.changePassword')} icon={<Shield className="w-6 h-6 text-primary" />} onClose={() => setShowPasswordModal(false)}>
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
               <Input
-                label="Current Password"
+                label={t('identity.password.currentPassword')}
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(v: string) => setPasswordData({ ...passwordData, currentPassword: v })}
@@ -493,26 +495,26 @@ export const Settings = () => {
               />
               <div className="h-px bg-border/50 my-2" />
               <Input
-                label="New Password"
+                label={t('identity.password.newPassword')}
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(v: string) => setPasswordData({ ...passwordData, newPassword: v })}
                 required
               />
               <Input
-                label="Confirm New Password"
+                label={t('identity.password.confirmPassword')}
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(v: string) => setPasswordData({ ...passwordData, confirmPassword: v })}
                 required
               />
-              <Button loading={loading} type="submit">Update Password</Button>
+              <Button loading={loading} type="submit">{t('identity.password.changePassword')}</Button>
             </form>
           </Modal>
         )}
 
         {showSessionsModal && (
-          <Modal title="Active Sessions" icon={<Smartphone className="w-6 h-6 text-primary" />} onClose={() => setShowSessionsModal(false)}>
+          <Modal title={t('identity.security.sessions')} icon={<Smartphone className="w-6 h-6 text-primary" />} onClose={() => setShowSessionsModal(false)}>
             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {sessions.map(session => (
                 <div key={session.sessionId} className="bg-muted/50 p-4 rounded-2xl border border-transparent hover:border-primary/20 transition-all flex justify-between items-center group">
@@ -565,7 +567,7 @@ export const Settings = () => {
         )}
 
         {showDeactivateModal && (
-          <Modal title="Deactivate Account" icon={<AlertCircle className="w-6 h-6 text-orange-500" />} onClose={() => setShowDeactivateModal(false)}>
+          <Modal title={t('identity.profile.deactivateAccount')} icon={<AlertCircle className="w-6 h-6 text-orange-500" />} onClose={() => setShowDeactivateModal(false)}>
             <div className="space-y-4">
               <p className="text-sm font-medium text-muted-foreground">Please tell us why you are leaving (optional):</p>
               <textarea
@@ -580,7 +582,7 @@ export const Settings = () => {
         )}
 
         {showDeleteModal && (
-          <Modal title="Delete Account" icon={<Trash2 className="w-6 h-6 text-red-500" />} onClose={() => setShowDeleteModal(false)}>
+          <Modal title={t('identity.profile.deleteAccount')} icon={<Trash2 className="w-6 h-6 text-red-500" />} onClose={() => setShowDeleteModal(false)}>
             <div className="space-y-4">
               <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/20 text-red-500 text-xs font-black uppercase leading-relaxed">
                 Warning: This action is permanent and cannot be undone. All your posts, cars, and data will be deleted.

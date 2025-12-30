@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,7 +38,8 @@ import { MatBadgeModule } from '@angular/material/badge';
         MatCardModule,
         MatMenuModule,
         MatDividerModule,
-        MatBadgeModule
+        MatBadgeModule,
+        TranslateModule
     ]
 })
 export class SharedModule { }

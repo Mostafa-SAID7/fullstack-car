@@ -2,119 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-@theme {
-    /* Light Mode - Facebook-like Palette */
-    --color-background: 210 16% 95%;
-    /* #F0F2F5 */
-    --color-foreground: 0 0% 2%;
-    /* #050505 */
+:root {
+    /* Light Mode - Microsoft Fluent Blue & Clean */
+    --color-background: 210 20% 98%;
+    --color-foreground: 210 40% 10%;
 
     --color-card: 0 0% 100%;
-    /* #FFFFFF */
-    --color-card-foreground: 0 0% 2%;
+    --color-card-foreground: 210 40% 10%;
 
     --color-popover: 0 0% 100%;
-    --color-popover-foreground: 0 0% 2%;
+    --color-popover-foreground: 210 40% 10%;
 
-    --color-primary: 217 97% 51%;
-    /* #0866FF (Facebook Blue) */
+    --color-primary: 212 100% 48%;
+    /* Microsoft Modern Blue */
     --color-primary-foreground: 0 0% 100%;
 
-    --color-secondary: 210 14% 90%;
-    /* #E4E6EB */
-    --color-secondary-foreground: 0 0% 2%;
+    --color-secondary: 210 15% 94%;
+    --color-secondary-foreground: 210 40% 10%;
 
-    --color-muted: 210 16% 95%;
-    --color-muted-foreground: 218 3% 41%;
-    /* #65676B */
+    --color-muted: 210 15% 94%;
+    --color-muted-foreground: 215 16% 47%;
 
-    --color-accent: 210 14% 90%;
-    --color-accent-foreground: 0 0% 2%;
+    --color-accent: 212 100% 96%;
+    --color-accent-foreground: 212 100% 48%;
 
     --color-destructive: 0 84% 60%;
-    /* #ef4444 */
     --color-destructive-foreground: 0 0% 100%;
 
-    --color-border: 214.3 31.8% 91.4%;
-    --color-input: 214.3 31.8% 91.4%;
-    --color-ring: 217 97% 51%;
+    --color-border: 210 15% 90%;
+    --color-input: 210 15% 90%;
+    --color-ring: 212 100% 48%;
 
-    --radius-lg: 0.5rem;
-    --radius-md: calc(0.5rem - 2px);
-    --radius-sm: calc(0.5rem - 4px);
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-sm: 4px;
 
-    --animate-fade-in: fadeIn 0.3s ease-out forwards;
-    --animate-slide-up: slideUp 0.3s ease-out forwards;
+    --animate-fade-in: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    --animate-slide-up: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    --animate-float: float 3s ease-in-out infinite;
+    --animate-nitro-pulse: nitroPulse 2s infinite;
+    --animate-shine: shine 3s infinite;
 }
 
-@layer base {
-    .dark {
-        /* Dark Mode */
-        --color-background: 210 4% 10%;
-        /* #18191A */
-        --color-foreground: 210 14% 90%;
-        /* #E4E6EB */
-
-        --color-card: 210 3% 15%;
-        /* #242526 */
-        --color-card-foreground: 210 14% 90%;
-
-        --color-popover: 210 3% 15%;
-        --color-popover-foreground: 210 14% 90%;
-
-        --color-primary: 0 100% 63%;
-        /* #FF4444 (Red for Dark Mode) */
-        --color-primary-foreground: 0 0% 100%;
-
-        --color-secondary: 210 2% 23%;
-        /* #3A3B3C */
-        --color-secondary-foreground: 210 14% 90%;
-
-        --color-muted: 210 2% 23%;
-        --color-muted-foreground: 216 4% 71%;
-        /* #B0B3B8 */
-
-        --color-accent: 210 2% 23%;
-        --color-accent-foreground: 210 14% 90%;
-
-        --color-destructive: 0 84% 60%;
-        --color-destructive-foreground: 0 0% 100%;
-
-        --color-border: 210 2% 23%;
-        /* #393A3B */
-        --color-input: 210 2% 23%;
-        --color-ring: 0 100% 63%;
-    }
-
-    .theme-darkred {
-        --color-primary: 0 100% 27%;
-        /* #8B0000 (Dark Red) */
-        --color-ring: 0 100% 27%;
-
-        &.dark {
-            --color-primary: 0 100% 63%;
-            /* #FF4444 */
-            --color-ring: 0 100% 63%;
-        }
-    }
-
-    html {
-        scroll-behavior: smooth;
-        overflow-x: hidden;
-        /* Prevent horizontal scroll */
-    }
-
-    body {
-        @apply font-sans bg-background text-foreground transition-colors duration-200 antialiased;
-        font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-        overflow-x: hidden;
-        /* Double safety */
-        padding-top: 3.5rem;
-        /* Account for fixed header (h-14) */
-    }
-}
-
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -137,60 +66,190 @@
     }
 }
 
-/* Facebook-Specific Utilities */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes nitroPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+
+@layer base {
+    .dark {
+        /* Dark Mode - High-Performance Automotive (Crimson & Carbon) */
+        --color-background: 220 15% 8%;
+        /* Deep Charcoal */
+        --color-foreground: 210 20% 98%;
+
+        --color-card: 220 15% 12%;
+        /* Carbon Fiber shade */
+        --color-card-foreground: 210 20% 98%;
+
+        --color-popover: 220 15% 12%;
+        --color-popover-foreground: 210 20% 98%;
+
+        --color-primary: 0 84% 50%;
+        /* High-Performance Crimson Red */
+        --color-primary-foreground: 0 0% 100%;
+
+        --color-secondary: 220 15% 18%;
+        --color-secondary-foreground: 210 20% 98%;
+
+        --color-muted: 220 15% 18%;
+        --color-muted-foreground: 215 20% 65%;
+
+        --color-accent: 0 84% 15%;
+        --color-accent-foreground: 0 84% 60%;
+
+        --color-destructive: 0 84% 60%;
+        --color-destructive-foreground: 0 0% 100%;
+
+        --color-border: 220 15% 20%;
+        --color-input: 220 15% 20%;
+        --color-ring: 0 84% 50%;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+    }
+
+    body {
+        @apply font-sans bg-background text-foreground transition-colors duration-300 antialiased;
+        font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        overflow-x: hidden;
+        padding-top: 3.5rem;
+    }
+}
+
+/* Animations */
+/* fadeIn and slideUp are already defined above within the :root section's accompanying keyframes */
+
+/* Mica and Acrylic effects */
 @layer utilities {
+    .mica-effect {
+        @apply backdrop-blur-3xl bg-background/60 border-b border-white/10 shadow-sm transition-all duration-500 relative overflow-hidden;
+
+        &::after {
+            content: '';
+            @apply absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none;
+        }
+    }
+
+    .acrylic-effect {
+        @apply backdrop-blur-xl bg-card/40 border border-white/5 shadow-xl transition-all duration-500;
+    }
+
+    .metallic-border {
+        position: relative;
+
+        &::after {
+            content: '';
+            @apply absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-30;
+        }
+    }
+
+
     .fb-card {
-        @apply bg-card text-card-foreground rounded-lg shadow-sm border border-transparent dark:border-[#393A3B] overflow-hidden;
+        @apply bg-card text-card-foreground rounded-xl shadow-sm border border-border/40 overflow-hidden transition-all duration-300 hover:shadow-md;
     }
 
     .fb-input {
-        @apply bg-secondary text-foreground rounded-full px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground;
+        @apply bg-secondary/60 text-foreground rounded-lg px-4 py-2 outline-none border border-transparent focus:border-primary/40 focus:bg-card focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60;
     }
 
     .fb-btn {
-        @apply px-4 py-2 rounded-md font-semibold transition-colors duration-200 cursor-pointer active:scale-95 select-none;
-    }
-
-    .fb-btn-primary {
-        @apply fb-btn bg-primary text-primary-foreground hover:bg-blue-600;
-    }
-
-    .fb-btn-secondary {
-        @apply fb-btn bg-secondary text-secondary-foreground hover:bg-black/5 dark:hover:bg-white/10;
+        @apply px-4 py-2 rounded-lg font-bold transition-all duration-200 cursor-pointer active:scale-95 select-none text-sm;
     }
 
     .fb-sidebar-item {
-        @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200 hover:bg-black/5 dark:hover:bg-white/10 text-foreground font-medium;
-    }
+        @apply flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/5 text-foreground/80 font-semibold text-sm hover:text-primary relative overflow-hidden;
 
-    .fb-active-sidebar-item {
-        @apply bg-primary/10 text-primary hover:bg-primary/15;
+        &::before {
+            content: '';
+            @apply absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary rounded-full transition-all duration-300;
+        }
+
+        &:hover::before,
+        &.active::before {
+            @apply h-6;
+        }
+
+        &:hover {
+            @apply shadow-lg shadow-black/5 -translate-y-0.5;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+        }
     }
 
     .fb-icon-btn {
-        @apply w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer active:scale-95;
+        @apply w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5;
     }
 
-    /* Advanced Utilities */
-    .glass {
-        @apply backdrop-blur-md bg-opacity-80 dark:bg-opacity-80 border-b border-border/50;
+
+    .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--color-primary) / 0.2) transparent;
+
+        &::-webkit-scrollbar {
+            @apply w-1.5;
+        }
+
+        &::-webkit-scrollbar-track {
+            @apply bg-transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            @apply bg-primary/20 rounded-full transition-colors hover:bg-primary/40;
+        }
     }
 
-    .text-glow {
-        text-shadow: 0 0 10px currentColor;
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
+}
+
+@keyframes shine {
+    from {
+        left: -100%;
     }
 
-    ::-webkit-scrollbar-track {
-        @apply bg-transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50 transition-colors;
+    to {
+        left: 200%;
     }
 }
 

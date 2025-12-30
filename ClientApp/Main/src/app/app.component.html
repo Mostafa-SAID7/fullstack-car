@@ -1,22 +1,32 @@
-<div class="min-h-screen bg-background text-foreground flex flex-col pt-3.5">
-    <app-header></app-header>
+<div class="min-h-screen bg-background text-foreground flex flex-col">
+    <!-- Header with Mica effect -->
+    <app-header class="mica-effect fixed top-0 left-0 w-full z-50 h-14"></app-header>
 
-    <div class="flex-1 flex max-w-[1920px] mx-auto w-full pt-4">
-        <!-- Left Sidebar: Hidden on mobile/tablet, visible on large desktops -->
-        <app-sidebar-left
-            class="hidden xl:block w-[360px] fixed left-0 top-14 h-[calc(100vh-3.5rem)] overflow-y-auto pl-4 pb-4 custom-scrollbar"></app-sidebar-left>
+    <!-- Main Layout Container: Exactly fills viewport minus header -->
+    <div
+        class="flex-1 grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6 max-w-[1920px] mx-auto w-full h-[calc(100vh-3.5rem)] mt-14 px-4 overflow-hidden bg-background/50">
 
-        <!-- Main Content Area: Centered, full width on mobile, adjusted margins on large screens -->
+        <!-- Left Sidebar -->
+        <aside
+            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 custom-scroll border-r border-border/10">
+            <app-sidebar-left class="block animate-fade-in"></app-sidebar-left>
+        </aside>
+
+        <!-- Main Content Area -->
         <main
-            class="flex-1 w-full xl:ml-[360px] xl:mr-[360px] px-2 sm:px-4 md:px-8 lg:px-16 xl:px-8 2xl:px-16 min-h-[calc(100vh-3.5rem)] pb-8 flex justify-center">
-            <div class="w-full max-w-[700px]">
+            class="w-full h-[calc(100vh-3.5rem)] pb-8 px-0 flex justify-center overflow-y-auto custom-scroll scroll-smooth">
+            <div class="w-full max-w-[800px] pt-6 animate-slide-up">
                 <router-outlet></router-outlet>
+                <!-- Localization Test -->
+                <div style="display:none" id="localization-test">{{ 'shared.common.common.welcome' | translate }}</div>
             </div>
         </main>
 
-        <!-- Right Sidebar: Hidden on mobile/tablet/laptops, visible on extra large screens -->
-        <app-sidebar-right
-            class="hidden xl:block w-[360px] fixed right-0 top-14 h-[calc(100vh-3.5rem)] overflow-y-auto pr-4 pb-4 custom-scrollbar"></app-sidebar-right>
+        <!-- Right Sidebar -->
+        <aside
+            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 custom-scroll border-l border-border/10">
+            <app-sidebar-right class="block animate-fade-in"></app-sidebar-right>
+        </aside>
     </div>
 
     <!-- Mobile Menu Overlay -->

@@ -14,7 +14,15 @@
     "visibility": "Visibility",
     "public": "Public",
     "private": "Private",
-    "friends": "Friends Only"
+    "friends": "Friends Only",
+    "whatsOnYourMind": "What's on your mind, {0}?",
+    "liveVideo": "Live video",
+    "photoVideo": "Photo/video",
+    "feelingActivity": "Feeling/activity",
+    "noPosts": "No posts found. Be the first to share something!"
+  },
+  "stories": {
+    "create": "Create Story"
   },
   "interactions": {
     "like": "Like",
