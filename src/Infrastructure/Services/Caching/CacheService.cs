@@ -4,6 +4,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services.Caching
 {
@@ -23,7 +25,7 @@ namespace Infrastructure.Services.Caching
             _settings = settings.Value;
         }
 
-        public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+        public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
         {
             if (!_settings.Enabled) return default;
 
@@ -90,11 +92,11 @@ namespace Infrastructure.Services.Caching
             // Tag-based invalidation in IDistributedCache often Requires a more complex implementation 
             // tracking keys per tag. For simplicity here, we'll focus on memory cache 
             // or specific Redis patterns if needed later.
-            
+
             // This is a placeholder for a more robust tag system
             // In a real scenario, we'd store a List of keys for each tag in Redis.
-            _memoryCache.Remove(tag); 
-            
+            _memoryCache.Remove(tag);
+
             if (_settings.UseRedis)
             {
                 await _distributedCache.RemoveAsync(tag, cancellationToken);

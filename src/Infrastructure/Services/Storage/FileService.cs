@@ -1,5 +1,8 @@
 using Application.Common.Interfaces.Storage;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services.Storage
 {

@@ -1,3 +1,18 @@
+using Application.Common.Interfaces.Caching;
+using Application.Common.Interfaces.Storage;
+using Application.Common.Interfaces.Communication;
+using Application.Common.Interfaces.Localization;
+using IAppPasswordHasher = Application.Common.Interfaces.Identity.IPasswordHasher;
+using IAppUserService = Application.Common.Interfaces.Identity.IUserService;
+using IAppAuthService = Application.Common.Interfaces.Identity.IAuthService;
+using IAppCurrentUserService = Application.Common.Interfaces.Identity.ICurrentUserService;
+using IAppJwtTokenService = Application.Common.Interfaces.Identity.IJwtTokenService;
+using IAppEmailService = Application.Common.Interfaces.Communication.IEmailService;
+using IAppFileService = Application.Common.Interfaces.Storage.IFileService;
+using IAppLocalizationProvider = Application.Common.Interfaces.Localization.ILocalizationProvider;
+using IAppLanguageDetector = Application.Common.Interfaces.Localization.ILanguageDetector;
+using IAppCultureInfoProvider = Application.Common.Interfaces.Localization.ICultureInfoProvider;
+using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Seeds.Identity;
 using Infrastructure.Data.Seeds.Community;
@@ -55,19 +70,19 @@ namespace Infrastructure.Extensions
             .AddDefaultTokenProviders();
 
             // Infrastructure Services
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<IJwtTokenService, JwtTokenService>();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IAppCurrentUserService, CurrentUserService>();
+            services.AddScoped<IAppJwtTokenService, JwtTokenService>();
+            services.AddScoped<IAppAuthService, AuthService>();
+            services.AddScoped<IAppUserService, UserService>();
+            services.AddScoped<IAppPasswordHasher, PasswordHasher>();
 
             // Localization Services
-            services.AddScoped<ILocalizationProvider, LocalizationProvider>();
-            services.AddScoped<ILanguageDetector, LanguageDetector>();
-            services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
+            services.AddScoped<IAppLocalizationProvider, LocalizationProvider>();
+            services.AddScoped<IAppLanguageDetector, LanguageDetector>();
+            services.AddScoped<IAppCultureInfoProvider, CultureInfoProvider>();
 
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IAppEmailService, EmailService>();
+            services.AddScoped<IAppFileService, FileService>();
 
             // Caching Services
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));

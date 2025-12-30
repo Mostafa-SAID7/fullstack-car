@@ -8,6 +8,7 @@ namespace Application.Common.Behaviors
 {
     public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICacheableRequest
+        where TResponse : class
     {
         private readonly ICacheService _cacheService;
         private readonly ILogger<CachingBehavior<TRequest, TResponse>> _logger;
