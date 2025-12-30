@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
     selector: 'app-create-post',
     standalone: true,
     imports: [CommonModule, TranslateModule],
-    templateUrl: './create-post.component.html'
+    templateUrl: './create-post.component.html',
+    host: { 'class': 'block' }
 })
 export class CreatePostComponent { }

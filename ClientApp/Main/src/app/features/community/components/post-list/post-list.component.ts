@@ -9,7 +9,8 @@ import { PostItemComponent } from '../post-item/post-item.component';
     selector: 'app-post-list',
     standalone: true,
     imports: [CommonModule, PostItemComponent, TranslateModule],
-    templateUrl: './post-list.component.html'
+    templateUrl: './post-list.component.html',
+    host: { 'class': 'block' }
 })
 export class PostListComponent implements OnInit {
     posts: Post[] = [];

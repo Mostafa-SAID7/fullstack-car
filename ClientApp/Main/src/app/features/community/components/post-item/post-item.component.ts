@@ -7,7 +7,8 @@ import { Post } from '../../../../core/models/post.model';
     selector: 'app-post-item',
     standalone: true,
     imports: [CommonModule, TranslateModule],
-    templateUrl: './post-item.component.html'
+    templateUrl: './post-item.component.html',
+    host: { 'class': 'block' }
 })
 export class PostItemComponent {
     @Input() post!: Post;

@@ -72,11 +72,11 @@
         </mat-menu>
 
         <!-- Theme Toggle Button -->
-        <button class="fb-icon-btn active:scale-95 touch-manipulation"
+        <button class="fb-icon-btn active:scale-95 touch-manipulation group"
             [matTooltip]="themeService.isDark() ? ('dashboard.admin.dashboard.light' | translate) : ('dashboard.admin.dashboard.dark' | translate)"
             (click)="themeService.toggleTheme()">
-            <i class="fa-solid text-xl transition-transform duration-500 rotate-0"
-                [ngClass]="themeService.isDark() ? 'fa-sun text-yellow-500 rotate-180' : 'fa-moon text-gray-600'">
+            <i class="fa-solid text-xl theme-toggle-icon"
+                [ngClass]="themeService.isDark() ? 'fa-sun rotate-180 is-dark' : 'fa-moon rotate-0 is-light'">
             </i>
         </button>
 
@@ -88,8 +88,9 @@
         <button class="fb-icon-btn active:scale-95 touch-manipulation hidden lg:flex" matTooltip="Menu">
             <i class="fa-solid fa-bars text-xl"></i>
         </button>
-        <button class="fb-icon-btn active:scale-95 touch-manipulation" matTooltip="Messenger">
-            <i class="fa-brands fa-facebook-messenger text-xl"></i>
+        <button class="fb-icon-btn relative active:scale-95 touch-manipulation group" matTooltip="Messenger">
+            <i class="fa-brands fa-facebook-messenger text-xl group-hover:scale-110 transition-transform"></i>
+            <span class="notification-badge -top-1 -right-1 scale-75 origin-top-right">3</span>
         </button>
 
         <!-- Notifications -->

@@ -23,9 +23,10 @@ export class ThemeService {
 
     private getStoredTheme(): boolean {
         const stored = localStorage.getItem(this.THEME_KEY);
-        // Default to light if nothing stored, or check system preference? 
-        // For now, default to false (light).
-        return stored === 'dark';
+        if (stored) return stored === 'dark';
+
+        // Default to system preference if no stored theme
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
 
     private applyTheme(isDark: boolean) {
