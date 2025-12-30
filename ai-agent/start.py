@@ -13,10 +13,14 @@ sys.path.insert(0, str(Path(__file__).parent))
 async def main():
     """Main startup function"""
     try:
-        # Import after path setup
+        print("DEBUG: Starting imports...", flush=True)
         from app.core.config import settings
+        print("DEBUG: Config imported.", flush=True)
+        print("DEBUG: Importing AIService (this may take a while)...", flush=True)
         from app.core.ai_service import AIService
+        print("DEBUG: AIService imported.", flush=True)
         import uvicorn
+        print("DEBUG: Uvicorn imported.", flush=True)
         
         print("🚗 Starting Community Car AI Agent...")
         print(f"📍 Host: {settings.HOST}:{settings.PORT}")

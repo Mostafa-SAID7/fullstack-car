@@ -21,7 +21,8 @@ import {
     CheckCircle2,
     AlertCircle,
     Info,
-    X
+    X,
+    Bot
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -152,6 +153,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         { icon: BarChart2, label: t('analytics'), path: '/analytics', roles: ['Administrator'] },
         { icon: Users, label: t('customers'), path: '/customers', roles: ['Administrator'] },
         { icon: Package, label: t('products'), path: '/products' },
+        { icon: Bot, label: 'AI Agent', path: '/ai-agent' },
     ];
 
     const filteredMenuItems = menuItems.filter(item =>

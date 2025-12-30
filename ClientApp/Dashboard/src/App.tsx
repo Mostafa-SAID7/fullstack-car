@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { MainLayout } from './components/layout/MainLayout';
-import { DashboardOverview, Analytics, Customers, Products, Settings } from './pages';
+import { DashboardOverview, Analytics, Customers, Products, Settings, AIAgentManagement } from './pages';
 
 function App() {
   return (
@@ -54,6 +54,16 @@ function App() {
             <ProtectedRoute>
               <MainLayout>
                 <Settings />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-agent"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <AIAgentManagement />
               </MainLayout>
             </ProtectedRoute>
           }

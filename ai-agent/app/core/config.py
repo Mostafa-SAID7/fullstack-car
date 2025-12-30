@@ -4,8 +4,9 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # API Configuration
-    API_HOST: str = "0.0.0.0"
-    API_PORT: int = 8000
+    # API Configuration
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
     DEBUG: bool = True
     
     # HuggingFace Configuration
@@ -20,7 +21,7 @@ class Settings(BaseSettings):
     TOP_K: int = 50
     
     # Database
-    DATABASE_URL: str = "sqlite:///./community_car_ai.db"
+    DATABASE_URL: str = "mssql+pyodbc://localhost/CCarDb?driver=SQL+Server&trusted_connection=yes"
     
     # Backend Integration
     BACKEND_API_URL: str = "http://localhost:5000"

@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text;
 using Asp.Versioning;
+using MediatR;
+using Application.Features.AIAgent.DTOs;
+using Application.Features.AIAgent.Commands.ChatWithAgent;
+using Application.Features.AIAgent.Queries.GetCarRecommendations;
+using Application.Features.AIAgent.Queries.GetMaintenanceAdvice;
+using Application.Features.AIAgent.Queries.AnalyzeMarket;
 
 namespace WebAPI.Controllers.AIAgent
 {
@@ -11,156 +15,41 @@ namespace WebAPI.Controllers.AIAgent
     [Route("api/v{version:apiVersion}/ai-agent")]
     public class AIAgentController : BaseController
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly ISender _sender;
         private readonly ILogger<AIAgentController> _logger;
 
-        public AIAgentController(
-            HttpClient httpClient, 
-            IConfiguration configuration,
-            ILogger<AIAgentController> logger)
+        public AIAgentController(ISender sender, ILogger<AIAgentController> logger)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
+            _sender = sender;
             _logger = logger;
         }
 
         [HttpPost("chat")]
-        public async Task<IActionResult> Chat([FromBody] ChatRequest request)
+        public async Task<IActionResult> Chat([FromBody] ChatRequestDTO request)
         {
-            try
-            {
-                var aiServiceUrl = _configuration["AIAgent:PythonServiceUrl"];
-                var response = await _httpClient.PostAsync(
-                    $"{aiServiceUrl}/api/chat",
-                    new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
-                );
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return Ok(JsonSerializer.Deserialize<object>(content));
-                }
-
-                return BadRequest("Failed to get AI response");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error communicating with AI service");
-                return StatusCode(500, "AI service unavailable");
-            }
+            var result = await _sender.Send(new ChatWithAgentCommand(request));
+            return Ok(result);
         }
 
         [HttpPost("recommendations")]
-        public async Task<IActionResult> GetRecommendations([FromBody] CarPreferencesRequest request)
+        public async Task<IActionResult> GetRecommendations([FromBody] RecommendationRequestDTO request)
         {
-            try
-            {
-                var aiServiceUrl = _configuration["AIAgent:PythonServiceUrl"];
-                var response = await _httpClient.PostAsync(
-                    $"{aiServiceUrl}/api/recommendations",
-                    new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
-                );
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return Ok(JsonSerializer.Deserialize<object>(content));
-                }
-
-                return BadRequest("Failed to get recommendations");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting car recommendations");
-                return StatusCode(500, "Recommendation service unavailable");
-            }
+            var result = await _sender.Send(new GetCarRecommendationsQuery(request));
+            return Ok(result);
         }
 
         [HttpPost("maintenance/advice")]
-        public async Task<IActionResult> GetMaintenanceAdvice([FromBody] CarInfoRequest request)
+        public async Task<IActionResult> GetMaintenanceAdvice([FromBody] MaintenanceRequestDTO request)
         {
-            try
-            {
-                var aiServiceUrl = _configuration["AIAgent:PythonServiceUrl"];
-                var response = await _httpClient.PostAsync(
-                    $"{aiServiceUrl}/api/maintenance/advice",
-                    new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
-                );
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return Ok(JsonSerializer.Deserialize<object>(content));
-                }
-
-                return BadRequest("Failed to get maintenance advice");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting maintenance advice");
-                return StatusCode(500, "Maintenance service unavailable");
-            }
+            var result = await _sender.Send(new GetMaintenanceAdviceQuery(request));
+            return Ok(result);
         }
 
         [HttpPost("analysis/market")]
-        public async Task<IActionResult> AnalyzeMarket([FromBody] MarketAnalysisRequest request)
+        public async Task<IActionResult> AnalyzeMarket([FromBody] MarketAnalysisRequestDTO request)
         {
-            try
-            {
-                var aiServiceUrl = _configuration["AIAgent:PythonServiceUrl"];
-                var response = await _httpClient.PostAsync(
-                    $"{aiServiceUrl}/api/analysis/market",
-                    new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
-                );
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return Ok(JsonSerializer.Deserialize<object>(content));
-                }
-
-                return BadRequest("Failed to analyze market");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error analyzing market");
-                return StatusCode(500, "Market analysis service unavailable");
-            }
+            var result = await _sender.Send(new AnalyzeMarketQuery(request));
+            return Ok(result);
         }
-    }
-
-    // Request DTOs
-    public class ChatRequest
-    {
-        public string Message { get; set; } = string.Empty;
-        public string? Context { get; set; }
-        public string? UserId { get; set; }
-    }
-
-    public class CarPreferencesRequest
-    {
-        public string? Budget { get; set; }
-        public string? CarType { get; set; }
-        public string? FuelType { get; set; }
-        public string? Usage { get; set; }
-        public List<string>? Features { get; set; }
-    }
-
-    public class CarInfoRequest
-    {
-        public string Make { get; set; } = string.Empty;
-        public string Model { get; set; } = string.Empty;
-        public int Year { get; set; }
-        public int? Mileage { get; set; }
-        public string? LastService { get; set; }
-        public List<string>? ServiceHistory { get; set; }
-    }
-
-    public class MarketAnalysisRequest
-    {
-        public string CarQuery { get; set; } = string.Empty;
-        public string? Location { get; set; }
-        public string? TimeFrame { get; set; }
     }
 }

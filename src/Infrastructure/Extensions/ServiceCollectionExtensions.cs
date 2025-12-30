@@ -2,6 +2,7 @@ using Application.Common.Interfaces.Caching;
 using Application.Common.Interfaces.Storage;
 using Application.Common.Interfaces.Communication;
 using Application.Common.Interfaces.Localization;
+using Application.Common.Interfaces.AIAgent;
 using Application.Common.Interfaces.Identity.Core;
 using Application.Common.Interfaces.Identity.Auth;
 using Application.Common.Interfaces.Identity.Profile;
@@ -28,6 +29,7 @@ using Infrastructure.Services.Localization;
 using Infrastructure.Services.Communication;
 using Infrastructure.Services.Storage;
 using Infrastructure.Services.Caching;
+using Infrastructure.Services;
 using Infrastructure.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -159,6 +161,9 @@ namespace Infrastructure.Extensions
                 options.Fields.Add("name");
                 options.Fields.Add("email");
             });
+
+            // AI Agent Service
+            services.AddHttpClient<IAIAgentService, AIAgentService>();
 
             // Add Database Seeder & Individual Seeders
             services.AddScoped<DatabaseSeeder>();

@@ -1,0 +1,53 @@
+<div class="ai-widget-container" [class.open]="isOpen">
+    <!-- Trigger Button -->
+    <button class="ai-trigger-btn" (click)="toggleChat()">
+        <i class="fas fa-robot"></i>
+        <span class="notification-badge" *ngIf="hasUnreadMessages"></span>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="ai-chat-window">
+        <div class="chat-header">
+            <div class="header-info">
+                <div class="bot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <span class="name">AI Assistant</span>
+                    <span class="status">Online</span>
+                </div>
+            </div>
+            <button class="close-btn" (click)="toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" #scrollContainer>
+            <div class="message" *ngFor="let msg of messages" [class.user]="msg.isUser" [class.ai]="!msg.isUser">
+                <div class="message-content" [innerHTML]="parseMarkdown(msg.text)"></div>
+                <span class="time">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+
+            <div class="typing-indicator" *ngIf="isTyping">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Quick Suggestions (only show if no typing and last msg was AI) -->
+            <div class="suggestions" *ngIf="messages.length > 0 && !messages[messages.length-1].isUser && !isTyping">
+                <button *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+                    {{ suggestion }}
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" [(ngModel)]="currentMessage" (keyup.enter)="sendMessage()"
+                placeholder="Ask me anything..." [disabled]="isTyping">
+            <button (click)="sendMessage()" [disabled]="!currentMessage.trim() || isTyping">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>

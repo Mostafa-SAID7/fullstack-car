@@ -6,6 +6,7 @@ import { SidebarLeftComponent } from './layout/components/sidebar-left/sidebar-l
 import { SidebarRightComponent } from './layout/components/sidebar-right/sidebar-right.component';
 import { LayoutService } from './core/services/layout.service';
 import { CommonModule } from '@angular/common';
+import { AIAgentModule } from './features/ai-agent/ai-agent.module';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { CommonModule } from '@angular/common';
     HeaderComponent,
     SidebarLeftComponent,
     SidebarRightComponent,
-    CommonModule
+    CommonModule,
+    AIAgentModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
