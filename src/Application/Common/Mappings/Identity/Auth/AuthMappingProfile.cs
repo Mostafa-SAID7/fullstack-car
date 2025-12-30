@@ -5,7 +5,7 @@ using Domain.Entities.Identity;
 
 namespace Application.Common.Mappings.Identity.Auth
 {
-    public class AuthMappingProfile : Profile
+    public class AuthMappingProfile : AutoMapper.Profile
     {
         public AuthMappingProfile()
         {

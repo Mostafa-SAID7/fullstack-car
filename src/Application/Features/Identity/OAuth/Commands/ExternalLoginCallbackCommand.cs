@@ -1,6 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Responses;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Auth;
 using MediatR;
 
 namespace Application.Features.Identity.OAuth.Commands
@@ -11,9 +11,9 @@ namespace Application.Features.Identity.OAuth.Commands
 
     public class ExternalLoginCallbackCommandHandler : IRequestHandler<ExternalLoginCallbackCommand, Result<AuthResponse>>
     {
-        private readonly IAuthService _authService;
+        private readonly IOAuthService _authService;
 
-        public ExternalLoginCallbackCommandHandler(IAuthService authService)
+        public ExternalLoginCallbackCommandHandler(IOAuthService authService)
         {
             _authService = authService;
         }

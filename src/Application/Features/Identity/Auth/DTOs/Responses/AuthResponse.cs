@@ -1,3 +1,5 @@
+using Application.Features.Identity.Profile.DTOs.Responses;
+
 namespace Application.Features.Identity.Auth.DTOs.Responses
 {
     public class AuthResponse

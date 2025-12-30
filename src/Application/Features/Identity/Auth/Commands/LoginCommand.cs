@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Auth;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Domain.Enums.Identity;
@@ -17,9 +17,9 @@ namespace Application.Features.Identity.Auth.Commands
 
     public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResponse>>
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthenticationService _authService;
 
-        public LoginCommandHandler(IAuthService authService)
+        public LoginCommandHandler(IAuthenticationService authService)
         {
             _authService = authService;
         }

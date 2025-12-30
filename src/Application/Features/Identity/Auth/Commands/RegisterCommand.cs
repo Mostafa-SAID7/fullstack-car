@@ -1,6 +1,6 @@
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Auth;
 using Application.Common.Models;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
@@ -16,9 +16,9 @@ namespace Application.Features.Identity.Auth.Commands
 
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResponse>>
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthenticationService _authService;
 
-        public RegisterCommandHandler(IAuthService authService)
+        public RegisterCommandHandler(IAuthenticationService authService)
         {
             _authService = authService;
         }

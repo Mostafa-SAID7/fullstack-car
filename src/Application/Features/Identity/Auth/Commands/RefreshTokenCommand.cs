@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Auth;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
@@ -16,9 +16,9 @@ namespace Application.Features.Identity.Auth.Commands
 
     public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Result<TokenResponse>>
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthenticationService _authService;
 
-        public RefreshTokenCommandHandler(IAuthService authService)
+        public RefreshTokenCommandHandler(IAuthenticationService authService)
         {
             _authService = authService;
         }

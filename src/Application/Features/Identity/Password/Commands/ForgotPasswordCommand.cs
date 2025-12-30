@@ -3,7 +3,7 @@ using Application.Features.Identity.Password.DTOs.Requests;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
-using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces.Identity.Password;
 
 namespace Application.Features.Identity.Password.Commands
 {
@@ -14,16 +14,16 @@ namespace Application.Features.Identity.Password.Commands
 
     public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordCommand, Result>
     {
-        private readonly IUserService _userService;
+        private readonly IPasswordService _passwordService;
 
-        public ForgotPasswordCommandHandler(IUserService userService)
+        public ForgotPasswordCommandHandler(IPasswordService passwordService)
         {
-            _userService = userService;
+            _passwordService = passwordService;
         }
 
         public async Task<Result> Handle(ForgotPasswordCommand command, CancellationToken cancellationToken)
         {
-            return await _userService.ForgotPasswordAsync(command.Request.Email);
+            return await _passwordService.ForgotPasswordAsync(command.Request);
         }
     }
 }
