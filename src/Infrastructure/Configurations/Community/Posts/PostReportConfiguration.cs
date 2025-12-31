@@ -18,10 +18,18 @@ namespace Infrastructure.Configurations.Community.Posts
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(pr => pr.IsResolved)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(pr => pr.Resolution)
+                .HasMaxLength(1000);
+
             // Indexes
             builder.HasIndex(pr => pr.PostId);
             builder.HasIndex(pr => pr.UserId);
             builder.HasIndex(pr => pr.Category);
+            builder.HasIndex(pr => pr.IsResolved);
             builder.HasIndex(pr => pr.CreatedAt);
 
             // Relationships - Use NoAction to avoid cascade delete conflicts
@@ -33,6 +41,11 @@ namespace Infrastructure.Configurations.Community.Posts
             builder.HasOne(pr => pr.User)
                 .WithMany()
                 .HasForeignKey(pr => pr.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(pr => pr.Resolver)
+                .WithMany()
+                .HasForeignKey(pr => pr.ResolvedBy)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -6,6 +6,8 @@ using System.Text;
 using WebAPI.Filters;
 using Application.Common.Interfaces.Communication;
 using WebAPI.Services.Communication;
+using Infrastructure.Services.Caching;
+using Infrastructure.Common;
 
 namespace WebAPI.Extensions
 {
@@ -21,11 +23,44 @@ namespace WebAPI.Extensions
             // Add Application Services
             services.AddApplicationServices();
 
-            // Add Response Caching
-            services.AddResponseCaching();
+            // Add Response Caching with advanced configuration
+            services.AddResponseCaching(options =>
+            {
+                options.MaximumBodySize = 64 * 1024 * 1024; // 64MB
+                options.UseCaseSensitivePaths = false;
+            });
 
-            // Add Output Caching
-            services.AddOutputCache();
+            // Add Output Caching with custom policies
+            services.AddOutputCache(options =>
+            {
+                var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
+                
+                options.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(cacheSettings.OutputCacheDefaultExpiration);
+                options.MaximumBodySize = 64 * 1024 * 1024; // 64MB
+                options.UseCaseSensitivePaths = false;
+
+                // Add named policies
+                options.AddPolicy("ShortCache", builder => 
+                    builder.Expire(TimeSpan.FromMinutes(1)));
+                
+                options.AddPolicy("MediumCache", builder => 
+                    builder.Expire(TimeSpan.FromMinutes(5)));
+                
+                options.AddPolicy("LongCache", builder => 
+                    builder.Expire(TimeSpan.FromMinutes(30)));
+
+                options.AddPolicy("UserSpecific", builder => 
+                    builder.Expire(TimeSpan.FromMinutes(5))
+                           .VaryByValue(context => new KeyValuePair<string, string>("Authorization", context.Request.Headers["Authorization"].ToString())));
+
+                options.AddPolicy("LocalizationCache", builder => 
+                    builder.Expire(TimeSpan.FromHours(1))
+                           .VaryByValue(context => new KeyValuePair<string, string>("Accept-Language", context.Request.Headers["Accept-Language"].ToString())));
+            });
+
+            // Register caching policy services
+            services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
+            services.AddSingleton<CustomOutputCachePolicy>();
 
             // Add HttpContextAccessor for CurrentUserService
             services.AddHttpContextAccessor();

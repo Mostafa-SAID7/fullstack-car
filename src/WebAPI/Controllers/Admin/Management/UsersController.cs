@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
+using Application.Common.Interfaces.Data;
 
 namespace WebAPI.Controllers.Admin.Management
 {
@@ -10,42 +11,78 @@ namespace WebAPI.Controllers.Admin.Management
     [Route("api/v{version:apiVersion}/admin/users")]
     public class UsersController : BaseController
     {
+        private readonly IApplicationDbContext _context;
+
+        public UsersController(IApplicationDbContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? status = null, [FromQuery] string? search = null)
         {
-            // Implementation for getting all users with pagination and filtering
-            var users = new
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
             {
-                Data = new List<object>(), // Implement actual user data
-                TotalCount = 0,
+                var isActive = status.ToLower() == "active";
+                query = query.Where(u => u.IsActive == isActive);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u => u.Email.Contains(search) || u.FirstName.Contains(search) || u.LastName.Contains(search));
+            }
+
+            var totalCount = await query.CountAsync();
+            var users = await query
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FirstName,
+                    u.LastName,
+                    u.Email,
+                    Status = u.IsActive ? "Active" : "Inactive",
+                    JoinDate = u.CreatedAt,
+                    u.IsActive
+                })
+                .ToListAsync();
+
+            return Ok(new
+            {
+                Data = users,
+                TotalCount = totalCount,
                 Page = page,
-                PageSize = pageSize,
-                Status = status,
-                SearchTerm = search
-            };
-            
-            return Ok(users);
+                PageSize = pageSize
+            });
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            // Implementation for getting specific user with detailed info
-            var user = new
+            var user = await _context.Users
+                .Include(u => u.Posts)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null) return NotFound();
+
+            var result = new
             {
-                Id = id,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "john.doe@email.com",
-                Status = "Active",
-                JoinDate = DateTime.UtcNow.AddDays(-30),
-                LastLogin = DateTime.UtcNow.AddHours(-2),
-                PostsCount = 15,
-                GroupsCount = 3,
-                ReviewsCount = 8
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                Status = user.IsActive ? "Active" : "Inactive",
+                JoinDate = user.CreatedAt,
+                LastLogin = DateTime.UtcNow.AddHours(-2), // Mock for now if not in DB
+                PostsCount = user.Posts.Count,
+                GroupsCount = await _context.GroupMembers.CountAsync(gm => gm.UserId == id),
+                ReviewsCount = await _context.Reviews.CountAsync(r => r.UserId == id)
             };
             
-            return Ok(user);
+            return Ok(result);
         }
 
         [HttpPut("{id}/suspend")]
@@ -94,15 +131,24 @@ namespace WebAPI.Controllers.Admin.Management
         [HttpGet("statistics")]
         public async Task<IActionResult> GetUserStatistics()
         {
-            // Implementation for getting user statistics
+            var now = DateTime.UtcNow;
+            var startOfMonth = new DateTime(now.Year, now.Month, 1);
+            
+            var totalUsers = await _context.Users.CountAsync();
+            var activeUsers = await _context.Users.CountAsync(u => u.IsActive);
+            var lastMonthUsers = await _context.Users.CountAsync(u => u.CreatedAt < startOfMonth);
+            
+            var newUsersThisMonth = await _context.Users.CountAsync(u => u.CreatedAt >= startOfMonth);
+            var growthRate = lastMonthUsers == 0 ? 100.0 : ((double)newUsersThisMonth / lastMonthUsers) * 100;
+
             var stats = new
             {
-                TotalUsers = 1250,
-                ActiveUsers = 890,
-                SuspendedUsers = 15,
-                BannedUsers = 3,
-                NewUsersThisMonth = 45,
-                UserGrowthRate = 12.5
+                TotalUsers = totalUsers,
+                ActiveUsers = activeUsers,
+                SuspendedUsers = await _context.Users.CountAsync(u => !u.IsActive), // Simplified for now
+                BannedUsers = 0, // Implement if there's a ban flag
+                NewUsersThisMonth = newUsersThisMonth,
+                UserGrowthRate = Math.Round(growthRate, 1)
             };
             
             return Ok(stats);

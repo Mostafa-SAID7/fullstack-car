@@ -8,6 +8,8 @@ using Application.Common.Interfaces.Identity.Auth;
 using Application.Common.Interfaces.Identity.Profile;
 using Application.Common.Interfaces.Identity.Password;
 using Application.Common.Interfaces.Identity.Security;
+using Infrastructure.Services.Logging;
+using StackExchange.Redis;
 using Domain.Interfaces;
 using Domain.Entities.Identity;
 using Infrastructure.Data;
@@ -98,7 +100,13 @@ namespace Infrastructure.Extensions
 
             // Caching Services
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
-            services.AddMemoryCache();
+            services.AddMemoryCache(options =>
+            {
+                var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
+                options.SizeLimit = cacheSettings.MaxMemoryCacheSize * 1024 * 1024; // Convert MB to bytes
+                options.CompactionPercentage = cacheSettings.CompactionPercentage / 100.0;
+                options.ExpirationScanFrequency = TimeSpan.FromSeconds(cacheSettings.ScanFrequencySeconds);
+            });
 
             var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
             if (cacheSettings.Enabled && cacheSettings.UseRedis)
@@ -106,6 +114,17 @@ namespace Infrastructure.Extensions
                 services.AddStackExchangeRedisCache(options =>
                 {
                     options.Configuration = cacheSettings.RedisConnectionString;
+                    options.InstanceName = cacheSettings.RedisKeyPrefix;
+                });
+
+                // Add Redis connection for advanced operations
+                services.AddSingleton<IConnectionMultiplexer>(provider =>
+                {
+                    var connectionString = cacheSettings.RedisConnectionString;
+                    var configuration = ConfigurationOptions.Parse(connectionString);
+                    configuration.ConnectTimeout = cacheSettings.RedisConnectTimeout;
+                    configuration.CommandMap = CommandMap.Create(new HashSet<string> { "INFO", "CONFIG", "CLUSTER", "PING", "ECHO", "CLIENT" }, available: false);
+                    return ConnectionMultiplexer.Connect(configuration);
                 });
             }
             else
@@ -113,7 +132,12 @@ namespace Infrastructure.Extensions
                 services.AddDistributedMemoryCache();
             }
 
+            // Register caching services
+            services.AddSingleton<ICacheKeyBuilder, CacheKeyBuilder>();
             services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<IAdvancedCacheService, AdvancedCacheService>();
+            services.AddSingleton<ICacheInvalidationStrategy, CacheInvalidationStrategy>();
+            services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
 
             // Add JWT Authentication
             var secret = configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
