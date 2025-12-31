@@ -36,7 +36,8 @@ namespace Application.Features.Identity.Profile.Validators
                     .WithMessage("Last name contains inappropriate content");
 
                 RuleFor(x => x.Request.PhoneNumber)
-                    .MustBeValidPhoneNumber()
+                    .Matches(@"^\+?[1-9]\d{1,14}$")
+                    .WithMessage("Phone number format is invalid")
                     .When(x => !string.IsNullOrEmpty(x.Request?.PhoneNumber));
 
                 RuleFor(x => x.Request.Bio)
@@ -49,7 +50,8 @@ namespace Application.Features.Identity.Profile.Validators
                     .When(x => !string.IsNullOrEmpty(x.Request?.Bio));
 
                 RuleFor(x => x.Request.Website)
-                    .MustBeValidUrl()
+                    .Must(BeValidUrl)
+                    .WithMessage("Website URL format is invalid")
                     .Must(BeAllowedWebsite)
                     .WithMessage("Website URL is not allowed")
                     .When(x => !string.IsNullOrEmpty(x.Request?.Website));
@@ -62,7 +64,7 @@ namespace Application.Features.Identity.Profile.Validators
                     .When(x => !string.IsNullOrEmpty(x.Request?.Location));
 
                 RuleFor(x => x.Request.DateOfBirth)
-                    .MustBeWithinAge(13, 120)
+                    .Must(BeValidAge)
                     .WithMessage("Age must be between 13 and 120 years")
                     .When(x => x.Request?.DateOfBirth.HasValue == true);
 
@@ -72,11 +74,13 @@ namespace Application.Features.Identity.Profile.Validators
                     .When(x => x.Request?.Gender.HasValue == true);
 
                 RuleFor(x => x.Request.LanguagePreference)
-                    .MustBeValidLanguageCode()
+                    .Must(BeValidLanguageCode)
+                    .WithMessage("Invalid language code")
                     .When(x => !string.IsNullOrEmpty(x.Request?.LanguagePreference));
 
                 RuleFor(x => x.Request.TimeZone)
-                    .MustBeValidTimeZone()
+                    .Must(BeValidTimeZone)
+                    .WithMessage("Invalid time zone")
                     .When(x => !string.IsNullOrEmpty(x.Request?.TimeZone));
 
                 // Social media validations
@@ -86,14 +90,16 @@ namespace Application.Features.Identity.Profile.Validators
                     .When(x => !string.IsNullOrEmpty(x.Request?.TwitterHandle));
 
                 RuleFor(x => x.Request.LinkedInProfile)
-                    .MustBeValidUrl()
-                    .Must(url => url.Contains("linkedin.com"))
+                    .Must(BeValidUrl)
+                    .WithMessage("Must be a valid URL")
+                    .Must(url => string.IsNullOrEmpty(url) || url.Contains("linkedin.com"))
                     .WithMessage("Must be a valid LinkedIn profile URL")
                     .When(x => !string.IsNullOrEmpty(x.Request?.LinkedInProfile));
 
                 RuleFor(x => x.Request.GitHubProfile)
-                    .MustBeValidUrl()
-                    .Must(url => url.Contains("github.com"))
+                    .Must(BeValidUrl)
+                    .WithMessage("Must be a valid URL")
+                    .Must(url => string.IsNullOrEmpty(url) || url.Contains("github.com"))
                     .WithMessage("Must be a valid GitHub profile URL")
                     .When(x => !string.IsNullOrEmpty(x.Request?.GitHubProfile));
 
@@ -125,14 +131,6 @@ namespace Application.Features.Identity.Profile.Validators
             });
         }
 
-        private void ValidatePhoneNumber(string propertyName)
-        {
-            RuleFor(x => GetPropertyValue(x, propertyName))
-                .Matches(@"^\+?[1-9]\d{1,14}$")
-                .WithMessage("Phone number format is invalid")
-                .When(x => !string.IsNullOrEmpty(GetStringValue(x, propertyName)));
-        }
-
         private static bool NotContainProfanity(string? text)
         {
             if (string.IsNullOrEmpty(text)) return true;
@@ -159,16 +157,44 @@ namespace Application.Features.Identity.Profile.Validators
             return !blockedDomains.Any(domain => url.ToLower().Contains(domain));
         }
 
-        private static string GetStringValue(UpdateProfileCommand command, string propertyName)
+        private static bool BeValidUrl(string? url)
         {
-            var property = command.Request?.GetType().GetProperty(propertyName);
-            return property?.GetValue(command.Request)?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(url)) return true;
+            return Uri.TryCreate(url, UriKind.Absolute, out var result) &&
+                   (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
         }
 
-        private static object GetPropertyValue(UpdateProfileCommand command, string propertyName)
+        private static bool BeValidAge(DateTime? dateOfBirth)
         {
-            var property = command.Request?.GetType().GetProperty(propertyName);
-            return property?.GetValue(command.Request) ?? string.Empty;
+            if (!dateOfBirth.HasValue) return true;
+            
+            var age = DateTime.UtcNow.Year - dateOfBirth.Value.Year;
+            if (dateOfBirth.Value.Date > DateTime.UtcNow.AddYears(-age)) age--;
+            
+            return age >= 13 && age <= 120;
+        }
+
+        private static bool BeValidLanguageCode(string? languageCode)
+        {
+            if (string.IsNullOrEmpty(languageCode)) return true;
+            
+            var validCodes = new[] { "en", "ar", "fr", "es", "de", "it", "pt", "ru", "zh", "ja", "ko" };
+            return validCodes.Contains(languageCode.ToLower());
+        }
+
+        private static bool BeValidTimeZone(string? timeZone)
+        {
+            if (string.IsNullOrEmpty(timeZone)) return true;
+            
+            try
+            {
+                TimeZoneInfo.FindSystemTimeZoneById(timeZone);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

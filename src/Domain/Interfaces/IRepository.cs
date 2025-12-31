@@ -25,5 +25,6 @@ namespace Domain.Interfaces
         Task DeleteAsync(T entity, CancellationToken cancellationToken);
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken);
+        IQueryable<T> GetQueryable();
     }
 }

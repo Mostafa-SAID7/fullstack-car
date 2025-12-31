@@ -26,5 +26,7 @@ namespace Domain.Entities.Community.Posts
         public virtual Group? Group { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
+        public virtual ICollection<PostView> Views { get; set; } = new List<PostView>();
+        public virtual ICollection<PostReport> Reports { get; set; } = new List<PostReport>();
     }
 }

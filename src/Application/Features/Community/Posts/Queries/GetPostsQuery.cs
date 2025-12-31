@@ -15,8 +15,9 @@ namespace Application.Features.Community.Posts.Queries
         public int PageSize { get; set; } = 10;
         public Guid? UserId { get; set; }
         public Guid? GroupId { get; set; }
+        public string? Status { get; set; }
 
-        public string CacheKey => $"GetPosts_{PageNumber}_{PageSize}_{UserId}_{GroupId}";
+        public string CacheKey => $"GetPosts_{PageNumber}_{PageSize}_{UserId}_{GroupId}_{Status}";
         public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
         public string? CacheTag => "Posts";
     }

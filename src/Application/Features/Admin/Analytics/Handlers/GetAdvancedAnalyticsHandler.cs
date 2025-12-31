@@ -1,5 +1,6 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Interfaces.Logging;
+using Application.Common.Models;
 using Application.Features.Admin.Analytics.DTOs;
 using Application.Features.Admin.Analytics.Queries;
 using MediatR;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Admin.Analytics.Handlers
 {
-    public class GetAdvancedAnalyticsHandler : IRequestHandler<GetAdvancedAnalyticsQuery, AdvancedAnalyticsDto>
+    public class GetAdvancedAnalyticsHandler : IRequestHandler<GetAdvancedAnalyticsQuery, Result<AdvancedAnalyticsDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IAdvancedLogger<GetAdvancedAnalyticsHandler> _logger;
@@ -18,7 +19,7 @@ namespace Application.Features.Admin.Analytics.Handlers
             _logger = logger;
         }
 
-        public async Task<AdvancedAnalyticsDto> Handle(GetAdvancedAnalyticsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<AdvancedAnalyticsDto>> Handle(GetAdvancedAnalyticsQuery request, CancellationToken cancellationToken)
         {
             var startTime = DateTime.UtcNow;
             
@@ -40,7 +41,7 @@ namespace Application.Features.Admin.Analytics.Handlers
                 var duration = DateTime.UtcNow - startTime;
                 _logger.LogPerformance("GetAdvancedAnalytics", duration, new { Period = request.Period, StartDate = startDate, EndDate = endDate });
 
-                return analytics;
+                return Result<AdvancedAnalyticsDto>.Success(analytics);
             }
             catch (Exception ex)
             {

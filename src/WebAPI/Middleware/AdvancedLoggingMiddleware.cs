@@ -219,7 +219,7 @@ namespace WebAPI.Middleware
         private static bool IsSecurityException(Exception exception)
         {
             return exception is UnauthorizedAccessException ||
-                   exception is SecurityException ||
+                   exception is System.Security.SecurityException ||
                    exception.Message.ToLower().Contains("unauthorized") ||
                    exception.Message.ToLower().Contains("forbidden");
         }

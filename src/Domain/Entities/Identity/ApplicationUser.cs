@@ -40,6 +40,9 @@ namespace Domain.Entities.Identity
 
         // Navigation Properties
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<PostLike> PostLikes { get; set; } = new List<PostLike>();
+        public virtual ICollection<CommentLike> CommentLikes { get; set; } = new List<CommentLike>();
         public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
         public virtual ICollection<UserFriend> Friends { get; set; } = new List<UserFriend>();

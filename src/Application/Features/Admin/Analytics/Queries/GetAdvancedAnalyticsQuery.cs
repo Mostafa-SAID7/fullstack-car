@@ -1,9 +1,10 @@
 using Application.Features.Admin.Analytics.DTOs;
+using Application.Common.Models;
 using MediatR;
 
 namespace Application.Features.Admin.Analytics.Queries
 {
-    public class GetAdvancedAnalyticsQuery : IRequest<AdvancedAnalyticsDto>
+    public class GetAdvancedAnalyticsQuery : IRequest<Result<AdvancedAnalyticsDto>>
     {
         public string Period { get; set; } = "week"; // day, week, month, year
         public DateTime? StartDate { get; set; }

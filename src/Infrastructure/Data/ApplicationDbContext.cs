@@ -5,6 +5,7 @@ using Domain.Entities.Community.Reviews;
 using Domain.Entities.Shared;
 using Domain.Entities.Shared.Chat;
 using Domain.Entities.Community.Social;
+using Domain.Entities.Marketplace;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace Infrastructure.Data
 
         // Community Tables
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostView> PostViews { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
@@ -41,6 +43,17 @@ namespace Infrastructure.Data
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ConversationMember> ConversationMembers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+
+        // Marketplace Tables
+        public DbSet<ServiceProvider> ServiceProviders { get; set; }
+        public DbSet<CarService> CarServices { get; set; }
+        public DbSet<ServiceBooking> ServiceBookings { get; set; }
+        public DbSet<ServicePayment> ServicePayments { get; set; }
+        public DbSet<ServiceReview> ServiceReviews { get; set; }
+        public DbSet<ServiceImage> ServiceImages { get; set; }
+        public DbSet<ServiceAvailability> ServiceAvailabilities { get; set; }
+        public DbSet<ServiceProviderSpecialty> ServiceProviderSpecialties { get; set; }
+        public DbSet<BookingStatusHistory> BookingStatusHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

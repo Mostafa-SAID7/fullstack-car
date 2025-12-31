@@ -1,7 +1,8 @@
+using Application.Features.Admin.DTOs.System;
+using Application.Features.Admin.Queries.System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
-
 using Asp.Versioning;
 
 namespace WebAPI.Controllers.Admin.System
@@ -14,7 +15,13 @@ namespace WebAPI.Controllers.Admin.System
         [HttpGet]
         public async Task<IActionResult> GetHealth()
         {
-            // Basic health check
+            var query = new GetSystemHealthQuery();
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            // Fallback to basic health check if query fails
             var health = new
             {
                 Status = "Healthy",
@@ -29,7 +36,13 @@ namespace WebAPI.Controllers.Admin.System
         [HttpGet("detailed")]
         public async Task<IActionResult> GetDetailedHealth()
         {
-            // Detailed health check with dependencies
+            var query = new GetSystemHealthQuery();
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            // Fallback to basic detailed health check if query fails
             var health = new
             {
                 Status = "Healthy",
@@ -57,7 +70,6 @@ namespace WebAPI.Controllers.Admin.System
         [HttpGet("ping")]
         public async Task<IActionResult> Ping()
         {
-            // Simple ping endpoint
             return Ok(new { Message = "Pong", Timestamp = DateTime.UtcNow });
         }
     }

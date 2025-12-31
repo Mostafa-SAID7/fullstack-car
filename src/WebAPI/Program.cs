@@ -11,20 +11,20 @@ using Serilog;
 using NLog.Web;
 using System.Reflection;
 
-// Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
-    .Enrich.WithMachineName()
-    .Enrich.WithProcessId()
-    .Enrich.WithThreadId()
-    .CreateLogger();
-
 try
 {
     Log.Information("Starting Community Car API");
 
     var builder = WebApplication.CreateBuilder(args);
+
+    // Configure Serilog
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .Enrich.WithProcessId()
+        .Enrich.WithThreadId()
+        .CreateLogger();
 
     // Configure logging
     builder.Host.UseSerilog();

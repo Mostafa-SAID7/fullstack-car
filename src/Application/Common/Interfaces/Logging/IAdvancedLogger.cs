@@ -14,5 +14,9 @@ namespace Application.Common.Interfaces.Logging
         void LogValidationError(string validator, string field, string error, object? value = null);
         void LogSystemHealth(string component, string status, object? metrics = null);
         void LogAuditTrail(string entity, string action, string entityId, object? oldValues = null, object? newValues = null, string? userId = null);
+        
+        // Add missing LogError method that inherits from ILogger<T>
+        void LogError(Exception? exception, string? message, params object?[] args);
+        void LogError(string? message, params object?[] args);
     }
 }

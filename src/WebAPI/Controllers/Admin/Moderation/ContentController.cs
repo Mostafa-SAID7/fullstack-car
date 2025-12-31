@@ -1,146 +1,267 @@
+using Application.Features.Admin.Commands.Moderation;
+using Application.Features.Admin.DTOs.Moderation;
+using Application.Features.Admin.Queries.Moderation;
+using Application.Common.Interfaces.Identity.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Asp.Versioning;
 
 namespace WebAPI.Controllers.Admin.Moderation
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Moderator")]
     [ApiVersion("3.0")]
-    [Route("api/v{version:apiVersion}/admin/content")]
+    [Route("api/v{version:apiVersion}/admin/moderation/content")]
     public class ContentController : BaseController
     {
-        [HttpGet("posts")]
-        public async Task<IActionResult> GetAllPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? status = null)
+        private readonly ICurrentUserService _currentUserService;
+
+        public ContentController(ICurrentUserService currentUserService)
         {
-            // Implementation for getting all posts with filtering
-            var posts = new
-            {
-                Data = new List<object>(), // Implement actual post data
-                TotalCount = 0,
-                Page = page,
-                PageSize = pageSize,
-                Status = status
-            };
-            
-            return Ok(posts);
+            _currentUserService = currentUserService;
         }
 
-        [HttpPut("posts/{id}/approve")]
-        public async Task<IActionResult> ApprovePost(Guid id)
+        [HttpGet("moderation-stats")]
+        public async Task<IActionResult> GetModerationStats()
         {
-            // Implementation for approving post
-            return Ok(new { Message = "Post approved successfully" });
-        }
+            var query = new GetModerationStatsQuery();
+            var result = await Mediator.Send(query);
 
-        [HttpPut("posts/{id}/reject")]
-        public async Task<IActionResult> RejectPost(Guid id, [FromBody] string reason)
-        {
-            // Implementation for rejecting post with reason
-            return Ok(new { Message = "Post rejected successfully", Reason = reason });
-        }
+            if (result.Succeeded)
+                return Ok(result.Data);
 
-        [HttpDelete("posts/{id}")]
-        public async Task<IActionResult> DeletePost(Guid id)
-        {
-            // Implementation for admin deleting post
-            return NoContent();
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("reports")]
-        public async Task<IActionResult> GetReports([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? type = null)
+        public async Task<IActionResult> GetReports(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? type = null,
+            [FromQuery] string? status = null,
+            [FromQuery] string? priority = null)
         {
-            // Implementation for getting content reports
-            var reports = new
+            var query = new GetContentReportsQuery
             {
-                Data = new List<object>(), // Implement actual report data
-                TotalCount = 0,
                 Page = page,
                 PageSize = pageSize,
-                Type = type
+                ContentType = type,
+                Status = status,
+                Priority = priority
             };
-            
-            return Ok(reports);
-        }
 
-        [HttpPut("reports/{id}/resolve")]
-        public async Task<IActionResult> ResolveReport(Guid id, [FromBody] ResolveReportRequest request)
-        {
-            // Implementation for resolving content report
-            return Ok(new { Message = "Report resolved successfully", Action = request.Action });
-        }
+            var result = await Mediator.Send(query);
 
-        [HttpGet("groups")]
-        public async Task<IActionResult> GetAllGroups([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            // Implementation for getting all groups for admin review
-            var groups = new
-            {
-                Data = new List<object>(),
-                TotalCount = 0,
-                Page = page,
-                PageSize = pageSize
-            };
-            
-            return Ok(groups);
-        }
+            if (result.Succeeded)
+                return Ok(result.Data);
 
-        [HttpGet("reviews")]
-        public async Task<IActionResult> GetAllReviews([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            // Implementation for getting all reviews for admin review
-            var reviews = new
-            {
-                Data = new List<object>(),
-                TotalCount = 0,
-                Page = page,
-                PageSize = pageSize
-            };
-            
-            return Ok(reviews);
-        }
-
-        [HttpPut("reviews/{id}/verify")]
-        public async Task<IActionResult> VerifyReview(Guid id)
-        {
-            // Implementation for verifying review
-            return Ok(new { Message = "Review verified successfully" });
+            return BadRequest(result.Errors);
         }
 
         [HttpGet("flagged")]
-        public async Task<IActionResult> GetFlaggedContent([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? contentType = null)
+        public async Task<IActionResult> GetFlaggedContent(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? contentType = null,
+            [FromQuery] ContentFilterRequest? filter = null)
         {
-            // Implementation for getting all flagged content
-            var flaggedContent = new
+            var query = new GetFlaggedContentQuery
             {
-                Data = new List<object>(),
-                TotalCount = 0,
                 Page = page,
                 PageSize = pageSize,
-                ContentType = contentType
+                ContentType = contentType,
+                Filter = filter ?? new ContentFilterRequest()
             };
-            
-            return Ok(flaggedContent);
+
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
         }
 
-        [HttpPost("bulk-action")]
-        public async Task<IActionResult> BulkContentAction([FromBody] BulkActionRequest request)
+        [HttpPut("reports/{id}/resolve")]
+        public async Task<IActionResult> ResolveReport(
+            Guid id,
+            [FromBody] ResolveReportRequest request)
         {
-            // Implementation for bulk actions on content
-            return Ok(new { Message = $"Bulk action '{request.Action}' applied to {request.ContentIds.Count} items" });
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new ResolveReportCommand
+            {
+                ReportId = id,
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Report resolved successfully" });
+
+            return BadRequest(result.Errors);
         }
-    }
 
-    public class ResolveReportRequest
-    {
-        public string Action { get; set; } = string.Empty; // "approve", "remove", "warn_user", "ban_user"
-        public string Notes { get; set; } = string.Empty;
-    }
+        [HttpPut("{contentType}/{id}/approve")]
+        public async Task<IActionResult> ApproveContent(
+            string contentType,
+            Guid id,
+            [FromBody] ApproveContentRequest request)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
 
-    public class BulkActionRequest
-    {
-        public List<Guid> ContentIds { get; set; } = new();
-        public string Action { get; set; } = string.Empty; // "approve", "reject", "delete"
-        public string Reason { get; set; } = string.Empty;
+            var command = new ApproveContentCommand
+            {
+                ContentId = id,
+                ContentType = contentType,
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Content approved successfully" });
+
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPut("{contentType}/{id}/reject")]
+        public async Task<IActionResult> RejectContent(
+            string contentType,
+            Guid id,
+            [FromBody] RejectContentRequest request)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new RejectContentCommand
+            {
+                ContentId = id,
+                ContentType = contentType,
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Content rejected successfully" });
+
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPost("bulk-moderation")]
+        public async Task<IActionResult> BulkModeration([FromBody] BulkModerationRequest request)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new BulkModerationCommand
+            {
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("auto-moderation-rules")]
+        public async Task<IActionResult> GetAutoModerationRules()
+        {
+            var query = new GetAutoModerationRulesQuery();
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("auto-moderation-rules")]
+        public async Task<IActionResult> CreateAutoModerationRule([FromBody] AutoModerationRuleDto rule)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new CreateAutoModerationRuleCommand
+            {
+                AdminId = Guid.Parse(_currentUserService.UserId),
+                Rule = rule
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return CreatedAtAction(nameof(GetAutoModerationRules), new { id = result.Data }, result.Data);
+
+            return BadRequest(result.Errors);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("auto-moderation-rules/{id}")]
+        public async Task<IActionResult> UpdateAutoModerationRule(Guid id, [FromBody] AutoModerationRuleDto rule)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new UpdateAutoModerationRuleCommand
+            {
+                RuleId = id,
+                AdminId = Guid.Parse(_currentUserService.UserId),
+                Rule = rule
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return Ok(new { Message = "Auto-moderation rule updated successfully" });
+
+            return BadRequest(result.Errors);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("auto-moderation-rules/{id}")]
+        public async Task<IActionResult> DeleteAutoModerationRule(Guid id)
+        {
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new DeleteAutoModerationRuleCommand
+            {
+                RuleId = id,
+                AdminId = Guid.Parse(_currentUserService.UserId)
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+                return NoContent();
+
+            return BadRequest(result.Errors);
+        }
     }
 }

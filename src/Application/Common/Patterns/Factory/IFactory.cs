@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Application.Common.Patterns.Factory
 {
     public interface IFactory<out T>

@@ -40,7 +40,7 @@ namespace Application.Features.Community.Posts.Commands
             var report = new PostReport
             {
                 PostId = request.PostId,
-                UserId = request.UserId,
+                ReportedBy = request.UserId,
                 Reason = request.Request.Reason,
                 Category = request.Request.Category
             };

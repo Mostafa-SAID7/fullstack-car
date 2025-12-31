@@ -140,7 +140,7 @@ namespace WebAPI.Middleware
                 // SQL Injection patterns
                 @"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b)",
                 @"(\b(UNION|OR|AND)\s+\d+\s*=\s*\d+)",
-                @"('|\"|;|--|\*|\/\*|\*\/)",
+                @"('|""|;|--|\*|/\*|\*/)",
                 
                 // XSS patterns
                 @"<script[^>]*>.*?</script>",
@@ -156,7 +156,7 @@ namespace WebAPI.Middleware
                 
                 // Command injection
                 @"(\b(cmd|powershell|bash|sh)\b)",
-                @"(\||&|;|\$\(|\`)",
+                @"(\||&|;|\$\(|`)",
                 
                 // LDAP injection
                 @"(\*|\(|\)|\\|\||&)",

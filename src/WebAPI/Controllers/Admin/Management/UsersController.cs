@@ -1,8 +1,10 @@
+using Application.Common.Interfaces.Logging;
+using Application.Features.Admin.Commands.Management;
+using Application.Features.Admin.Queries.Management;
+using Application.Features.Admin.DTOs.Management;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Asp.Versioning;
-using Application.Common.Interfaces.Data;
 
 namespace WebAPI.Controllers.Admin.Management
 {
@@ -11,192 +13,444 @@ namespace WebAPI.Controllers.Admin.Management
     [Route("api/v{version:apiVersion}/admin/users")]
     public class UsersController : BaseController
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IAdvancedLogger<UsersController> _logger;
 
-        public UsersController(IApplicationDbContext context)
+        public UsersController(IAdvancedLogger<UsersController> logger)
         {
-            _context = context;
+            _logger = logger;
         }
+
+        /// <summary>
+        /// Get all users with advanced filtering and pagination
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? status = null, [FromQuery] string? search = null)
+        public async Task<IActionResult> GetAllUsers(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? status = null,
+            [FromQuery] string? search = null,
+            [FromQuery] string? role = null,
+            [FromQuery] DateTime? joinedAfter = null,
+            [FromQuery] DateTime? joinedBefore = null,
+            [FromQuery] bool? isVerified = null,
+            [FromQuery] string? sortBy = "CreatedAt",
+            [FromQuery] string? sortDirection = "desc")
         {
-            var query = _context.Users.AsQueryable();
-
-            if (!string.IsNullOrEmpty(status))
+            try
             {
-                var isActive = status.ToLower() == "active";
-                query = query.Where(u => u.IsActive == isActive);
-            }
+                _logger.LogUserAction(GetCurrentUserId(), "ViewAllUsers", new { page, pageSize, status, search });
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(u => u.Email.Contains(search) || u.FirstName.Contains(search) || u.LastName.Contains(search));
-            }
-
-            var totalCount = await query.CountAsync();
-            var users = await query
-                .OrderByDescending(u => u.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(u => new
+                var query = new GetUsersQuery
                 {
-                    u.Id,
-                    u.FirstName,
-                    u.LastName,
-                    u.Email,
-                    Status = u.IsActive ? "Active" : "Inactive",
-                    JoinDate = u.CreatedAt,
-                    u.IsActive
-                })
-                .ToListAsync();
+                    Page = page,
+                    PageSize = pageSize,
+                    Status = status,
+                    Search = search,
+                    Role = role,
+                    JoinedAfter = joinedAfter,
+                    JoinedBefore = joinedBefore,
+                    IsVerified = isVerified,
+                    SortBy = sortBy,
+                    SortDirection = sortDirection
+                };
 
-            return Ok(new
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
             {
-                Data = users,
-                TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
-            });
+                _logger.LogError(ex, "Error getting users list");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Get detailed user information by ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var user = await _context.Users
-                .Include(u => u.Posts)
-                .FirstOrDefaultAsync(u => u.Id == id);
-
-            if (user == null) return NotFound();
-
-            var result = new
+            try
             {
-                user.Id,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                Status = user.IsActive ? "Active" : "Inactive",
-                JoinDate = user.CreatedAt,
-                LastLogin = DateTime.UtcNow.AddHours(-2), // Mock for now if not in DB
-                PostsCount = user.Posts.Count,
-                GroupsCount = await _context.GroupMembers.CountAsync(gm => gm.UserId == id),
-                ReviewsCount = await _context.Reviews.CountAsync(r => r.UserId == id)
-            };
-            
-            return Ok(result);
+                _logger.LogUserAction(GetCurrentUserId(), "ViewUserDetails", new { UserId = id });
+
+                var query = new GetUserByIdQuery { UserId = id };
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting user details");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Get user statistics and metrics
+        /// </summary>
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetUserStatistics(
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "ViewUserStatistics");
+
+                var query = new GetUserStatisticsQuery
+                {
+                    FromDate = fromDate,
+                    ToDate = toDate
+                };
+
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting user statistics");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Get user activity history
+        /// </summary>
+        [HttpGet("{id}/activity")]
+        public async Task<IActionResult> GetUserActivity(
+            Guid id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? activityType = null,
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "ViewUserActivity", new { UserId = id });
+
+                var query = new GetUserActivityQuery
+                {
+                    UserId = id,
+                    Page = page,
+                    PageSize = pageSize,
+                    ActivityType = activityType,
+                    FromDate = fromDate,
+                    ToDate = toDate
+                };
+
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting user activity");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Get reports about a specific user
+        /// </summary>
+        [HttpGet("{id}/reports")]
+        public async Task<IActionResult> GetUserReports(
+            Guid id,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] bool? isResolved = null,
+            [FromQuery] string? category = null)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "ViewUserReports", new { UserId = id });
+
+                var query = new GetUserReportsQuery
+                {
+                    UserId = id,
+                    Page = page,
+                    PageSize = pageSize,
+                    IsResolved = isResolved,
+                    Category = category
+                };
+
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting user reports");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Search users with advanced criteria
+        /// </summary>
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers(
+            [FromQuery] string searchTerm,
+            [FromQuery] int limit = 20,
+            [FromQuery] string? role = null,
+            [FromQuery] bool? isActive = null)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "SearchUsers", new { searchTerm, limit });
+
+                var query = new SearchUsersQuery
+                {
+                    SearchTerm = searchTerm,
+                    Limit = limit,
+                    Role = role,
+                    IsActive = isActive
+                };
+
+                var result = await Mediator.Send(query);
+
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching users");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Suspend a user account
+        /// </summary>
         [HttpPut("{id}/suspend")]
         public async Task<IActionResult> SuspendUser(Guid id, [FromBody] SuspendUserRequest request)
         {
-            // Implementation for suspending user with reason
-            return Ok(new { Message = "User suspended successfully", Reason = request.Reason });
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "SuspendUser", new { UserId = id, Reason = request.Reason });
+
+                var command = new SuspendUserCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
+
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return Ok(new { Message = "User suspended successfully", Reason = request.Reason });
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error suspending user");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Activate a suspended user account
+        /// </summary>
         [HttpPut("{id}/activate")]
         public async Task<IActionResult> ActivateUser(Guid id)
         {
-            // Implementation for activating user
-            return Ok(new { Message = "User activated successfully" });
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "ActivateUser", new { UserId = id });
+
+                // Implementation would use a specific command for activation
+                return Ok(new { Message = "User activated successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error activating user");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Ban a user account
+        /// </summary>
         [HttpPut("{id}/ban")]
         public async Task<IActionResult> BanUser(Guid id, [FromBody] BanUserRequest request)
         {
-            // Implementation for banning user
-            return Ok(new { Message = "User banned successfully", Duration = request.Duration });
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "BanUser", new { UserId = id, Reason = request.Reason });
+
+                var command = new BanUserCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
+
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return Ok(new { Message = "User banned successfully", Duration = request.Duration });
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error banning user");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Delete a user account (admin only)
+        /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(Guid id, [FromBody] DeleteUserRequest request)
         {
-            // Implementation for deleting user (admin only)
-            return NoContent();
-        }
-
-        [HttpGet("{id}/activity")]
-        public async Task<IActionResult> GetUserActivity(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            // Implementation for getting user activity history
-            var activity = new
+            try
             {
-                Data = new List<object>(),
-                TotalCount = 0,
-                Page = page,
-                PageSize = pageSize
-            };
-            
-            return Ok(activity);
-        }
+                _logger.LogUserAction(GetCurrentUserId(), "DeleteUser", new { UserId = id, Reason = request.Reason });
 
-        [HttpGet("statistics")]
-        public async Task<IActionResult> GetUserStatistics()
-        {
-            var now = DateTime.UtcNow;
-            var startOfMonth = new DateTime(now.Year, now.Month, 1);
-            
-            var totalUsers = await _context.Users.CountAsync();
-            var activeUsers = await _context.Users.CountAsync(u => u.IsActive);
-            var lastMonthUsers = await _context.Users.CountAsync(u => u.CreatedAt < startOfMonth);
-            
-            var newUsersThisMonth = await _context.Users.CountAsync(u => u.CreatedAt >= startOfMonth);
-            var growthRate = lastMonthUsers == 0 ? 100.0 : ((double)newUsersThisMonth / lastMonthUsers) * 100;
+                var command = new DeleteUserCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
 
-            var stats = new
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return NoContent();
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
             {
-                TotalUsers = totalUsers,
-                ActiveUsers = activeUsers,
-                SuspendedUsers = await _context.Users.CountAsync(u => !u.IsActive), // Simplified for now
-                BannedUsers = 0, // Implement if there's a ban flag
-                NewUsersThisMonth = newUsersThisMonth,
-                UserGrowthRate = Math.Round(growthRate, 1)
-            };
-            
-            return Ok(stats);
+                _logger.LogError(ex, "Error deleting user");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        /// <summary>
+        /// Send a message to a user
+        /// </summary>
         [HttpPost("{id}/send-message")]
         public async Task<IActionResult> SendMessageToUser(Guid id, [FromBody] SendMessageRequest request)
         {
-            // Implementation for sending admin message to user
-            return Ok(new { Message = "Message sent successfully" });
-        }
-
-        [HttpGet("{id}/reports")]
-        public async Task<IActionResult> GetUserReports(Guid id)
-        {
-            // Implementation for getting reports about this user
-            var reports = new
+            try
             {
-                Data = new List<object>(),
-                TotalCount = 0
-            };
-            
-            return Ok(reports);
+                _logger.LogUserAction(GetCurrentUserId(), "SendMessageToUser", new { UserId = id, Subject = request.Subject });
+
+                var command = new SendMessageToUserCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
+
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return Ok(new { Message = "Message sent successfully" });
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending message to user");
+                return StatusCode(500, "Internal server error");
+            }
         }
-    }
 
-    public class SuspendUserRequest
-    {
-        public string Reason { get; set; } = string.Empty;
-        public int? DurationDays { get; set; }
-    }
+        /// <summary>
+        /// Update user roles
+        /// </summary>
+        [HttpPut("{id}/roles")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUserRoles(Guid id, [FromBody] UpdateUserRolesRequest request)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "UpdateUserRoles", new { UserId = id, Roles = request.Roles });
 
-    public class BanUserRequest
-    {
-        public string Reason { get; set; } = string.Empty;
-        public string Duration { get; set; } = "Permanent"; // "Permanent", "30Days", "7Days", etc.
-    }
+                var command = new UpdateUserRolesCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
 
-    public class DeleteUserRequest
-    {
-        public string Reason { get; set; } = string.Empty;
-        public bool DeleteContent { get; set; } = false;
-    }
+                var result = await Mediator.Send(command);
 
-    public class SendMessageRequest
-    {
-        public string Subject { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public string Priority { get; set; } = "Normal";
+                if (result.Succeeded)
+                    return Ok(new { Message = "User roles updated successfully" });
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user roles");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
+        /// Impersonate a user (admin only)
+        /// </summary>
+        [HttpPost("{id}/impersonate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImpersonateUser(Guid id, [FromBody] ImpersonateUserRequest request)
+        {
+            try
+            {
+                _logger.LogUserAction(GetCurrentUserId(), "ImpersonateUser", new { UserId = id, Reason = request.Reason });
+
+                var command = new ImpersonateUserCommand
+                {
+                    UserId = id,
+                    AdminId = Guid.Parse(GetCurrentUserId()),
+                    Request = request
+                };
+
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return Ok(new { Message = "Impersonation token generated", Token = result.Data });
+
+                return BadRequest(result.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error impersonating user");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        private string GetCurrentUserId()
+        {
+            return User?.FindFirst("sub")?.Value ?? User?.FindFirst("id")?.Value ?? "Unknown";
+        }
     }
 }

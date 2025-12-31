@@ -123,6 +123,11 @@ namespace Infrastructure.Repositories
             return await _dbSet.AnyAsync(predicate, cancellationToken);
         }
 
+        public IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         private IQueryable<T> ApplySpecification(BaseSpecification<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(_dbSet.AsQueryable(), spec);

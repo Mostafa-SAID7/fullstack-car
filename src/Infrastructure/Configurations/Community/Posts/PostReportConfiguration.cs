@@ -27,20 +27,20 @@ namespace Infrastructure.Configurations.Community.Posts
 
             // Indexes
             builder.HasIndex(pr => pr.PostId);
-            builder.HasIndex(pr => pr.UserId);
+            builder.HasIndex(pr => pr.ReportedBy);
             builder.HasIndex(pr => pr.Category);
             builder.HasIndex(pr => pr.IsResolved);
             builder.HasIndex(pr => pr.CreatedAt);
 
             // Relationships - Use NoAction to avoid cascade delete conflicts
             builder.HasOne(pr => pr.Post)
-                .WithMany()
+                .WithMany(p => p.Reports)
                 .HasForeignKey(pr => pr.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(pr => pr.User)
+            builder.HasOne(pr => pr.Reporter)
                 .WithMany()
-                .HasForeignKey(pr => pr.UserId)
+                .HasForeignKey(pr => pr.ReportedBy)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(pr => pr.Resolver)

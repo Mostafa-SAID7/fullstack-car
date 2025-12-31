@@ -1,10 +1,11 @@
 using Application.Features.Community.Posts.Commands;
 using Application.Features.Community.Posts.DTOs;
 using Application.Features.Community.Posts.Queries;
+using Application.Features.Admin.DTOs.Moderation;
+using Application.Features.Admin.Commands.Moderation;
 using Application.Common.Interfaces.Identity.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Asp.Versioning;
 
 namespace WebAPI.Controllers.Admin.Moderation
@@ -22,17 +23,19 @@ namespace WebAPI.Controllers.Admin.Moderation
         }
 
         [HttpPut("{id}/approve")]
-        public async Task<IActionResult> ApprovePost(Guid id)
+        public async Task<IActionResult> ApprovePost(Guid id, [FromBody] ApproveContentRequest? request = null)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
 
-            var command = new ApprovePostCommand
+            var command = new ApproveContentCommand
             {
-                PostId = id,
-                ApprovedBy = _currentUserService.UserId
+                ContentId = id,
+                ContentType = "Post",
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request ?? new ApproveContentRequest()
             };
 
             var result = await Mediator.Send(command);
@@ -44,18 +47,19 @@ namespace WebAPI.Controllers.Admin.Moderation
         }
 
         [HttpPut("{id}/reject")]
-        public async Task<IActionResult> RejectPost(Guid id, [FromBody] RejectPostRequest request)
+        public async Task<IActionResult> RejectPost(Guid id, [FromBody] RejectContentRequest request)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Unauthorized();
             }
 
-            var command = new RejectPostCommand
+            var command = new RejectContentCommand
             {
-                PostId = id,
-                RejectedBy = _currentUserService.UserId,
-                RejectionReason = request.Reason
+                ContentId = id,
+                ContentType = "Post",
+                ModeratorId = Guid.Parse(_currentUserService.UserId),
+                Request = request
             };
 
             var result = await Mediator.Send(command);
@@ -68,14 +72,15 @@ namespace WebAPI.Controllers.Admin.Moderation
 
         [Authorize(Roles = "Admin")]
         [HttpGet("pending")]
-        public async Task<IActionResult> GetPendingPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetPendingPosts(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting posts pending approval
             var query = new GetPostsQuery
             {
                 PageNumber = page,
-                PageSize = pageSize
-                // Add filter for pending status
+                PageSize = pageSize,
+                Status = "Pending" // Add filter for pending status
             };
 
             var result = await Mediator.Send(query);
@@ -88,14 +93,15 @@ namespace WebAPI.Controllers.Admin.Moderation
 
         [Authorize(Roles = "Admin")]
         [HttpGet("flagged")]
-        public async Task<IActionResult> GetFlaggedPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetFlaggedPosts(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            // Implementation for getting flagged posts
             var query = new GetPostsQuery
             {
                 PageNumber = page,
-                PageSize = pageSize
-                // Add filter for flagged status
+                PageSize = pageSize,
+                Status = "Flagged" // Add filter for flagged status
             };
 
             var result = await Mediator.Send(query);

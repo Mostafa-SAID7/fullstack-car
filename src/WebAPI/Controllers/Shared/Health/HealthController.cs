@@ -44,18 +44,18 @@ namespace WebAPI.Controllers.Shared.Health
 
                 var statusCode = healthReport.Status switch
                 {
-                    HealthStatus.Healthy => 200,
-                    HealthStatus.Degraded => 200,
-                    HealthStatus.Unhealthy => 503,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy => 200,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded => 200,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy => 503,
                     _ => 500
                 };
 
                 _logger.LogSystemHealth("OverallHealth", healthReport.Status.ToString(), new
                 {
                     TotalChecks = healthReport.Entries.Count,
-                    HealthyChecks = healthReport.Entries.Count(e => e.Value.Status == HealthStatus.Healthy),
-                    DegradedChecks = healthReport.Entries.Count(e => e.Value.Status == HealthStatus.Degraded),
-                    UnhealthyChecks = healthReport.Entries.Count(e => e.Value.Status == HealthStatus.Unhealthy),
+                    HealthyChecks = healthReport.Entries.Count(e => e.Value.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy),
+                    DegradedChecks = healthReport.Entries.Count(e => e.Value.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded),
+                    UnhealthyChecks = healthReport.Entries.Count(e => e.Value.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy),
                     TotalDuration = healthReport.TotalDuration.TotalMilliseconds
                 });
 
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers.Shared.Health
             try
             {
                 var healthReport = await _healthCheckService.CheckHealthAsync();
-                var isReady = healthReport.Status == HealthStatus.Healthy;
+                var isReady = healthReport.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy;
 
                 var response = new
                 {
@@ -164,9 +164,9 @@ namespace WebAPI.Controllers.Shared.Health
 
                 var statusCode = healthReport.Status switch
                 {
-                    HealthStatus.Healthy => 200,
-                    HealthStatus.Degraded => 200,
-                    HealthStatus.Unhealthy => 503,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy => 200,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded => 200,
+                    Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy => 503,
                     _ => 500
                 };
 

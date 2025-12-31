@@ -24,6 +24,12 @@ namespace Infrastructure.Services.Logging
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
             => _logger.Log(logLevel, eventId, state, exception, formatter);
 
+        public void LogError(Exception? exception, string? message, params object?[] args)
+            => _logger.LogError(exception, message, args);
+
+        public void LogError(string? message, params object?[] args)
+            => _logger.LogError(message, args);
+
         public void LogUserAction(string userId, string action, object? data = null)
         {
             using var scope = _logger.BeginScope(new Dictionary<string, object>
