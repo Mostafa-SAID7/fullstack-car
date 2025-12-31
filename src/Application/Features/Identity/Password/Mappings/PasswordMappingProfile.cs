@@ -3,7 +3,7 @@ using Application.Features.Identity.Password.DTOs.Responses;
 using AutoMapper;
 using Domain.Entities.Identity;
 
-namespace Application.Common.Mappings.Identity.Password
+namespace Application.Features.Identity.Password.Mappings
 {
     public class PasswordMappingProfile : AutoMapper.Profile
     {

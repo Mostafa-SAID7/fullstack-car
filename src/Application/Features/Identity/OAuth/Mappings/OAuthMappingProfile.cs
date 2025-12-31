@@ -1,10 +1,10 @@
- using Application.Features.Identity.OAuth.DTOs.Requests;
+using Application.Features.Identity.OAuth.DTOs.Requests;
 using Application.Features.Identity.OAuth.DTOs.Responses;
 using AutoMapper;
 using Domain.Entities.Identity;
 using Domain.Enums.Identity;
 
-namespace Application.Common.Mappings.Identity.OAuth
+namespace Application.Features.Identity.OAuth.Mappings
 {
     public class OAuthMappingProfile : AutoMapper.Profile
     {

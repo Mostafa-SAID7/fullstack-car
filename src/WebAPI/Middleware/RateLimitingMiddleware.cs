@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Infrastructure;
+using Application.Features.Shared.Security.Interfaces;
 using System.Net;
 
 namespace WebAPI.Middleware

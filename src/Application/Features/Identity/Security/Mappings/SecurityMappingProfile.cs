@@ -3,7 +3,7 @@ using Application.Features.Identity.Security.DTOs.Responses;
 using AutoMapper;
 using Domain.Entities.Identity;
 
-namespace Application.Common.Mappings.Identity.Security
+namespace Application.Features.Identity.Security.Mappings
 {
     public class SecurityMappingProfile : AutoMapper.Profile
     {

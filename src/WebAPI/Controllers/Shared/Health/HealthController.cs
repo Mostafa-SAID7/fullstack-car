@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Infrastructure;
-using Application.Common.Interfaces.Logging;
+using Application.Features.Shared.System.Interfaces;
+using Application.Features.Shared.Logging.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

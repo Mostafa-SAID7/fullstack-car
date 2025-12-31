@@ -3,7 +3,7 @@ using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
 using Domain.Entities.Identity;
 
-namespace Application.Common.Mappings.Identity.Auth
+namespace Application.Features.Identity.Auth.Mappings
 {
     public class AuthMappingProfile : AutoMapper.Profile
     {
