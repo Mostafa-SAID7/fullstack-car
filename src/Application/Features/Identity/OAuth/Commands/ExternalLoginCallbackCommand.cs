@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Responses;
 using Application.Features.Identity.OAuth.DTOs.Requests;
-using Application.Common.Interfaces.Identity.Auth;
+using Application.Features.Admin.Interfaces.Identity.Auth;
 using MediatR;
 
 namespace Application.Features.Identity.OAuth.Commands

@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity.Auth;
+using Application.Features.Admin.Interfaces.Identity.Auth;
 using Application.Features.Identity.OAuth.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

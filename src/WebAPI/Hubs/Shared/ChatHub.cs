@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Communication;
+using Application.Features.Shared.Chat.Interfaces;
 using Application.Features.Shared.Chat.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;

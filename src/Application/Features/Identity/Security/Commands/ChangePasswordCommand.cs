@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity.Password;
+using Application.Features.Identity.Password.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Password.DTOs.Requests;
 using MediatR;

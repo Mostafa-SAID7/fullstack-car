@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Identity.Password;
-using Application.Common.Interfaces.Identity.Core;
+using Application.Features.Identity.Password.Interfaces;
+using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Password.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

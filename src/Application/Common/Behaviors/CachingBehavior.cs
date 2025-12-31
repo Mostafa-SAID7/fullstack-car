@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;

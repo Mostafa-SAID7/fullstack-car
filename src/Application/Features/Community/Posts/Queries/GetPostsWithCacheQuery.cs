@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using Application.Common.Models;
 using Domain.Entities.Community.Posts;
 using MediatR;

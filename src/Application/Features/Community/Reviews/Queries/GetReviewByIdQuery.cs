@@ -4,7 +4,7 @@ using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Reviews;
 using MediatR;
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 
 namespace Application.Features.Community.Reviews.Queries
 {

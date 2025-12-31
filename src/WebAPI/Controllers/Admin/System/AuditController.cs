@@ -1,6 +1,6 @@
-using Application.Features.Admin.DTOs.System;
-using Application.Features.Admin.Queries.System;
-using Application.Features.Admin.Commands.System;
+using Application.Features.Admin.System.DTOs;
+using Application.Features.Admin.System.Queries;
+using Application.Features.Admin.System.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;

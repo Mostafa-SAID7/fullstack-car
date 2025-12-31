@@ -1,4 +1,4 @@
-using Domain.Entities.Shared;
+using Domain.Entities.Shared.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,20 +20,22 @@ namespace Infrastructure.Configurations.Shared
 
             builder.Property(n => n.Type)
                 .IsRequired()
-                .HasConversion<int>();
+                .HasMaxLength(50);
 
-            builder.Property(n => n.TargetUrl)
-                .HasMaxLength(500);
+            builder.Property(n => n.Priority)
+                .HasMaxLength(20);
+
+            builder.Property(n => n.Category)
+                .HasMaxLength(50);
 
             builder.HasOne(n => n.User)
                 .WithMany()
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(n => n.SourceUser)
-                .WithMany()
-                .HasForeignKey(n => n.SourceUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasIndex(n => n.UserId);
+            builder.HasIndex(n => n.IsRead);
+            builder.HasIndex(n => n.CreatedAt);
         }
     }
 }

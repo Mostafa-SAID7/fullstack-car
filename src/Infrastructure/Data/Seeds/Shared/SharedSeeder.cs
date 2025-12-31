@@ -28,6 +28,7 @@ namespace Infrastructure.Data.Seeds.Shared
             try
             {
                 await SeedChatAsync();
+                await SeedNotificationsAsync();
             }
             catch (Exception ex)
             {
@@ -109,6 +110,12 @@ namespace Infrastructure.Data.Seeds.Shared
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Seeded chat conversation");
+        }
+
+        private async Task SeedNotificationsAsync()
+        {
+            var notificationSeeder = new NotificationSeeder(_context, _userManager, _logger);
+            await notificationSeeder.SeedAsync();
         }
     }
 }

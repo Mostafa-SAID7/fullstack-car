@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Communication;
+using Application.Features.Shared.Chat.Interfaces;
 using Application.Common.Models;
 using Domain.Entities.Shared.Chat;
 using Domain.Interfaces;

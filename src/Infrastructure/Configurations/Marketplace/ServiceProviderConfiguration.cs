@@ -1,12 +1,13 @@
 using Domain.Entities.Marketplace;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ServiceProviderEntity = Domain.Entities.Marketplace.ServiceProvider;
 
 namespace Infrastructure.Configurations.Marketplace
 {
-    public class ServiceProviderConfiguration : IEntityTypeConfiguration<ServiceProvider>
+    public class ServiceProviderConfiguration : IEntityTypeConfiguration<ServiceProviderEntity>
     {
-        public void Configure(EntityTypeBuilder<ServiceProvider> builder)
+        public void Configure(EntityTypeBuilder<ServiceProviderEntity> builder)
         {
             builder.ToTable("ServiceProviders");
 

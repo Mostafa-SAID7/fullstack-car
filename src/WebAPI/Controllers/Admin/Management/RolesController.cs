@@ -1,7 +1,8 @@
-using Application.Features.Admin.DTOs.Management;
-using Application.Features.Admin.Commands.Management;
-using Application.Features.Admin.Queries.Management;
-using Application.Common.Interfaces.Identity.Core;
+using Application.Features.Admin.Management.DTOs.Requests;
+using Application.Features.Admin.Management.DTOs.Responses;
+using Application.Features.Admin.Management.Commands;
+using Application.Features.Admin.Management.Queries;
+using Application.Features.Identity.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;

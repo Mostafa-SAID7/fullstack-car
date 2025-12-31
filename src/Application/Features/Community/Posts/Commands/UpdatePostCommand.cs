@@ -4,7 +4,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Interfaces;
 using Domain.Policies;
 using Domain.Entities.Identity;
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Commands

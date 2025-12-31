@@ -3,7 +3,7 @@ using Application.Features.Identity.Password.DTOs.Requests;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
-using Application.Common.Interfaces.Identity.Password;
+using Application.Features.Identity.Password.Interfaces;
 
 namespace Application.Features.Identity.Password.Commands
 {

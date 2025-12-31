@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Filters;
-using Application.Common.Interfaces.Communication;
-using WebAPI.Services.Communication;
-using Infrastructure.Services.Caching;
+using Application.Features.Shared.Chat.Interfaces;
+using Application.Features.Shared.Chat.Services;
+using Application.Features.Shared.Notifications.Services;
+using Application.Features.Shared.Caching.Services;
 using Infrastructure.Common;
 
 namespace WebAPI.Extensions
@@ -123,8 +124,8 @@ namespace WebAPI.Extensions
             services.AddSignalR();
 
             // Add Communication Services
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IChatNotificationService, ChatNotificationService>();
+            services.AddScoped<Application.Features.Shared.Notifications.Interfaces.INotificationService, Application.Features.Shared.Notifications.Services.NotificationService>();
+            services.AddScoped<Application.Features.Shared.Chat.Interfaces.IChatNotificationService, Application.Features.Shared.Chat.Services.ChatNotificationService>();
 
             // Add API Versioning
             services.AddApiVersioning(options =>

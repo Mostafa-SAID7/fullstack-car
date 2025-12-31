@@ -2,7 +2,7 @@ using Application.Common.Models;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
-using Application.Common.Interfaces.Identity.Auth;
+using Application.Features.Admin.Interfaces.Identity.Auth;
 
 namespace Application.Features.Identity.Auth.Commands
 {

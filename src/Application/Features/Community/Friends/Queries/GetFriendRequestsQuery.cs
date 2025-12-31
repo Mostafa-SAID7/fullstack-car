@@ -3,7 +3,7 @@ using Application.Features.Community.Friends.DTOs;
 using Domain.Entities.Community.Social;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Social;
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Friends.Queries

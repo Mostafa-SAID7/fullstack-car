@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Communication;
+using Application.Features.Shared.Notifications.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

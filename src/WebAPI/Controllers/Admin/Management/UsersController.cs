@@ -1,7 +1,8 @@
-using Application.Common.Interfaces.Logging;
-using Application.Features.Admin.Commands.Management;
-using Application.Features.Admin.Queries.Management;
-using Application.Features.Admin.DTOs.Management;
+using Application.Features.Shared.Logging.Interfaces;
+using Application.Features.Admin.Management.Commands;
+using Application.Features.Admin.Management.Queries;
+using Application.Features.Admin.Management.DTOs.Requests;
+using Application.Features.Admin.Management.DTOs.Responses;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

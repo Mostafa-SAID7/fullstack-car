@@ -1,3 +1,4 @@
+using Infrastructure.Data.Seeds.Analytics;
 using Infrastructure.Data.Seeds.Community;
 using Infrastructure.Data.Seeds.Identity;
 using Infrastructure.Data.Seeds.Shared;
@@ -13,19 +14,22 @@ namespace Infrastructure.Data.Seeds
         private readonly IdentitySeeder _identitySeeder;
         private readonly CommunitySeeder _communitySeeder;
         private readonly SharedSeeder _sharedSeeder;
+        private readonly AnalyticsSeeder _analyticsSeeder;
 
         public DatabaseSeeder(
             ILogger<DatabaseSeeder> logger,
             ApplicationDbContext context,
             IdentitySeeder identitySeeder,
             CommunitySeeder communitySeeder,
-            SharedSeeder sharedSeeder)
+            SharedSeeder sharedSeeder,
+            AnalyticsSeeder analyticsSeeder)
         {
             _logger = logger;
             _context = context;
             _identitySeeder = identitySeeder;
             _communitySeeder = communitySeeder;
             _sharedSeeder = sharedSeeder;
+            _analyticsSeeder = analyticsSeeder;
         }
 
         public async Task InitializeAsync()
@@ -68,6 +72,9 @@ namespace Infrastructure.Data.Seeds
 
                 await _sharedSeeder.SeedAsync();
                 _logger.LogInformation("Shared data seeded successfully.");
+
+                await _analyticsSeeder.SeedAsync();
+                _logger.LogInformation("Analytics data seeded successfully.");
 
                 _logger.LogInformation("Database seeding completed successfully.");
             }

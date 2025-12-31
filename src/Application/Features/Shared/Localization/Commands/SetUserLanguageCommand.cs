@@ -1,5 +1,5 @@
 using MediatR;
-using Application.Common.Interfaces.Localization;
+using Application.Features.Shared.Localization.Interfaces;
 
 namespace Application.Features.Shared.Localization.Commands
 {

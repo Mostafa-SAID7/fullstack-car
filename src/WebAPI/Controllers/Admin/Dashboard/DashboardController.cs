@@ -1,8 +1,8 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Interfaces.AIAgent;
-using Application.Common.Interfaces.Logging;
-using Application.Features.Admin.Queries.Dashboard;
-using Application.Features.Admin.DTOs.Dashboard;
+using Application.Features.Shared.Logging.Interfaces;
+using Application.Features.Admin.Dashboard.Queries;
+using Application.Features.Admin.Dashboard.DTOs;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

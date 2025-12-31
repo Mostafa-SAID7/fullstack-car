@@ -1,45 +1,4 @@
-using Application.Common.Interfaces.Caching;
-using Application.Common.Interfaces.Storage;
-using Application.Common.Interfaces.Communication;
-using Application.Common.Interfaces.Localization;
-using Application.Common.Interfaces.AIAgent;
-using Application.Common.Interfaces.Identity.Core;
-using Application.Common.Interfaces.Identity.Auth;
-using Application.Common.Interfaces.Identity.Profile;
-using Application.Common.Interfaces.Identity.Password;
-using Application.Common.Interfaces.Identity.Security;
-using Infrastructure.Services.Logging;
-using StackExchange.Redis;
-using Domain.Interfaces;
-using Domain.Entities.Identity;
-using Infrastructure.Data;
-using Infrastructure.Data.Seeds;
-using Infrastructure.Data.Seeds.Identity;
-using Infrastructure.Data.Seeds.Community;
-using Infrastructure.Data.Seeds.Community.Groups;
-using Infrastructure.Data.Seeds.Community.Posts;
-using Infrastructure.Data.Seeds.Community.Reviews;
-using Infrastructure.Data.Seeds.Community.Social;
-using Infrastructure.Data.Seeds.Shared;
-using Infrastructure.Repositories;
-using Infrastructure.Services.Identity.Core;
-using Infrastructure.Services.Identity.Auth;
-using Infrastructure.Services.Identity.Profile;
-using Infrastructure.Services.Identity.Password;
-using Infrastructure.Services.Identity.Security;
-using Infrastructure.Services.Localization;
-using Infrastructure.Services.Communication;
-using Infrastructure.Services.Storage;
-using Infrastructure.Services.Caching;
-using Infrastructure.Services;
-using Infrastructure.Common;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System.Security.Claims;
 
 namespace Infrastructure.Extensions
 {
@@ -95,8 +54,18 @@ namespace Infrastructure.Extensions
             services.AddScoped<ILanguageDetector, LanguageDetector>();
             services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
 
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<Application.Features.Shared.Email.Interfaces.IEmailService, EmailService>();
             services.AddScoped<IFileService, FileService>();
+
+            // Analytics Services
+            services.Configure<AnalyticsSettings>(configuration.GetSection("AnalyticsSettings"));
+            services.AddScoped<IUserAnalyticsService, UserAnalyticsService>();
+            services.AddScoped<IContentAnalyticsService, ContentAnalyticsService>();
+            services.AddScoped<IEngagementAnalyticsService, EngagementAnalyticsService>();
+            services.AddScoped<ISystemAnalyticsService, SystemAnalyticsService>();
+            services.AddScoped<ISecurityAnalyticsService, SecurityAnalyticsService>();
+            services.AddScoped<IPerformanceAnalyticsService, PerformanceAnalyticsService>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
 
             // Caching Services
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
@@ -137,6 +106,7 @@ namespace Infrastructure.Extensions
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IAdvancedCacheService, AdvancedCacheService>();
             services.AddSingleton<ICacheInvalidationStrategy, CacheInvalidationStrategy>();
+            services.AddScoped<ICacheManagerService, CacheManagerService>();
             services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
 
             // Add JWT Authentication
@@ -187,7 +157,7 @@ namespace Infrastructure.Extensions
             });
 
             // AI Agent Service
-            services.AddHttpClient<IAIAgentService, AIAgentService>();
+            services.AddHttpClient<IAIAgentService, Application.Features.AIAgent.Services.AIAgentService>();
 
             // Add Database Seeder & Individual Seeders
             services.AddScoped<DatabaseSeeder>();
@@ -198,6 +168,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<ReviewsSeeder>();
             services.AddScoped<SocialSeeder>();
             services.AddScoped<SharedSeeder>();
+            services.AddScoped<AnalyticsSeeder>();
 
             return services;
         }

@@ -3,8 +3,8 @@ using Domain.Entities.Community.Social;
 using Domain.Entities.Identity;
 using Domain.Enums.Community.Social;
 using Domain.Interfaces;
-using Application.Common.Interfaces.Caching;
-using Application.Common.Interfaces.Communication;
+using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Notifications.Interfaces;
 using MediatR;
 
 namespace Application.Features.Community.Friends.Commands

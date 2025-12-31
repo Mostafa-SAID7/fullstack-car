@@ -1,7 +1,7 @@
-using Application.Features.Admin.Commands.Moderation;
-using Application.Features.Admin.DTOs.Moderation;
-using Application.Features.Admin.Queries.Moderation;
-using Application.Common.Interfaces.Identity.Core;
+using Application.Features.Admin.Moderation.Commands;
+using Application.Features.Admin.Moderation.DTOs;
+using Application.Features.Admin.Moderation.Queries;
+using Application.Features.Identity.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;

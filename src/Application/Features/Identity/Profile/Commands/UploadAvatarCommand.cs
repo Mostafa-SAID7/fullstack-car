@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Identity.Profile;
+using Application.Features.Identity.Profile.Interfaces;
 using Application.Common.Models;
 using MediatR;
 

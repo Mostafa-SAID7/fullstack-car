@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Storage;
-using Application.Common.Interfaces.Logging;
+using Application.Features.Shared.Storage.Interfaces;
+using Application.Features.Shared.Logging.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

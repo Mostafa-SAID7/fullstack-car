@@ -1,6 +1,8 @@
-using Application.Common.Interfaces.Logging;
+using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Admin.Analytics.Queries;
-using Application.Features.Admin.DTOs.Analytics;
+using Application.Features.Admin.Analytics.DTOs.Requests;
+using Application.Features.Admin.Analytics.DTOs.Responses;
+using Application.Features.Admin.Analytics.Commands;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +58,7 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ViewUserAnalytics");
 
-                var filter = new AnalyticsFilterRequest
+                var query = new GetUserAnalyticsQuery
                 {
                     StartDate = startDate,
                     EndDate = endDate,
@@ -64,14 +66,12 @@ namespace WebAPI.Controllers.Admin.Analytics
                     Metrics = new List<string> { "users", "growth", "retention", "churn" }
                 };
 
-                // Implementation would use a specific query for user analytics
-                // For now, return mock data structure
-                var userAnalytics = new UserAnalyticsDto
-                {
-                    // This would be populated by the actual query handler
-                };
+                var result = await Mediator.Send(query);
 
-                return Ok(userAnalytics);
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ViewContentAnalytics");
 
-                var filter = new AnalyticsFilterRequest
+                var query = new GetContentAnalyticsQuery
                 {
                     StartDate = startDate,
                     EndDate = endDate,
@@ -101,12 +101,12 @@ namespace WebAPI.Controllers.Admin.Analytics
                     Metrics = new List<string> { "posts", "comments", "groups", "reviews" }
                 };
 
-                var contentAnalytics = new ContentAnalyticsDto
-                {
-                    // This would be populated by the actual query handler
-                };
+                var result = await Mediator.Send(query);
 
-                return Ok(contentAnalytics);
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -128,7 +128,7 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ViewEngagementAnalytics");
 
-                var filter = new AnalyticsFilterRequest
+                var query = new GetEngagementAnalyticsQuery
                 {
                     StartDate = startDate,
                     EndDate = endDate,
@@ -136,12 +136,12 @@ namespace WebAPI.Controllers.Admin.Analytics
                     Metrics = new List<string> { "views", "likes", "shares", "engagement_rate" }
                 };
 
-                var engagementAnalytics = new EngagementAnalyticsDto
-                {
-                    // This would be populated by the actual query handler
-                };
+                var result = await Mediator.Send(query);
 
-                return Ok(engagementAnalytics);
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -163,7 +163,7 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ViewSystemAnalytics");
 
-                var filter = new AnalyticsFilterRequest
+                var query = new GetSystemAnalyticsQuery
                 {
                     StartDate = startDate,
                     EndDate = endDate,
@@ -171,12 +171,12 @@ namespace WebAPI.Controllers.Admin.Analytics
                     Metrics = new List<string> { "response_time", "error_rate", "requests", "uptime" }
                 };
 
-                var systemAnalytics = new SystemAnalyticsDto
-                {
-                    // This would be populated by the actual query handler
-                };
+                var result = await Mediator.Send(query);
 
-                return Ok(systemAnalytics);
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -197,19 +197,19 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ViewSecurityAnalytics");
 
-                var filter = new AnalyticsFilterRequest
+                var query = new GetSecurityAnalyticsQuery
                 {
                     StartDate = startDate,
                     EndDate = endDate,
                     Metrics = new List<string> { "security_events", "failed_logins", "blocked_ips", "threats" }
                 };
 
-                var securityAnalytics = new SecurityAnalyticsDto
-                {
-                    // This would be populated by the actual query handler
-                };
+                var result = await Mediator.Send(query);
 
-                return Ok(securityAnalytics);
+                if (result.Succeeded)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -228,9 +228,18 @@ namespace WebAPI.Controllers.Admin.Analytics
             {
                 _logger.LogUserAction(GetCurrentUserId(), "ExportAnalytics", request);
 
-                // Implementation would generate the requested export format
-                // For now, return a success message
-                return Ok(new { Message = "Export request processed", Format = request.Format });
+                var command = new ExportAnalyticsCommand
+                {
+                    Request = request,
+                    AdminId = Guid.Parse(GetCurrentUserId())
+                };
+
+                var result = await Mediator.Send(command);
+
+                if (result.Succeeded)
+                    return Ok(new { Message = "Export request processed", Export = result.Data });
+
+                return BadRequest(result.Errors);
             }
             catch (Exception ex)
             {

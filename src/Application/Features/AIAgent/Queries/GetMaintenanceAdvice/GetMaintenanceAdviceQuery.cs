@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.AIAgent;
+using Application.Features.AIAgent.Interfaces;
 using Application.Features.AIAgent.DTOs;
 using MediatR;
 

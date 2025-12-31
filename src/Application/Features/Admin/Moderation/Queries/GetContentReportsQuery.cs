@@ -1,0 +1,43 @@
+using Application.Common.Models;
+using Application.Features.Admin.Moderation.DTOs;
+using MediatR;
+
+namespace Application.Features.Admin.Moderation.Queries
+{
+    public class GetContentReportsQuery : IRequest<Result<PaginatedList<ContentReportDto>>>
+    {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public string? ContentType { get; set; }
+        public string? Status { get; set; }
+        public string? Priority { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public Guid? ReporterId { get; set; }
+    }
+
+    public class GetFlaggedContentQuery : IRequest<Result<PaginatedList<ContentModerationDto>>>
+    {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public string? ContentType { get; set; }
+        public string? Status { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public ContentFilterRequest Filter { get; set; } = new();
+    }
+
+    public class GetModerationStatsQuery : IRequest<Result<ModerationStatsDto>>
+    {
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+    }
+
+    public class GetAutoModerationRulesQuery : IRequest<Result<PaginatedList<AutoModerationRuleDto>>>
+    {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public string? ContentType { get; set; }
+        public bool? IsActive { get; set; }
+    }
+}

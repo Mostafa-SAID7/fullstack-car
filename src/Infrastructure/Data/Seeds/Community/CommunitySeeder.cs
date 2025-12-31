@@ -4,6 +4,8 @@ using Infrastructure.Data.Seeds.Community.Reviews;
 using Infrastructure.Data.Seeds.Community.Social;
 using Infrastructure.Data;
 using Microsoft.Extensions.Logging;
+using GroupsSeeder = Infrastructure.Data.Seeds.Community.Groups.GroupsSeeder;
+using PostsSeeder = Infrastructure.Data.Seeds.Community.Posts.PostsSeeder;
 
 namespace Infrastructure.Data.Seeds.Community
 {

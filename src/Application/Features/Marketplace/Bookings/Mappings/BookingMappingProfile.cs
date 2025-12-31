@@ -20,12 +20,7 @@ namespace Application.Features.Marketplace.Bookings.Mappings
                 .ForMember(dest => dest.ServiceTypeName, opt => opt.MapFrom(src => src.Service.Type.ToString()))
                 .ForMember(dest => dest.ServiceProviderId, opt => opt.MapFrom(src => src.Service.ServiceProvider.Id))
                 .ForMember(dest => dest.ServiceProviderName, opt => opt.MapFrom(src => src.Service.ServiceProvider.BusinessName))
-                .ForMember(dest => dest.ServiceProviderPhone, opt => opt.MapFrom(src => src.Service.ServiceProvider.ContactPhone))
-                .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.Payment != null ? src.Payment.Status : (Domain.Enums.Marketplace.PaymentStatus?)null))
-                .ForMember(dest => dest.PaymentStatusName, opt => opt.MapFrom(src => src.Payment != null ? src.Payment.Status.ToString() : null))
-                .ForMember(dest => dest.PaidAt, opt => opt.MapFrom(src => src.Payment != null ? src.Payment.PaidAt : (DateTime?)null))
-                .ForMember(dest => dest.HasReview, opt => opt.MapFrom(src => src.Review != null))
-                .ForMember(dest => dest.ReviewRating, opt => opt.MapFrom(src => src.Review != null ? src.Review.Rating : (int?)null));
+                .ForMember(dest => dest.ServiceProviderPhone, opt => opt.MapFrom(src => src.Service.ServiceProvider.ContactPhone));
         }
     }
 }

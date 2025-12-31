@@ -3,7 +3,7 @@ using Application.Features.Community.Reviews.DTOs;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using MediatR;
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 
 namespace Application.Features.Community.Reviews.Commands
 {

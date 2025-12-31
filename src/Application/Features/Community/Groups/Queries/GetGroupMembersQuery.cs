@@ -3,7 +3,7 @@ using Application.Features.Community.Groups.DTOs;
 using Domain.Entities.Community.Groups;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Groups;
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using MediatR;
 
 namespace Application.Features.Community.Groups.Queries

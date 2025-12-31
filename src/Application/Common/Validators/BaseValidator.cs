@@ -13,7 +13,7 @@ namespace Application.Common.Validators
             _logger = logger;
         }
 
-        public override ValidationResult Validate(ValidationContext<T> context)
+        public override FluentValidation.Results.ValidationResult Validate(ValidationContext<T> context)
         {
             var result = base.Validate(context);
             

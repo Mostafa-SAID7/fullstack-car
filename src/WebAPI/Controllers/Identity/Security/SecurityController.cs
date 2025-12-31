@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Identity.Security;
-using Application.Common.Interfaces.Identity.Core;
+using Application.Features.Admin.Interfaces.Identity.Security;
+using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Security.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

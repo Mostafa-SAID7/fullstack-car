@@ -1,6 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Identity.Password.DTOs.Requests;
-using Application.Common.Interfaces.Identity.Password;
+using Application.Features.Identity.Password.Interfaces;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;

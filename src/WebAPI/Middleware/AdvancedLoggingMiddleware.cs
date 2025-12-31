@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Logging;
-using Infrastructure.Services.Logging;
+using Application.Features.Shared.Logging.Interfaces;
+using Application.Features.Shared.Logging.Services;
 using System.Diagnostics;
 using System.Text;
 

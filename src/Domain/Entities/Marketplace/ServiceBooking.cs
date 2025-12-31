@@ -1,41 +1,52 @@
-using Domain.Base;
 using Domain.Entities.Identity;
 using Domain.Enums.Marketplace;
 
-namespace Domain.Entities.Marketplace
+namespace Domain.Entities.Marketplace;
+
+public class ServiceBooking : BaseEntity
 {
-    public class ServiceBooking : BaseAuditableEntity
-    {
-        public string BookingNumber { get; set; } = string.Empty;
-        public DateTime ScheduledDate { get; set; }
-        public TimeSpan ScheduledTime { get; set; }
-        public BookingStatus Status { get; set; } = BookingStatus.Pending;
-        public decimal TotalAmount { get; set; }
-        public string Currency { get; set; } = "USD";
-        public string? CustomerNotes { get; set; }
-        public string? ProviderNotes { get; set; }
-        public string? CancellationReason { get; set; }
-        public DateTime? ConfirmedAt { get; set; }
-        public DateTime? StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime? CancelledAt { get; set; }
-        public string? CustomerAddress { get; set; }
-        public double? CustomerLatitude { get; set; }
-        public double? CustomerLongitude { get; set; }
-        public bool IsEmergency { get; set; } = false;
-        public string? EmergencyDetails { get; set; }
+    public string BookingNumber { get; set; } = string.Empty;
+    public Guid CustomerId { get; set; }
+    public Guid ServiceProviderId { get; set; }
+    public Guid ServiceId { get; set; }
+    public string ServiceName { get; set; } = string.Empty;
+    
+    // Scheduling
+    public DateTime BookingDate { get; set; }
+    public DateTime ScheduledDate { get; set; }
+    public TimeSpan ScheduledTime { get; set; }
+    public DateTime ServiceDate { get; set; }
+    
+    // Status and Tracking
+    public BookingStatus Status { get; set; } = BookingStatus.Pending;
+    public string PaymentStatus { get; set; } = string.Empty;
+    public DateTime? ConfirmedAt { get; set; }
+    public DateTime? StartedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    
+    // Financial
+    public decimal TotalAmount { get; set; }
+    public string Currency { get; set; } = "USD";
+    
+    // Location and Details
+    public string? CustomerAddress { get; set; }
+    public double? CustomerLatitude { get; set; }
+    public double? CustomerLongitude { get; set; }
+    
+    // Notes and Communication
+    public string Notes { get; set; } = string.Empty;
+    public string? CustomerNotes { get; set; }
+    public string? ProviderNotes { get; set; }
+    public string? CancellationReason { get; set; }
+    
+    // Emergency
+    public bool IsEmergency { get; set; }
+    public string? EmergencyDetails { get; set; }
 
-        // Foreign Keys
-        public Guid CustomerId { get; set; }
-        public Guid ServiceId { get; set; }
-        public Guid ServiceProviderId { get; set; }
-
-        // Navigation Properties
-        public virtual ApplicationUser Customer { get; set; } = null!;
-        public virtual CarService Service { get; set; } = null!;
-        public virtual ServiceProvider ServiceProvider { get; set; } = null!;
-        public virtual ServicePayment? Payment { get; set; }
-        public virtual ServiceReview? Review { get; set; }
-        public virtual ICollection<BookingStatusHistory> StatusHistory { get; set; } = new List<BookingStatusHistory>();
-    }
+    // Navigation properties
+    public ApplicationUser Customer { get; set; } = null!;
+    public ServiceProvider ServiceProvider { get; set; } = null!;
+    public CarService Service { get; set; } = null!;
+    public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
 }

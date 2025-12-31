@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Identity.Profile;
-using Application.Common.Interfaces.Identity.Core;
+using Application.Features.Identity.Profile.Interfaces;
+using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Profile.DTOs.Requests;
 using Application.Features.Identity.Security.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;

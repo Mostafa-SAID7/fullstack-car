@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Caching;
+using Application.Features.Shared.Interfaces.Caching;
 using Application.Features.Identity.Profile.DTOs.Responses;
 using MediatR;
 using System;
