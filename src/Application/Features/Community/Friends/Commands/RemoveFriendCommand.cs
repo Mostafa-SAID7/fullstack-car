@@ -2,7 +2,7 @@ using Application.Common.Models;
 using Domain.Entities.Community.Social;
 using Domain.Enums.Community.Social;
 using Domain.Interfaces;
-using Domain.Specifications;
+using Application.Common.Specifications.Community.Social;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 

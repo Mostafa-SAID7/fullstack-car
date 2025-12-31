@@ -6,7 +6,7 @@ using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Domain.Enums.Shared.Chat;
-using Domain.Specifications.Shared.Chat;
+using Application.Common.Specifications.Shared.Chat;
 
 namespace Application.Features.Shared.Chat.Queries
 {

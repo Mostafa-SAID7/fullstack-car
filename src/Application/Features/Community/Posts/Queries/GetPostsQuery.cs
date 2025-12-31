@@ -3,7 +3,8 @@ using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
-using Domain.Specifications;
+using Application.Common.Specifications;
+using Application.Common.Specifications.Community.Posts;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 
@@ -33,7 +34,7 @@ namespace Application.Features.Community.Posts.Queries
 
         public async Task<Result<PaginatedList<PostDto>>> Handle(GetPostsQuery request, CancellationToken cancellationToken)
         {
-            BaseSpecification<Post> specification;
+            ISpecification<Post> specification;
 
             if (request.UserId.HasValue)
             {

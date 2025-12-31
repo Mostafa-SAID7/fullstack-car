@@ -1,29 +1,11 @@
 using System.Linq.Expressions;
+using Domain.Interfaces;
 
-namespace Application.Common.Patterns.Specification
+namespace Application.Common.Specifications
 {
-    public interface ISpecification<T>
-    {
-        Expression<Func<T, bool>> Criteria { get; }
-        List<Expression<Func<T, object>>> Includes { get; }
-        List<string> IncludeStrings { get; }
-        Expression<Func<T, object>>? OrderBy { get; }
-        Expression<Func<T, object>>? OrderByDescending { get; }
-        Expression<Func<T, object>>? GroupBy { get; }
-        int Take { get; }
-        int Skip { get; }
-        bool IsPagingEnabled { get; }
-        bool IsSatisfiedBy(T entity);
-    }
-
     public abstract class BaseSpecification<T> : ISpecification<T>
     {
-        protected BaseSpecification(Expression<Func<T, bool>>? criteria = null)
-        {
-            Criteria = criteria ?? (x => true);
-        }
-
-        public Expression<Func<T, bool>> Criteria { get; }
+        public Expression<Func<T, bool>>? Criteria { get; private set; }
         public List<Expression<Func<T, object>>> Includes { get; } = new();
         public List<string> IncludeStrings { get; } = new();
         public Expression<Func<T, object>>? OrderBy { get; private set; }
@@ -32,6 +14,13 @@ namespace Application.Common.Patterns.Specification
         public int Take { get; private set; }
         public int Skip { get; private set; }
         public bool IsPagingEnabled { get; private set; }
+
+        protected BaseSpecification() { }
+
+        protected BaseSpecification(Expression<Func<T, bool>> criteria)
+        {
+            Criteria = criteria;
+        }
 
         protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
         {
@@ -67,7 +56,7 @@ namespace Application.Common.Patterns.Specification
 
         public virtual bool IsSatisfiedBy(T entity)
         {
-            return Criteria.Compile()(entity);
+            return Criteria?.Compile()(entity) ?? true;
         }
     }
 
@@ -79,10 +68,13 @@ namespace Application.Common.Patterns.Specification
         }
 
         private static Expression<Func<T, bool>> CombineExpressions(
-            Expression<Func<T, bool>> left,
-            Expression<Func<T, bool>> right,
+            Expression<Func<T, bool>>? left,
+            Expression<Func<T, bool>>? right,
             Func<Expression, Expression, BinaryExpression> combiner)
         {
+            if (left == null || right == null)
+                throw new ArgumentNullException("Specifications cannot be null");
+
             var parameter = Expression.Parameter(typeof(T));
             var leftVisitor = new ReplaceExpressionVisitor(left.Parameters[0], parameter);
             var rightVisitor = new ReplaceExpressionVisitor(right.Parameters[0], parameter);
@@ -90,7 +82,7 @@ namespace Application.Common.Patterns.Specification
             var leftBody = leftVisitor.Visit(left.Body);
             var rightBody = rightVisitor.Visit(right.Body);
 
-            return Expression.Lambda<Func<T, bool>>(combiner(leftBody, rightBody), parameter);
+            return Expression.Lambda<Func<T, bool>>(combiner(leftBody!, rightBody!), parameter);
         }
     }
 
@@ -102,10 +94,13 @@ namespace Application.Common.Patterns.Specification
         }
 
         private static Expression<Func<T, bool>> CombineExpressions(
-            Expression<Func<T, bool>> left,
-            Expression<Func<T, bool>> right,
+            Expression<Func<T, bool>>? left,
+            Expression<Func<T, bool>>? right,
             Func<Expression, Expression, BinaryExpression> combiner)
         {
+            if (left == null || right == null)
+                throw new ArgumentNullException("Specifications cannot be null");
+
             var parameter = Expression.Parameter(typeof(T));
             var leftVisitor = new ReplaceExpressionVisitor(left.Parameters[0], parameter);
             var rightVisitor = new ReplaceExpressionVisitor(right.Parameters[0], parameter);
@@ -113,16 +108,18 @@ namespace Application.Common.Patterns.Specification
             var leftBody = leftVisitor.Visit(left.Body);
             var rightBody = rightVisitor.Visit(right.Body);
 
-            return Expression.Lambda<Func<T, bool>>(combiner(leftBody, rightBody), parameter);
+            return Expression.Lambda<Func<T, bool>>(combiner(leftBody!, rightBody!), parameter);
         }
     }
 
     public class NotSpecification<T> : BaseSpecification<T>
     {
         public NotSpecification(ISpecification<T> specification)
-            : base(Expression.Lambda<Func<T, bool>>(
-                Expression.Not(specification.Criteria.Body),
-                specification.Criteria.Parameters))
+            : base(specification.Criteria != null 
+                ? Expression.Lambda<Func<T, bool>>(
+                    Expression.Not(specification.Criteria.Body),
+                    specification.Criteria.Parameters)
+                : throw new ArgumentNullException(nameof(specification)))
         {
         }
     }

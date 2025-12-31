@@ -1,4 +1,3 @@
-using Domain.Specifications;
 using System.Linq.Expressions;
 
 namespace Domain.Interfaces
@@ -11,12 +10,12 @@ namespace Domain.Interfaces
         Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken);
         Task<IReadOnlyList<T>> GetAllAsync(); // Add this method
         Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken); // Add this method
-        Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec);
-        Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec, CancellationToken cancellationToken);
-        Task<T?> FirstOrDefaultAsync(BaseSpecification<T> spec);
-        Task<T?> FirstOrDefaultAsync(BaseSpecification<T> spec, CancellationToken cancellationToken);
-        Task<int> CountAsync(BaseSpecification<T> spec);
-        Task<int> CountAsync(BaseSpecification<T> spec, CancellationToken cancellationToken);
+        Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+        Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken);
+        Task<T?> FirstOrDefaultAsync(ISpecification<T> spec);
+        Task<T?> FirstOrDefaultAsync(ISpecification<T> spec, CancellationToken cancellationToken);
+        Task<int> CountAsync(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec, CancellationToken cancellationToken);
         Task<T> AddAsync(T entity);
         Task<T> AddAsync(T entity, CancellationToken cancellationToken);
         Task UpdateAsync(T entity);

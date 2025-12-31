@@ -2,7 +2,7 @@ using Application.Common.Models;
 using Application.Features.Community.Reviews.DTOs;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
-using Domain.Specifications;
+using Application.Common.Specifications.Community.Reviews;
 using Application.Common.Interfaces.Caching;
 using MediatR;
 

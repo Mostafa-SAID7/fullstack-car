@@ -1,5 +1,5 @@
 using Domain.Interfaces;
-using Domain.Specifications;
+using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -47,32 +47,32 @@ namespace Infrastructure.Repositories
             return await _dbSet.ToListAsync(cancellationToken);
         }
 
-        public async Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec)
+        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<T>> ListAsync(BaseSpecification<T> spec, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken)
         {
             return await ApplySpecification(spec).ToListAsync(cancellationToken);
         }
 
-        public async Task<T?> FirstOrDefaultAsync(BaseSpecification<T> spec)
+        public async Task<T?> FirstOrDefaultAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
-        public async Task<T?> FirstOrDefaultAsync(BaseSpecification<T> spec, CancellationToken cancellationToken)
+        public async Task<T?> FirstOrDefaultAsync(ISpecification<T> spec, CancellationToken cancellationToken)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<int> CountAsync(BaseSpecification<T> spec)
+        public async Task<int> CountAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).CountAsync();
         }
 
-        public async Task<int> CountAsync(BaseSpecification<T> spec, CancellationToken cancellationToken)
+        public async Task<int> CountAsync(ISpecification<T> spec, CancellationToken cancellationToken)
         {
             return await ApplySpecification(spec).CountAsync(cancellationToken);
         }
@@ -128,7 +128,7 @@ namespace Infrastructure.Repositories
             return _dbSet.AsQueryable();
         }
 
-        private IQueryable<T> ApplySpecification(BaseSpecification<T> spec)
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(_dbSet.AsQueryable(), spec);
         }

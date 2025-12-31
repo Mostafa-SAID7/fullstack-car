@@ -1,7 +1,8 @@
+using Application.Common.Specifications;
 using Domain.Entities.Community.Posts;
 using Domain.Enums.Community.Posts;
 
-namespace Domain.Specifications
+namespace Application.Common.Specifications.Community.Posts
 {
     public class PostsByUserSpecification : BaseSpecification<Post>
     {
@@ -40,6 +41,17 @@ namespace Domain.Specifications
         {
             AddInclude(p => p.User);
             AddInclude(p => p.Group!);
+        }
+    }
+
+    public class PostCommentsSpecification : BaseSpecification<Comment>
+    {
+        public PostCommentsSpecification(Guid postId, int skip, int take)
+            : base(c => c.PostId == postId && !c.IsDeleted)
+        {
+            AddInclude(c => c.User);
+            ApplyOrderByDescending(c => c.CreatedAt);
+            ApplyPaging(skip, take);
         }
     }
 }

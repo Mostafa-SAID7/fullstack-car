@@ -1,8 +1,8 @@
+using Application.Common.Specifications;
 using Domain.Entities.Community.Social;
 using Domain.Enums.Community.Social;
-using Domain.Specifications;
 
-namespace Domain.Specifications
+namespace Application.Common.Specifications.Community.Social
 {
     public class FriendsListSpecification : BaseSpecification<UserFriend>
     {

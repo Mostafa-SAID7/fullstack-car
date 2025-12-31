@@ -1,7 +1,7 @@
+using Application.Common.Specifications;
 using Domain.Entities.Community.Reviews;
-using Domain.Specifications;
 
-namespace Domain.Specifications
+namespace Application.Common.Specifications.Community.Reviews
 {
     public class ReviewsWithDetailsSpecification : BaseSpecification<Review>
     {

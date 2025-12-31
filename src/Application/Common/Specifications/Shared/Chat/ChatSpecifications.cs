@@ -1,7 +1,7 @@
+using Application.Common.Specifications;
 using Domain.Entities.Shared.Chat;
-using Domain.Specifications;
 
-namespace Domain.Specifications.Shared.Chat
+namespace Application.Common.Specifications.Shared.Chat
 {
     public class ConversationsByUserSpecification : BaseSpecification<Conversation>
     {

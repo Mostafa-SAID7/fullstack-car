@@ -1,7 +1,7 @@
+using Application.Common.Specifications;
 using Domain.Entities.Community.Groups;
-using Domain.Specifications;
 
-namespace Domain.Specifications
+namespace Application.Common.Specifications.Community.Groups
 {
     public class AllGroupsSpecification : BaseSpecification<Group>
     {
