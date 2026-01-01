@@ -2,9 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ConfirmEmailRequest } from '../../../../core/models/auth.model';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirm-email',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './confirm-email.component.html'
 })
 export class ConfirmEmailComponent implements OnInit {
@@ -43,9 +49,9 @@ export class ConfirmEmailComponent implements OnInit {
     if (!this.userId || !this.token) return;
 
     try {
-      const request = {
-        userId: this.userId,
-        token: this.token
+      const request: ConfirmEmailRequest = {
+        userId: this.userId!,
+        token: this.token!
       };
 
       const result = await firstValueFrom(this.authService.confirmEmail(request));
