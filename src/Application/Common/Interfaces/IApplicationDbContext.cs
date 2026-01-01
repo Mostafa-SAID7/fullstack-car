@@ -32,6 +32,13 @@ namespace Application.Common.Interfaces.Data
         DbSet<Review> Reviews { get; }
         DbSet<UserFriend> UserFriends { get; }
 
+        // Community Guides Tables
+        DbSet<Domain.Entities.Community.Guides.Guide> Guides { get; }
+        DbSet<Domain.Entities.Community.Guides.GuideStep> GuideSteps { get; }
+        DbSet<Domain.Entities.Community.Guides.GuideRating> GuideRatings { get; }
+        DbSet<Domain.Entities.Community.Guides.GuideBookmark> GuideBookmarks { get; }
+        DbSet<Domain.Entities.Community.Guides.GuideView> GuideViews { get; }
+
         // Shared Tables
         DbSet<Notification> Notifications { get; }
         DbSet<Conversation> Conversations { get; }

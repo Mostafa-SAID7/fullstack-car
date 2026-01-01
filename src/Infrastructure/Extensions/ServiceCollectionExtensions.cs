@@ -167,6 +167,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<PostsSeeder>();
             services.AddScoped<ReviewsSeeder>();
             services.AddScoped<SocialSeeder>();
+            services.AddScoped<GuidesSeeder>();
             services.AddScoped<SharedSeeder>();
             services.AddScoped<AnalyticsSeeder>();
 

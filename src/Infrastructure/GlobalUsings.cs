@@ -74,6 +74,7 @@ global using Infrastructure.Data.Seeds.Community.Groups;
 global using Infrastructure.Data.Seeds.Community.Posts;
 global using Infrastructure.Data.Seeds.Community.Reviews;
 global using Infrastructure.Data.Seeds.Community.Social;
+global using Infrastructure.Data.Seeds.Community.Guides;
 global using Infrastructure.Data.Seeds.Analytics;
 
 // Third-party

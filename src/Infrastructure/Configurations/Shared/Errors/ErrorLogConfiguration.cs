@@ -8,82 +8,80 @@ public class ErrorLogConfiguration : IEntityTypeConfiguration<ErrorLog>
 {
     public void Configure(EntityTypeBuilder<ErrorLog> builder)
     {
-        builder.ToTable("SharedErrorLogs");
+        builder.ToTable("ErrorLogs", "Shared");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(x => x.ErrorId)
+        builder.Property(e => e.ErrorId)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(50);
 
-        builder.Property(x => x.Message)
+        builder.Property(e => e.Message)
             .IsRequired()
             .HasMaxLength(2000);
 
-        builder.Property(x => x.Exception)
-            .HasColumnType("nvarchar(max)");
+        builder.Property(e => e.Exception)
+            .HasMaxLength(4000);
 
-        builder.Property(x => x.StackTrace)
-            .HasColumnType("nvarchar(max)");
+        builder.Property(e => e.StackTrace)
+            .HasMaxLength(8000);
 
-        builder.Property(x => x.InnerException)
-            .HasColumnType("nvarchar(max)");
+        builder.Property(e => e.InnerException)
+            .HasMaxLength(2000);
 
-        builder.Property(x => x.Source)
+        builder.Property(e => e.Source)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(x => x.Method)
+        builder.Property(e => e.Method)
             .HasMaxLength(200);
 
-        builder.Property(x => x.RequestPath)
+        builder.Property(e => e.RequestPath)
             .HasMaxLength(500);
 
-        builder.Property(x => x.RequestMethod)
+        builder.Property(e => e.RequestMethod)
             .HasMaxLength(10);
 
-        builder.Property(x => x.QueryString)
+        builder.Property(e => e.QueryString)
             .HasMaxLength(2000);
 
-        builder.Property(x => x.RequestBody)
-            .HasColumnType("nvarchar(max)");
+        builder.Property(e => e.RequestBody)
+            .HasMaxLength(4000);
 
-        builder.Property(x => x.UserAgent)
+        builder.Property(e => e.UserAgent)
             .HasMaxLength(500);
 
-        builder.Property(x => x.IpAddress)
+        builder.Property(e => e.IpAddress)
             .HasMaxLength(45);
 
-        builder.Property(x => x.UserName)
+        builder.Property(e => e.UserName)
             .HasMaxLength(256);
 
-        builder.Property(x => x.SessionId)
+        builder.Property(e => e.SessionId)
             .HasMaxLength(100);
 
-        builder.Property(x => x.CorrelationId)
+        builder.Property(e => e.CorrelationId)
             .HasMaxLength(100);
 
-        builder.Property(x => x.Severity)
-            .HasConversion<string>();
-
-        builder.Property(x => x.Category)
+        builder.Property(e => e.Category)
             .HasMaxLength(100);
 
-        builder.Property(x => x.Environment)
+        builder.Property(e => e.Environment)
             .HasMaxLength(50);
 
-        builder.Property(x => x.Version)
+        builder.Property(e => e.Version)
             .HasMaxLength(50);
 
-        builder.Property(x => x.Resolution)
-            .HasMaxLength(2000);
+        builder.Property(e => e.Resolution)
+            .HasMaxLength(1000);
 
-        builder.HasIndex(x => x.ErrorId)
+        builder.HasIndex(e => e.ErrorId)
             .IsUnique();
-        builder.HasIndex(x => x.Severity);
-        builder.HasIndex(x => x.Category);
-        builder.HasIndex(x => x.UserId);
-        builder.HasIndex(x => x.OccurredAt);
-        builder.HasIndex(x => x.IsResolved);
+
+        builder.HasIndex(e => e.OccurredAt);
+        builder.HasIndex(e => e.Severity);
+        builder.HasIndex(e => e.Category);
+        builder.HasIndex(e => e.UserId);
+        builder.HasIndex(e => e.IsResolved);
     }
 }

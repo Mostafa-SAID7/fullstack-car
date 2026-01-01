@@ -1,4 +1,4 @@
-using Infrastructure.Data.Seeds.Analytics;
+using Infrastructure.Data.Seeds.Admin;
 using Infrastructure.Data.Seeds.Community;
 using Infrastructure.Data.Seeds.Identity;
 using Infrastructure.Data.Seeds.Shared;
@@ -14,7 +14,7 @@ namespace Infrastructure.Data.Seeds
         private readonly IdentitySeeder _identitySeeder;
         private readonly CommunitySeeder _communitySeeder;
         private readonly SharedSeeder _sharedSeeder;
-        private readonly AnalyticsSeeder _analyticsSeeder;
+        private readonly AdminSeeder _adminSeeder;
 
         public DatabaseSeeder(
             ILogger<DatabaseSeeder> logger,
@@ -22,14 +22,14 @@ namespace Infrastructure.Data.Seeds
             IdentitySeeder identitySeeder,
             CommunitySeeder communitySeeder,
             SharedSeeder sharedSeeder,
-            AnalyticsSeeder analyticsSeeder)
+            AdminSeeder adminSeeder)
         {
             _logger = logger;
             _context = context;
             _identitySeeder = identitySeeder;
             _communitySeeder = communitySeeder;
             _sharedSeeder = sharedSeeder;
-            _analyticsSeeder = analyticsSeeder;
+            _adminSeeder = adminSeeder;
         }
 
         public async Task InitializeAsync()
@@ -63,7 +63,7 @@ namespace Infrastructure.Data.Seeds
             {
                 _logger.LogInformation("Starting database seeding...");
 
-                // Seed in order: Identity -> Community -> Shared
+                // Seed in order: Identity -> Community -> Shared -> Admin (includes Analytics)
                 await _identitySeeder.SeedAsync();
                 _logger.LogInformation("Identity data seeded successfully.");
 
@@ -73,8 +73,8 @@ namespace Infrastructure.Data.Seeds
                 await _sharedSeeder.SeedAsync();
                 _logger.LogInformation("Shared data seeded successfully.");
 
-                await _analyticsSeeder.SeedAsync();
-                _logger.LogInformation("Analytics data seeded successfully.");
+                await _adminSeeder.SeedAsync();
+                _logger.LogInformation("Admin data (including Analytics) seeded successfully.");
 
                 _logger.LogInformation("Database seeding completed successfully.");
             }

@@ -2,7 +2,7 @@ using Domain.Entities.Identity;
 
 namespace Domain.Entities.Admin.Analytics;
 
-public class ErrorLog : BaseEntity
+public class ApplicationErrorLog : BaseEntity
 {
     public string ErrorType { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;

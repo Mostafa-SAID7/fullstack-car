@@ -42,6 +42,63 @@ namespace Infrastructure.Data
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
 
+        // Community Q&A Tables
+        public DbSet<Domain.Entities.Community.QA.Question> Questions { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Answer> Answers { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QuestionVote> QuestionVotes { get; set; }
+        public DbSet<Domain.Entities.Community.QA.AnswerVote> AnswerVotes { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QuestionCategory> QuestionCategories { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QuestionTag> QuestionTags { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QuestionView> QuestionViews { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QuestionBookmark> QuestionBookmarks { get; set; }
+        public DbSet<Domain.Entities.Community.QA.AnswerComment> AnswerComments { get; set; }
+
+        // Community Maps Tables
+        public DbSet<Domain.Entities.Community.Maps.Location> Locations { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.PlaceReview> PlaceReviews { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.CheckIn> CheckIns { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.LocationCategory> LocationCategories { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.LocationImage> LocationImages { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.LocationHour> LocationHours { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.ReviewHelpful> ReviewHelpfulVotes { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.ReviewImage> MapReviewImages { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.CheckInLike> CheckInLikes { get; set; }
+        public DbSet<Domain.Entities.Community.Maps.CheckInComment> CheckInComments { get; set; }
+
+        // Community News Tables
+        public DbSet<Domain.Entities.Community.News.Article> Articles { get; set; }
+        public DbSet<Domain.Entities.Community.News.NewsCategory> NewsCategories { get; set; }
+        public DbSet<Domain.Entities.Community.News.NewsComment> NewsComments { get; set; }
+        public DbSet<Domain.Entities.Community.News.ArticleLike> ArticleLikes { get; set; }
+        public DbSet<Domain.Entities.Community.News.ArticleView> ArticleViews { get; set; }
+        public DbSet<Domain.Entities.Community.News.ArticleShare> ArticleShares { get; set; }
+        public DbSet<Domain.Entities.Community.News.ArticleImage> ArticleImages { get; set; }
+        public DbSet<Domain.Entities.Community.News.ArticleTag> ArticleTags { get; set; }
+        public DbSet<Domain.Entities.Community.News.CommentLike> NewsCommentLikes { get; set; }
+
+        // Community Pages Tables
+        public DbSet<Domain.Entities.Community.Pages.Page> Pages { get; set; }
+        public DbSet<Domain.Entities.Community.Pages.PageContent> PageContents { get; set; }
+        public DbSet<Domain.Entities.Community.Pages.PageRevision> PageRevisions { get; set; }
+        public DbSet<Domain.Entities.Community.Pages.PageView> PageViews { get; set; }
+        public DbSet<Domain.Entities.Community.Pages.PageComment> PageComments { get; set; }
+        public DbSet<Domain.Entities.Community.Pages.PageCommentLike> PageCommentLikes { get; set; }
+
+        // Community Reviews Tables (Enhanced)
+        public DbSet<Domain.Entities.Community.Reviews.CommunityReview> CommunityReviews { get; set; }
+        public DbSet<Domain.Entities.Community.Reviews.ReviewCategory> ReviewCategories { get; set; }
+        public DbSet<Domain.Entities.Community.Reviews.ReviewHelpfulness> ReviewHelpfulness { get; set; }
+        public DbSet<Domain.Entities.Community.Reviews.ReviewComment> ReviewComments { get; set; }
+        public DbSet<Domain.Entities.Community.Reviews.ReviewImage> CommunityReviewImages { get; set; }
+        public DbSet<Domain.Entities.Community.Reviews.ReviewCommentLike> ReviewCommentLikes { get; set; }
+
+        // Community Guides Tables
+        public DbSet<Domain.Entities.Community.Guides.Guide> Guides { get; set; }
+        public DbSet<Domain.Entities.Community.Guides.GuideStep> GuideSteps { get; set; }
+        public DbSet<Domain.Entities.Community.Guides.GuideRating> GuideRatings { get; set; }
+        public DbSet<Domain.Entities.Community.Guides.GuideBookmark> GuideBookmarks { get; set; }
+        public DbSet<Domain.Entities.Community.Guides.GuideView> GuideViews { get; set; }
+
         // Shared Tables
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
@@ -88,19 +145,41 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Shared.Errors.ErrorReport> ErrorReports { get; set; }
 
         // Marketplace Tables
-        public DbSet<Domain.Entities.Marketplace.ServiceProvider> ServiceProviders { get; set; }
-        public DbSet<Service> Services { get; set; }
-        public DbSet<CarService> CarServices { get; set; }
-        public DbSet<ServiceBooking> ServiceBookings { get; set; }
-        public DbSet<ServiceReview> ServiceReviews { get; set; }
-        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Providers.ServiceProvider> ServiceProviders { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Services.Service> Services { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Services.CarService> CarServices { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Bookings.ServiceBooking> ServiceBookings { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Reviews.ServiceReview> ServiceReviews { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Payments.PaymentTransaction> PaymentTransactions { get; set; }
+        
+        // Marketplace Services
+        public DbSet<Domain.Entities.Marketplace.Services.ServiceImage> ServiceImages { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Services.ServiceAvailability> ServiceAvailabilities { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Services.ServicePricing> ServicePricings { get; set; }
+        
+        // Marketplace Providers
+        public DbSet<Domain.Entities.Marketplace.Providers.ServiceProviderSpecialty> ServiceProviderSpecialties { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Providers.ProviderCertification> ProviderCertifications { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Providers.ProviderTeamMember> ProviderTeamMembers { get; set; }
+        
+        // Marketplace Bookings
+        public DbSet<Domain.Entities.Marketplace.Bookings.BookingStatusHistory> BookingStatusHistories { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Bookings.BookingAttachment> BookingAttachments { get; set; }
+        
+        // Marketplace Payments
+        public DbSet<Domain.Entities.Marketplace.Payments.PaymentRefund> PaymentRefunds { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Payments.ServicePayment> ServicePayments { get; set; }
+        
+        // Marketplace Reviews
+        public DbSet<Domain.Entities.Marketplace.Reviews.ReviewAttachment> ReviewAttachments { get; set; }
+        public DbSet<Domain.Entities.Marketplace.Reviews.ReviewHelpfulness> ReviewHelpfulnessVotes { get; set; }
 
-        // Analytics Tables
+        // Analytics Tables (Admin)
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<UserPreference> UserPreferences { get; set; }
-        public DbSet<SystemMetric> SystemMetrics { get; set; }
+        public DbSet<AdminSystemMetric> AdminSystemMetrics { get; set; }
         public DbSet<PerformanceLog> PerformanceLogs { get; set; }
-        public DbSet<ErrorLog> ErrorLogs { get; set; }
+        public DbSet<ApplicationErrorLog> ApplicationErrorLogs { get; set; }
         public DbSet<ApiUsageLog> ApiUsageLogs { get; set; }
 
         // Admin Dashboard Tables
@@ -127,11 +206,6 @@ namespace Infrastructure.Data
         public DbSet<EmailLog> EmailLogs { get; set; }
         public DbSet<PushNotificationLog> PushNotificationLogs { get; set; }
         public DbSet<NotificationPreference> NotificationPreferences { get; set; }
-        public DbSet<ServicePayment> ServicePayments { get; set; }
-        public DbSet<ServiceImage> ServiceImages { get; set; }
-        public DbSet<ServiceAvailability> ServiceAvailabilities { get; set; }
-        public DbSet<ServiceProviderSpecialty> ServiceProviderSpecialties { get; set; }
-        public DbSet<BookingStatusHistory> BookingStatusHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

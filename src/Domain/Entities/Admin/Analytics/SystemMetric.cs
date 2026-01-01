@@ -1,6 +1,6 @@
 namespace Domain.Entities.Admin.Analytics;
 
-public class SystemMetric : BaseEntity
+public class AdminSystemMetric : BaseEntity
 {
     public string MetricName { get; set; } = string.Empty;
     public double Value { get; set; }
