@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Guides.Commands;
 
-public record CreateGuideCommand(CreateGuideRequest Request, string UserId) : IRequest<GuideDto>;
+public record CreateGuideCommand(CreateGuideRequest Request, Guid UserId) : IRequest<GuideDto>;
 
 public class CreateGuideCommandHandler : IRequestHandler<CreateGuideCommand, GuideDto>
 {
@@ -43,8 +43,8 @@ public class CreateGuideCommandHandler : IRequestHandler<CreateGuideCommand, Gui
             Title = request.Request.Title,
             Content = request.Request.Summary,
             Type = PostType.Guide,
-            AuthorId = request.UserId,
-            IsPublished = true
+            UserId = request.UserId,
+            Status = PostStatus.Published
         };
 
         _context.Posts.Add(post);
@@ -85,7 +85,7 @@ public class CreateGuideCommandHandler : IRequestHandler<CreateGuideCommand, Gui
         return MapToDto(createdGuide, request.UserId);
     }
 
-    private static GuideDto MapToDto(Guide guide, string currentUserId)
+    private static GuideDto MapToDto(Guide guide, Guid currentUserId)
     {
         return new GuideDto
         {
@@ -103,14 +103,13 @@ public class CreateGuideCommandHandler : IRequestHandler<CreateGuideCommand, Gui
             ViewCount = guide.ViewCount,
             LikeCount = guide.LikeCount,
             BookmarkCount = guide.BookmarkCount,
-            Tags = string.IsNullOrEmpty(guide.Tags) ? new List<string>() : 
-                   System.Text.Json.JsonSerializer.Deserialize<List<string>>(guide.Tags) ?? new List<string>(),
+            Tags = DeserializeTags(guide.Tags),
             ThumbnailUrl = guide.ThumbnailUrl,
             CreatedAt = guide.CreatedAt,
             UpdatedAt = guide.UpdatedAt,
             AuthorId = guide.AuthorId,
             AuthorName = guide.Author?.UserName ?? "Unknown",
-            AuthorAvatar = guide.Author?.Avatar,
+            AuthorAvatar = guide.Author?.ProfileImageUrl,
             Steps = guide.Steps.OrderBy(s => s.StepNumber).Select(s => new GuideStepDto
             {
                 Id = s.Id,
@@ -129,5 +128,20 @@ public class CreateGuideCommandHandler : IRequestHandler<CreateGuideCommand, Gui
             AverageRating = 0,
             RatingCount = 0
         };
+    }
+
+    private static List<string> DeserializeTags(string? tags)
+    {
+        if (string.IsNullOrEmpty(tags))
+            return new List<string>();
+        
+        try
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<List<string>>(tags) ?? new List<string>();
+        }
+        catch
+        {
+            return new List<string>();
+        }
     }
 }

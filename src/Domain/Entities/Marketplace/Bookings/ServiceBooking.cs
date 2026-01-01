@@ -1,4 +1,9 @@
 using Domain.Entities.Identity;
+using Domain.Entities.Marketplace.Providers;
+using Domain.Entities.Marketplace.Services;
+using Domain.Entities.Marketplace.Payments;
+using Domain.Entities.Marketplace.Reviews;
+using Domain.Enums.Marketplace;
 
 namespace Domain.Entities.Marketplace.Bookings;
 
@@ -69,6 +74,10 @@ public class ServiceBooking : BaseEntity
     public bool RequiresFollowUp { get; set; } = false;
     public DateTime? FollowUpDate { get; set; }
     public string? FollowUpNotes { get; set; }
+
+    // Additional properties expected by Infrastructure
+    public DateTime ServiceDate { get; set; } // Alias for ScheduledDate
+    public string? Notes { get; set; } // Alias for CustomerNotes
 
     // Navigation properties
     public ApplicationUser Customer { get; set; } = null!;

@@ -1,4 +1,6 @@
-using Domain.Entities.Marketplace;
+using Domain.Entities.Marketplace.Bookings;
+using Domain.Entities.Marketplace.Payments;
+using Domain.Entities.Marketplace.Reviews;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -54,9 +56,9 @@ namespace Infrastructure.Configurations.Marketplace
                 .HasForeignKey(sb => sb.ServiceProviderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(sb => sb.Payment)
-                .WithOne(p => p.Booking)
-                .HasForeignKey<ServicePayment>(p => p.BookingId)
+            builder.HasMany(sb => sb.PaymentTransactions)
+                .WithOne(pt => pt.Booking)
+                .HasForeignKey(pt => pt.BookingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(sb => sb.Review)

@@ -1,5 +1,7 @@
 using Domain.Entities.Identity;
 
+using Domain.Enums.Marketplace;
+
 namespace Domain.Entities.Marketplace.Bookings;
 
 public class BookingStatusHistory : BaseEntity

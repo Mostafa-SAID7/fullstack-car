@@ -3,7 +3,7 @@ using Application.Features.Identity.Auth.DTOs.Requests;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;
-using Application.Features.Admin.Interfaces.Identity.Auth;
+using Application.Features.Identity.Auth.Interfaces;
 
 namespace Application.Features.Identity.Auth.Commands
 {

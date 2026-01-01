@@ -1,4 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using Application.Common.Models;
 using Domain.Entities.Community.Posts;
 using MediatR;
@@ -14,7 +14,7 @@ namespace Application.Features.Community.Posts.Queries
         public string? Sort { get; set; }
 
         public string CacheKey => $"posts:list:page:{Page}:size:{Size}:filter:{Filter ?? "none"}:sort:{Sort ?? "none"}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
-        public string? CacheTag => "posts";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(5);
+        public string[]? CacheTags => new[] { "posts" };
     }
 }

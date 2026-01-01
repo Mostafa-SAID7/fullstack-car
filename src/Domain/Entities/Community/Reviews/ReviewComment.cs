@@ -9,8 +9,8 @@ namespace Domain.Entities.Community.Reviews
         public string Content { get; set; } = string.Empty;
         public CommentStatus Status { get; set; } = CommentStatus.Published;
         public int LikesCount { get; set; } = 0;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+        public new bool IsDeleted { get; set; } = false;
+        public new DateTime? DeletedAt { get; set; }
 
         // Foreign Keys
         public Guid ReviewId { get; set; }

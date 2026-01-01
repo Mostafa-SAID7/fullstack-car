@@ -1,4 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading;
@@ -36,13 +36,13 @@ namespace Application.Common.Behaviors
 
             if (response != null)
             {
-                if (!string.IsNullOrEmpty(request.CacheTag))
+                if (request.CacheTags?.Length > 0)
                 {
-                    await _cacheService.SetWithTagAsync(request.CacheKey, response, request.CacheTag, request.Expiration, cancellationToken);
+                    await _cacheService.SetWithTagAsync(request.CacheKey, response, request.CacheTags[0], request.CacheExpiration, cancellationToken);
                 }
                 else
                 {
-                    await _cacheService.SetAsync(request.CacheKey, response, request.Expiration, cancellationToken);
+                    await _cacheService.SetAsync(request.CacheKey, response, request.CacheExpiration, cancellationToken);
                 }
             }
 

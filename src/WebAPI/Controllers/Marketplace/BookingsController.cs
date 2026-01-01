@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace WebAPI.Controllers.Marketplace
 {
     [ApiController]
-    [ApiVersion("2.0")]
+
     [Route("api/v{version:apiVersion}/marketplace/bookings")]
     [Authorize]
     public class BookingsController : ControllerBase

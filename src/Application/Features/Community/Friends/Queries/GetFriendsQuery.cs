@@ -3,7 +3,7 @@ using Application.Features.Community.Friends.DTOs;
 using Domain.Entities.Community.Social;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Social;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Friends.Queries
@@ -15,8 +15,8 @@ namespace Application.Features.Community.Friends.Queries
         public int PageSize { get; set; } = 10;
 
         public string CacheKey => $"Friends_{UserId}_{PageNumber}_{PageSize}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-        public string? CacheTag => $"Friends_{UserId}";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
+        public string[]? CacheTags => new[] { $"Friends_{UserId}" };
     }
 
     public class GetFriendsQueryHandler : IRequestHandler<GetFriendsQuery, Result<PaginatedList<FriendDto>>>

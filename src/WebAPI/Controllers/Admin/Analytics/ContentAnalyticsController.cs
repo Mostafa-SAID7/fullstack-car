@@ -7,7 +7,7 @@ namespace WebAPI.Controllers.Admin.Analytics
     [Route("api/v{version:apiVersion}/admin/analytics/content")]
     public class ContentAnalyticsController : BaseAnalyticsController
     {
-        public ContentAnalyticsController(IAdvancedLogger<ContentAnalyticsController> logger) : base(logger)
+        public ContentAnalyticsController(ILogger<ContentAnalyticsController> logger) : base(logger)
         {
         }
 

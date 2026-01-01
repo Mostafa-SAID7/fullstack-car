@@ -7,7 +7,7 @@ namespace WebAPI.Controllers.Admin.Analytics
     [Route("api/v{version:apiVersion}/admin/analytics/system")]
     public class SystemAnalyticsController : BaseAnalyticsController
     {
-        public SystemAnalyticsController(IAdvancedLogger<SystemAnalyticsController> logger) : base(logger)
+        public SystemAnalyticsController(ILogger<SystemAnalyticsController> logger) : base(logger)
         {
         }
 

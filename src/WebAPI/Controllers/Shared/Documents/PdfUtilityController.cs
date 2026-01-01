@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Shared.Documents
 {
     [Authorize]
-    [ApiVersion("4.0")]
+
     [Route("api/v{version:apiVersion}/pdf/utility")]
     public class PdfUtilityController : BaseController
     {
         private readonly IPdfGenerationService _pdfGenerationService;
-        private readonly IAdvancedLogger<PdfUtilityController> _logger;
+        private readonly ILogger<PdfUtilityController> _logger;
 
         public PdfUtilityController(
             IPdfGenerationService pdfGenerationService,
-            IAdvancedLogger<PdfUtilityController> logger)
+            ILogger<PdfUtilityController> logger)
         {
             _pdfGenerationService = pdfGenerationService;
             _logger = logger;

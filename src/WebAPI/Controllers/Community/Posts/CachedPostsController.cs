@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace WebAPI.Controllers.Community.Posts
 {
-    [ApiVersion("2.0")]
+
     [Route("api/v{version:apiVersion}/cached-posts")]
     [Authorize]
     public class CachedPostsController : BaseController

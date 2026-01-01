@@ -4,7 +4,7 @@ using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Reviews;
 using MediatR;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 
 namespace Application.Features.Community.Reviews.Queries
 {
@@ -13,8 +13,8 @@ namespace Application.Features.Community.Reviews.Queries
         public Guid Id { get; set; }
 
         public string CacheKey => $"Review_{Id}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-        public string? CacheTag => "Reviews";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
+        public string[]? CacheTags => new[] { "Reviews" };
     }
 
     public class GetReviewByIdQueryHandler : IRequestHandler<GetReviewByIdQuery, Result<ReviewDto>>

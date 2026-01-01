@@ -4,7 +4,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Posts;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Queries
@@ -14,8 +14,8 @@ namespace Application.Features.Community.Posts.Queries
         public Guid Id { get; set; }
 
         public string CacheKey => $"Post_{Id}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-        public string? CacheTag => "Posts";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
+        public string[]? CacheTags => new[] { "Posts" };
     }
 
     public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, Result<PostDto>>

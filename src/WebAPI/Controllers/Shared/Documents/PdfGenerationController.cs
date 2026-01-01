@@ -9,16 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Shared.Documents
 {
     [Authorize]
-    [ApiVersion("4.0")]
+
     [Route("api/v{version:apiVersion}/pdf/generate")]
     public class PdfGenerationController : BaseController
     {
         private readonly IPdfGenerationService _pdfGenerationService;
-        private readonly IAdvancedLogger<PdfGenerationController> _logger;
+        private readonly ILogger<PdfGenerationController> _logger;
 
         public PdfGenerationController(
             IPdfGenerationService pdfGenerationService,
-            IAdvancedLogger<PdfGenerationController> logger)
+            ILogger<PdfGenerationController> logger)
         {
             _pdfGenerationService = pdfGenerationService;
             _logger = logger;

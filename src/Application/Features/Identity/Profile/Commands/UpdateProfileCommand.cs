@@ -2,7 +2,7 @@ using Application.Features.Identity.Profile.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Requests;
 using Application.Features.Identity.Profile.DTOs.Responses;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Identity.Profile.Commands

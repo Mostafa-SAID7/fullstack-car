@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Guides.Commands;
 
-public record RateGuideCommand(RateGuideRequest Request, string UserId) : IRequest<bool>;
+public record RateGuideCommand(RateGuideRequest Request, Guid UserId) : IRequest<bool>;
 
 public class RateGuideCommandHandler : IRequestHandler<RateGuideCommand, bool>
 {

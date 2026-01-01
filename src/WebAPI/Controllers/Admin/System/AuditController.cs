@@ -8,7 +8,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.System
 {
     [Authorize(Roles = "Admin")]
-    [ApiVersion("3.0")]
+
     [Route("api/v{version:apiVersion}/admin/system/audit")]
     public class AuditController : BaseController
     {
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers.Admin.System
             [FromQuery] DateTime? fromDate = null,
             [FromQuery] DateTime? toDate = null)
         {
-            var query = new GetUserActivityQuery
+            var query = new Application.Features.Admin.System.Queries.GetUserActivityQuery
             {
                 UserId = userId,
                 Page = page,

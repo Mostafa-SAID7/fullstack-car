@@ -8,9 +8,9 @@ namespace WebAPI.Middleware
     public class AdvancedLoggingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IAdvancedLogger<AdvancedLoggingMiddleware> _logger;
+        private readonly ILogger<AdvancedLoggingMiddleware> _logger;
 
-        public AdvancedLoggingMiddleware(RequestDelegate next, IAdvancedLogger<AdvancedLoggingMiddleware> logger)
+        public AdvancedLoggingMiddleware(RequestDelegate next, ILogger<AdvancedLoggingMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -58,10 +58,10 @@ namespace WebAPI.Middleware
 
             // Log basic request info
             _logger.LogApiCall(
-                $"{request.Path}{request.QueryString}",
                 request.Method,
-                TimeSpan.Zero,
+                $"{request.Path}{request.QueryString}",
                 0,
+                TimeSpan.Zero,
                 userId
             );
 
@@ -94,10 +94,10 @@ namespace WebAPI.Middleware
 
             // Log API call with response details
             _logger.LogApiCall(
-                $"{request.Path}{request.QueryString}",
                 request.Method,
-                duration,
+                $"{request.Path}{request.QueryString}",
                 response.StatusCode,
+                duration,
                 userId
             );
 

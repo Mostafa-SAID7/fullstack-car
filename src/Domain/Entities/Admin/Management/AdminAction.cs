@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Domain.Enums.Admin.Management;
 
 namespace Domain.Entities.Admin.Management;
 
@@ -13,6 +14,10 @@ public class AdminAction : BaseEntity
     public string? Reason { get; set; }
     public DateTime ActionDate { get; set; } = DateTime.UtcNow;
     public string? AdditionalData { get; set; }
+
+    // Additional properties expected by Infrastructure
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow; // Alias for ActionDate
+    public bool IsActive { get; set; } = true;
 
     // Navigation properties
     public ApplicationUser AdminUser { get; set; } = null!;

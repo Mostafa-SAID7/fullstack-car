@@ -1,11 +1,11 @@
-using Application.Features.Shared.Chat.DTOs;
+namespace Application.Features.Shared.Chat.Interfaces;
 
-namespace Application.Features.Shared.Chat.Interfaces
+public interface IChatHub
 {
-    public interface IChatHub
-    {
-        Task ReceiveMessage(ChatMessageDto message);
-        Task UserTyping(Guid conversationId, Guid userId);
-        Task MessageRead(Guid conversationId, Guid messageId, Guid userId);
-    }
+    Task ReceiveMessage(string user, string message);
+    Task UserJoined(string user);
+    Task UserLeft(string user);
+    Task TypingStarted(string user);
+    Task TypingStopped(string user);
+    Task UserTyping(Guid conversationId, Guid userId);
 }

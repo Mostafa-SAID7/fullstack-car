@@ -1,4 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AIAgentService } from '../../services/ai-agent.service';
 import { ChatRequest } from '../../models/ai-agent.models';
 
@@ -10,6 +12,8 @@ interface ChatMessage {
 
 @Component({
     selector: 'app-ai-chat-widget',
+    standalone: true,
+    imports: [CommonModule, FormsModule],
     templateUrl: './ai-chat-widget.component.html',
     styleUrls: ['./ai-chat-widget.component.scss']
 })
@@ -66,7 +70,7 @@ export class AIChatWidgetComponent implements OnInit {
         this.aiAgentService.chat(request).subscribe({
             next: (response) => {
                 this.isTyping = false;
-                this.addMessage(response.message, false);
+                this.addMessage(response?.message || 'No response from AI.', false);
             },
             error: (error) => {
                 this.isTyping = false;
@@ -76,8 +80,10 @@ export class AIChatWidgetComponent implements OnInit {
         });
     }
 
-    parseMarkdown(text: string): string {
-        let parsed = text
+    parseMarkdown(text: string | undefined): string {
+        if (!text) return '';
+        let parsed = text;
+        parsed = parsed
             // Bold: **text** -> <strong>text</strong>
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             // List items: - text -> <li>text</li> (wrapped in logic below)

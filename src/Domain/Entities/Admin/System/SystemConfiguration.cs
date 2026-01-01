@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Domain.Enums.Admin.System;
 
 namespace Domain.Entities.Admin.System;
 
@@ -13,6 +14,9 @@ public class SystemConfiguration : BaseEntity
     public bool IsReadOnly { get; set; } = false;
     public Guid? ModifiedByUserId { get; set; }
     public DateTime? LastModified { get; set; }
+
+    // Additional properties expected by Infrastructure
+    public bool IsActive { get; set; } = true;
 
     // Navigation properties
     public ApplicationUser? ModifiedByUser { get; set; }

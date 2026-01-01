@@ -24,7 +24,7 @@
 
         <div class="chat-messages" #scrollContainer>
             <div class="message" *ngFor="let msg of messages" [class.user]="msg.isUser" [class.ai]="!msg.isUser">
-                <div class="message-content" [innerHTML]="parseMarkdown(msg.text)"></div>
+                <div class="message-content" [innerHTML]="parseMarkdown(msg.text || '')"></div>
                 <span class="time">{{ msg.timestamp | date:'shortTime' }}</span>
             </div>
 

@@ -1,4 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -20,12 +20,21 @@ namespace Application.Common.Behaviors
         {
             var response = await next();
 
-            if (request.CacheTags != null && request.CacheTags.Length > 0)
+            if (request.CacheTagsToInvalidate != null && request.CacheTagsToInvalidate.Length > 0)
             {
-                foreach (var tag in request.CacheTags)
+                foreach (var tag in request.CacheTagsToInvalidate)
                 {
                     _logger.LogInformation("Invalidating cache for tag: {Tag}", tag);
                     await _cacheService.RemoveByTagAsync(tag, cancellationToken);
+                }
+            }
+
+            if (request.CacheKeysToInvalidate != null && request.CacheKeysToInvalidate.Length > 0)
+            {
+                foreach (var key in request.CacheKeysToInvalidate)
+                {
+                    _logger.LogInformation("Invalidating cache for key: {Key}", key);
+                    await _cacheService.RemoveAsync(key, cancellationToken);
                 }
             }
 

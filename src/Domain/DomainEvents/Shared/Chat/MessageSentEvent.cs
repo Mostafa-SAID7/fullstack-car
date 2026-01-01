@@ -1,3 +1,5 @@
+using Domain.Enums.Shared.Chat;
+
 namespace Domain.DomainEvents.Shared.Chat;
 
 public class MessageSentEvent : BaseDomainEvent

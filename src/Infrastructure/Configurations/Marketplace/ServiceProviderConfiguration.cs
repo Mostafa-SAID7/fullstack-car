@@ -1,7 +1,7 @@
-using Domain.Entities.Marketplace;
+using Domain.Entities.Marketplace.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ServiceProviderEntity = Domain.Entities.Marketplace.ServiceProvider;
+using ServiceProviderEntity = Domain.Entities.Marketplace.Providers.ServiceProvider;
 
 namespace Infrastructure.Configurations.Marketplace
 {

@@ -7,9 +7,9 @@ namespace Application.Features.Admin.Analytics.Handlers
     public class GetAdvancedAnalyticsHandler : IRequestHandler<GetAdvancedAnalyticsQuery, Result<AdvancedAnalyticsResponse>>
     {
         private readonly IAnalyticsService _analyticsService;
-        private readonly IAdvancedLogger<GetAdvancedAnalyticsHandler> _logger;
+        private readonly IAppLogger<GetAdvancedAnalyticsHandler> _logger;
 
-        public GetAdvancedAnalyticsHandler(IAnalyticsService analyticsService, IAdvancedLogger<GetAdvancedAnalyticsHandler> logger)
+        public GetAdvancedAnalyticsHandler(IAnalyticsService analyticsService, IAppLogger<GetAdvancedAnalyticsHandler> logger)
         {
             _analyticsService = analyticsService;
             _logger = logger;

@@ -8,7 +8,8 @@ public class DashboardPermissionConfiguration : IEntityTypeConfiguration<Dashboa
 {
     public void Configure(EntityTypeBuilder<DashboardPermission> builder)
     {
-        builder.ToTable("DashboardPermissions");
+        builder.ToTable("DashboardPermissions", t => t.HasCheckConstraint("CK_DashboardPermission_UserOrRole", 
+            "(UserId IS NOT NULL AND RoleId IS NULL) OR (UserId IS NULL AND RoleId IS NOT NULL)"));
 
         builder.HasKey(x => x.Id);
 
@@ -26,10 +27,6 @@ public class DashboardPermissionConfiguration : IEntityTypeConfiguration<Dashboa
             .WithMany()
             .HasForeignKey(x => x.RoleId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        // Ensure either UserId or RoleId is set, but not both
-        builder.HasCheckConstraint("CK_DashboardPermission_UserOrRole", 
-            "(UserId IS NOT NULL AND RoleId IS NULL) OR (UserId IS NULL AND RoleId IS NOT NULL)");
 
         builder.HasIndex(x => x.DashboardLayoutId);
         builder.HasIndex(x => x.UserId);

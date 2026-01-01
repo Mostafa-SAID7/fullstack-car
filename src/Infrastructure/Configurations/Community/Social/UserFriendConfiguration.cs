@@ -34,7 +34,7 @@ namespace Infrastructure.Configurations.Community.Social
                 .IsUnique();
 
             // Add a check constraint to prevent self-friendship
-            builder.HasCheckConstraint("CK_UserFriend_NoSelfFriendship", "[UserId] != [FriendId]");
+            builder.ToTable(t => t.HasCheckConstraint("CK_UserFriend_NoSelfFriendship", "[UserId] != [FriendId]"));
         }
     }
 }

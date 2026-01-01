@@ -1,12 +1,12 @@
-namespace Domain.Enums.Marketplace
+namespace Domain.Enums.Marketplace;
+
+public enum PaymentStatus
 {
-    public enum PaymentStatus
-    {
-        Pending = 1,
-        Paid = 2,
-        Failed = 3,
-        Refunded = 4,
-        PartiallyRefunded = 5,
-        Disputed = 6
-    }
+    Pending = 0,
+    Processing = 1,
+    Completed = 2,
+    Failed = 3,
+    Cancelled = 4,
+    Refunded = 5,
+    PartiallyRefunded = 6
 }

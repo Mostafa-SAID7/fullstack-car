@@ -1,4 +1,4 @@
-using Application.Features.Admin.Interfaces.Identity.Security;
+using Application.Features.Identity.Security.Interfaces;
 using Application.Common.Models;
 using MediatR;
 

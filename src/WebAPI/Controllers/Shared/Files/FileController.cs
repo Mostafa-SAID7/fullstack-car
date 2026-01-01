@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Shared.Files
 {
     [Authorize]
-    [ApiVersion("4.0")]
+
     [Route("api/v{version:apiVersion}/files")]
     public class FileController : BaseController
     {
         private readonly IFileStorageService _fileStorageService;
         private readonly IImageProcessingService _imageProcessingService;
-        private readonly IAdvancedLogger<FileController> _logger;
+        private readonly ILogger<FileController> _logger;
 
         public FileController(
             IFileStorageService fileStorageService,
             IImageProcessingService imageProcessingService,
-            IAdvancedLogger<FileController> logger)
+            ILogger<FileController> logger)
         {
             _fileStorageService = fileStorageService;
             _imageProcessingService = imageProcessingService;

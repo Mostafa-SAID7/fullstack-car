@@ -1,5 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
-using Infrastructure.Common;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -13,12 +12,12 @@ namespace Application.Features.Shared.Caching.Services
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IDistributedCache _distributedCache;
-        private readonly CacheSettings _settings;
+        private readonly Application.Features.Shared.Caching.Models.CacheSettings _settings;
 
         public CacheService(
             IMemoryCache memoryCache,
             IDistributedCache distributedCache,
-            IOptions<CacheSettings> settings)
+            IOptions<Application.Features.Shared.Caching.Models.CacheSettings> settings)
         {
             _memoryCache = memoryCache;
             _distributedCache = distributedCache;

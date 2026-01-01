@@ -51,5 +51,6 @@ namespace Domain.Entities.Identity
         public virtual ICollection<GroupMember> GroupMemberships { get; set; } = new List<GroupMember>();
         public virtual ICollection<UserClaim> Claims { get; set; } = new List<UserClaim>();
         public virtual ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

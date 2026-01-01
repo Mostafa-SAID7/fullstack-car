@@ -11,7 +11,7 @@ namespace Application.Features.Identity.OAuth.Mappings
         public OAuthMappingProfile()
         {
             // External Login Info Response
-            CreateMap<ApplicationUser, ExternalLoginInfo>()
+            CreateMap<ApplicationUser, Application.Features.Identity.OAuth.DTOs.Responses.ExternalLoginInfo>()
                 .ForMember(dest => dest.Provider, opt => opt.MapFrom(src => src.ExternalProvider ?? ""))
                 .ForMember(dest => dest.ProviderKey, opt => opt.MapFrom(src => src.ExternalProviderId ?? ""))
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))

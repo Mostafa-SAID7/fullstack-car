@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Features.Community.Guides.Queries;
 
 public record GetUserBookmarkedGuidesQuery(
-    string UserId,
+    Guid UserId,
     int Page = 1,
     int PageSize = 10
 ) : IRequest<PaginatedList<GuideListDto>>;
@@ -56,7 +56,7 @@ public class GetUserBookmarkedGuidesQueryHandler : IRequestHandler<GetUserBookma
             ThumbnailUrl = b.Guide.ThumbnailUrl,
             CreatedAt = b.Guide.CreatedAt,
             AuthorName = b.Guide.Author?.UserName ?? "Unknown",
-            AuthorAvatar = b.Guide.Author?.Avatar,
+            AuthorAvatar = b.Guide.Author?.ProfileImageUrl,
             IsBookmarked = true,
             AverageRating = b.Guide.Ratings.Any() ? b.Guide.Ratings.Average(r => r.Rating) : 0,
             RatingCount = b.Guide.Ratings.Count

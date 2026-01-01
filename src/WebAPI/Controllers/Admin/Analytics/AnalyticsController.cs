@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Admin.Analytics
 {
     [Authorize(Roles = "Admin")]
-    [ApiVersion("3.0")]
+
     [Route("api/v{version:apiVersion}/admin/analytics")]
     public class AnalyticsController : BaseController
     {
-        private readonly IAdvancedLogger<AnalyticsController> _logger;
+        private readonly ILogger<AnalyticsController> _logger;
 
-        public AnalyticsController(IAdvancedLogger<AnalyticsController> logger)
+        public AnalyticsController(ILogger<AnalyticsController> logger)
         {
             _logger = logger;
         }

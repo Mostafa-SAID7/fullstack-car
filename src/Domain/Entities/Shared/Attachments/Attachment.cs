@@ -13,4 +13,7 @@ public class Attachment : BaseEntity
     public bool IsPublic { get; set; } = false;
     public string? Tags { get; set; }
     public DateTime? ExpiresAt { get; set; }
+    
+    // Additional properties expected by Infrastructure
+    public string? FileUrl { get; set; }
 }

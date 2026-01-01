@@ -1,9 +1,7 @@
 using Application.Features.Shared.Notifications.Interfaces;
-using Domain.Entities.Shared;
+using Domain.Entities.Shared.Notifications;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using WebAPI.Hubs;
 
 namespace Application.Features.Shared.Notifications.Services
 {
@@ -11,16 +9,16 @@ namespace Application.Features.Shared.Notifications.Services
     {
         private readonly ILogger<NotificationService> _logger;
         private readonly IRepository<Notification> _notificationRepository;
-        private readonly IHubContext<NotificationHub, INotificationHub> _hubContext;
+        // TODO: Implement SignalR hub context injection when Infrastructure layer is ready
+        // private readonly IHubContext<NotificationHub, INotificationHub> _hubContext;
 
         public NotificationService(
             ILogger<NotificationService> logger,
-            IRepository<Notification> notificationRepository,
-            IHubContext<NotificationHub, INotificationHub> hubContext)
+            IRepository<Notification> notificationRepository)
         {
             _logger = logger;
             _notificationRepository = notificationRepository;
-            _hubContext = hubContext;
+            // _hubContext = hubContext;
         }
 
         public async Task SendNotificationAsync(string userId, string title, string message, string? targetUrl = null, Guid? sourceUserId = null)
@@ -47,16 +45,18 @@ namespace Application.Features.Shared.Notifications.Services
             
             _logger.LogInformation("Sending real-time notification to user {UserId}: {Title}", userId, title);
 
-            await _hubContext.Clients.User(userId).ReceiveNotification(new
-            {
-                notification.Id,
-                notification.Title,
-                notification.Message,
-                notification.CreatedAt,
-                notification.IsRead,
-                notification.TargetUrl,
-                notification.SourceUserId
-            });
+            // TODO: Implement SignalR hub context injection when Infrastructure layer is ready
+            // await _hubContext.Clients.User(userId).ReceiveNotification(new
+            // {
+            //     notification.Id,
+            //     notification.Title,
+            //     notification.Message,
+            //     notification.CreatedAt,
+            //     notification.IsRead,
+            //     notification.TargetUrl,
+            //     notification.SourceUserId
+            // });
+            await Task.CompletedTask;
         }
 
         public async Task SendBulkNotificationAsync(IEnumerable<string> userIds, string title, string message)

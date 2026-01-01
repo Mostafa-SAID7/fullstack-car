@@ -1,5 +1,8 @@
 using Domain.Entities.Identity;
 
+using Domain.Entities.Marketplace.Bookings;
+using Domain.Enums.Marketplace;
+
 namespace Domain.Entities.Marketplace.Payments;
 
 public class PaymentTransaction : BaseEntity

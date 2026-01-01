@@ -1,12 +1,10 @@
-namespace Domain.Enums.Marketplace
+namespace Domain.Enums.Marketplace;
+
+public enum ServiceStatus
 {
-    public enum ServiceStatus
-    {
-        Draft = 1,
-        Active = 2,
-        Inactive = 3,
-        Suspended = 4,
-        UnderReview = 5,
-        Rejected = 6
-    }
+    Draft = 0,
+    Active = 1,
+    Inactive = 2,
+    Suspended = 3,
+    Archived = 4
 }

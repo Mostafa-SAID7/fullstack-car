@@ -4,7 +4,7 @@ namespace Application.Features.Community.Guides.DTOs.Responses;
 
 public class GuideListDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Summary { get; set; } = string.Empty;
     public GuideCategory Category { get; set; }

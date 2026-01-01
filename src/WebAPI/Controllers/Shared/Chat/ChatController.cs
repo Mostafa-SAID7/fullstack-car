@@ -10,7 +10,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Shared.Chat
 {
     [Authorize]
-    [ApiVersion("4.0")]
+
     [Route("api/v{version:apiVersion}/shared/chat")]
     public class ChatController : BaseController
     {

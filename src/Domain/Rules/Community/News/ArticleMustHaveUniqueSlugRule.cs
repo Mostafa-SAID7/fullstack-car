@@ -1,4 +1,4 @@
-using Domain.Rules;
+using Domain.Interfaces;
 
 namespace Domain.Rules.Community.News
 {

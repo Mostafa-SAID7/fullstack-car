@@ -13,6 +13,10 @@ public class DashboardLayout : BaseEntity
     public int Columns { get; set; } = 12; // Grid columns
     public int Rows { get; set; } = 10; // Grid rows
 
+    // Additional properties expected by Infrastructure
+    public bool IsActive { get; set; } = true;
+    public string? RequiredRole { get; set; }
+
     // Navigation properties
     public ApplicationUser CreatedByUser { get; set; } = null!;
     public ICollection<DashboardWidget> Widgets { get; set; } = new List<DashboardWidget>();

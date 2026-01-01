@@ -1,4 +1,4 @@
-using Application.Features.Admin.Interfaces.Identity.Profile;
+using Application.Features.Identity.Profile.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Requests;
 using Application.Features.Identity.Security.DTOs.Requests;

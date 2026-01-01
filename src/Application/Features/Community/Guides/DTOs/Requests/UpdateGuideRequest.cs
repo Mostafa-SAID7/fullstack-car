@@ -4,7 +4,7 @@ namespace Application.Features.Community.Guides.DTOs.Requests;
 
 public class UpdateGuideRequest
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public string Summary { get; set; } = string.Empty;
@@ -18,7 +18,7 @@ public class UpdateGuideRequest
 
 public class UpdateGuideStepRequest
 {
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
     public int StepNumber { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;

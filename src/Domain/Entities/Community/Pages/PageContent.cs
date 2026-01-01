@@ -7,7 +7,7 @@ namespace Domain.Entities.Community.Pages
     {
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        public ContentType Type { get; set; } = ContentType.Text;
+        public PageContentType Type { get; set; } = PageContentType.Text;
         public int SortOrder { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public string? Settings { get; set; } // JSON for component settings

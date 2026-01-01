@@ -3,7 +3,7 @@ using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Commands

@@ -3,7 +3,7 @@ using Application.Features.Community.Groups.DTOs;
 using Domain.Entities.Community.Groups;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Groups;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Groups.Queries
@@ -14,8 +14,8 @@ namespace Application.Features.Community.Groups.Queries
         public int PageSize { get; set; } = 10;
 
         public string CacheKey => $"GetGroups_{PageNumber}_{PageSize}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-        public string? CacheTag => "Groups";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
+        public string[]? CacheTags => new[] { "Groups" };
     }
 
     public class GetGroupsQueryHandler : IRequestHandler<GetGroupsQuery, Result<PaginatedList<GroupDto>>>

@@ -1,10 +1,9 @@
-using Application.Features.Admin.Interfaces.Identity.Security;
+using Application.Features.Identity.Security.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Security.DTOs.Requests;
 using Application.Features.Identity.Security.DTOs.Responses;
 using Microsoft.AspNetCore.Identity;
 using Domain.Entities.Identity;
-using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Identity.Security.Services
@@ -12,9 +11,9 @@ namespace Application.Features.Identity.Security.Services
     public class SecurityService : ISecurityService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
-        public SecurityService(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public SecurityService(UserManager<ApplicationUser> userManager, IApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;

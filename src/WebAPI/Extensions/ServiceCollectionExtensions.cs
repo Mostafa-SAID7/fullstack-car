@@ -59,9 +59,9 @@ namespace WebAPI.Extensions
                            .VaryByValue(context => new KeyValuePair<string, string>("Accept-Language", context.Request.Headers["Accept-Language"].ToString())));
             });
 
-            // Register caching policy services
-            services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
-            services.AddSingleton<CustomOutputCachePolicy>();
+            // Register caching policy services (commented out - missing implementations)
+            // services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
+            // services.AddSingleton<CustomOutputCachePolicy>();
 
             // Add HttpContextAccessor for CurrentUserService
             services.AddHttpContextAccessor();

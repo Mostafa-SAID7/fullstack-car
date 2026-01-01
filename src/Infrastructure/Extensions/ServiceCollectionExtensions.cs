@@ -1,3 +1,46 @@
+using Application.Common.Interfaces;
+using Application.Features.AIAgent.Interfaces;
+using Application.Features.Identity.Auth.Interfaces;
+using Application.Features.Identity.Core.Interfaces;
+using Application.Features.Identity.Core.Services;
+using Application.Features.Identity.Security.Interfaces;
+using Application.Features.Shared.Caching.Interfaces.Services;
+using Application.Features.Shared.Caching.Services;
+using Application.Features.Shared.Email.Interfaces;
+using Application.Features.Shared.Email.Services;
+using Application.Features.Shared.Notifications.Interfaces;
+using Application.Features.Shared.Notifications.Services;
+using Application.Features.Shared.Storage.Interfaces;
+using Application.Features.Shared.Storage.Services;
+using Application.Features.Shared.Localization.Interfaces;
+using Application.Features.Shared.Localization.Services;
+using Application.Features.Admin.Analytics.Interfaces;
+using Application.Features.Admin.Analytics.Services;
+using Application.Features.Identity.Auth.Services;
+using Application.Features.Identity.OAuth.Interfaces;
+using Application.Features.Identity.Auth.Services;
+using Application.Features.Identity.Profile.Interfaces;
+using Application.Features.Identity.Profile.Services;
+using Application.Features.Identity.Password.Interfaces;
+using Application.Features.Identity.Password.Services;
+using Application.Features.Identity.Security.Services;
+using Domain.Entities.Identity;
+using Infrastructure.Data;
+using Infrastructure.Data.Seeds;
+using Infrastructure.Repositories;
+using Infrastructure.Common;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using AspNet.Security.OAuth.GitHub;
+using StackExchange.Redis;
+using System.Text;
 using System.Security.Claims;
 
 namespace Infrastructure.Extensions
@@ -43,7 +86,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             // Organized Identity Services
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<Application.Features.Identity.Auth.Interfaces.IAuthenticationService, Application.Features.Identity.Auth.Services.AuthenticationService>();
             services.AddScoped<IOAuthService, OAuthService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IPasswordService, PasswordService>();
@@ -68,16 +111,16 @@ namespace Infrastructure.Extensions
             services.AddScoped<IAnalyticsService, AnalyticsService>();
 
             // Caching Services
-            services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+            services.Configure<Application.Features.Shared.Caching.Models.CacheSettings>(configuration.GetSection("CacheSettings"));
             services.AddMemoryCache(options =>
             {
-                var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
+                var cacheSettings = configuration.GetSection("CacheSettings").Get<Application.Features.Shared.Caching.Models.CacheSettings>() ?? new Application.Features.Shared.Caching.Models.CacheSettings();
                 options.SizeLimit = cacheSettings.MaxMemoryCacheSize * 1024 * 1024; // Convert MB to bytes
                 options.CompactionPercentage = cacheSettings.CompactionPercentage / 100.0;
                 options.ExpirationScanFrequency = TimeSpan.FromSeconds(cacheSettings.ScanFrequencySeconds);
             });
 
-            var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? new CacheSettings();
+            var cacheSettings = configuration.GetSection("CacheSettings").Get<Application.Features.Shared.Caching.Models.CacheSettings>() ?? new Application.Features.Shared.Caching.Models.CacheSettings();
             if (cacheSettings.Enabled && cacheSettings.UseRedis)
             {
                 services.AddStackExchangeRedisCache(options =>
@@ -106,8 +149,6 @@ namespace Infrastructure.Extensions
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IAdvancedCacheService, AdvancedCacheService>();
             services.AddSingleton<ICacheInvalidationStrategy, CacheInvalidationStrategy>();
-            services.AddScoped<ICacheManagerService, CacheManagerService>();
-            services.AddSingleton<IResponseCachingPolicyService, ResponseCachingPolicyService>();
 
             // Add JWT Authentication
             var secret = configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
@@ -159,17 +200,16 @@ namespace Infrastructure.Extensions
             // AI Agent Service
             services.AddHttpClient<IAIAgentService, Application.Features.AIAgent.Services.AIAgentService>();
 
-            // Add Database Seeder & Individual Seeders
-            services.AddScoped<DatabaseSeeder>();
+            // Add Database Seeding Services
             services.AddScoped<IdentitySeeder>();
-            services.AddScoped<CommunitySeeder>();
-            services.AddScoped<GroupsSeeder>();
-            services.AddScoped<PostsSeeder>();
-            services.AddScoped<ReviewsSeeder>();
-            services.AddScoped<SocialSeeder>();
-            services.AddScoped<GuidesSeeder>();
-            services.AddScoped<SharedSeeder>();
-            services.AddScoped<AnalyticsSeeder>();
+            services.AddScoped<CommunitySocialSeeder>();
+            services.AddScoped<CommunityContentSeeder>();
+            services.AddScoped<CommunityKnowledgeSeeder>();
+            services.AddScoped<CommunityMapsSeeder>();
+            services.AddScoped<MarketplaceSeeder>();
+            services.AddScoped<AdminSeeder>();
+            services.AddScoped<NotificationSeeder>();
+            services.AddScoped<DatabaseSeeder>();
 
             return services;
         }

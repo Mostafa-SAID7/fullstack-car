@@ -4,8 +4,15 @@ using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Community.Social;
 using Domain.Entities.Marketplace;
+using Domain.Entities.Marketplace.Services;
+using Domain.Entities.Marketplace.Providers;
+using Domain.Entities.Marketplace.Bookings;
+using Domain.Entities.Marketplace.Reviews;
+using Domain.Entities.Marketplace.Payments;
 using Domain.Entities.Shared.Chat;
 using Domain.Entities.Shared.Notifications;
+using Domain.Entities.Shared.System;
+using Domain.Entities.Shared.Errors;
 using Domain.Entities.Admin.Analytics;
 using Microsoft.EntityFrameworkCore;
 

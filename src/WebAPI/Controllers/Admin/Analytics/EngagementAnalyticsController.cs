@@ -7,7 +7,7 @@ namespace WebAPI.Controllers.Admin.Analytics
     [Route("api/v{version:apiVersion}/admin/analytics/engagement")]
     public class EngagementAnalyticsController : BaseAnalyticsController
     {
-        public EngagementAnalyticsController(IAdvancedLogger<EngagementAnalyticsController> logger) : base(logger)
+        public EngagementAnalyticsController(ILogger<EngagementAnalyticsController> logger) : base(logger)
         {
         }
 

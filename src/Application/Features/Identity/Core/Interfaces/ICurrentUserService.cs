@@ -1,12 +1,10 @@
-namespace Application.Features.Identity.Core.Interfaces
+namespace Application.Features.Identity.Core.Interfaces;
+
+public interface ICurrentUserService
 {
-    public interface ICurrentUserService
-    {
-        string? UserId { get; }
-        string? UserName { get; }
-        string? Email { get; }
-        bool IsAuthenticated { get; }
-        bool IsInRole(string role);
-        IEnumerable<string> GetRoles();
-    }
+    string? UserId { get; }
+    string? UserName { get; }
+    bool IsAuthenticated { get; }
+    IEnumerable<string> Roles { get; }
+    bool IsInRole(string role);
 }

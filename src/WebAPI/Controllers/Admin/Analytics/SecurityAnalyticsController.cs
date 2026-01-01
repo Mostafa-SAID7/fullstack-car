@@ -7,7 +7,7 @@ namespace WebAPI.Controllers.Admin.Analytics
     [Route("api/v{version:apiVersion}/admin/analytics/security")]
     public class SecurityAnalyticsController : BaseAnalyticsController
     {
-        public SecurityAnalyticsController(IAdvancedLogger<SecurityAnalyticsController> logger) : base(logger)
+        public SecurityAnalyticsController(ILogger<SecurityAnalyticsController> logger) : base(logger)
         {
         }
 

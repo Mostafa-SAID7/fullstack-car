@@ -25,7 +25,7 @@ namespace Infrastructure.Data
         }
 
         // Identity Tables (with better names)
-        public DbSet<UserClaim> UserClaims { get; set; }
+        public new DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SecurityLog> SecurityLogs { get; set; }
@@ -211,6 +211,9 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
+            // Ignore domain events - they are not entities
+            builder.Ignore<Domain.DomainEvents.BaseDomainEvent>();
+
             // Configure Identity table names
             builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<ApplicationRole>().ToTable("Roles");
@@ -221,8 +224,18 @@ namespace Infrastructure.Data
             builder.Entity<RoleClaim>().ToTable("RoleClaims");
             builder.Entity<SecurityLog>().ToTable("SecurityLogs");
 
-            // Apply all configurations
+            // Apply all configurations first
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // Configure cascade delete behavior to avoid cycles
+            // Set all foreign key relationships to NoAction to prevent cascade cycles
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                foreach (var foreignKey in entityType.GetForeignKeys())
+                {
+                    foreignKey.DeleteBehavior = DeleteBehavior.NoAction;
+                }
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ public record GetGuidesQuery(
     bool? IsFeatured = null,
     string? SortBy = "CreatedAt",
     bool SortDescending = true,
-    string? UserId = null
+    Guid? UserId = null
 ) : IRequest<PaginatedList<GuideListDto>>;
 
 public class GetGuidesQueryHandler : IRequestHandler<GetGuidesQuery, PaginatedList<GuideListDto>>
@@ -92,9 +92,9 @@ public class GetGuidesQueryHandler : IRequestHandler<GetGuidesQuery, PaginatedLi
             ThumbnailUrl = g.ThumbnailUrl,
             CreatedAt = g.CreatedAt,
             AuthorName = g.Author?.UserName ?? "Unknown",
-            AuthorAvatar = g.Author?.Avatar,
-            IsBookmarked = !string.IsNullOrEmpty(request.UserId) && 
-                          g.Bookmarks.Any(b => b.UserId == request.UserId),
+            AuthorAvatar = g.Author?.ProfileImageUrl,
+            IsBookmarked = request.UserId.HasValue && 
+                          g.Bookmarks.Any(b => b.UserId == request.UserId.Value),
             AverageRating = g.Ratings.Any() ? g.Ratings.Average(r => r.Rating) : 0,
             RatingCount = g.Ratings.Count
         }).ToList();

@@ -9,7 +9,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.System
 {
     [Authorize(Roles = "Admin")]
-    [ApiVersion("3.0")]
+
     [Route("api/v{version:apiVersion}/admin/system")]
     public class SystemManagementController : BaseController
     {
@@ -51,7 +51,7 @@ namespace WebAPI.Controllers.Admin.System
             [FromQuery] string? severity = null,
             [FromQuery] bool? acknowledged = null)
         {
-            var query = new GetSystemAlertsQuery
+            var query = new Application.Features.Admin.System.Queries.GetSystemAlertsQuery
             {
                 Page = page,
                 PageSize = pageSize,

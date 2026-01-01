@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Domain.Enums.Admin.Moderation;
 
 namespace Domain.Entities.Admin.Moderation;
 
@@ -16,6 +17,11 @@ public class ModerationQueue : BaseEntity
     public DateTime? AssignedDate { get; set; }
     public DateTime? CompletedDate { get; set; }
     public string? ContentSnapshot { get; set; }
+
+    // Additional properties expected by Infrastructure
+    public DateTime SubmittedAt { get; set; } = DateTime.UtcNow; // Alias for QueuedDate
+    public DateTime? ReviewedAt { get; set; } // Alias for CompletedDate
+    public bool IsActive { get; set; } = true;
 
     // Navigation properties
     public ApplicationUser? ContentAuthor { get; set; }

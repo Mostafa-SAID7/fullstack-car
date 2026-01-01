@@ -6,8 +6,8 @@ namespace Domain.Entities.Community.Maps
     public class CheckInComment : BaseAuditableEntity
     {
         public string Content { get; set; } = string.Empty;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+        public new bool IsDeleted { get; set; } = false;
+        public new DateTime? DeletedAt { get; set; }
 
         // Foreign Keys
         public Guid CheckInId { get; set; }

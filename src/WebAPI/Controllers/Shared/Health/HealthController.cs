@@ -6,16 +6,16 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace WebAPI.Controllers.Shared.Health
 {
-    [ApiVersion("4.0")]
+
     [Route("api/v{version:apiVersion}/health")]
     public class HealthController : BaseController
     {
         private readonly HealthCheckService _healthCheckService;
-        private readonly IAdvancedLogger<HealthController> _logger;
+        private readonly ILogger<HealthController> _logger;
 
         public HealthController(
             HealthCheckService healthCheckService,
-            IAdvancedLogger<HealthController> logger)
+            ILogger<HealthController> logger)
         {
             _healthCheckService = healthCheckService;
             _logger = logger;

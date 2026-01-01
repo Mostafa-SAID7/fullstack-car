@@ -4,7 +4,7 @@ namespace Application.Features.Community.Guides.DTOs.Responses;
 
 public class GuideDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public string Summary { get; set; } = string.Empty;
@@ -24,7 +24,7 @@ public class GuideDto
     public DateTime? UpdatedAt { get; set; }
     
     // Author info
-    public string AuthorId { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
     public string AuthorName { get; set; } = string.Empty;
     public string? AuthorAvatar { get; set; }
     
@@ -40,7 +40,7 @@ public class GuideDto
 
 public class GuideStepDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public int StepNumber { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;

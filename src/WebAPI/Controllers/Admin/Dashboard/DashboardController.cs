@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Data;
-using Application.Common.Interfaces.AIAgent;
+using Application.Common.Interfaces;
 using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Admin.Dashboard.Queries;
 using Application.Features.Admin.Dashboard.DTOs;
@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Admin.Dashboard
 {
     [Authorize(Roles = "Admin")]
-    [ApiVersion("3.0")]
+
     [Route("api/v{version:apiVersion}/admin/dashboard")]
     public class DashboardController : BaseController
     {
-        private readonly IAdvancedLogger<DashboardController> _logger;
+        private readonly ILogger<DashboardController> _logger;
 
-        public DashboardController(IAdvancedLogger<DashboardController> logger)
+        public DashboardController(ILogger<DashboardController> logger)
         {
             _logger = logger;
         }

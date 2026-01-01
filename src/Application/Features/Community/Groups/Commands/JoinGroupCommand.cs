@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Domain.Entities.Community.Groups;
 using Domain.Interfaces;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using Domain.Enums.Community.Groups;
 using MediatR;
 

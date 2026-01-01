@@ -2,7 +2,7 @@ using Application.Common.Models;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using MediatR;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 
 namespace Application.Features.Community.Reviews.Commands
 {
@@ -12,7 +12,8 @@ namespace Application.Features.Community.Reviews.Commands
         public Guid UserId { get; set; }
         public bool IsAdmin { get; set; }
 
-        public string[] CacheTags => new[] { "Reviews" };
+        public string[]? CacheKeysToInvalidate => null;
+        public string[]? CacheTagsToInvalidate => new[] { "Reviews" };
     }
 
     public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, Result<bool>>

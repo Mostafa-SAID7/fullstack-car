@@ -3,7 +3,7 @@ using Domain.Entities.Community.Groups;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Domain.Policies;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Groups.Commands

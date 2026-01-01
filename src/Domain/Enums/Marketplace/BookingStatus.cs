@@ -1,13 +1,12 @@
-namespace Domain.Enums.Marketplace
+namespace Domain.Enums.Marketplace;
+
+public enum BookingStatus
 {
-    public enum BookingStatus
-    {
-        Pending = 1,
-        Confirmed = 2,
-        InProgress = 3,
-        Completed = 4,
-        Cancelled = 5,
-        Refunded = 6,
-        Disputed = 7
-    }
+    Pending = 0,
+    Confirmed = 1,
+    InProgress = 2,
+    Completed = 3,
+    Cancelled = 4,
+    Rescheduled = 5,
+    NoShow = 6
 }

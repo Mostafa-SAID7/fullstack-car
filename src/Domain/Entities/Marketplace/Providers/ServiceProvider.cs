@@ -1,5 +1,9 @@
 using Domain.Entities.Identity;
 
+using Domain.Entities.Marketplace.Services;
+using Domain.Entities.Marketplace.Bookings;
+using Domain.Entities.Marketplace.Reviews;
+
 namespace Domain.Entities.Marketplace.Providers;
 
 public class ServiceProvider : BaseAuditableEntity

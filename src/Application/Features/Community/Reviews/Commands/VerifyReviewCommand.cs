@@ -2,14 +2,16 @@ using Application.Common.Models;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using MediatR;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 
 namespace Application.Features.Community.Reviews.Commands
 {
     public class VerifyReviewCommand : IRequest<Result<bool>>, ICacheInvalidatorRequest
     {
         public Guid Id { get; set; }
-        public string[] CacheTags => new[] { "Reviews" };
+        
+        public string[]? CacheKeysToInvalidate => null;
+        public string[]? CacheTagsToInvalidate => new[] { "Reviews" };
     }
 
     public class VerifyReviewCommandHandler : IRequestHandler<VerifyReviewCommand, Result<bool>>

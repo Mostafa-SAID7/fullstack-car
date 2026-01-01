@@ -15,4 +15,16 @@ public class CarService : Service
     public int? MaxVehicleAge { get; set; }
     public string? WarrantyPeriod { get; set; }
     public bool RequiresAppointment { get; set; } = true;
+    
+    // Additional properties expected by Application layer
+    public string Currency { get; set; } = "USD";
+    public int EstimatedDurationMinutes { get; set; }
+    public bool IsAvailable24x7 { get; set; } = false;
+    public string? IncludedItems { get; set; }
+    public string? ExcludedItems { get; set; }
+    public DateTime? LastBookedAt { get; set; }
+    
+    // Additional properties expected by Infrastructure
+    public string? ImageUrl { get; set; }
+    public ICollection<ServiceAvailability> Availability { get; set; } = new List<ServiceAvailability>();
 }

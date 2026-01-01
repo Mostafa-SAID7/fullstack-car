@@ -1,6 +1,6 @@
 namespace Domain.Enums.Community.Pages
 {
-    public enum ContentType
+    public enum PageContentType
     {
         Text = 1,
         Html = 2,

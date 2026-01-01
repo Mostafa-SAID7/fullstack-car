@@ -1,7 +1,7 @@
 using Application.Features.Identity.Profile.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Profile.DTOs.Responses;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Identity.Profile.Queries
@@ -11,8 +11,8 @@ namespace Application.Features.Identity.Profile.Queries
         public Guid UserId { get; set; }
 
         public string CacheKey => $"UserProfile_{UserId}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(15);
-        public string? CacheTag => $"User_{UserId}";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(15);
+        public string[]? CacheTags => new[] { $"User_{UserId}" };
     }
 
     public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, Result<UserProfileResponse>>

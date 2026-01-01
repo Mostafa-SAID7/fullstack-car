@@ -7,7 +7,7 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Identity.Password
 {
-    [ApiVersion("1.0")]
+
     [Route("api/v{version:apiVersion}/password")]
     public class PasswordController : BaseController
     {

@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Base;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Identity;
 using Domain.Enums.Community.Guides;
@@ -22,10 +22,10 @@ public class Guide : BaseAuditableEntity
     public string ThumbnailUrl { get; set; } = string.Empty;
     
     // Navigation properties
-    public string AuthorId { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
     public ApplicationUser Author { get; set; } = null!;
     
-    public int? PostId { get; set; }
+    public Guid? PostId { get; set; }
     public Post? Post { get; set; }
     
     public ICollection<GuideStep> Steps { get; set; } = new List<GuideStep>();

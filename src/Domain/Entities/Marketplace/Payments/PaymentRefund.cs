@@ -1,5 +1,7 @@
 using Domain.Entities.Identity;
 
+using Domain.Enums.Marketplace;
+
 namespace Domain.Entities.Marketplace.Payments;
 
 public class PaymentRefund : BaseEntity

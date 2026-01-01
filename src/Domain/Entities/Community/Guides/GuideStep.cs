@@ -1,10 +1,10 @@
-using Domain.Common;
+using Domain.Base;
 
 namespace Domain.Entities.Community.Guides;
 
 public class GuideStep : BaseAuditableEntity
 {
-    public int GuideId { get; set; }
+    public Guid GuideId { get; set; }
     public Guide Guide { get; set; } = null!;
     
     public int StepNumber { get; set; }

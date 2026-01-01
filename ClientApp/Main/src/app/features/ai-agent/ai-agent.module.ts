@@ -9,14 +9,13 @@ import { AIChatWidgetComponent } from './components/ai-chat-widget/ai-chat-widge
 
 @NgModule({
     declarations: [
-        // AIAgentChatComponent,
-        AIChatWidgetComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpClientModule
+        HttpClientModule,
+        AIChatWidgetComponent
     ],
     exports: [
         AIChatWidgetComponent

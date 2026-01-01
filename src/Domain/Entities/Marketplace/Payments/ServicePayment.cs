@@ -1,3 +1,6 @@
+using Domain.Entities.Marketplace.Services;
+using Domain.Enums.Marketplace;
+
 namespace Domain.Entities.Marketplace.Payments;
 
 public class ServicePayment : BaseEntity

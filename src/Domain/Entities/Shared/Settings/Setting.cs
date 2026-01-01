@@ -10,4 +10,9 @@ public class Setting : BaseEntity
     public bool IsEncrypted { get; set; } = false;
     public string? ValidationType { get; set; }
     public string? ValidationRule { get; set; }
+    
+    // Additional properties expected by Infrastructure
+    public string DataType { get; set; } = "String";
+    public string? DefaultValue { get; set; }
+    public bool IsUserConfigurable { get; set; } = true;
 }

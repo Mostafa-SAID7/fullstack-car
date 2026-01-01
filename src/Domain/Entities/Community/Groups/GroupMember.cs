@@ -11,6 +11,9 @@ namespace Domain.Entities.Community.Groups
         public GroupMemberRole Role { get; set; } = GroupMemberRole.Member;
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
+        // Additional properties expected by Infrastructure
+        public bool IsActive { get; set; } = true;
+
         // Navigation Properties
         public virtual ApplicationUser User { get; set; } = null!;
         public virtual Group Group { get; set; } = null!;

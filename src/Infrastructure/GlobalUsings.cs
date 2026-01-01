@@ -46,12 +46,15 @@ global using Application.Features.Identity.Security.Interfaces;
 // Domain
 global using Domain.Interfaces;
 global using Domain.Entities.Identity;
+global using Domain.Entities.Marketplace.Services;
+global using Domain.Entities.Marketplace.Providers;
+global using Domain.Entities.Marketplace.Bookings;
+global using Domain.Entities.Marketplace.Reviews;
 
 // Infrastructure
 global using Infrastructure.Data;
 global using Infrastructure.Repositories;
 global using Infrastructure.Common;
-global using Infrastructure.Services;
 global using Application.Features.Shared.Logging.Services;
 global using Application.Features.Admin.Analytics.Services;
 global using Application.Features.Identity.Core.Services;
@@ -62,20 +65,11 @@ global using Application.Features.Identity.Security.Services;
 global using Application.Features.Shared.Localization.Services;
 global using Application.Features.Shared.Email.Services;
 global using Application.Features.Shared.Storage.Services;
-global using Application.Features.Shared.Caching.Services;
 global using Application.Features.Shared.Chat.Services;
 global using Application.Features.Shared.Notifications.Services;
 
 // Infrastructure Seeds
 global using Infrastructure.Data.Seeds;
-global using Infrastructure.Data.Seeds.Identity;
-global using Infrastructure.Data.Seeds.Community;
-global using Infrastructure.Data.Seeds.Community.Groups;
-global using Infrastructure.Data.Seeds.Community.Posts;
-global using Infrastructure.Data.Seeds.Community.Reviews;
-global using Infrastructure.Data.Seeds.Community.Social;
-global using Infrastructure.Data.Seeds.Community.Guides;
-global using Infrastructure.Data.Seeds.Analytics;
 
 // Third-party
 global using StackExchange.Redis;

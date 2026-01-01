@@ -6,20 +6,30 @@ import { FormsModule } from '@angular/forms';
 import { CommunityFeedComponent } from './components/community-feed/community-feed.component';
 import { GuidesListComponent } from './components/guides-list/guides-list.component';
 
+import { NewsListComponent } from './components/news-list/news-list.component';
+import { QAListComponent } from './components/qa-list/qa-list.component';
+import { MapsExplorerComponent } from './components/maps-explorer/maps-explorer.component';
+
 const routes: Routes = [
   { path: '', component: CommunityFeedComponent },
-  { path: 'guides', component: GuidesListComponent }
+  { path: 'guides', component: GuidesListComponent },
+  { path: 'news', component: NewsListComponent },
+  { path: 'qa', component: QAListComponent },
+  { path: 'maps', component: MapsExplorerComponent }
 ];
 
 @NgModule({
   declarations: [
-    GuidesListComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-    CommunityFeedComponent // Import standalone component
+    CommunityFeedComponent,
+    NewsListComponent,
+    QAListComponent,
+    MapsExplorerComponent,
+    GuidesListComponent
   ],
   exports: [RouterModule]
 })

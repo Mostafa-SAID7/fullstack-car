@@ -3,12 +3,8 @@ using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 using Infrastructure.Data.Seeds;
-using Application.Features.Shared.Caching.Services;
-using Application.Features.Shared.Logging.Services;
-using Application.Features.Shared.Logging.Interfaces;
 using Microsoft.Extensions.Options;
 using Serilog;
-using NLog.Web;
 using System.Reflection;
 
 try
@@ -28,7 +24,6 @@ try
 
     // Configure logging
     builder.Host.UseSerilog();
-    builder.Host.UseNLog();
 
     // Add Application Insights
     if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("ApplicationInsights")))
@@ -39,9 +34,6 @@ try
     // Add services to the container
     builder.Services.AddWebAPIServices(builder.Configuration);
     builder.Services.AddSwaggerServices();
-
-    // Register advanced logging services
-    builder.Services.AddScoped(typeof(IAdvancedLogger<>), typeof(AdvancedLogger<>));
 
     // Configure Localization
     builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -84,47 +76,16 @@ try
         app.UseHttpsRedirection();
     }
 
-    // Add advanced logging middleware
-    app.UseMiddleware<AdvancedLoggingMiddleware>();
-
     app.UseResponseCaching();
-
-    // Configure output caching with custom policy
     app.UseOutputCache();
 
-    // Add custom caching middleware
-    app.Use(async (context, next) =>
-    {
-        var policyService = context.RequestServices.GetService<IResponseCachingPolicyService>();
-        if (policyService?.ShouldCacheResponse(context) == true)
-        {
-            var duration = policyService.GetCacheDuration(context);
-            var varyByHeaders = policyService.GetVaryByHeaders(context);
-            var varyByQueryKeys = policyService.GetVaryByQueryKeys(context);
-
-            context.Response.Headers.CacheControl = $"public, max-age={duration.TotalSeconds}";
-            
-            if (varyByHeaders.Any())
-            {
-                context.Response.Headers.Vary = string.Join(", ", varyByHeaders);
-            }
-        }
-        
-        await next();
-    });
-
     app.UseCors("AllowAngularApp");
-
-    app.UseMiddleware<AntiforgeryMiddleware>();
 
     // Add custom middleware
     if (app.Environment.IsDevelopment())
     {
         app.UseMiddleware<RequestLoggingMiddleware>();
     }
-
-    // Add cache invalidation middleware
-    app.UseMiddleware<CacheInvalidationMiddleware>();
 
     // Localization Middleware
     var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
@@ -145,14 +106,43 @@ try
     // Initialize and seed database
     using (var scope = app.Services.CreateScope())
     {
-        var logger = scope.ServiceProvider.GetRequiredService<IAdvancedLogger<Program>>();
-        logger.LogSystemHealth("Application", "Starting", new { Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() });
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Application starting - Version: {Version}", Assembly.GetExecutingAssembly().GetName().Version?.ToString());
 
-        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-        await seeder.InitializeAsync();
-        await seeder.SeedAsync();
+        try
+        {
+            var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+            await seeder.InitializeAsync();
+            logger.LogInformation("Database initialized successfully");
+            
+            // Check if seeding is requested via command line argument
+            if (args.Contains("--seed-database"))
+            {
+                logger.LogInformation("Database seeding requested via command line argument");
+                await seeder.SeedAsync();
+                logger.LogInformation("Database seeding completed successfully");
+                
+                // Exit after seeding if requested via command line
+                logger.LogInformation("Seeding completed. Exiting application.");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during database initialization and seeding");
+            
+            // If seeding was specifically requested, exit with error
+            if (args.Contains("--seed-database"))
+            {
+                logger.LogError("Database seeding failed. Exiting with error code 1.");
+                Environment.Exit(1);
+            }
+            
+            // Otherwise, continue with app startup
+            logger.LogWarning("Continuing with application startup despite database setup errors");
+        }
 
-        logger.LogSystemHealth("Database", "Initialized", new { Environment = app.Environment.EnvironmentName });
+        logger.LogInformation("Database setup completed - Environment: {Environment}", app.Environment.EnvironmentName);
     }
 
     Log.Information("Community Car API started successfully");

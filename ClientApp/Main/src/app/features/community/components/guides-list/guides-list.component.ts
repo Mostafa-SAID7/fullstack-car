@@ -1,17 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { GuidesService } from '../../services/guides.service';
-import { 
-  GuideListItem, 
-  GuideFilters, 
-  GuideCategory, 
-  GuideDifficulty 
+import {
+  GuideListItem,
+  GuideFilters,
+  GuideCategory,
+  GuideDifficulty
 } from '../../models/guide.model';
 import { PaginatedResult } from '../../../../core/models/pagination.model';
 
 @Component({
   selector: 'app-guides-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './guides-list.component.html',
   styleUrls: ['./guides-list.component.scss']
 })
@@ -22,7 +26,7 @@ export class GuidesListComponent implements OnInit, OnDestroy {
   guides: GuideListItem[] = [];
   loading = false;
   error: string | null = null;
-  
+
   // Pagination
   currentPage = 1;
   pageSize = 12;
@@ -60,7 +64,7 @@ export class GuidesListComponent implements OnInit, OnDestroy {
   constructor(
     private guidesService: GuidesService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadOptions();
@@ -149,7 +153,7 @@ export class GuidesListComponent implements OnInit, OnDestroy {
     this.loadGuides();
   }
 
-  onSortChange(sortBy: string): void {
+  onSortChange(sortBy: string | undefined): void {
     this.filters.sortBy = sortBy;
     this.filters.page = 1;
     this.currentPage = 1;
@@ -168,7 +172,7 @@ export class GuidesListComponent implements OnInit, OnDestroy {
 
   bookmarkGuide(guide: GuideListItem, event: Event): void {
     event.stopPropagation();
-    
+
     this.guidesService.bookmarkGuide(guide.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -187,14 +191,14 @@ export class GuidesListComponent implements OnInit, OnDestroy {
     this.selectedCategory = undefined;
     this.selectedDifficulty = undefined;
     this.showFeaturedOnly = false;
-    
+
     this.filters = {
       page: 1,
       pageSize: 12,
       sortBy: 'CreatedAt',
       sortDescending: true
     };
-    
+
     this.currentPage = 1;
     this.loadGuides();
   }

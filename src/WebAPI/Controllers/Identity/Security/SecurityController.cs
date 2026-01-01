@@ -1,4 +1,4 @@
-using Application.Features.Admin.Interfaces.Identity.Security;
+using Application.Features.Identity.Security.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Security.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +8,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Identity.Security
 {
     [Authorize]
-    [ApiVersion("1.0")]
+
     [Route("api/v{version:apiVersion}/security")]
     public class SecurityController : BaseController
     {

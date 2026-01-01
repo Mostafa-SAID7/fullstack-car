@@ -9,7 +9,7 @@ namespace Domain.Entities.Community.Pages
         public string Content { get; set; } = string.Empty;
         public string? Summary { get; set; }
         public int VersionNumber { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public new DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsPublished { get; set; } = false;
 
         // Foreign Keys

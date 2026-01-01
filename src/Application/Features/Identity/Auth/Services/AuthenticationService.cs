@@ -1,5 +1,5 @@
-using Application.Features.Admin.Interfaces.Identity.Auth;
-using Application.Features.Admin.Interfaces.Identity.Core;
+using Application.Features.Identity.Auth.Interfaces;
+using Application.Features.Identity.Core.Interfaces;
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;

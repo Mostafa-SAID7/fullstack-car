@@ -7,7 +7,7 @@ namespace WebAPI.Controllers.Admin.Analytics
     [Route("api/v{version:apiVersion}/admin/analytics/users")]
     public class UserAnalyticsController : BaseAnalyticsController
     {
-        public UserAnalyticsController(IAdvancedLogger<UserAnalyticsController> logger) : base(logger)
+        public UserAnalyticsController(ILogger<UserAnalyticsController> logger) : base(logger)
         {
         }
 

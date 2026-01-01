@@ -1,4 +1,4 @@
-using Application.Features.Admin.Interfaces.Identity.Auth;
+using Application.Features.Identity.OAuth.Interfaces;
 using Application.Features.Identity.OAuth.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +6,7 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Identity.Auth
 {
-    [ApiVersion("1.0")]
+
     [Route("api/v{version:apiVersion}/oauth")]
     public class OAuthController : BaseController
     {

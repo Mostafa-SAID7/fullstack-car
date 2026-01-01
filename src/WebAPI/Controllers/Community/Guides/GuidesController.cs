@@ -21,7 +21,17 @@ public class GuidesController : ControllerBase
         _mediator = mediator;
     }
 
-    private string GetCurrentUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+    private Guid GetCurrentUserId() 
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
+    }
+
+    private Guid? GetCurrentUserIdNullable() 
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Guid.TryParse(userIdString, out var userId) ? userId : null;
+    }
 
     [HttpGet]
     [AllowAnonymous]
@@ -35,7 +45,7 @@ public class GuidesController : ControllerBase
         [FromQuery] string? sortBy = "CreatedAt",
         [FromQuery] bool sortDescending = true)
     {
-        var userId = User.Identity?.IsAuthenticated == true ? GetCurrentUserId() : null;
+        var userId = User.Identity?.IsAuthenticated == true ? GetCurrentUserIdNullable() : null;
         var query = new GetGuidesQuery(page, pageSize, category, difficulty, searchTerm, isFeatured, sortBy, sortDescending, userId);
         var result = await _mediator.Send(query);
         return Ok(result);
@@ -43,9 +53,9 @@ public class GuidesController : ControllerBase
 
     [HttpGet("{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetGuideById(int id)
+    public async Task<IActionResult> GetGuideById(Guid id)
     {
-        var userId = User.Identity?.IsAuthenticated == true ? GetCurrentUserId() : null;
+        var userId = User.Identity?.IsAuthenticated == true ? GetCurrentUserIdNullable() : null;
         var query = new GetGuideByIdQuery(id, userId);
         var result = await _mediator.Send(query);
         
@@ -64,7 +74,7 @@ public class GuidesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateGuide(int id, [FromBody] UpdateGuideRequest request)
+    public async Task<IActionResult> UpdateGuide(Guid id, [FromBody] UpdateGuideRequest request)
     {
         if (id != request.Id)
             return BadRequest("ID mismatch");
@@ -82,7 +92,7 @@ public class GuidesController : ControllerBase
     }
 
     [HttpPost("{id}/rate")]
-    public async Task<IActionResult> RateGuide(int id, [FromBody] RateGuideRequest request)
+    public async Task<IActionResult> RateGuide(Guid id, [FromBody] RateGuideRequest request)
     {
         if (id != request.GuideId)
             return BadRequest("ID mismatch");
@@ -100,7 +110,7 @@ public class GuidesController : ControllerBase
     }
 
     [HttpPost("{id}/bookmark")]
-    public async Task<IActionResult> BookmarkGuide(int id, [FromBody] string? notes = null)
+    public async Task<IActionResult> BookmarkGuide(Guid id, [FromBody] string? notes = null)
     {
         var command = new BookmarkGuideCommand(id, GetCurrentUserId(), notes);
         var result = await _mediator.Send(command);

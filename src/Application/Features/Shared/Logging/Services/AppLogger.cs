@@ -9,7 +9,7 @@ namespace Application.Features.Shared.Logging.Services
         private readonly ILogger<T> _logger;
         private readonly string _categoryName;
 
-        public AdvancedLogger(ILogger<T> logger)
+        public AppLogger(ILogger<T> logger)
         {
             _logger = logger;
             _categoryName = typeof(T).Name;
@@ -18,10 +18,10 @@ namespace Application.Features.Shared.Logging.Services
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull
             => _logger.BeginScope(state);
 
-        public bool IsEnabled(LogLevel logLevel)
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
             => _logger.IsEnabled(logLevel);
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
             => _logger.Log(logLevel, eventId, state, exception, formatter);
 
         public void LogError(Exception? exception, string? message, params object?[] args)
@@ -68,7 +68,7 @@ namespace Application.Features.Shared.Logging.Services
                 ["Timestamp"] = DateTime.UtcNow
             });
 
-            var level = duration.TotalMilliseconds > 5000 ? LogLevel.Warning : LogLevel.Information;
+            var level = duration.TotalMilliseconds > 5000 ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Information;
             _logger.Log(level, "Performance - {Operation} took {Duration}ms. Metadata: {Metadata}",
                 operation, duration.TotalMilliseconds, metadata != null ? JsonSerializer.Serialize(metadata) : "null");
         }
@@ -100,7 +100,7 @@ namespace Application.Features.Shared.Logging.Services
                 ["Timestamp"] = DateTime.UtcNow
             });
 
-            var level = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
+            var level = statusCode >= 400 ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Information;
             _logger.Log(level, "API Call - {Method} {Endpoint} returned {StatusCode} in {Duration}ms (User: {UserId})",
                 method, endpoint, statusCode, duration.TotalMilliseconds, userId ?? "Anonymous");
         }
@@ -117,7 +117,7 @@ namespace Application.Features.Shared.Logging.Services
                 ["Timestamp"] = DateTime.UtcNow
             });
 
-            var level = !success ? LogLevel.Error : (duration.TotalMilliseconds > 1000 ? LogLevel.Warning : LogLevel.Debug);
+            var level = !success ? Microsoft.Extensions.Logging.LogLevel.Error : (duration.TotalMilliseconds > 1000 ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Debug);
             _logger.Log(level, "Database - {Operation} on {Table} {Status} in {Duration}ms",
                 operation, table, success ? "succeeded" : "failed", duration.TotalMilliseconds);
         }
@@ -163,7 +163,7 @@ namespace Application.Features.Shared.Logging.Services
                 ["Timestamp"] = DateTime.UtcNow
             });
 
-            var level = status.ToLower() == "healthy" ? LogLevel.Information : LogLevel.Warning;
+            var level = status.ToLower() == "healthy" ? Microsoft.Extensions.Logging.LogLevel.Information : Microsoft.Extensions.Logging.LogLevel.Warning;
             _logger.Log(level, "System Health - {Component} is {Status}. Metrics: {Metrics}",
                 component, status, metrics != null ? JsonSerializer.Serialize(metrics) : "null");
         }

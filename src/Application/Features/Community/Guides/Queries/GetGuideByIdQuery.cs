@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Guides.Queries;
 
-public record GetGuideByIdQuery(int Id, string? UserId = null) : IRequest<GuideDto?>;
+public record GetGuideByIdQuery(Guid Id, Guid? UserId = null) : IRequest<GuideDto?>;
 
 public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, GuideDto?>
 {
@@ -30,17 +30,17 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
             return null;
 
         // Record view if user is provided
-        if (!string.IsNullOrEmpty(request.UserId))
+        if (request.UserId.HasValue)
         {
             var existingView = await _context.GuideViews
-                .FirstOrDefaultAsync(v => v.GuideId == request.Id && v.UserId == request.UserId, cancellationToken);
+                .FirstOrDefaultAsync(v => v.GuideId == request.Id && v.UserId == request.UserId.Value, cancellationToken);
 
             if (existingView == null)
             {
                 var view = new GuideView
                 {
                     GuideId = request.Id,
-                    UserId = request.UserId,
+                    UserId = request.UserId.Value,
                     ViewedAt = DateTime.UtcNow,
                     TimeSpent = 0,
                     CompletedReading = false
@@ -55,13 +55,13 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
         return MapToDto(guide, request.UserId);
     }
 
-    private static GuideDto MapToDto(Guide guide, string? currentUserId)
+    private static GuideDto MapToDto(Guide guide, Guid? currentUserId)
     {
-        var userRating = !string.IsNullOrEmpty(currentUserId) ? 
-            guide.Ratings.FirstOrDefault(r => r.UserId == currentUserId)?.Rating : null;
+        var userRating = currentUserId.HasValue ? 
+            guide.Ratings.FirstOrDefault(r => r.UserId == currentUserId.Value)?.Rating : null;
 
-        var isBookmarked = !string.IsNullOrEmpty(currentUserId) && 
-            guide.Bookmarks.Any(b => b.UserId == currentUserId);
+        var isBookmarked = currentUserId.HasValue && 
+            guide.Bookmarks.Any(b => b.UserId == currentUserId.Value);
 
         return new GuideDto
         {
@@ -86,7 +86,7 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
             UpdatedAt = guide.UpdatedAt,
             AuthorId = guide.AuthorId,
             AuthorName = guide.Author?.UserName ?? "Unknown",
-            AuthorAvatar = guide.Author?.Avatar,
+            AuthorAvatar = guide.Author?.ProfileImageUrl,
             Steps = guide.Steps.OrderBy(s => s.StepNumber).Select(s => new GuideStepDto
             {
                 Id = s.Id,

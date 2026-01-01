@@ -3,7 +3,7 @@ using Application.Features.Community.Reviews.DTOs;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Reviews;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Reviews.Queries
@@ -17,8 +17,8 @@ namespace Application.Features.Community.Reviews.Queries
         public Guid? UserId { get; set; }
 
         public string CacheKey => $"Reviews_{CarBrand}_{CarModel}_{UserId}_{PageNumber}_{PageSize}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
-        public string? CacheTag => "Reviews";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
+        public string[]? CacheTags => new[] { "Reviews" };
     }
 
     public class GetReviewsQueryHandler : IRequestHandler<GetReviewsQuery, Result<PaginatedList<ReviewDto>>>

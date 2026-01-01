@@ -11,7 +11,7 @@ using Application.Features.AIAgent.Queries.AnalyzeMarket;
 namespace WebAPI.Controllers.AIAgent
 {
     [Authorize]
-    [ApiVersion("5.0")]
+
     [Route("api/v{version:apiVersion}/ai-agent")]
     public class AIAgentController : BaseController
     {

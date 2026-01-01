@@ -3,7 +3,7 @@ using Application.Features.Community.Posts.DTOs;
 using Domain.Entities.Community.Posts;
 using Domain.Interfaces;
 using Application.Common.Specifications.Community.Posts;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 
 namespace Application.Features.Community.Posts.Queries
@@ -15,8 +15,8 @@ namespace Application.Features.Community.Posts.Queries
         public int PageSize { get; set; } = 10;
 
         public string CacheKey => $"Comments_{PostId}_{PageNumber}_{PageSize}";
-        public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
-        public string? CacheTag => $"Comments_{PostId}";
+        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(5);
+        public string[]? CacheTags => new[] { $"Comments_{PostId}" };
     }
 
     public class GetPostCommentsQueryHandler : IRequestHandler<GetPostCommentsQuery, Result<PaginatedList<CommentDto>>>

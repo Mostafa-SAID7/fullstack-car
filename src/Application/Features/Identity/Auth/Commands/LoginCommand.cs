@@ -1,7 +1,7 @@
 using Application.Common.Models;
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
-using Application.Features.Admin.Interfaces.Identity.Auth;
+using Application.Features.Identity.Auth.Interfaces;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using Domain.Enums.Identity;

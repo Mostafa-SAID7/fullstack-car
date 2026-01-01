@@ -35,7 +35,44 @@
         <span>{{ 'shared.common.common.saved' | translate }}</span>
     </div>
 
-    <div class="fb-sidebar-item group">
+    <div class="fb-sidebar-item group" routerLink="/community/news"
+        routerLinkActive="!bg-primary/10 transition-all duration-500">
+        <div
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-orange-500/10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
+            <i class="fa-solid fa-newspaper text-lg"></i>
+        </div>
+        <span>Latest News</span>
+    </div>
+
+    <div class="fb-sidebar-item group" routerLink="/community/qa"
+        routerLinkActive="!bg-primary/10 transition-all duration-500">
+        <div
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+            <i class="fa-solid fa-circle-question text-lg"></i>
+        </div>
+        <span>Knowledge Center</span>
+    </div>
+
+    <div class="fb-sidebar-item group" routerLink="/community/maps"
+        routerLinkActive="!bg-primary/10 transition-all duration-500">
+        <div
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300">
+            <i class="fa-solid fa-map-location-dot text-lg"></i>
+        </div>
+        <span>Automotive Maps</span>
+    </div>
+
+    <div class="fb-sidebar-item group" routerLink="/community/guides"
+        routerLinkActive="!bg-primary/10 transition-all duration-500">
+        <div
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-amber-500/10 text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+            <i class="fa-solid fa-book-open text-lg"></i>
+        </div>
+        <span>Maintenance Guides</span>
+    </div>
+
+    <div class="fb-sidebar-item group" routerLink="/dashboard"
+        routerLinkActive="!bg-primary/10 transition-all duration-500">
         <div
             class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
             <i class="fa-solid fa-people-group text-lg"></i>

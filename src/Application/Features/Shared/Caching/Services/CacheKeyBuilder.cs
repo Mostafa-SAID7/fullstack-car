@@ -1,4 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using System;
 using System.Linq;
 using System.Security.Cryptography;

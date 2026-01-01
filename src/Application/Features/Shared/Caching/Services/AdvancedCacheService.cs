@@ -1,11 +1,9 @@
 using Application.Features.Shared.Caching.Interfaces.Services;
 using Application.Features.Shared.Caching.Models;
-using Infrastructure.Common;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,7 +18,6 @@ namespace Application.Features.Shared.Caching.Services
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IDistributedCache _distributedCache;
-        private readonly IDatabase? _redisDatabase;
         private readonly CacheSettings _settings;
         private readonly ILogger<AdvancedCacheService> _logger;
         private readonly ICacheKeyBuilder _keyBuilder;
@@ -38,15 +35,13 @@ namespace Application.Features.Shared.Caching.Services
             IDistributedCache distributedCache,
             IOptions<CacheSettings> settings,
             ILogger<AdvancedCacheService> logger,
-            ICacheKeyBuilder keyBuilder,
-            IConnectionMultiplexer? redis = null)
+            ICacheKeyBuilder keyBuilder)
         {
             _memoryCache = memoryCache;
             _distributedCache = distributedCache;
             _settings = settings.Value;
             _logger = logger;
             _keyBuilder = keyBuilder;
-            _redisDatabase = redis?.GetDatabase(_settings.RedisDatabase);
         }
 
         public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
@@ -190,19 +185,7 @@ namespace Application.Features.Shared.Caching.Services
                     _tagToKeys.TryRemove(tag, out _);
                 }
 
-                // Also try Redis pattern-based removal if available
-                if (_redisDatabase != null)
-                {
-                    var tagKey = _keyBuilder.BuildTagKey(tag);
-                    var taggedKeys = await _redisDatabase.SetMembersAsync(tagKey);
-                    
-                    if (taggedKeys.Length > 0)
-                    {
-                        var tasks = taggedKeys.Select(k => _redisDatabase.KeyDeleteAsync((RedisKey)k.ToString())).ToArray();
-                        await Task.WhenAll(tasks);
-                        await _redisDatabase.KeyDeleteAsync(tagKey);
-                    }
-                }
+                // TODO: Add Redis pattern-based removal when Redis package is available
 
                 _logger.LogDebug("Cache invalidated for tag: {Tag}", tag);
             }
@@ -231,13 +214,7 @@ namespace Application.Features.Shared.Caching.Services
                     return existing;
                 });
 
-                // Store in Redis for distributed tag tracking
-                if (_redisDatabase != null)
-                {
-                    var tagKey = _keyBuilder.BuildTagKey(tag);
-                    await _redisDatabase.SetAddAsync(tagKey, key);
-                    await _redisDatabase.KeyExpireAsync(tagKey, TimeSpan.FromMinutes(_settings.TagExpirationMinutes));
-                }
+                // TODO: Store in Redis for distributed tag tracking when Redis package is available
             }
         }
 
@@ -320,19 +297,8 @@ namespace Application.Features.Shared.Caching.Services
 
         public async Task<IEnumerable<string>> GetKeysByPatternAsync(string pattern, CancellationToken cancellationToken = default)
         {
-            if (_redisDatabase == null) return Enumerable.Empty<string>();
-
-            try
-            {
-                var server = _redisDatabase.Multiplexer.GetServer(_redisDatabase.Multiplexer.GetEndPoints().First());
-                var keys = server.Keys(pattern: pattern).Select(k => k.ToString());
-                return keys;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting keys by pattern: {Pattern}", pattern);
-                return Enumerable.Empty<string>();
-            }
+            // TODO: Implement Redis pattern search when Redis package is available
+            return Enumerable.Empty<string>();
         }
 
         public async Task RemoveByPatternAsync(string pattern, CancellationToken cancellationToken = default)
@@ -348,12 +314,7 @@ namespace Application.Features.Shared.Caching.Services
                 return keys.ToList();
             }
 
-            if (_redisDatabase != null)
-            {
-                var tagKey = _keyBuilder.BuildTagKey(tag);
-                var redisKeys = await _redisDatabase.SetMembersAsync(tagKey);
-                return redisKeys.Select(k => k.ToString());
-            }
+            // TODO: Add Redis tag key lookup when Redis package is available
 
             return Enumerable.Empty<string>();
         }

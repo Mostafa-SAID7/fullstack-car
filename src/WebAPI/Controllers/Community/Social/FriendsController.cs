@@ -15,7 +15,7 @@ namespace WebAPI.Controllers.Community.Social
     /// </summary>
     [Authorize]
     [ApiController]
-    [ApiVersion("2.0")]
+
     [Route("api/v{version:apiVersion}/community/social/friends")]
     [Tags("Community - Social")]
     public class FriendsController : BaseController

@@ -15,6 +15,11 @@ public class AutoModerationRule : BaseEntity
     public DateTime? LastTriggered { get; set; }
     public int TriggerCount { get; set; } = 0;
 
+    // Additional properties expected by Infrastructure
+    public string Pattern { get; set; } = string.Empty; // Regex pattern or keyword
+    public string Action { get; set; } = string.Empty; // Action to take (Flag, Remove, etc.)
+    public string Severity { get; set; } = "Medium"; // Low, Medium, High
+
     // Navigation properties
     public ApplicationUser CreatedByUser { get; set; } = null!;
 }

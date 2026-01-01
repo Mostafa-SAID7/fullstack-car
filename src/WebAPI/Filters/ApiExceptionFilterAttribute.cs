@@ -1,6 +1,6 @@
-using Application.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using AppValidationException = Application.Common.Exceptions.ValidationException;
 
 namespace WebAPI.Filters
 {
@@ -12,7 +12,7 @@ namespace WebAPI.Filters
         {
             _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
             {
-                { typeof(ValidationException), HandleValidationException },
+                { typeof(AppValidationException), HandleValidationException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
                 { typeof(ArgumentException), HandleArgumentException },
             };
@@ -44,7 +44,7 @@ namespace WebAPI.Filters
 
         private void HandleValidationException(ExceptionContext context)
         {
-            var exception = (ValidationException)context.Exception;
+            var exception = (AppValidationException)context.Exception;
 
             var details = new ValidationProblemDetails(exception.Errors)
             {

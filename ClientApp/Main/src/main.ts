@@ -2,14 +2,9 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
-import { provideRouter, Routes } from '@angular/router';
-
-const routes: Routes = [
-  // Add your routes here
-  { path: '', redirectTo: '/community', pathMatch: 'full' },
-  { path: 'community', loadChildren: () => import('./app/features/community/community.module').then(m => m.CommunityModule) },
-  // Add more routes as needed
-];
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app-routing.module';
+import { AuthGuard } from './app/core/guards/auth.guard';
 
 import { importProvidersFrom } from '@angular/core';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';

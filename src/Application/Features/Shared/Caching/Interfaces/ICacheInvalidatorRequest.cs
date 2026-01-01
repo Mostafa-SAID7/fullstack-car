@@ -1,7 +1,7 @@
-namespace Application.Features.Shared.Caching.Interfaces
+namespace Application.Features.Shared.Caching.Interfaces;
+
+public interface ICacheInvalidatorRequest
 {
-    public interface ICacheInvalidatorRequest
-    {
-        string[] CacheTags { get; }
-    }
+    string[]? CacheKeysToInvalidate { get; }
+    string[]? CacheTagsToInvalidate { get; }
 }

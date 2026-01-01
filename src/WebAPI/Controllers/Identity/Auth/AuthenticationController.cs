@@ -1,4 +1,4 @@
-using Application.Features.Admin.Interfaces.Identity.Auth;
+using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Shared.Localization.Interfaces;
 using Application.Features.Identity.Auth.DTOs.Requests;
@@ -8,7 +8,7 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Identity.Auth
 {
-    [ApiVersion("1.0")]
+
     [Route("api/v{version:apiVersion}/auth")]
     public class AuthenticationController : BaseController
     {

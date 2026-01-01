@@ -3,7 +3,7 @@ using Application.Features.Community.Reviews.DTOs;
 using Domain.Entities.Community.Reviews;
 using Domain.Interfaces;
 using MediatR;
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 
 namespace Application.Features.Community.Reviews.Commands
 {
@@ -13,7 +13,8 @@ namespace Application.Features.Community.Reviews.Commands
         public UpdateReviewRequest Request { get; set; } = null!;
         public Guid UserId { get; set; }
 
-        public string[] CacheTags => new[] { "Reviews" };
+        public string[]? CacheKeysToInvalidate => null;
+        public string[]? CacheTagsToInvalidate => new[] { "Reviews" };
     }
 
     public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, Result<bool>>

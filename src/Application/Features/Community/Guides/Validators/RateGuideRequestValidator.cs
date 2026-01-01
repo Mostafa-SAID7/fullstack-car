@@ -8,7 +8,7 @@ public class RateGuideRequestValidator : AbstractValidator<RateGuideRequest>
     public RateGuideRequestValidator()
     {
         RuleFor(x => x.GuideId)
-            .GreaterThan(0).WithMessage("Guide ID must be greater than 0");
+            .NotEmpty().WithMessage("Guide ID is required");
 
         RuleFor(x => x.Rating)
             .InclusiveBetween(1, 5).WithMessage("Rating must be between 1 and 5");

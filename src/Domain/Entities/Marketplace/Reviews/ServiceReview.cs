@@ -1,5 +1,10 @@
 using Domain.Entities.Identity;
 
+using Domain.Entities.Marketplace.Bookings;
+using Domain.Entities.Marketplace.Services;
+using Domain.Entities.Marketplace.Providers;
+using Domain.Enums.Marketplace;
+
 namespace Domain.Entities.Marketplace.Reviews;
 
 public class ServiceReview : BaseEntity
@@ -40,6 +45,10 @@ public class ServiceReview : BaseEntity
     public bool IsApproved { get; set; } = true;
     public DateTime? ApprovedAt { get; set; }
     public Guid? ApprovedByUserId { get; set; }
+
+    // Additional properties expected by Infrastructure
+    public int Rating { get; set; } // Alias for OverallRating
+    public Guid ReviewerId { get; set; } // Alias for CustomerId
 
     // Navigation properties
     public ServiceBooking Booking { get; set; } = null!;

@@ -12,7 +12,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Community.Groups
 {
     [Authorize]
-    [ApiVersion("2.0")]
+
     [Route("api/v{version:apiVersion}/community/groups")]
     public class GroupsController : BaseController
     {

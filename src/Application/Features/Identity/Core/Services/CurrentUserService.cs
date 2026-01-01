@@ -21,14 +21,11 @@ namespace Application.Features.Identity.Core.Services
 
         public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
+        public IEnumerable<string> Roles => _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role)?.Select(c => c.Value) ?? Enumerable.Empty<string>();
+
         public bool IsInRole(string role)
         {
             return _httpContextAccessor.HttpContext?.User?.IsInRole(role) ?? false;
-        }
-
-        public IEnumerable<string> GetRoles()
-        {
-            return _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role)?.Select(c => c.Value) ?? Enumerable.Empty<string>();
         }
     }
 }

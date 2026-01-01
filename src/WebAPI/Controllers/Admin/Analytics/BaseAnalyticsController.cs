@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Admin.Analytics
 {
     [Authorize(Roles = "Admin")]
-    [ApiVersion("3.0")]
+
     public abstract class BaseAnalyticsController : BaseController
     {
-        protected readonly IAdvancedLogger _logger;
+        protected readonly ILogger _logger;
 
-        protected BaseAnalyticsController(IAdvancedLogger logger)
+        protected BaseAnalyticsController(ILogger logger)
         {
             _logger = logger;
         }

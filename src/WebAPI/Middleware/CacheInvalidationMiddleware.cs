@@ -1,4 +1,4 @@
-using Application.Features.Shared.Interfaces.Caching;
+using Application.Features.Shared.Caching.Interfaces.Services;
 using Application.Features.Shared.Caching.Services;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;

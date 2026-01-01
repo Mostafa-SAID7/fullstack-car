@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Guides.Commands;
 
-public record BookmarkGuideCommand(int GuideId, string UserId, string? Notes = null) : IRequest<bool>;
+public record BookmarkGuideCommand(Guid GuideId, Guid UserId, string? Notes = null) : IRequest<bool>;
 
 public class BookmarkGuideCommandHandler : IRequestHandler<BookmarkGuideCommand, bool>
 {

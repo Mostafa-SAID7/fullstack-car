@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
@@ -11,6 +11,11 @@ const routes: Routes = [
     path: 'dashboard',
     canActivate: [AuthGuard],
     loadComponent: () => import('./features/community/components/community-feed/community-feed.component').then(m => m.CommunityFeedComponent)
+  },
+  {
+    path: 'community',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./features/community/community.module').then(m => m.CommunityModule)
   },
   {
     path: '',

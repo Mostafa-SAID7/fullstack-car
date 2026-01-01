@@ -10,8 +10,8 @@ namespace Domain.Entities.Community.Pages
         public CommentStatus Status { get; set; } = CommentStatus.Published;
         public int LikesCount { get; set; } = 0;
         public int RepliesCount { get; set; } = 0;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+        public new bool IsDeleted { get; set; } = false;
+        public new DateTime? DeletedAt { get; set; }
 
         // Foreign Keys
         public Guid PageId { get; set; }

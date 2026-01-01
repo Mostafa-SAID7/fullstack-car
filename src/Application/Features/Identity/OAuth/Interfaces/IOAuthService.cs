@@ -24,6 +24,6 @@ namespace Application.Features.Identity.OAuth.Interfaces
         Task<Result> UnlinkExternalAccountAsync(string userId, string provider);
         
         // External Login Management
-        Task<Result<IEnumerable<ExternalLoginInfo>>> GetExternalLoginsAsync(string userId);
+        Task<Result<IEnumerable<Application.Features.Identity.OAuth.DTOs.Responses.ExternalLoginInfo>>> GetExternalLoginsAsync(string userId);
     }
 }
