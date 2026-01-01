@@ -16,6 +16,7 @@ global using Domain.ValueObjects.Identity;
 global using Domain.ValueObjects.Community.Posts;
 global using Domain.ValueObjects.Community.Groups;
 global using Domain.ValueObjects.Admin;
+global using Domain.ValueObjects.Shared;
 
 // Domain Enums
 global using Domain.Enums.Community.Notifications;

@@ -6,7 +6,7 @@ using Domain.Interfaces;
 
 namespace Domain.Base
 {
-    public abstract class BaseEntity : IAggregateRoot
+    public abstract class BaseEntity : IAggregateRoot, IAuditable, ISoftDeletable
     {
         private readonly List<BaseDomainEvent> _domainEvents = new();
 

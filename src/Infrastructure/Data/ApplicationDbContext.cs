@@ -47,6 +47,34 @@ namespace Infrastructure.Data
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ConversationMember> ConversationMembers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Domain.Entities.Shared.Attachments.Attachment> Attachments { get; set; }
+        public DbSet<Domain.Entities.Shared.Settings.Setting> Settings { get; set; }
+
+        // Shared Caching Tables
+        public DbSet<Domain.Entities.Shared.Caching.CacheEntry> CacheEntries { get; set; }
+        public DbSet<Domain.Entities.Shared.Caching.CacheStatistic> CacheStatistics { get; set; }
+
+        // Shared Documents Tables
+        public DbSet<Domain.Entities.Shared.Documents.Document> Documents { get; set; }
+        public DbSet<Domain.Entities.Shared.Documents.DocumentVersion> DocumentVersions { get; set; }
+
+        // Shared Localization Tables
+        public DbSet<Domain.Entities.Shared.Localization.LocalizationResource> LocalizationResources { get; set; }
+        public DbSet<Domain.Entities.Shared.Localization.Culture> Cultures { get; set; }
+
+        // Shared Logging Tables
+        public DbSet<Domain.Entities.Shared.Logging.LogEntry> LogEntries { get; set; }
+
+        // Shared Security Tables
+        public DbSet<Domain.Entities.Shared.Security.SecurityEvent> SecurityEvents { get; set; }
+        public DbSet<Domain.Entities.Shared.Security.RateLimit> RateLimits { get; set; }
+
+        // Shared Storage Tables
+        public DbSet<Domain.Entities.Shared.Storage.StorageItem> StorageItems { get; set; }
+
+        // Shared System Tables
+        public DbSet<Domain.Entities.Shared.System.HealthCheck> HealthChecks { get; set; }
+        public DbSet<Domain.Entities.Shared.System.SystemMetric> SharedSystemMetrics { get; set; }
 
         // Marketplace Tables
         public DbSet<Domain.Entities.Marketplace.ServiceProvider> ServiceProviders { get; set; }
