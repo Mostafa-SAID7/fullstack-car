@@ -76,6 +76,17 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Shared.System.HealthCheck> HealthChecks { get; set; }
         public DbSet<Domain.Entities.Shared.System.SystemMetric> SharedSystemMetrics { get; set; }
 
+        // Shared Search Tables
+        public DbSet<Domain.Entities.Shared.Search.SearchQuery> SearchQueries { get; set; }
+        public DbSet<Domain.Entities.Shared.Search.SearchIndex> SearchIndexes { get; set; }
+        public DbSet<Domain.Entities.Shared.Search.SearchSuggestion> SearchSuggestions { get; set; }
+        public DbSet<Domain.Entities.Shared.Search.SearchFilter> SearchFilters { get; set; }
+
+        // Shared Error Tables
+        public DbSet<Domain.Entities.Shared.Errors.ErrorLog> SharedErrorLogs { get; set; }
+        public DbSet<Domain.Entities.Shared.Errors.ErrorPattern> ErrorPatterns { get; set; }
+        public DbSet<Domain.Entities.Shared.Errors.ErrorReport> ErrorReports { get; set; }
+
         // Marketplace Tables
         public DbSet<Domain.Entities.Marketplace.ServiceProvider> ServiceProviders { get; set; }
         public DbSet<Service> Services { get; set; }
