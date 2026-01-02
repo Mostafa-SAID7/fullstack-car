@@ -406,3 +406,14 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+# AI Agent Models Cache (Large files)
+ai-agent/models_cache/
+ai-agent/community_car_ai.db
+ai-agent/logs/
+ai-agent/__pycache__/
+
+# Build and temporary files
+build_*.txt
+seed_*.txt
+run_*.ps1
+TestSeeder.*
