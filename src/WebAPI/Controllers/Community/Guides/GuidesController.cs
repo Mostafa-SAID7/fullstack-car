@@ -1,6 +1,7 @@
 using Application.Features.Community.Guides.Commands;
 using Application.Features.Community.Guides.DTOs.Requests;
 using Application.Features.Community.Guides.Queries;
+using Asp.Versioning;
 using Domain.Enums.Community.Guides;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,8 @@ using System.Security.Claims;
 namespace WebAPI.Controllers.Community.Guides;
 
 [ApiController]
-[Route("api/community/guides")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/community/guides")]
 [Authorize]
 public class GuidesController : ControllerBase
 {

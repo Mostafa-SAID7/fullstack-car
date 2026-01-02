@@ -29,6 +29,8 @@ using Infrastructure.Data;
 using Infrastructure.Data.Seeds;
 using Infrastructure.Repositories;
 using Infrastructure.Common;
+using Application.Features.Shared.Logging.Interfaces;
+using Application.Features.Shared.Logging.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,9 +54,12 @@ namespace Infrastructure.Extensions
             IConfiguration configuration)
         {
             // Add DbContext
+            // Add DbContext
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
             // Add Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -150,6 +155,9 @@ namespace Infrastructure.Extensions
             services.AddSingleton<IAdvancedCacheService, AdvancedCacheService>();
             services.AddSingleton<ICacheInvalidationStrategy, CacheInvalidationStrategy>();
 
+            // Logging Services
+            services.AddTransient(typeof(IAppLogger<>), typeof(AppLogger<>));
+
             // Add JWT Authentication
             var secret = configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
             var issuer = configuration["JwtSettings:Issuer"] ?? "CommunityCar";
@@ -200,6 +208,9 @@ namespace Infrastructure.Extensions
             // AI Agent Service
             services.AddHttpClient<IAIAgentService, Application.Features.AIAgent.Services.AIAgentService>();
 
+            // Media Services
+            services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
+
             // Add Database Seeding Services
             services.AddScoped<IdentitySeeder>();
             services.AddScoped<CommunitySocialSeeder>();
@@ -209,6 +220,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<MarketplaceSeeder>();
             services.AddScoped<AdminSeeder>();
             services.AddScoped<NotificationSeeder>();
+            services.AddScoped<MediaSeeder>();
             services.AddScoped<DatabaseSeeder>();
 
             return services;

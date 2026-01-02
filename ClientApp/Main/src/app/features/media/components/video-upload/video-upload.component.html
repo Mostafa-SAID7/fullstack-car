@@ -1,0 +1,170 @@
+<div class="upload-container">
+  <!-- Header -->
+  <div class="upload-header">
+    <h1 class="upload-title">
+      <i class="fas fa-video"></i>
+      Upload Video
+    </h1>
+    <p class="upload-subtitle">Share your video content with the community</p>
+  </div>
+
+  <!-- Upload Form -->
+  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
+    
+    <!-- File Upload Section -->
+    <div class="form-section">
+      <h3 class="section-title">Video File</h3>
+      
+      <div class="file-upload-area" [class.has-file]="selectedFile">
+        <div *ngIf="!selectedFile" class="upload-prompt">
+          <i class="fas fa-cloud-upload-alt fa-3x"></i>
+          <h4>Choose a video file</h4>
+          <p>Drag and drop your video here, or click to browse</p>
+          <p class="file-requirements">
+            Supported formats: MP4, AVI, MOV, WMV, WebM<br>
+            Maximum size: 500MB
+          </p>
+          <input 
+            type="file" 
+            id="videoFile"
+            accept="video/*"
+            (change)="onFileSelected($event)"
+            class="file-input">
+          <label for="videoFile" class="btn btn-primary">
+            <i class="fas fa-folder-open"></i>
+            Browse Files
+          </label>
+        </div>
+
+        <div *ngIf="selectedFile" class="file-selected">
+          <div class="file-info">
+            <i class="fas fa-video fa-2x"></i>
+            <div class="file-details">
+              <h4>{{ selectedFile.name }}</h4>
+              <p>{{ getFileSize() }}</p>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeFile()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Details Section -->
+    <div class="form-section">
+      <h3 class="section-title">Video Details</h3>
+      
+      <div class="form-grid">
+        <!-- Title -->
+        <div class="form-group full-width">
+          <label for="title">Title *</label>
+          <input 
+            type="text" 
+            id="title"
+            formControlName="title"
+            placeholder="Enter video title"
+            class="form-control"
+            [class.error]="isFieldInvalid('title')">
+          <div *ngIf="isFieldInvalid('title')" class="error-message">
+            {{ getFieldError('title') }}
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group full-width">
+          <label for="description">Description *</label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            placeholder="Describe your video content"
+            rows="4"
+            class="form-control"
+            [class.error]="isFieldInvalid('description')"></textarea>
+          <div *ngIf="isFieldInvalid('description')" class="error-message">
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+
+        <!-- Quality -->
+        <div class="form-group">
+          <label for="quality">Quality</label>
+          <select id="quality" formControlName="quality" class="form-control">
+            <option *ngFor="let quality of videoQualities" [value]="quality.value">
+              {{ quality.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label for="tags">Tags</label>
+          <input 
+            type="text" 
+            id="tags"
+            formControlName="tags"
+            placeholder="e.g., automotive, tutorial, review"
+            class="form-control">
+          <small class="form-help">Separate tags with commas</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="form-section">
+      <h3 class="section-title">Privacy & Settings</h3>
+      
+      <div class="form-group">
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="isPublic">
+            <span class="checkmark"></span>
+            Make this video public
+          </label>
+          <small class="form-help">Public videos can be viewed by anyone</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="allowComments">
+            <span class="checkmark"></span>
+            Allow comments
+          </label>
+          <small class="form-help">Users can comment on your video</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Progress -->
+    <div *ngIf="uploading" class="upload-progress">
+      <div class="progress-info">
+        <span>Uploading video...</span>
+        <span>{{ uploadProgress }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="uploading">
+        Cancel
+      </button>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="!selectedFile || uploadForm.invalid || uploading">
+        <i class="fas fa-upload"></i>
+        {{ uploading ? 'Uploading...' : 'Upload Video' }}
+      </button>
+    </div>
+  </form>
+</div>

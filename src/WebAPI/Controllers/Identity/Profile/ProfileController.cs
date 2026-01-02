@@ -9,7 +9,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Identity.Profile
 {
     [Authorize]
-
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/profile")]
     public class ProfileController : BaseController
     {

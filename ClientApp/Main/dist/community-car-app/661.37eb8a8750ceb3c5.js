@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcommunity_car_app=self.webpackChunkcommunity_car_app||[]).push([[661],{6661:(i,c,a)=>{a.r(c),a.d(c,{MediaModule:()=>u});var s=a(1360);let u=(()=>{class t{static{this.\u0275fac=function(n){return new(n||t)}}static{this.\u0275mod=s.$C({type:t})}static{this.\u0275inj=s.G2t({})}}return t})()}}]);

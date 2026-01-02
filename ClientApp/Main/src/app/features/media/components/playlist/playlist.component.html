@@ -1,0 +1,124 @@
+<div class="playlist-container">
+  <!-- Header -->
+  <div class="playlist-header">
+    <h1>My Playlists</h1>
+    <button (click)="openCreateForm()" class="create-playlist-btn">
+      <i class="fas fa-plus"></i>
+      Create Playlist
+    </button>
+  </div>
+
+  <!-- Create Playlist Form -->
+  <div class="create-form-overlay" *ngIf="showCreateForm" (click)="closeCreateForm()">
+    <div class="create-form" (click)="$event.stopPropagation()">
+      <h3>Create New Playlist</h3>
+      
+      <div class="form-group">
+        <label for="playlistName">Playlist Name *</label>
+        <input type="text" 
+               id="playlistName" 
+               [(ngModel)]="newPlaylistName" 
+               placeholder="Enter playlist name"
+               maxlength="100" />
+      </div>
+
+      <div class="form-group">
+        <label for="playlistDescription">Description (Optional)</label>
+        <textarea id="playlistDescription" 
+                  [(ngModel)]="newPlaylistDescription" 
+                  placeholder="Describe your playlist..."
+                  rows="3"
+                  maxlength="500"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="isPublic" />
+          <span class="checkmark"></span>
+          Make this playlist public
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="closeCreateForm()" class="cancel-btn">Cancel</button>
+        <button type="button" 
+                (click)="createPlaylist()" 
+                [disabled]="!newPlaylistName.trim() || creating"
+                class="create-btn">
+          <span *ngIf="!creating">Create</span>
+          <span *ngIf="creating">
+            <i class="fas fa-spinner fa-spin"></i>
+            Creating...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Playlists Grid -->
+  <div class="playlists-grid" *ngIf="!loading">
+    <div class="playlist-card" 
+         *ngFor="let playlist of playlists" 
+         (click)="viewPlaylist(playlist)">
+      
+      <div class="playlist-thumbnail">
+        <div class="thumbnail-grid" *ngIf="playlist.videos && playlist.videos.length > 0">
+          <!-- Show up to 4 video thumbnails in a grid -->
+          <img *ngFor="let video of playlist.videos.slice(0, 4); let i = index" 
+               [src]="video.thumbnailUrl || '/assets/images/video-placeholder.jpg'" 
+               [alt]="video.title"
+               class="grid-thumbnail"
+               [class]="'thumb-' + (i + 1)" />
+        </div>
+        <div class="empty-thumbnail" *ngIf="!playlist.videos || playlist.videos.length === 0">
+          <i class="fas fa-list"></i>
+          <span>Empty Playlist</span>
+        </div>
+        
+        <div class="playlist-overlay">
+          <div class="video-count">
+            <i class="fas fa-play-circle"></i>
+            {{ playlist.videoCount }} videos
+          </div>
+        </div>
+      </div>
+
+      <div class="playlist-info">
+        <h3 class="playlist-title">{{ playlist.name }}</h3>
+        <p class="playlist-description" *ngIf="playlist.description">
+          {{ playlist.description }}
+        </p>
+        
+        <div class="playlist-meta">
+          <span class="video-count">{{ playlist.videoCount }} videos</span>
+          <span class="total-duration">{{ getTotalDuration(playlist) }}</span>
+          <span class="visibility">
+            <i class="fas" [class.fa-globe]="playlist.isPublic" [class.fa-lock]="!playlist.isPublic"></i>
+            {{ playlist.isPublic ? 'Public' : 'Private' }}
+          </span>
+        </div>
+
+        <div class="playlist-stats" *ngIf="playlist.viewCount > 0">
+          <span class="views">{{ formatNumber(playlist.viewCount) }} views</span>
+          <span class="updated">Updated {{ playlist.updatedAt | date:'shortDate' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="playlists.length === 0">
+      <i class="fas fa-list"></i>
+      <h3>No Playlists Yet</h3>
+      <p>Create your first playlist to organize your favorite videos</p>
+      <button (click)="openCreateForm()" class="create-first-playlist-btn">
+        Create Your First Playlist
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading playlists...</p>
+  </div>
+</div>

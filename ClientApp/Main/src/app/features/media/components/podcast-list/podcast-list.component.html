@@ -1,0 +1,81 @@
+<div class="podcast-list-container">
+  <!-- Header -->
+  <div class="podcast-header">
+    <h1>Podcasts</h1>
+    <button (click)="navigateToUpload()" class="upload-btn">
+      <i class="fas fa-plus"></i>
+      Upload Podcast
+    </button>
+  </div>
+
+  <!-- Podcasts Grid -->
+  <div class="podcasts-grid" *ngIf="!loading">
+    <div class="podcast-card" 
+         *ngFor="let podcast of podcasts" 
+         (click)="playPodcast(podcast)">
+      
+      <div class="podcast-thumbnail">
+        <img [src]="podcast.thumbnailUrl || '/assets/images/podcast-placeholder.jpg'" 
+             [alt]="podcast.title" />
+        
+        <div class="play-overlay">
+          <button class="play-btn">
+            <i class="fas fa-play"></i>
+          </button>
+        </div>
+
+        <div class="episode-badge" *ngIf="podcast.episodeNumber">
+          Episode {{ podcast.episodeNumber }}
+        </div>
+
+        <div class="duration">{{ podcast.duration }}</div>
+      </div>
+
+      <div class="podcast-info">
+        <h3 class="podcast-title">{{ podcast.title }}</h3>
+        <p class="podcast-creator">by {{ podcast.creatorName }}</p>
+        <p class="podcast-description">{{ podcast.description }}</p>
+        
+        <div class="podcast-meta">
+          <div class="stats">
+            <span class="plays">
+              <i class="fas fa-play"></i>
+              {{ podcast.playsCount | number }}
+            </span>
+            <span class="likes">
+              <i class="fas fa-heart"></i>
+              {{ podcast.likesCount | number }}
+            </span>
+            <span class="comments">
+              <i class="fas fa-comment"></i>
+              {{ podcast.commentsCount | number }}
+            </span>
+          </div>
+          <span class="publish-date">{{ podcast.publishedAt | date:'shortDate' }}</span>
+        </div>
+
+        <div class="podcast-tags" *ngIf="podcast.tags">
+          <span class="tag" *ngFor="let tag of podcast.tags.split(',').slice(0, 3)">
+            {{ tag.trim() }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="podcasts.length === 0">
+      <i class="fas fa-podcast"></i>
+      <h3>No Podcasts Yet</h3>
+      <p>Be the first to share your podcast with the community</p>
+      <button (click)="navigateToUpload()" class="upload-first-btn">
+        Upload Your First Podcast
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading podcasts...</p>
+  </div>
+</div>

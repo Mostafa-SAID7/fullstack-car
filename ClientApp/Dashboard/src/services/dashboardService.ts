@@ -1,0 +1,280 @@
+import { apiClient } from './api';
+
+export interface DashboardStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalPosts: number;
+  totalComments: number;
+  totalVideos: number;
+  totalPodcasts: number;
+  totalBookings: number;
+  revenue: number;
+  userGrowthRate: number;
+  engagementRate: number;
+}
+
+export interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor?: string;
+    borderColor?: string;
+    borderWidth?: number;
+  }[];
+}
+
+export interface UserAnalytics {
+  totalUsers: number;
+  activeUsers: number;
+  newUsers: number;
+  usersByRole: { role: string; count: number }[];
+  userGrowthData: ChartData;
+  userActivityData: ChartData;
+}
+
+export interface ContentAnalytics {
+  totalPosts: number;
+  totalComments: number;
+  totalLikes: number;
+  totalShares: number;
+  contentByType: { type: string; count: number }[];
+  engagementData: ChartData;
+  contentGrowthData: ChartData;
+}
+
+export interface SystemAnalytics {
+  cpuUsage: number;
+  memoryUsage: number;
+  diskUsage: number;
+  activeConnections: number;
+  requestsPerMinute: number;
+  errorRate: number;
+  systemHealthData: ChartData;
+  performanceData: ChartData;
+}
+
+export interface RevenueAnalytics {
+  totalRevenue: number;
+  monthlyRevenue: number;
+  revenueGrowth: number;
+  revenueBySource: { source: string; amount: number }[];
+  revenueData: ChartData;
+  subscriptionData: ChartData;
+}
+
+class DashboardService {
+  async getDashboardStats(): Promise<DashboardStats> {
+    try {
+      const response = await apiClient.get<DashboardStats>('/v3/admin/dashboard/stats');
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch dashboard stats:', error);
+      // Return mock data for development
+      return {
+        totalUsers: 12543,
+        activeUsers: 8932,
+        totalPosts: 45678,
+        totalComments: 123456,
+        totalVideos: 2341,
+        totalPodcasts: 567,
+        totalBookings: 1234,
+        revenue: 89432.50,
+        userGrowthRate: 12.5,
+        engagementRate: 68.3
+      };
+    }
+  }
+
+  async getUserAnalytics(): Promise<UserAnalytics> {
+    try {
+      const response = await apiClient.get<UserAnalytics>('/v3/admin/analytics/users');
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch user analytics:', error);
+      // Return mock data for development
+      return {
+        totalUsers: 12543,
+        activeUsers: 8932,
+        newUsers: 234,
+        usersByRole: [
+          { role: 'User', count: 11200 },
+          { role: 'Premium', count: 1200 },
+          { role: 'Moderator', count: 120 },
+          { role: 'Admin', count: 23 }
+        ],
+        userGrowthData: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'New Users',
+            data: [1200, 1900, 3000, 5000, 2000, 3000],
+            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 2
+          }]
+        },
+        userActivityData: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Active Users',
+            data: [1200, 1500, 1800, 2200, 2000, 1600, 1400],
+            backgroundColor: 'rgba(16, 185, 129, 0.5)',
+            borderColor: 'rgb(16, 185, 129)',
+            borderWidth: 2
+          }]
+        }
+      };
+    }
+  }
+
+  async getContentAnalytics(): Promise<ContentAnalytics> {
+    try {
+      const response = await apiClient.get<ContentAnalytics>('/v3/admin/analytics/content');
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch content analytics:', error);
+      // Return mock data for development
+      return {
+        totalPosts: 45678,
+        totalComments: 123456,
+        totalLikes: 567890,
+        totalShares: 23456,
+        contentByType: [
+          { type: 'Text Posts', count: 25000 },
+          { type: 'Images', count: 15000 },
+          { type: 'Videos', count: 3500 },
+          { type: 'Links', count: 2178 }
+        ],
+        engagementData: {
+          labels: ['Likes', 'Comments', 'Shares', 'Views'],
+          datasets: [{
+            label: 'Engagement',
+            data: [567890, 123456, 23456, 1234567],
+            backgroundColor: [
+              'rgba(239, 68, 68, 0.5)',
+              'rgba(59, 130, 246, 0.5)',
+              'rgba(16, 185, 129, 0.5)',
+              'rgba(245, 158, 11, 0.5)'
+            ],
+            borderColor: [
+              'rgb(239, 68, 68)',
+              'rgb(59, 130, 246)',
+              'rgb(16, 185, 129)',
+              'rgb(245, 158, 11)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        contentGrowthData: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Posts Created',
+            data: [3200, 4100, 3800, 5200, 4800, 6100],
+            backgroundColor: 'rgba(168, 85, 247, 0.5)',
+            borderColor: 'rgb(168, 85, 247)',
+            borderWidth: 2
+          }]
+        }
+      };
+    }
+  }
+
+  async getSystemAnalytics(): Promise<SystemAnalytics> {
+    try {
+      const response = await apiClient.get<SystemAnalytics>('/v3/admin/analytics/system');
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch system analytics:', error);
+      // Return mock data for development
+      return {
+        cpuUsage: 45.2,
+        memoryUsage: 67.8,
+        diskUsage: 34.5,
+        activeConnections: 1234,
+        requestsPerMinute: 5678,
+        errorRate: 0.12,
+        systemHealthData: {
+          labels: ['CPU', 'Memory', 'Disk', 'Network'],
+          datasets: [{
+            label: 'Usage %',
+            data: [45.2, 67.8, 34.5, 23.1],
+            backgroundColor: [
+              'rgba(239, 68, 68, 0.5)',
+              'rgba(245, 158, 11, 0.5)',
+              'rgba(16, 185, 129, 0.5)',
+              'rgba(59, 130, 246, 0.5)'
+            ],
+            borderColor: [
+              'rgb(239, 68, 68)',
+              'rgb(245, 158, 11)',
+              'rgb(16, 185, 129)',
+              'rgb(59, 130, 246)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        performanceData: {
+          labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+          datasets: [{
+            label: 'Response Time (ms)',
+            data: [120, 150, 200, 180, 160, 140],
+            backgroundColor: 'rgba(99, 102, 241, 0.5)',
+            borderColor: 'rgb(99, 102, 241)',
+            borderWidth: 2
+          }]
+        }
+      };
+    }
+  }
+
+  async getRevenueAnalytics(): Promise<RevenueAnalytics> {
+    try {
+      const response = await apiClient.get<RevenueAnalytics>('/v3/admin/analytics/revenue');
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch revenue analytics:', error);
+      // Return mock data for development
+      return {
+        totalRevenue: 89432.50,
+        monthlyRevenue: 12543.75,
+        revenueGrowth: 15.3,
+        revenueBySource: [
+          { source: 'Subscriptions', amount: 45000 },
+          { source: 'Marketplace', amount: 25000 },
+          { source: 'Advertising', amount: 15000 },
+          { source: 'Premium Features', amount: 4432.50 }
+        ],
+        revenueData: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Revenue ($)',
+            data: [8500, 9200, 11000, 13500, 12800, 15400],
+            backgroundColor: 'rgba(34, 197, 94, 0.5)',
+            borderColor: 'rgb(34, 197, 94)',
+            borderWidth: 2
+          }]
+        },
+        subscriptionData: {
+          labels: ['Basic', 'Premium', 'Enterprise'],
+          datasets: [{
+            label: 'Subscriptions',
+            data: [5600, 2800, 340],
+            backgroundColor: [
+              'rgba(59, 130, 246, 0.5)',
+              'rgba(168, 85, 247, 0.5)',
+              'rgba(245, 158, 11, 0.5)'
+            ],
+            borderColor: [
+              'rgb(59, 130, 246)',
+              'rgb(168, 85, 247)',
+              'rgb(245, 158, 11)'
+            ],
+            borderWidth: 2
+          }]
+        }
+      };
+    }
+  }
+}
+
+export const dashboardService = new DashboardService();

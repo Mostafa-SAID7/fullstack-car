@@ -157,7 +157,9 @@ namespace WebAPI.Extensions
                     new { Version = "v2", Title = "Community API (v2)" },
                     new { Version = "v3", Title = "Admin API (v3)" },
                     new { Version = "v4", Title = "Shared API (v4)" },
-                    new { Version = "v5", Title = "AI Agent API (v5)" }
+                    new { Version = "v5", Title = "AI Agent API (v5)" },
+                    new { Version = "v6", Title = "Marketplace API (v6)" },
+                    new { Version = "v7", Title = "Media API (v7)" }
                 };
 
                 foreach (var v in versions)
@@ -170,8 +172,15 @@ namespace WebAPI.Extensions
                     });
                 }
 
-                // Use simple type names for schema IDs for cleaner Swagger documentation
-                options.CustomSchemaIds(type => type.Name);
+                // Use full type names for schema IDs to avoid conflicts
+                options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+
+                // Resolve conflicting actions by preferring the more specific controller
+                options.ResolveConflictingActions(apiDescriptions =>
+                {
+                    // Prefer controllers with more specific routes (longer paths)
+                    return apiDescriptions.OrderByDescending(x => x.RelativePath?.Length ?? 0).First();
+                });
 
                 // Add JWT authentication to Swagger
                 options.AddSecurityDefinition(

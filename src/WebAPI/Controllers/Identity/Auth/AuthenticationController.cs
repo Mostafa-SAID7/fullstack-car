@@ -9,6 +9,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Identity.Auth
 {
 
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/auth")]
     public class AuthenticationController : BaseController
     {

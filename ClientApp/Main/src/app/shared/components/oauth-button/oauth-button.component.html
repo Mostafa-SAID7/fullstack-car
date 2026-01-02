@@ -1,0 +1,13 @@
+<button type="button" class="oauth-button" [ngStyle]="buttonStyle" [disabled]="disabled || loading" (click)="onClick()">
+
+    <!-- Loading Spinner -->
+    <span *ngIf="loading" class="oauth-button__spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+    </span>
+
+    <!-- Content -->
+    <span class="oauth-button__content" [class.oauth-button__content--hidden]="loading">
+        <i [class]="config.icon" class="oauth-button__icon"></i>
+        <span class="oauth-button__text">Continue with {{ config.name }}</span>
+    </span>
+</button>

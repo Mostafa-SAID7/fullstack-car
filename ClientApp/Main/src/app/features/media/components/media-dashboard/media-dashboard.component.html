@@ -1,0 +1,146 @@
+<div class="media-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">Media Center</h1>
+      <p class="dashboard-subtitle">Discover and share videos and podcasts</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="navigateToUpload('video')">
+        <i class="fas fa-video"></i>
+        Upload Video
+      </button>
+      <button class="btn btn-secondary" (click)="navigateToUpload('podcast')">
+        <i class="fas fa-microphone"></i>
+        Upload Podcast
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading media content...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading" class="dashboard-content">
+    
+    <!-- Trending Videos Section -->
+    <section class="media-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-fire text-orange-500"></i>
+          Trending Videos
+        </h2>
+        <button class="btn btn-link" (click)="navigateToVideos()">
+          View All <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <div class="media-grid" *ngIf="trendingVideos.length > 0; else noTrendingVideos">
+        <app-media-card 
+          *ngFor="let video of trendingVideos"
+          [media]="video"
+          [type]="'video'"
+          (play)="playVideo(video)">
+        </app-media-card>
+      </div>
+      
+      <ng-template #noTrendingVideos>
+        <div class="empty-state">
+          <i class="fas fa-video fa-3x text-gray-400"></i>
+          <p>No trending videos available</p>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Trending Podcasts Section -->
+    <section class="media-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-fire text-orange-500"></i>
+          Trending Podcasts
+        </h2>
+        <button class="btn btn-link" (click)="navigateToPodcasts()">
+          View All <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <div class="media-grid" *ngIf="trendingPodcasts.length > 0; else noTrendingPodcasts">
+        <app-media-card 
+          *ngFor="let podcast of trendingPodcasts"
+          [media]="podcast"
+          [type]="'podcast'"
+          (play)="playPodcast(podcast)">
+        </app-media-card>
+      </div>
+      
+      <ng-template #noTrendingPodcasts>
+        <div class="empty-state">
+          <i class="fas fa-microphone fa-3x text-gray-400"></i>
+          <p>No trending podcasts available</p>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Recent Videos Section -->
+    <section class="media-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-clock text-blue-500"></i>
+          Recent Videos
+        </h2>
+        <button class="btn btn-link" (click)="navigateToVideos()">
+          View All <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <div class="media-grid" *ngIf="recentVideos.length > 0; else noRecentVideos">
+        <app-media-card 
+          *ngFor="let video of recentVideos"
+          [media]="video"
+          [type]="'video'"
+          (play)="playVideo(video)">
+        </app-media-card>
+      </div>
+      
+      <ng-template #noRecentVideos>
+        <div class="empty-state">
+          <i class="fas fa-video fa-3x text-gray-400"></i>
+          <p>No recent videos available</p>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Recent Podcasts Section -->
+    <section class="media-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-clock text-blue-500"></i>
+          Recent Podcasts
+        </h2>
+        <button class="btn btn-link" (click)="navigateToPodcasts()">
+          View All <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <div class="media-grid" *ngIf="recentPodcasts.length > 0; else noRecentPodcasts">
+        <app-media-card 
+          *ngFor="let podcast of recentPodcasts"
+          [media]="podcast"
+          [type]="'podcast'"
+          (play)="playPodcast(podcast)">
+        </app-media-card>
+      </div>
+      
+      <ng-template #noRecentPodcasts>
+        <div class="empty-state">
+          <i class="fas fa-microphone fa-3x text-gray-400"></i>
+          <p>No recent podcasts available</p>
+        </div>
+      </ng-template>
+    </section>
+
+  </div>
+</div>

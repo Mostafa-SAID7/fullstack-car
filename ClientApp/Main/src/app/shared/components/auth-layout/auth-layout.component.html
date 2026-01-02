@@ -1,0 +1,24 @@
+<div class="auth-layout">
+  <div class="auth-layout__container">
+    <!-- Logo -->
+    <div *ngIf="showLogo" class="auth-layout__logo">
+      <img [src]="logoUrl" alt="Logo" />
+    </div>
+
+    <!-- Header -->
+    <div class="auth-layout__header">
+      <h1 class="auth-layout__title">{{ title }}</h1>
+      <p *ngIf="subtitle" class="auth-layout__subtitle">{{ subtitle }}</p>
+    </div>
+
+    <!-- Content (Form) -->
+    <div class="auth-layout__content">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Footer -->
+    <div class="auth-layout__footer">
+      <ng-content select="[footer]"></ng-content>
+    </div>
+  </div>
+</div>

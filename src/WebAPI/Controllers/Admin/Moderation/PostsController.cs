@@ -11,7 +11,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.Moderation
 {
     [Authorize(Roles = "Admin,Moderator")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/moderation/posts")]
     public class PostsController : BaseController
     {

@@ -8,6 +8,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Shared.Localization
 {
 
+    [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/shared/localization")]
     public class LocalizationController : BaseController
     {

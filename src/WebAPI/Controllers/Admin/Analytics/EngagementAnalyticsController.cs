@@ -1,9 +1,11 @@
 using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Admin.Analytics.Queries;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.Admin.Analytics
 {
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/analytics/engagement")]
     public class EngagementAnalyticsController : BaseAnalyticsController
     {

@@ -16,9 +16,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
+using Application.Common.Interfaces.Data;
+
 namespace Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, RoleClaim, IdentityUserToken<Guid>>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, RoleClaim, IdentityUserToken<Guid>>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -131,7 +133,7 @@ namespace Infrastructure.Data
 
         // Shared System Tables
         public DbSet<Domain.Entities.Shared.System.HealthCheck> HealthChecks { get; set; }
-        public DbSet<Domain.Entities.Shared.System.SystemMetric> SharedSystemMetrics { get; set; }
+        public DbSet<Domain.Entities.Shared.System.SystemMetric> SystemMetrics { get; set; }
 
         // Shared Search Tables
         public DbSet<Domain.Entities.Shared.Search.SearchQuery> SearchQueries { get; set; }
@@ -140,9 +142,24 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Shared.Search.SearchFilter> SearchFilters { get; set; }
 
         // Shared Error Tables
-        public DbSet<Domain.Entities.Shared.Errors.ErrorLog> SharedErrorLogs { get; set; }
+        public DbSet<Domain.Entities.Shared.Errors.ErrorLog> ErrorLogs { get; set; }
         public DbSet<Domain.Entities.Shared.Errors.ErrorPattern> ErrorPatterns { get; set; }
         public DbSet<Domain.Entities.Shared.Errors.ErrorReport> ErrorReports { get; set; }
+
+        // Media Tables
+        public DbSet<Domain.Entities.Media.Video> Videos { get; set; }
+        public DbSet<Domain.Entities.Media.Podcast> Podcasts { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; set; }
+        public DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; set; }
+        public DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; set; }
+        public DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; set; }
+        public DbSet<Domain.Entities.Media.VideoView> VideoViews { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastPlay> PodcastPlays { get; set; }
+        public DbSet<Domain.Entities.Media.VideoPlaylist> VideoPlaylists { get; set; }
+        public DbSet<Domain.Entities.Media.VideoPlaylistItem> VideoPlaylistItems { get; set; }
 
         // Marketplace Tables
         public DbSet<Domain.Entities.Marketplace.Providers.ServiceProvider> ServiceProviders { get; set; }
@@ -214,14 +231,14 @@ namespace Infrastructure.Data
             // Ignore domain events - they are not entities
             builder.Ignore<Domain.DomainEvents.BaseDomainEvent>();
 
-            // Configure Identity table names
-            builder.Entity<ApplicationUser>().ToTable("Users");
-            builder.Entity<ApplicationRole>().ToTable("Roles");
-            builder.Entity<UserRole>().ToTable("UserRoles");
-            builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
-            builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
-            builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
-            builder.Entity<RoleClaim>().ToTable("RoleClaims");
+            // Configure Identity table names to match what was created in migrations
+            builder.Entity<ApplicationUser>().ToTable("AspNetUsers");
+            builder.Entity<ApplicationRole>().ToTable("AspNetRoles");
+            builder.Entity<UserRole>().ToTable("AspNetUserRoles");
+            builder.Entity<IdentityUserClaim<Guid>>().ToTable("AspNetUserClaims");
+            builder.Entity<IdentityUserLogin<Guid>>().ToTable("AspNetUserLogins");
+            builder.Entity<IdentityUserToken<Guid>>().ToTable("AspNetUserTokens");
+            builder.Entity<RoleClaim>().ToTable("AspNetRoleClaims");
             builder.Entity<SecurityLog>().ToTable("SecurityLogs");
 
             // Apply all configurations first

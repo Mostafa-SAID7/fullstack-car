@@ -8,8 +8,8 @@ namespace Infrastructure.Configurations.Identity
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            // Table name
-            builder.ToTable("Users");
+            // Table name - match what was created in migrations
+            builder.ToTable("AspNetUsers");
 
             // Basic properties
             builder.Property(u => u.FirstName)

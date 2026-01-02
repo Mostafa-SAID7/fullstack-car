@@ -3,18 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { UserPlus, Search, Filter, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { adminService } from '../services/adminService';
-import type { User } from '../services/adminService';
+import type { AdminUser } from '../services/adminService';
 
 export const Customers = () => {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const data = await adminService.getUsers(20);
-        setUsers(data.users);
+        const response = await adminService.getUsers();
+        if (response.succeeded && response.data) {
+          setUsers(response.data.items);
+        }
       } catch (error) {
         console.error('Failed to fetch users:', error);
       } finally {
@@ -86,7 +88,7 @@ export const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((userItem: User, index: number) => (
+              {users.map((userItem: AdminUser, index: number) => (
                 <motion.tr
                   key={userItem.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -97,21 +99,18 @@ export const Customers = () => {
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-bold text-primary">
-                        {userItem.name.split(' ').map((n: string) => n[0]).join('')}
+                        {userItem.firstName[0]}{userItem.lastName[0]}
                       </div>
-                      <span className="font-medium">{userItem.name}</span>
+                      <span className="font-medium">{userItem.firstName} {userItem.lastName}</span>
                     </div>
                   </td>
                   <td className="p-4 text-muted-foreground">{userItem.email}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${userItem.status === 'Active' ? 'bg-green-500/10 text-green-500' :
-                      userItem.status === 'Inactive' ? 'bg-red-500/10 text-red-500' :
-                        'bg-yellow-500/10 text-yellow-500'
-                      }`}>
-                      {userItem.status}
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${userItem.isActive ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                      {userItem.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="p-4 text-muted-foreground">{userItem.joined}</td>
+                  <td className="p-4 text-muted-foreground">{new Date(userItem.createdAt).toLocaleDateString()}</td>
                   <td className="p-4">
                     <button className="text-primary hover:text-primary/80 font-medium">
                       Edit

@@ -1,0 +1,47 @@
+<div class="form-input" [class.form-input--error]="hasError" [class.form-input--focused]="isFocused">
+    <!-- Label -->
+    <label *ngIf="label" [for]="label" class="form-input__label">
+        {{ label }}
+        <span *ngIf="required" class="form-input__required">*</span>
+    </label>
+
+    <!-- Input Container -->
+    <div class="form-input__container">
+        <!-- Prefix Icon -->
+        <span *ngIf="prefixIcon || icon" class="form-input__icon form-input__icon--prefix">
+            <i [class]="'fa-solid ' + (prefixIcon || icon)"></i>
+        </span>
+
+        <!-- Input Field -->
+        <input [id]="label" [type]="currentType" [placeholder]="placeholder" [disabled]="disabled" [value]="value"
+            (input)="onInputChange($event)" (blur)="onBlur()" (focus)="onFocus()" class="form-input__field"
+            [class.form-input__field--with-prefix]="prefixIcon || icon"
+            [class.form-input__field--with-suffix]="suffixIcon || showToggle" />
+
+        <!-- Password Toggle -->
+        <button *ngIf="type === 'password' && showToggle" type="button" (click)="togglePasswordVisibility()"
+            class="form-input__icon form-input__icon--suffix form-input__toggle"
+            [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'">
+            <i [class]="isPasswordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+        </button>
+
+        <!-- Suffix Icon -->
+        <span *ngIf="suffixIcon && !(type === 'password' && showToggle)"
+            class="form-input__icon form-input__icon--suffix">
+            <i [class]="'fa-solid ' + suffixIcon"></i>
+        </span>
+    </div>
+
+    <!-- Hint Text -->
+    <p *ngIf="hint && !hasError" class="form-input__hint">
+        {{ hint }}
+    </p>
+
+    <!-- Error Messages -->
+    <div *ngIf="hasError" class="form-input__errors">
+        <p *ngFor="let error of errorMessages" class="form-input__error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            {{ error }}
+        </p>
+    </div>
+</div>

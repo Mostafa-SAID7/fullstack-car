@@ -1,0 +1,195 @@
+<div class="upload-container">
+  <div class="upload-header">
+    <h1>Upload Podcast</h1>
+    <button (click)="cancel()" class="cancel-btn">Cancel</button>
+  </div>
+
+  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
+    <!-- File Upload Section -->
+    <div class="file-upload-section">
+      <div class="file-upload-area" *ngIf="!selectedFile">
+        <input type="file" 
+               id="audioFile" 
+               accept="audio/*" 
+               (change)="onFileSelected($event)"
+               class="file-input" />
+        <label for="audioFile" class="file-upload-label">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span>Click to select audio file or drag and drop</span>
+          <small>Supported formats: MP3, WAV, AAC, OGG (Max: 500MB)</small>
+        </label>
+      </div>
+
+      <div class="file-preview" *ngIf="selectedFile">
+        <div class="file-info">
+          <i class="fas fa-file-audio"></i>
+          <div class="file-details">
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
+          </div>
+          <button type="button" (click)="removeFile()" class="remove-file-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <audio *ngIf="previewUrl" [src]="previewUrl" controls class="audio-preview"></audio>
+      </div>
+    </div>
+
+    <!-- Thumbnail Upload -->
+    <div class="form-group">
+      <label>Thumbnail (Optional)</label>
+      <div class="thumbnail-upload" *ngIf="!selectedThumbnail">
+        <input type="file" 
+               id="thumbnailFile" 
+               accept="image/*" 
+               (change)="onThumbnailSelected($event)"
+               class="file-input" />
+        <label for="thumbnailFile" class="thumbnail-upload-label">
+          <i class="fas fa-image"></i>
+          <span>Upload Thumbnail</span>
+        </label>
+      </div>
+      
+      <div class="thumbnail-preview" *ngIf="selectedThumbnail">
+        <img [src]="thumbnailPreview" alt="Thumbnail preview" />
+        <button type="button" (click)="removeThumbnail()" class="remove-thumbnail-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" 
+               id="title" 
+               formControlName="title" 
+               placeholder="Enter podcast title"
+               [class.error]="isFieldInvalid('title')" />
+        <div class="error-message" *ngIf="isFieldInvalid('title')">
+          {{ getFieldError('title') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea id="description" 
+                  formControlName="description" 
+                  placeholder="Describe your podcast episode..."
+                  rows="4"
+                  [class.error]="isFieldInvalid('description')"></textarea>
+        <div class="error-message" *ngIf="isFieldInvalid('description')">
+          {{ getFieldError('description') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tags">Tags (Optional)</label>
+        <input type="text" 
+               id="tags" 
+               formControlName="tags" 
+               placeholder="Enter tags separated by commas" />
+        <small>Help people discover your podcast with relevant tags</small>
+      </div>
+    </div>
+
+    <!-- Episode Information -->
+    <div class="form-section">
+      <h3>Episode Information</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="episodeNumber">Episode Number *</label>
+          <input type="number" 
+                 id="episodeNumber" 
+                 formControlName="episodeNumber" 
+                 min="1"
+                 [class.error]="isFieldInvalid('episodeNumber')" />
+          <div class="error-message" *ngIf="isFieldInvalid('episodeNumber')">
+            {{ getFieldError('episodeNumber') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="seasonNumber">Season Number *</label>
+          <input type="number" 
+                 id="seasonNumber" 
+                 formControlName="seasonNumber" 
+                 min="1"
+                 [class.error]="isFieldInvalid('seasonNumber')" />
+          <div class="error-message" *ngIf="isFieldInvalid('seasonNumber')">
+            {{ getFieldError('seasonNumber') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="seriesId">Series (Optional)</label>
+        <input type="text" 
+               id="seriesId" 
+               formControlName="seriesId" 
+               placeholder="Enter series ID if part of a series" />
+      </div>
+
+      <div class="form-group">
+        <label for="transcript">Transcript (Optional)</label>
+        <textarea id="transcript" 
+                  formControlName="transcript" 
+                  placeholder="Paste the episode transcript here..."
+                  rows="6"></textarea>
+        <small>Adding a transcript improves accessibility and searchability</small>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="form-section">
+      <h3>Settings</h3>
+      
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="isPublic" />
+          <span class="checkmark"></span>
+          Make this podcast public
+        </label>
+        
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="allowComments" />
+          <span class="checkmark"></span>
+          Allow comments
+        </label>
+        
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="allowDownload" />
+          <span class="checkmark"></span>
+          Allow downloads
+        </label>
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section">
+      <button type="button" (click)="cancel()" class="cancel-button">Cancel</button>
+      <button type="submit" 
+              [disabled]="!uploadForm.valid || !selectedFile || uploading"
+              class="submit-button">
+        <span *ngIf="!uploading">Upload Podcast</span>
+        <span *ngIf="uploading">
+          <i class="fas fa-spinner fa-spin"></i>
+          Uploading... {{ uploadProgress }}%
+        </span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Upload Progress -->
+  <div class="upload-progress" *ngIf="uploading">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+    </div>
+    <p>Uploading your podcast... Please don't close this page.</p>
+  </div>
+</div>

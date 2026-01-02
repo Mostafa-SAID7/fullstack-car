@@ -1,0 +1,203 @@
+<div class="service-list-container">
+  <div class="page-header">
+    <h1>Car Services</h1>
+    <p>Find the perfect car service for your needs</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Search</label>
+        <input 
+          type="text" 
+          [(ngModel)]="filters.searchTerm" 
+          (ngModelChange)="onFilterChange()"
+          placeholder="Search services..."
+          class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>Service Type</label>
+        <select 
+          [(ngModel)]="filters.serviceType" 
+          (ngModelChange)="onFilterChange()"
+          class="filter-select">
+          <option [ngValue]="undefined">All Types</option>
+          <option *ngFor="let type of serviceTypes" [ngValue]="type">
+            {{ getServiceTypeLabel(type) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Min Price</label>
+        <input 
+          type="number" 
+          [(ngModel)]="filters.minPrice" 
+          (ngModelChange)="onFilterChange()"
+          placeholder="$0"
+          class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>Max Price</label>
+        <input 
+          type="number" 
+          [(ngModel)]="filters.maxPrice" 
+          (ngModelChange)="onFilterChange()"
+          placeholder="$1000"
+          class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>Min Rating</label>
+        <select 
+          [(ngModel)]="filters.minRating" 
+          (ngModelChange)="onFilterChange()"
+          class="filter-select">
+          <option [ngValue]="undefined">Any Rating</option>
+          <option [ngValue]="4">4+ Stars</option>
+          <option [ngValue]="3">3+ Stars</option>
+          <option [ngValue]="2">2+ Stars</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select 
+          [(ngModel)]="filters.sortBy" 
+          (ngModelChange)="onFilterChange()"
+          class="filter-select">
+          <option value="CreatedAt">Newest</option>
+          <option value="Rating">Rating</option>
+          <option value="BasePrice">Price</option>
+          <option value="Name">Name</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-checkboxes">
+      <label class="checkbox-label">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="filters.isEmergencyService" 
+          (ngModelChange)="onFilterChange()">
+        Emergency Service
+      </label>
+      <label class="checkbox-label">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="filters.isAvailable24x7" 
+          (ngModelChange)="onFilterChange()">
+        24/7 Available
+      </label>
+    </div>
+
+    <button class="clear-filters-btn" (click)="clearFilters()">
+      Clear Filters
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading services...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p>{{ error }}</p>
+    <button (click)="loadServices()" class="retry-btn">Try Again</button>
+  </div>
+
+  <!-- Services Grid -->
+  <div *ngIf="!loading && !error" class="services-grid">
+    <div *ngFor="let service of services" class="service-card">
+      <div class="service-image">
+        <img 
+          [src]="service.imageUrl || '/assets/images/default-service.jpg'" 
+          [alt]="service.name"
+          (error)="onImageError($event)">
+        <div class="service-badges">
+          <span *ngIf="service.isEmergencyService" class="badge emergency">Emergency</span>
+          <span *ngIf="service.isAvailable24x7" class="badge available-24x7">24/7</span>
+        </div>
+      </div>
+
+      <div class="service-content">
+        <div class="service-header">
+          <h3>{{ service.name }}</h3>
+          <div class="service-rating">
+            <span class="stars">
+              <i *ngFor="let star of [1,2,3,4,5]" 
+                 class="fas fa-star" 
+                 [class.filled]="star <= Math.floor(service.rating)"></i>
+            </span>
+            <span class="rating-text">{{ service.rating.toFixed(1) }}</span>
+          </div>
+        </div>
+
+        <p class="service-description">{{ service.description }}</p>
+
+        <div class="service-details">
+          <div class="detail-item">
+            <i class="fas fa-tag"></i>
+            <span>{{ getServiceTypeLabel(service.type) }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ formatDuration(service.duration) }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>{{ service.totalBookings }} bookings</span>
+          </div>
+        </div>
+
+        <div class="service-footer">
+          <div class="service-price">
+            <span class="price-label">Starting at</span>
+            <span class="price">{{ formatPrice(service.basePrice) }}</span>
+          </div>
+          <div class="service-actions">
+            <button (click)="viewService(service)" class="btn-secondary">
+              View Details
+            </button>
+            <button (click)="bookService(service)" class="btn-primary">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && services.length === 0" class="empty-state">
+    <i class="fas fa-search"></i>
+    <h3>No services found</h3>
+    <p>Try adjusting your filters to find more services.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading && !error && totalPages > 1" class="pagination">
+    <button 
+      (click)="onPageChange(currentPage - 1)" 
+      [disabled]="currentPage === 1"
+      class="pagination-btn">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <span class="pagination-info">
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+    
+    <button 
+      (click)="onPageChange(currentPage + 1)" 
+      [disabled]="currentPage === totalPages"
+      class="pagination-btn">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

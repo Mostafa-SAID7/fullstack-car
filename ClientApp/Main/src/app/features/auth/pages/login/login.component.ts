@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -7,12 +7,25 @@ import { OAuthService } from '../../../../core/services/oauth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
+import { FormButtonComponent } from '../../../../shared/components/form-button/form-button.component';
+import { OAuthButtonComponent } from '../../../../shared/components/oauth-button/oauth-button.component';
+import { AuthLayoutComponent } from '../../../../shared/components/auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.component.html'
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    FormInputComponent,
+    FormButtonComponent,
+    OAuthButtonComponent,
+    AuthLayoutComponent
+  ],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -35,7 +48,12 @@ export class LoginComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      Object.keys(this.loginForm.controls).forEach(key => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
+      return;
+    }
 
     this.loading = true;
     this.error = null;
@@ -53,7 +71,6 @@ export class LoginComponent implements OnInit {
   async loginWithGoogle(): Promise<void> {
     try {
       await this.oauthService.initializeGoogleAuth();
-      // Implement Google OAuth flow
       console.log('Google login not implemented yet');
     } catch (error) {
       console.error('Google login error:', error);
@@ -68,10 +85,17 @@ export class LoginComponent implements OnInit {
   async loginWithFacebook(): Promise<void> {
     try {
       await this.oauthService.initializeFacebookAuth();
-      // Implement Facebook OAuth flow
       console.log('Facebook login not implemented yet');
     } catch (error) {
       console.error('Facebook login error:', error);
     }
+  }
+
+  get emailControl() {
+    return this.loginForm.get('email') as FormControl;
+  }
+
+  get passwordControl() {
+    return this.loginForm.get('password') as FormControl;
   }
 }

@@ -9,7 +9,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.System
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/system/backups")]
     public class BackupController : BaseController
     {

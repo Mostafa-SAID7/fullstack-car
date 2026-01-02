@@ -1,0 +1,56 @@
+.oauth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border: 2px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: opacity 0.3s;
+
+        &--hidden {
+            opacity: 0;
+        }
+    }
+
+    &__icon {
+        font-size: 20px;
+    }
+
+    &__text {
+        font-size: 15px;
+    }
+
+    &__spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2em;
+    }
+}

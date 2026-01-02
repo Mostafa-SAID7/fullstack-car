@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { BarChart2, TrendingUp, Users, Eye, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { adminService } from '../services/adminService';
-import type { AnalyticsData } from '../services/adminService';
+import type { AdvancedAnalytics } from '../services/adminService';
 
 export const Analytics = () => {
-  const [data, setData] = useState<AnalyticsData | null>(null);
+  const [data, setData] = useState<AdvancedAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState('week');
 
@@ -13,8 +13,10 @@ export const Analytics = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const analytics = await adminService.getAnalytics(period);
-        setData(analytics);
+        const response = await adminService.getAdvancedAnalytics();
+        if (response.succeeded && response.data) {
+          setData(response.data);
+        }
       } catch (error) {
         console.error('Failed to fetch analytics:', error);
       } finally {
@@ -72,9 +74,9 @@ export const Analytics = () => {
             </div>
             <h3 className="font-semibold">Total Users</h3>
           </div>
-          <p className="text-2xl font-bold">{data?.userGrowth.current || 0}</p>
-          <p className={`text-sm font-medium ${(data?.userGrowth.change || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-            {(data?.userGrowth.change || 0) >= 0 ? '+' : ''}{data?.userGrowth.change}% from last {period}
+          <p className="text-2xl font-bold">{data?.users.totalUsers || 0}</p>
+          <p className={`text-sm font-medium ${(data?.users.userGrowthRate || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+            {(data?.users.userGrowthRate || 0) >= 0 ? '+' : ''}{data?.users.userGrowthRate}% growth rate
           </p>
         </motion.div>
 
@@ -90,8 +92,8 @@ export const Analytics = () => {
             </div>
             <h3 className="font-semibold">User Growth</h3>
           </div>
-          <p className="text-2xl font-bold">{data?.userGrowth.growth || 0}</p>
-          <p className="text-sm text-muted-foreground/60 font-medium">New {period} registrations</p>
+          <p className="text-2xl font-bold">{data?.users.newUsersToday || 0}</p>
+          <p className="text-sm text-muted-foreground/60 font-medium">New registrations today</p>
         </motion.div>
 
         <motion.div
@@ -106,9 +108,9 @@ export const Analytics = () => {
             </div>
             <h3 className="font-semibold">Post Activity</h3>
           </div>
-          <p className="text-2xl font-bold">{data?.postActivity.activity || 0}</p>
-          <p className={`text-sm font-medium ${(data?.postActivity.change || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-            {(data?.postActivity.change || 0) >= 0 ? '+' : ''}{data?.postActivity.change}% from last {period}
+          <p className="text-2xl font-bold">{data?.content.totalPosts || 0}</p>
+          <p className={`text-sm font-medium ${(data?.content.contentGrowthRate || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+            {(data?.content.contentGrowthRate || 0) >= 0 ? '+' : ''}{data?.content.contentGrowthRate}% growth rate
           </p>
         </motion.div>
 
@@ -124,8 +126,8 @@ export const Analytics = () => {
             </div>
             <h3 className="font-semibold">Recent Posts</h3>
           </div>
-          <p className="text-2xl font-bold">{data?.recentActivities.length || 0}</p>
-          <p className="text-sm text-muted-foreground/60 font-medium">Latest updates</p>
+          <p className="text-2xl font-bold">{data?.content.totalComments || 0}</p>
+          <p className="text-sm text-muted-foreground/60 font-medium">Total comments</p>
         </motion.div>
       </div>
 
@@ -135,26 +137,39 @@ export const Analytics = () => {
         transition={{ delay: 0.4 }}
         className="bg-card/40 backdrop-blur-md rounded-3xl border border-border/50 p-8"
       >
-        <h3 className="font-bold text-xl mb-6">Recent Activity Analysis</h3>
+        <h3 className="font-bold text-xl mb-6">Analytics Overview</h3>
         <div className="space-y-4">
-          {data?.recentActivities.map((activity, i) => (
-            <div key={i} className="flex items-center justify-between p-4 bg-muted/20 rounded-xl border border-border/30">
-              <div className="flex items-center gap-4">
-                <div className="w-2 h-2 rounded-full bg-primary" />
-                <div>
-                  <p className="text-sm font-black uppercase tracking-wider">{activity.type}</p>
-                  <p className="text-xs text-muted-foreground font-medium">{activity.title}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase">{new Date(activity.timestamp).toLocaleString()}</p>
-                <p className="text-[10px] font-black text-primary uppercase tracking-tighter">{activity.user}</p>
+          <div className="flex items-center justify-between p-4 bg-muted/20 rounded-xl border border-border/30">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <div>
+                <p className="text-sm font-black uppercase tracking-wider">User Engagement</p>
+                <p className="text-xs text-muted-foreground font-medium">Average session: {data?.engagement.averageSessionDuration || 0} minutes</p>
               </div>
             </div>
-          ))}
-          {(!data?.recentActivities || data.recentActivities.length === 0) && (
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Engagement Rate</p>
+              <p className="text-[10px] font-black text-primary uppercase tracking-tighter">{data?.engagement.engagementRate || 0}%</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between p-4 bg-muted/20 rounded-xl border border-border/30">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full bg-green-500" />
+              <div>
+                <p className="text-sm font-black uppercase tracking-wider">System Performance</p>
+                <p className="text-xs text-muted-foreground font-medium">Response time: {data?.performance.averageLoadTime || 0}ms</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Availability</p>
+              <p className="text-[10px] font-black text-green-500 uppercase tracking-tighter">{data?.performance.availability || 0}%</p>
+            </div>
+          </div>
+
+          {(!data) && (
             <div className="h-32 flex items-center justify-center text-muted-foreground font-medium italic">
-              No recent activity recorded for this period
+              No analytics data available
             </div>
           )}
         </div>

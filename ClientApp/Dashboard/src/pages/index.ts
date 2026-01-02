@@ -1,6 +1,7 @@
 export { DashboardOverview } from './DashboardOverview';
 export { Analytics } from './Analytics';
-export { Customers } from './Customers';
-export { Products } from './Products';
+export { Users } from './Users';
+export { Content } from './Content';
+export { System } from './System';
 export { Settings } from './Settings';
 export { AIAgentManagement } from './AIAgentManagement';

@@ -1,0 +1,158 @@
+<div class="video-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-video"></i>
+        Videos
+      </h1>
+      <p class="page-subtitle">Discover and watch amazing videos from our community</p>
+    </div>
+    <button class="btn btn-primary" (click)="navigateToUpload()">
+      <i class="fas fa-plus"></i>
+      Upload Video
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <form [formGroup]="searchForm" class="filters-form">
+      <!-- Search -->
+      <div class="filter-group">
+        <label for="search">Search Videos</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input 
+            type="text" 
+            id="search"
+            formControlName="searchTerm"
+            placeholder="Search by title, description, or tags..."
+            class="form-control">
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label for="status">Status</label>
+        <select id="status" formControlName="status" class="form-control">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Sort -->
+      <div class="filter-group">
+        <label for="sort">Sort By</label>
+        <select id="sort" class="form-control" (change)="onSortChange($event)">
+          <option *ngFor="let option of sortOptions" 
+                  [value]="option.value + '|' + option.descending">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Clear Filters -->
+      <div class="filter-group">
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">
+          <i class="fas fa-times"></i>
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results Info -->
+  <div class="results-info" *ngIf="!loading">
+    <p>
+      Showing {{ videos.length }} of {{ totalCount }} videos
+      <span *ngIf="filters.searchTerm"> for "{{ filters.searchTerm }}"</span>
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading videos...</p>
+  </div>
+
+  <!-- Videos Grid -->
+  <div *ngIf="!loading && videos.length > 0" class="videos-grid">
+    <app-media-card 
+      *ngFor="let video of videos"
+      [media]="video"
+      [type]="'video'"
+      (play)="playVideo(video)"
+      (like)="likeVideo(video)"
+      (share)="shareVideo(video)">
+    </app-media-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && videos.length === 0" class="empty-state">
+    <i class="fas fa-video fa-4x"></i>
+    <h3>No Videos Found</h3>
+    <p *ngIf="filters.searchTerm; else noVideosMessage">
+      No videos match your search criteria. Try adjusting your filters.
+    </p>
+    <ng-template #noVideosMessage>
+      <p>No videos have been uploaded yet. Be the first to share your content!</p>
+    </ng-template>
+    <button class="btn btn-primary" (click)="navigateToUpload()">
+      <i class="fas fa-plus"></i>
+      Upload First Video
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading && videos.length > 0 && totalPages > 1" class="pagination-container">
+    <nav class="pagination">
+      <!-- Previous Button -->
+      <button 
+        class="page-btn"
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)">
+        <i class="fas fa-chevron-left"></i>
+        Previous
+      </button>
+
+      <!-- First Page -->
+      <button 
+        *ngIf="currentPage > 3"
+        class="page-btn"
+        (click)="onPageChange(1)">
+        1
+      </button>
+      
+      <span *ngIf="currentPage > 4" class="page-ellipsis">...</span>
+
+      <!-- Page Numbers -->
+      <button 
+        *ngFor="let page of pages"
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="onPageChange(page)">
+        {{ page }}
+      </button>
+
+      <!-- Last Page -->
+      <span *ngIf="currentPage < totalPages - 3" class="page-ellipsis">...</span>
+      
+      <button 
+        *ngIf="currentPage < totalPages - 2"
+        class="page-btn"
+        (click)="onPageChange(totalPages)">
+        {{ totalPages }}
+      </button>
+
+      <!-- Next Button -->
+      <button 
+        class="page-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)">
+        Next
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="list-view">
+    <!-- Filters Slot -->
+    <div class="list-view__filters" *ngIf="hasFilters">
+        <ng-content select="[filters]"></ng-content>
+    </div>
+
+    <!-- Loading State -->
+    <app-loading-state *ngIf="loading" [type]="'grid'" [count]="config.gridCols || 3">
+    </app-loading-state>
+
+    <!-- Error State -->
+    <div class="list-view__error" *ngIf="error && !loading">
+        <div class="error-card">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <h3>{{ error }}</h3>
+            <button (click)="onRetry()" class="btn btn-primary">
+                <i class="fa-solid fa-rotate-right"></i> Try Again
+            </button>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <app-empty-state *ngIf="!loading && !error && items.length === 0" [message]="emptyMessage"
+        [description]="emptyDescription">
+    </app-empty-state>
+
+    <!-- Items Grid -->
+    <div class="list-view__grid" *ngIf="!loading && !error && items.length > 0" [ngStyle]="gridStyle">
+        <ng-container *ngFor="let item of items; trackBy: trackByFn">
+            <ng-container *ngTemplateOutlet="itemTemplate || null; context: { $implicit: item }"></ng-container>
+        </ng-container>
+    </div>
+
+    <!-- Pagination -->
+    <div class="list-view__pagination" *ngIf="config.showPagination && pagination && items.length > 0">
+        <app-pagination [currentPage]="pagination.currentPage" [pageSize]="pagination.pageSize"
+            [totalItems]="pagination.totalItems" [totalPages]="pagination.totalPages"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
+    </div>
+</div>

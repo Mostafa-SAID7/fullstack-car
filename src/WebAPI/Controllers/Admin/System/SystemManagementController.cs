@@ -9,7 +9,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.System
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/system")]
     public class SystemManagementController : BaseController
     {
@@ -173,55 +173,6 @@ namespace WebAPI.Controllers.Admin.System
 
             if (result.Succeeded)
                 return Ok(new { Message = "Maintenance scheduled successfully", MaintenanceId = result.Data });
-
-            return BadRequest(result.Errors);
-        }
-
-        [HttpGet("backups")]
-        public async Task<IActionResult> GetBackups(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] string? type = null,
-            [FromQuery] string? status = null)
-        {
-            var query = new GetBackupsQuery
-            {
-                Page = page,
-                PageSize = pageSize,
-                Type = type,
-                Status = status
-            };
-
-            var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Ok(result.Data);
-
-            return BadRequest(result.Errors);
-        }
-
-        [HttpPost("backups")]
-        public async Task<IActionResult> CreateBackup([FromBody] CreateBackupRequest request)
-        {
-            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
-                return Unauthorized();
-            }
-
-            var command = new CreateBackupCommand
-            {
-                AdminId = Guid.Parse(_currentUserService.UserId),
-                Name = request.Name,
-                Type = request.Type,
-                IncludeFiles = request.IncludeFiles,
-                CompressBackup = request.CompressBackup,
-                Description = request.Description
-            };
-
-            var result = await Mediator.Send(command);
-
-            if (result.Succeeded)
-                return Ok(new { Message = "Backup created successfully", BackupId = result.Data });
 
             return BadRequest(result.Errors);
         }

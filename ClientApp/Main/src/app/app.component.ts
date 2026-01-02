@@ -13,10 +13,9 @@ import { AIAgentModule } from './features/ai-agent/ai-agent.module';
   standalone: true,
   imports: [
     RouterOutlet,
-    SharedModule,
-    HeaderComponent,
-    SidebarLeftComponent,
-    SidebarRightComponent,
+    // HeaderComponent, // Removed
+    // SidebarLeftComponent, // Removed 
+    // SidebarRightComponent, // Removed
     CommonModule,
     AIAgentModule
   ],

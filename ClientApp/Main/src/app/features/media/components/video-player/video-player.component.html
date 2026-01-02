@@ -1,0 +1,131 @@
+<div class="video-player-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading video...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <i class="fas fa-exclamation-triangle fa-3x"></i>
+    <h3>{{ error }}</h3>
+    <button class="btn btn-primary" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+      Back to Videos
+    </button>
+  </div>
+
+  <!-- Video Content -->
+  <div *ngIf="video && !loading" class="video-content">
+    <!-- Video Player -->
+    <div class="video-player">
+      <video 
+        [src]="video.videoUrl" 
+        controls 
+        class="video-element"
+        [poster]="video.thumbnail">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Video Info -->
+    <div class="video-info">
+      <div class="video-header">
+        <h1 class="video-title">{{ video.title }}</h1>
+        <div class="video-actions">
+          <button 
+            class="action-btn like-btn"
+            [class.liked]="video.isLikedByUser"
+            (click)="onLike()">
+            <i class="fas fa-heart"></i>
+            {{ video.likeCount }}
+          </button>
+          <button class="action-btn share-btn">
+            <i class="fas fa-share"></i>
+            Share
+          </button>
+        </div>
+      </div>
+
+      <div class="video-stats">
+        <span class="stat-item">
+          <i class="fas fa-eye"></i>
+          {{ video.viewCount }} views
+        </span>
+        <span class="stat-item" *ngIf="video.publishedAt">
+          <i class="fas fa-calendar"></i>
+          {{ video.publishedAt | date:'mediumDate' }}
+        </span>
+        <span class="stat-item">
+          <i class="fas fa-clock"></i>
+          {{ video.duration }}
+        </span>
+      </div>
+
+      <div class="video-description">
+        <h3>Description</h3>
+        <p>{{ video.description }}</p>
+      </div>
+
+      <div class="video-tags" *ngIf="video.tags">
+        <h3>Tags</h3>
+        <div class="tags-list">
+          <span *ngFor="let tag of video.tags.split(',')" class="tag">
+            {{ tag.trim() }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section" *ngIf="video.allowComments">
+      <h3>Comments ({{ video.comments.length }})</h3>
+      
+      <!-- Add Comment Form -->
+      <div class="add-comment">
+        <textarea 
+          #commentInput
+          placeholder="Add a comment..."
+          class="comment-input"
+          rows="3"></textarea>
+        <button 
+          class="btn btn-primary"
+          (click)="onAddComment(commentInput.value); commentInput.value = ''">
+          <i class="fas fa-paper-plane"></i>
+          Post Comment
+        </button>
+      </div>
+
+      <!-- Comments List -->
+      <div class="comments-list">
+        <div *ngFor="let comment of video.comments" class="comment-item">
+          <div class="comment-content">
+            <div class="comment-header">
+              <span class="comment-author">User {{ comment.userId.substring(0, 8) }}</span>
+              <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+            </div>
+            <p class="comment-text">{{ comment.content }}</p>
+            <div class="comment-actions">
+              <button class="comment-action">
+                <i class="fas fa-heart"></i>
+                {{ comment.likeCount }}
+              </button>
+              <button class="comment-action">
+                <i class="fas fa-reply"></i>
+                Reply
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button" *ngIf="!loading">
+    <button class="btn btn-secondary" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+      Back to Videos
+    </button>
+  </div>
+</div>

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace WebAPI.Controllers.Shared.Health
 {
 
+    [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/health")]
     public class HealthController : BaseController
     {

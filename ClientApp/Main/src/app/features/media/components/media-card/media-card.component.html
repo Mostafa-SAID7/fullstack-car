@@ -1,0 +1,64 @@
+<div class="media-card" [class.video-card]="isVideo" [class.podcast-card]="isPodcast">
+  <!-- Thumbnail/Cover -->
+  <div class="media-thumbnail" (click)="onPlay()">
+    <img [src]="thumbnail" [alt]="media.title" class="thumbnail-image">
+    
+    <!-- Play Overlay -->
+    <div class="play-overlay">
+      <div class="play-button">
+        <i [class]="isVideo ? 'fas fa-play' : 'fas fa-headphones'"></i>
+      </div>
+    </div>
+    
+    <!-- Duration Badge -->
+    <div class="duration-badge">
+      {{ formatDuration(media.duration) }}
+    </div>
+    
+    <!-- Episode Badge (Podcasts only) -->
+    <div *ngIf="episodeInfo" class="episode-badge">
+      {{ episodeInfo }}
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="media-content">
+    <!-- Title -->
+    <h3 class="media-title" [title]="media.title" (click)="onPlay()">
+      {{ media.title }}
+    </h3>
+
+    <!-- Stats -->
+    <div class="media-stats">
+      <span class="stat-item">
+        <i [class]="isVideo ? 'fas fa-eye' : 'fas fa-headphones'"></i>
+        {{ formatNumber(viewOrPlayCount) }}
+      </span>
+      
+      <span class="stat-item">
+        <i class="fas fa-heart"></i>
+        {{ formatNumber(media.likeCount) }}
+      </span>
+      
+      <span class="stat-item" *ngIf="media.publishedAt">
+        <i class="fas fa-clock"></i>
+        {{ formatDate(media.publishedAt) }}
+      </span>
+    </div>
+
+    <!-- Actions -->
+    <div class="media-actions" *ngIf="showActions">
+      <button class="action-btn" (click)="onPlay()" [title]="isVideo ? 'Watch Video' : 'Listen to Podcast'">
+        <i [class]="isVideo ? 'fas fa-play' : 'fas fa-headphones'"></i>
+      </button>
+      
+      <button class="action-btn" (click)="onLike()" title="Like">
+        <i class="fas fa-heart"></i>
+      </button>
+      
+      <button class="action-btn" (click)="onShare()" title="Share">
+        <i class="fas fa-share"></i>
+      </button>
+    </div>
+  </div>
+</div>

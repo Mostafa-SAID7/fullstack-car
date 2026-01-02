@@ -1,0 +1,65 @@
+.auth-layout {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+
+    &__container {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    &__logo {
+        text-align: center;
+        margin-bottom: 32px;
+
+        img {
+            max-width: 150px;
+            height: auto;
+        }
+    }
+
+    &__header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    &__title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-color, #333);
+        margin-bottom: 8px;
+    }
+
+    &__subtitle {
+        font-size: 16px;
+        color: var(--text-muted, #666);
+    }
+
+    &__content {
+        margin-bottom: 24px;
+    }
+
+    &__footer {
+        text-align: center;
+        margin-top: 24px;
+    }
+
+    @media (max-width: 640px) {
+        padding: 12px;
+
+        &__container {
+            padding: 24px;
+        }
+
+        &__title {
+            font-size: 24px;
+        }
+    }
+}

@@ -10,7 +10,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.Management
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/management/roles")]
     public class RolesController : BaseController
     {

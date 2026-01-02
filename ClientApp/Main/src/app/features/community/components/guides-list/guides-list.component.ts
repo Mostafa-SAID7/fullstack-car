@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { GuidesService } from '../../services/guides.service';
 import {
   GuideListItem,
@@ -11,27 +11,29 @@ import {
   GuideDifficulty
 } from '../../models/guide.model';
 import { PaginatedResult } from '../../../../core/models/pagination.model';
+import { ListViewComponent, PaginationConfig } from '../../../../shared/components/list-view/list-view.component';
+import { GuideCardComponent } from '../guide-card/guide-card.component';
 
 @Component({
   selector: 'app-guides-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ListViewComponent, GuideCardComponent],
   templateUrl: './guides-list.component.html',
   styleUrls: ['./guides-list.component.scss']
 })
 export class GuidesListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  private searchSubject = new Subject<string>();
 
   guides: GuideListItem[] = [];
   loading = false;
   error: string | null = null;
 
-  // Pagination
-  currentPage = 1;
-  pageSize = 12;
-  totalItems = 0;
-  totalPages = 0;
+  paginationConfig: PaginationConfig = {
+    currentPage: 1,
+    pageSize: 12,
+    totalItems: 0,
+    totalPages: 0
+  };
 
   // Filters
   filters: GuideFilters = {
@@ -57,10 +59,6 @@ export class GuidesListComponent implements OnInit, OnDestroy {
     { value: 'LikeCount', label: 'Most Liked' }
   ];
 
-  // Enums for template
-  GuideCategory = GuideCategory;
-  GuideDifficulty = GuideDifficulty;
-
   constructor(
     private guidesService: GuidesService,
     private router: Router
@@ -68,7 +66,6 @@ export class GuidesListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadOptions();
-    this.setupSearch();
     this.loadGuides();
   }
 
@@ -87,21 +84,6 @@ export class GuidesListComponent implements OnInit, OnDestroy {
       .subscribe(difficulties => this.difficulties = difficulties);
   }
 
-  private setupSearch(): void {
-    this.searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(searchTerm => {
-        this.filters.searchTerm = searchTerm || undefined;
-        this.filters.page = 1;
-        this.currentPage = 1;
-        this.loadGuides();
-      });
-  }
-
   loadGuides(): void {
     this.loading = true;
     this.error = null;
@@ -111,9 +93,12 @@ export class GuidesListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result: PaginatedResult<GuideListItem>) => {
           this.guides = result.items;
-          this.totalItems = result.totalCount;
-          this.totalPages = result.totalPages;
-          this.currentPage = result.pageNumber;
+          this.paginationConfig = {
+            currentPage: result.pageNumber,
+            pageSize: result.pageSize,
+            totalItems: result.totalCount,
+            totalPages: result.totalPages
+          };
           this.loading = false;
         },
         error: (error) => {
@@ -124,55 +109,37 @@ export class GuidesListComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSearchChange(searchTerm: string): void {
-    this.searchTerm = searchTerm;
-    this.searchSubject.next(searchTerm);
+  onSearchChange(): void {
+    this.filters.searchTerm = this.searchTerm || undefined;
+    this.resetPagination();
   }
 
-  onCategoryChange(category: GuideCategory | undefined): void {
-    this.selectedCategory = category;
-    this.filters.category = category;
-    this.filters.page = 1;
-    this.currentPage = 1;
-    this.loadGuides();
+  onCategoryChange(): void {
+    this.filters.category = this.selectedCategory;
+    this.resetPagination();
   }
 
-  onDifficultyChange(difficulty: GuideDifficulty | undefined): void {
-    this.selectedDifficulty = difficulty;
-    this.filters.difficulty = difficulty;
-    this.filters.page = 1;
-    this.currentPage = 1;
-    this.loadGuides();
+  onDifficultyChange(): void {
+    this.filters.difficulty = this.selectedDifficulty;
+    this.resetPagination();
   }
 
   onFeaturedToggle(): void {
-    this.showFeaturedOnly = !this.showFeaturedOnly;
     this.filters.isFeatured = this.showFeaturedOnly ? true : undefined;
-    this.filters.page = 1;
-    this.currentPage = 1;
-    this.loadGuides();
+    this.resetPagination();
   }
 
-  onSortChange(sortBy: string | undefined): void {
+  onSortChange(sortBy: string): void {
     this.filters.sortBy = sortBy;
-    this.filters.page = 1;
-    this.currentPage = 1;
-    this.loadGuides();
+    this.resetPagination();
   }
 
   onPageChange(page: number): void {
     this.filters.page = page;
-    this.currentPage = page;
     this.loadGuides();
   }
 
-  viewGuide(guide: GuideListItem): void {
-    this.router.navigate(['/community/guides', guide.id]);
-  }
-
-  bookmarkGuide(guide: GuideListItem, event: Event): void {
-    event.stopPropagation();
-
+  onBookmarkGuide(guide: GuideListItem): void {
     this.guidesService.bookmarkGuide(guide.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -199,20 +166,11 @@ export class GuidesListComponent implements OnInit, OnDestroy {
       sortDescending: true
     };
 
-    this.currentPage = 1;
     this.loadGuides();
   }
 
-  getDifficultyColor(difficulty: GuideDifficulty): string {
-    return this.guidesService.getDifficultyColor(difficulty);
-  }
-
-  formatReadTime(minutes: number): string {
-    if (minutes < 60) {
-      return `${minutes} min read`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m read` : `${hours}h read`;
+  private resetPagination(): void {
+    this.filters.page = 1;
+    this.loadGuides();
   }
 }

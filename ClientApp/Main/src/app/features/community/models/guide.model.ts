@@ -1,8 +1,7 @@
-export interface Guide {
-  id: number;
-  title: string;
-  content: string;
-  summary: string;
+import { AuthorInfo, ThreadedComment } from '../../../core/models/common.models';
+import { BaseEntity, WithAuthor, WithContent, WithMetadata, WithUserInteraction } from '../../../core/models/base.models';
+
+export interface Guide extends BaseEntity, WithContent, WithAuthor, WithMetadata, WithUserInteraction {
   category: GuideCategory;
   categoryName: string;
   difficulty: GuideDifficulty;
@@ -10,21 +9,20 @@ export interface Guide {
   estimatedReadTime: number;
   isFeatured: boolean;
   isPublished: boolean;
-  viewCount: number;
-  likeCount: number;
-  bookmarkCount: number;
   tags: string[];
   thumbnailUrl?: string;
-  createdAt: Date;
-  updatedAt?: Date;
-  authorId: string;
-  authorName: string;
-  authorAvatar?: string;
-  steps: GuideStep[];
-  isBookmarked: boolean;
   userRating?: number;
   averageRating: number;
   ratingCount: number;
+}
+
+/**
+ * Guide with full hierarchy (steps, comments, ratings)
+ */
+export interface GuideWithDetails extends Guide {
+  steps: GuideStep[];
+  comments?: GuideComment[];
+  ratings?: GuideRating[];
 }
 
 export interface GuideListItem {
@@ -50,17 +48,33 @@ export interface GuideListItem {
   ratingCount: number;
 }
 
-export interface GuideStep {
-  id: number;
+export interface GuideStep extends BaseEntity, WithContent {
+  guideId: number;
   stepNumber: number;
-  title: string;
-  content: string;
   imageUrl?: string;
   videoUrl?: string;
   isRequired: boolean;
   tips?: string;
   warningNotes?: string;
   estimatedTime: number;
+}
+
+/**
+ * Comment on a guide with threading support
+ */
+export interface GuideComment extends ThreadedComment {
+  guideId: number;
+}
+
+/**
+ * Rating/Review for a guide
+ */
+export interface GuideRating extends BaseEntity, WithAuthor {
+  guideId: number;
+  rating: number;
+  comment?: string;
+  isHelpful: boolean;
+  helpfulCount: number;
 }
 
 export interface CreateGuideRequest {

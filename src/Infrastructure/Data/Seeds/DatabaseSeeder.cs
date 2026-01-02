@@ -17,6 +17,7 @@ namespace Infrastructure.Data.Seeds
         private readonly MarketplaceSeeder _marketplaceSeeder;
         private readonly AdminSeeder _adminSeeder;
         private readonly NotificationSeeder _notificationSeeder;
+        private readonly MediaSeeder _mediaSeeder;
 
         public DatabaseSeeder(
             ILogger<DatabaseSeeder> logger,
@@ -28,7 +29,8 @@ namespace Infrastructure.Data.Seeds
             CommunityMapsSeeder mapsSeeder,
             MarketplaceSeeder marketplaceSeeder,
             AdminSeeder adminSeeder,
-            NotificationSeeder notificationSeeder)
+            NotificationSeeder notificationSeeder,
+            MediaSeeder mediaSeeder)
         {
             _logger = logger;
             _context = context;
@@ -40,6 +42,7 @@ namespace Infrastructure.Data.Seeds
             _marketplaceSeeder = marketplaceSeeder;
             _adminSeeder = adminSeeder;
             _notificationSeeder = notificationSeeder;
+            _mediaSeeder = mediaSeeder;
         }
 
         public async Task InitializeAsync()
@@ -50,26 +53,17 @@ namespace Infrastructure.Data.Seeds
 
                 if (_context.Database.IsSqlServer())
                 {
-                    var canConnect = await _context.Database.CanConnectAsync();
-                    if (!canConnect)
+                    // Always use migrations for consistency
+                    var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
+                    if (pendingMigrations.Any())
                     {
-                        _logger.LogInformation("Database does not exist. Creating database...");
-                        await _context.Database.EnsureCreatedAsync();
-                        _logger.LogInformation("Database created successfully.");
+                        _logger.LogInformation("Applying {Count} pending migrations...", pendingMigrations.Count());
+                        await _context.Database.MigrateAsync();
+                        _logger.LogInformation("Database migrations applied successfully.");
                     }
                     else
                     {
-                        var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
-                        if (pendingMigrations.Any())
-                        {
-                            _logger.LogInformation("Applying {Count} pending migrations...", pendingMigrations.Count());
-                            await _context.Database.MigrateAsync();
-                            _logger.LogInformation("Database migrations applied successfully.");
-                        }
-                        else
-                        {
-                            _logger.LogInformation("Database is up to date. No migrations needed.");
-                        }
+                        _logger.LogInformation("Database is up to date. No migrations needed.");
                     }
                 }
             }
@@ -106,6 +100,8 @@ namespace Infrastructure.Data.Seeds
                 await _knowledgeSeeder.SeedPagesAsync();
                 
                 await _marketplaceSeeder.SeedAllAsync();
+                
+                await _mediaSeeder.SeedMediaAsync();
                 
                 await _adminSeeder.SeedAdminDashboardAsync();
                 

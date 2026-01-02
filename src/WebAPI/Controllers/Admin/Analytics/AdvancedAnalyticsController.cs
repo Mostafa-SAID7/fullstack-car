@@ -1,12 +1,14 @@
 using Application.Common.Interfaces;
 using Application.Features.Admin.Analytics.Queries;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.Admin.Analytics;
 
 [ApiController]
-[Route("api/admin/analytics/advanced")]
+[ApiVersion("3.0")]
+[Route("api/v{version:apiVersion}/admin/analytics/advanced")]
 [Authorize(Roles = "Administrator")]
 public class AdvancedAnalyticsController : ControllerBase
 {

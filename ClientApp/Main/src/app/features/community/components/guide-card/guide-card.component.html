@@ -1,0 +1,73 @@
+<a [routerLink]="['/community/guides', guide.id]" class="guide-card">
+    <!-- Featured Badge -->
+    <div class="guide-card__featured" *ngIf="guide.isFeatured">
+        <i class="fa-solid fa-star"></i>
+        <span>Featured</span>
+    </div>
+
+    <!-- Thumbnail -->
+    <div class="guide-card__media">
+        <img *ngIf="guide.thumbnailUrl" [src]="guide.thumbnailUrl" [alt]="guide.title" />
+        <div *ngIf="!guide.thumbnailUrl" class="guide-card__media-placeholder">
+            <i class="fa-solid fa-book"></i>
+        </div>
+
+        <!-- Difficulty Badge -->
+        <div class="guide-card__difficulty" [ngClass]="getDifficultyColor(guide.difficulty)">
+            {{ guide.difficultyName }}
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="guide-card__content">
+        <h3 class="guide-card__title">{{ guide.title }}</h3>
+        <p class="guide-card__summary">{{ guide.summary }}</p>
+
+        <!-- Tags -->
+        <div class="guide-card__tags" *ngIf="guide.tags && guide.tags.length > 0">
+            <span *ngFor="let tag of guide.tags.slice(0, 3)" class="tag">
+                {{ tag }}
+            </span>
+        </div>
+
+        <!-- Footer -->
+        <div class="guide-card__footer">
+            <!-- Author -->
+            <div class="guide-card__author">
+                <img *ngIf="guide.authorAvatar" [src]="guide.authorAvatar" [alt]="guide.authorName" />
+                <div *ngIf="!guide.authorAvatar" class="author-avatar-placeholder">
+                    {{ guide.authorName.charAt(0).toUpperCase() }}
+                </div>
+                <span>{{ guide.authorName }}</span>
+            </div>
+
+            <!-- Meta -->
+            <div class="guide-card__meta">
+                <!-- Read Time -->
+                <span class="meta-item">
+                    <i class="fa-regular fa-clock"></i>
+                    {{ formatReadTime(guide.estimatedReadTime) }}
+                </span>
+
+                <!-- Rating -->
+                <span class="meta-item" *ngIf="guide.averageRating > 0">
+                    <i class="fa-solid fa-star"></i>
+                    {{ guide.averageRating.toFixed(1) }}
+                </span>
+
+                <!-- Views -->
+                <span class="meta-item">
+                    <i class="fa-regular fa-eye"></i>
+                    {{ guide.viewCount }}
+                </span>
+
+                <!-- Bookmark -->
+                <button class="meta-item bookmark-btn" [class.bookmarked]="guide.isBookmarked"
+                    (click)="onBookmarkClick($event)">
+                    <i [class]="guide.isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'"></i>
+                    {{ guide.bookmarkCount }}
+                </button>
+            </div>
+        </div>
+    </div>
+</a>

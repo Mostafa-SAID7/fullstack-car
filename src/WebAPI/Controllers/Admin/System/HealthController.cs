@@ -8,7 +8,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Admin.System
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/system/health")]
     public class HealthController : BaseController
     {

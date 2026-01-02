@@ -1,0 +1,48 @@
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+
+    &__icon {
+        font-size: 64px;
+        color: var(--text-muted, #999);
+        margin-bottom: 24px;
+        opacity: 0.5;
+    }
+
+    &__message {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-color, #333);
+        margin-bottom: 8px;
+    }
+
+    &__description {
+        font-size: 16px;
+        color: var(--text-muted, #666);
+        margin-bottom: 24px;
+        max-width: 400px;
+    }
+
+    &__action {
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        background: var(--primary-color, #007bff);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+    }
+}

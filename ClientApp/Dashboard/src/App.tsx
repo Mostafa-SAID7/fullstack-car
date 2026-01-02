@@ -1,17 +1,27 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { MainLayout } from './components/layout/MainLayout';
-import { DashboardOverview, Analytics, Customers, Products, Settings, AIAgentManagement } from './pages';
+import { AuthDebug } from './components/debug/AuthDebug';
+import { 
+  DashboardOverview, 
+  Analytics, 
+  Users, 
+  Content, 
+  System, 
+  Settings, 
+  AIAgentManagement 
+} from './pages';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/debug" element={<AuthDebug />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <DashboardOverview />
               </MainLayout>
@@ -21,7 +31,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Analytics />
               </MainLayout>
@@ -29,21 +39,31 @@ function App() {
           }
         />
         <Route
-          path="/customers"
+          path="/users"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
-                <Customers />
+                <Users />
               </MainLayout>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/products"
+          path="/content"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
-                <Products />
+                <Content />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/system"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <System />
               </MainLayout>
             </ProtectedRoute>
           }
@@ -51,7 +71,7 @@ function App() {
         <Route
           path="/settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Settings />
               </MainLayout>
@@ -61,7 +81,7 @@ function App() {
         <Route
           path="/ai-agent"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <AIAgentManagement />
               </MainLayout>

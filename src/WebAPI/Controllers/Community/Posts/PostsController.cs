@@ -11,7 +11,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Community.Posts
 {
     [Authorize]
-
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/community/posts")]
     public class PostsController : BaseController
     {

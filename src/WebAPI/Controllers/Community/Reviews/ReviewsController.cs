@@ -10,7 +10,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Community.Reviews
 {
     [Authorize]
-
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/community/[controller]")]
     public class ReviewsController : BaseController
     {

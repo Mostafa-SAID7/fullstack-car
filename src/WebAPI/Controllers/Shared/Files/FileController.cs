@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Shared.Files
 {
     [Authorize]
-
+    [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/files")]
     public class FileController : BaseController
     {

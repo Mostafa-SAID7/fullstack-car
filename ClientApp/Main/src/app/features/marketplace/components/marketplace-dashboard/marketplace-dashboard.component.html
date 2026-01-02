@@ -1,0 +1,49 @@
+<div class="marketplace-dashboard">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Marketplace</h1>
+    <p class="dashboard-subtitle">Manage car services, providers, and bookings</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-card" (click)="navigateToServices()">
+      <div class="card-icon">
+        <i class="fas fa-wrench"></i>
+      </div>
+      <div class="card-content">
+        <h3>Car Services</h3>
+        <p>Browse and manage available car services</p>
+      </div>
+      <div class="card-arrow">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+
+    <div class="dashboard-card" (click)="navigateToProviders()">
+      <div class="card-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="card-content">
+        <h3>Service Providers</h3>
+        <p>Find and manage service providers</p>
+      </div>
+      <div class="card-arrow">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+
+    <div class="dashboard-card" (click)="navigateToBookings()">
+      <div class="card-icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <div class="card-content">
+        <h3>Bookings</h3>
+        <p>View and manage your bookings</p>
+      </div>
+      <div class="card-arrow">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

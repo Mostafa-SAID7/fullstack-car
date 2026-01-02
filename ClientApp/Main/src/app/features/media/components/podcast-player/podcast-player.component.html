@@ -1,0 +1,137 @@
+<div class="podcast-player-container" *ngIf="!loading && podcast">
+  <!-- Header -->
+  <div class="player-header">
+    <button (click)="goBack()" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Podcasts
+    </button>
+    
+    <div class="podcast-actions">
+      <button (click)="likePodcast()" class="like-btn" [class.liked]="podcast.isLiked">
+        <i class="fas fa-heart"></i>
+        {{ podcast.likesCount }}
+      </button>
+      <button (click)="toggleComments()" class="comments-btn">
+        <i class="fas fa-comment"></i>
+        {{ podcast.commentsCount }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Podcast Info -->
+  <div class="podcast-info">
+    <div class="podcast-thumbnail">
+      <img [src]="podcast.thumbnailUrl || '/assets/images/podcast-placeholder.jpg'" 
+           [alt]="podcast.title" />
+    </div>
+    
+    <div class="podcast-details">
+      <h1 class="podcast-title">{{ podcast.title }}</h1>
+      <p class="podcast-creator">by {{ podcast.creatorName }}</p>
+      <p class="podcast-description">{{ podcast.description }}</p>
+      
+      <div class="podcast-meta">
+        <span class="episode-info" *ngIf="podcast.episodeNumber">
+          Episode {{ podcast.episodeNumber }}
+          <span *ngIf="podcast.seasonNumber"> • Season {{ podcast.seasonNumber }}</span>
+        </span>
+        <span class="duration">{{ formatTime(duration) }}</span>
+        <span class="publish-date">{{ podcast.publishedAt | date:'mediumDate' }}</span>
+      </div>
+      
+      <div class="podcast-tags" *ngIf="podcast.tags">
+        <span class="tag" *ngFor="let tag of podcast.tags.split(',')">{{ tag.trim() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Player -->
+  <div class="audio-player">
+    <div class="player-controls">
+      <button (click)="skipBackward()" class="control-btn">
+        <i class="fas fa-backward"></i>
+        <span class="skip-text">30s</span>
+      </button>
+      
+      <button (click)="togglePlayPause()" class="play-pause-btn">
+        <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
+      </button>
+      
+      <button (click)="skipForward()" class="control-btn">
+        <i class="fas fa-forward"></i>
+        <span class="skip-text">30s</span>
+      </button>
+    </div>
+
+    <div class="progress-section">
+      <span class="time-display">{{ formatTime(currentTime) }}</span>
+      
+      <div class="progress-container">
+        <input type="range" 
+               min="0" 
+               max="100" 
+               [value]="getProgressPercentage()"
+               (input)="seek($event)"
+               class="progress-slider" />
+      </div>
+      
+      <span class="time-display">{{ formatTime(duration) }}</span>
+    </div>
+
+    <div class="volume-section">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" 
+             min="0" 
+             max="100" 
+             [value]="volume * 100"
+             (input)="setVolume($event)"
+             class="volume-slider" />
+    </div>
+  </div>
+
+  <!-- Transcript Section -->
+  <div class="transcript-section" *ngIf="podcast.transcript">
+    <h3>Transcript</h3>
+    <div class="transcript-content">
+      <p>{{ podcast.transcript }}</p>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="comments-section" *ngIf="showComments">
+    <h3>Comments ({{ podcast.commentsCount }})</h3>
+    
+    <div class="add-comment">
+      <textarea [(ngModel)]="newComment" 
+                placeholder="Add a comment..."
+                class="comment-input"></textarea>
+      <button (click)="addComment()" 
+              [disabled]="!newComment.trim()"
+              class="submit-comment-btn">
+        Post Comment
+      </button>
+    </div>
+
+    <div class="comments-list">
+      <div class="comment" *ngFor="let comment of podcast.comments">
+        <div class="comment-avatar">
+          <img [src]="comment.authorAvatar || '/assets/images/default-avatar.jpg'" 
+               [alt]="comment.authorName" />
+        </div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <span class="comment-author">{{ comment.authorName }}</span>
+            <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+          </div>
+          <p class="comment-text">{{ comment.content }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="loading-spinner"></div>
+  <p>Loading podcast...</p>
+</div>

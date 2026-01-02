@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Admin.Dashboard
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/dashboard")]
     public class DashboardController : BaseController
     {

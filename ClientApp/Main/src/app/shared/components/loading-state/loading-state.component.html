@@ -1,0 +1,41 @@
+<div class="loading-state" [ngClass]="'loading-state--' + type">
+    <!-- Spinner -->
+    <div *ngIf="type === 'spinner'" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>{{ message }}</p>
+    </div>
+
+    <!-- Skeleton Cards -->
+    <div *ngIf="type === 'skeleton'" class="loading-skeleton">
+        <div *ngFor="let item of items" class="skeleton-card">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-line skeleton-line--title"></div>
+                <div class="skeleton-line skeleton-line--text"></div>
+                <div class="skeleton-line skeleton-line--text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid Skeletons -->
+    <div *ngIf="type === 'grid'" class="loading-grid">
+        <div *ngFor="let item of items" class="skeleton-card">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-line skeleton-line--title"></div>
+                <div class="skeleton-line skeleton-line--text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- List Skeletons -->
+    <div *ngIf="type === 'list'" class="loading-list">
+        <div *ngFor="let item of items" class="skeleton-list-item">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-line skeleton-line--title"></div>
+                <div class="skeleton-line skeleton-line--text"></div>
+            </div>
+        </div>
+    </div>
+</div>

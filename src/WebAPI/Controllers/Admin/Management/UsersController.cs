@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.Admin.Management
 {
     [Authorize(Roles = "Admin")]
-
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/admin/users")]
     public class UsersController : BaseController
     {

@@ -1,0 +1,36 @@
+<button [type]="type" [disabled]="disabled || loading" [ngClass]="buttonClasses">
+
+    <!-- Ripple Effects -->
+    <span *ngFor="let ripple of ripples" class="form-button__ripple" [style.left.px]="ripple.x"
+        [style.top.px]="ripple.y">
+    </span>
+
+    <!-- Loading Spinner -->
+    <span *ngIf="loading" class="form-button__spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+    </span>
+
+    <!-- Content -->
+    <span class="form-button__content" [class.form-button__content--hidden]="loading">
+        <!-- Icon Only (no text, just icon) -->
+        <ng-container *ngIf="iconOnly">
+            <i *ngIf="icon" [class]="'fa-solid ' + icon" class="form-button__icon-only"></i>
+        </ng-container>
+
+        <!-- Regular Button with Text -->
+        <ng-container *ngIf="!iconOnly">
+            <!-- Left Icon -->
+            <i *ngIf="icon && iconPosition === 'left'" [class]="'fa-solid ' + icon"
+                class="form-button__icon form-button__icon--left"></i>
+
+            <!-- Button Text -->
+            <span class="form-button__text">
+                <ng-content></ng-content>
+            </span>
+
+            <!-- Right Icon -->
+            <i *ngIf="icon && iconPosition === 'right'" [class]="'fa-solid ' + icon"
+                class="form-button__icon form-button__icon--right"></i>
+        </ng-container>
+    </span>
+</button>

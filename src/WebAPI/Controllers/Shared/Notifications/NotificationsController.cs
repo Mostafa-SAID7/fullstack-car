@@ -7,7 +7,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Shared.Notifications
 {
     [Authorize]
-
+    [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/shared/notifications")]
     [Tags("Shared - Notifications")]
     public class NotificationsController : BaseController

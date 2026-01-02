@@ -8,7 +8,7 @@ using Asp.Versioning;
 namespace WebAPI.Controllers.Identity.Security
 {
     [Authorize]
-
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/security")]
     public class SecurityController : BaseController
     {
