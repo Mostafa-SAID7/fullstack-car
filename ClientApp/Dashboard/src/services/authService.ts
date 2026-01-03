@@ -185,8 +185,16 @@ export class AuthService {
     if (token && userJson && expiry) {
       const expiryDate = new Date(expiry);
       if (expiryDate > new Date()) {
-        this.currentUser = JSON.parse(userJson);
-        this.notifyListeners();
+        try {
+          this.currentUser = JSON.parse(userJson);
+          if (!this.currentUser || !Array.isArray(this.currentUser.roles)) {
+            throw new Error('Invalid user data: missing roles');
+          }
+          this.notifyListeners();
+        } catch (e) {
+          console.error("Failed to parse stored user", e);
+          this.clearAuthData();
+        }
       } else {
         this.clearAuthData();
       }

@@ -104,20 +104,83 @@
                 align-items: center;
                 justify-content: center;
                 color: var(--primary-color);
+                cursor: pointer;
             }
 
-            .name {
-                display: block;
-                font-weight: 600;
-                font-size: 1rem;
-                color: var(--text-primary);
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+
+                .name {
+                    display: block;
+                    font-weight: 600;
+                    font-size: 1rem;
+                    color: var(--text-primary);
+                }
+
+                .mode-arrow {
+                    font-size: 0.75rem;
+                    color: var(--text-secondary);
+                    transition: transform 0.3s;
+
+                    &.rotated {
+                        transform: rotate(180deg);
+                    }
+                }
             }
 
             .status {
                 display: block;
                 font-size: 0.75rem;
-                color: #10b981; // Emerald green
+                color: #10b981;
                 font-weight: 500;
+            }
+        }
+
+        .mode-dropdown {
+            position: absolute;
+            top: 60px;
+            left: 1.25rem;
+            right: 1.25rem;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 0.5rem;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.2s ease-out;
+
+            button {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s;
+
+                i {
+                    width: 16px;
+                    text-align: center;
+                }
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: var(--text-primary);
+                }
+
+                &.active {
+                    background: rgba(var(--primary-rgb), 0.1);
+                    color: var(--primary-color);
+                    font-weight: 600;
+                }
             }
         }
 

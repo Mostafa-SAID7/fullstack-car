@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Laptop } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';

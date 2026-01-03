@@ -91,7 +91,6 @@ namespace Application.Features.Shared.Localization.Services
                 "Dashboard/Admin/Dashboard", "Dashboard/Admin/Management", "Dashboard/Admin/Moderation",
                 "Main/Community/Posts", "Main/Community/Groups", "Main/Community/Social", "Main/Community/Reviews",
                 "Identity/Auth", "Identity/OAuth", "Identity/Password", "Identity/Profile", "Identity/Security",
-                "AIAgent",
                 "Shared/Common", "Shared/Files", "Shared/Localization"
             };
 

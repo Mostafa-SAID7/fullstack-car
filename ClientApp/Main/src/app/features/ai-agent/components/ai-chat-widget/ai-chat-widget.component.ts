@@ -23,11 +23,12 @@ export class AIChatWidgetComponent implements OnInit {
     currentMessage = '';
     isTyping = false;
     messages: ChatMessage[] = [];
+    mode: 'chat' | 'maintenance' | 'recommendation' = 'chat';
+    showModes = false;
 
     suggestions = [
         "Recommend a family SUV",
         "Maintenance advice for Toyota Camry",
-        "Analyze EV market trends",
         "Best cars under $30k"
     ];
 
@@ -36,7 +37,6 @@ export class AIChatWidgetComponent implements OnInit {
     constructor(private aiAgentService: AIAgentService) { }
 
     ngOnInit(): void {
-        // Add initial welcome message with some formatting
         this.addMessage("Hello! I'm your AI automotive assistant. **How can I help you today?**", false);
     }
 
@@ -46,6 +46,11 @@ export class AIChatWidgetComponent implements OnInit {
             this.hasUnreadMessages = false;
             this.scrollToBottom();
         }
+    }
+
+    setMode(mode: any): void {
+        this.mode = mode;
+        this.showModes = false;
     }
 
     selectSuggestion(suggestion: string): void {
@@ -63,7 +68,7 @@ export class AIChatWidgetComponent implements OnInit {
         this.scrollToBottom();
 
         const request: ChatRequest = {
-            message: userMsg,
+            message: this.mode !== 'chat' ? `[${this.mode.toUpperCase()} MODE] ${userMsg}` : userMsg,
             context: 'Car community platform user'
         };
 
@@ -84,10 +89,9 @@ export class AIChatWidgetComponent implements OnInit {
         if (!text) return '';
         let parsed = text;
         parsed = parsed
-            // Bold: **text** -> <strong>text</strong>
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // List items: - text -> <li>text</li> (wrapped in logic below)
-            .replace(/\n- (.*)/g, '<br>• $1');
+            .replace(/\n- (.*)/g, '<br>• $1')
+            .replace(/\n/g, '<br>');
 
         return parsed;
     }

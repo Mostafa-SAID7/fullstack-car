@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 from app.core.config import settings
-from app.api.routes import chat, recommendations, maintenance, analysis
+from app.api.routes import chat, recommendations, maintenance, analysis, training, car_images
 from app.core.ai_service import AIService
 from app.core.database import init_db
 
@@ -39,6 +39,8 @@ app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["recommendations"])
 app.include_router(maintenance.router, prefix="/api/maintenance", tags=["maintenance"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["analysis"])
+app.include_router(training.router, prefix="/api/training", tags=["training"])
+app.include_router(car_images.router, prefix="/api/car-images", tags=["car-images"])
 
 @app.get("/")
 async def root():

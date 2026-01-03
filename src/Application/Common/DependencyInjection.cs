@@ -18,9 +18,6 @@ namespace Application.Common
                 // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
-            // Register AI Agent Service
-            services.AddHttpClient<Application.Features.AIAgent.Interfaces.IAIAgentService, Application.Features.AIAgent.Services.AIAgentService>();
-
             return services;
         }
     }

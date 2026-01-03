@@ -1,16 +1,115 @@
 import { apiClient } from './api';
+import type { ApiResult } from '../types/auth';
+
+export interface QuickStats {
+  newUsersToday: number;
+  postsToday: number;
+  commentsToday: number;
+  reportsToday: number;
+}
+
+export interface SystemMetrics {
+  workingSet: number;
+  privateMemory: number;
+  threadCount: number;
+  handleCount: number;
+}
+
+export interface DatabaseMetrics {
+  totalTables: number;
+  totalRecords: number;
+  databaseSize: string;
+  connectionCount: number;
+}
+
+export interface SystemInfo {
+  version: string;
+  environment: string;
+  serverTime: string;
+  databaseStatus: string;
+  aiServiceStatus: string;
+  cacheStatus: string;
+  uptime: string;
+  systemMetrics: SystemMetrics;
+  databaseMetrics: DatabaseMetrics;
+}
+
+export interface Activity {
+  type: string;
+  user: string;
+  title: string;
+  timestamp: string;
+  icon: string;
+  priority: string;
+}
+
+export interface SystemAlert {
+  message: string;
+  timestamp: string;
+  type: string;
+  severity: string;
+}
+
+export interface MemoryUsage {
+  workingSet: number;
+  privateMemory: number;
+  gcMemory: number;
+}
+
+export interface DiskUsage {
+  used: number;
+  available: number;
+  total: number;
+}
+
+export interface NetworkTraffic {
+  incoming: number;
+  outgoing: number;
+}
+
+export interface ResponseTimes {
+  average: number;
+  p95: number;
+  p99: number;
+}
+
+export interface CacheMetrics {
+  hitRate: number;
+  missRate: number;
+  totalKeys: number;
+  memoryUsage: string;
+}
+
+export interface PerformanceMetrics {
+  cpuUsage: number;
+  memoryUsage: MemoryUsage;
+  diskUsage: DiskUsage;
+  networkTraffic: NetworkTraffic;
+  responseTimes: ResponseTimes;
+  errorRate: number;
+  databaseMetrics: DatabaseMetrics;
+  cacheMetrics: CacheMetrics;
+}
 
 export interface DashboardStats {
   totalUsers: number;
-  activeUsers: number;
   totalPosts: number;
-  totalComments: number;
-  totalVideos: number;
-  totalPodcasts: number;
-  totalBookings: number;
-  revenue: number;
-  userGrowthRate: number;
-  engagementRate: number;
+  totalGroups: number;
+  totalReviews: number;
+  pendingApprovals: number;
+  flaggedContent: number;
+  activeUsers: number;
+  systemHealth: string;
+  lastUpdated: string;
+  quickStats: QuickStats;
+  systemInfo?: SystemInfo;
+  performanceMetrics?: PerformanceMetrics;
+  recentActivity: Activity[];
+  systemAlerts: SystemAlert[];
+  // Kept for backward compatibility or future use
+  revenue?: number;
+  userGrowthRate?: number;
+  engagementRate?: number;
 }
 
 export interface ChartData {
@@ -18,8 +117,8 @@ export interface ChartData {
   datasets: {
     label: string;
     data: number[];
-    backgroundColor?: string;
-    borderColor?: string;
+    backgroundColor?: string | string[];
+    borderColor?: string | string[];
     borderWidth?: number;
   }[];
 }
@@ -64,21 +163,38 @@ export interface RevenueAnalytics {
 }
 
 class DashboardService {
+  private handleResponse<T>(response: ApiResult<T>): T {
+    if (response.succeeded && response.data) {
+      return response.data;
+    }
+    throw new Error(response.message || 'API request failed or returned no data');
+  }
+
   async getDashboardStats(): Promise<DashboardStats> {
     try {
-      const response = await apiClient.get<DashboardStats>('/v3/admin/dashboard/stats');
-      return response;
+      const response = await apiClient.get<ApiResult<DashboardStats>>('/v3/admin/dashboard');
+      return this.handleResponse(response);
     } catch (error) {
       console.error('Failed to fetch dashboard stats:', error);
-      // Return mock data for development
+      // Return mock data for development as fallback
       return {
         totalUsers: 12543,
-        activeUsers: 8932,
         totalPosts: 45678,
-        totalComments: 123456,
-        totalVideos: 2341,
-        totalPodcasts: 567,
-        totalBookings: 1234,
+        totalGroups: 456,
+        totalReviews: 1234,
+        pendingApprovals: 23,
+        flaggedContent: 12,
+        activeUsers: 8932,
+        systemHealth: 'Healthy',
+        lastUpdated: new Date().toISOString(),
+        quickStats: {
+          newUsersToday: 45,
+          postsToday: 123,
+          commentsToday: 456,
+          reportsToday: 3
+        },
+        recentActivity: [],
+        systemAlerts: [],
         revenue: 89432.50,
         userGrowthRate: 12.5,
         engagementRate: 68.3
@@ -88,11 +204,10 @@ class DashboardService {
 
   async getUserAnalytics(): Promise<UserAnalytics> {
     try {
-      const response = await apiClient.get<UserAnalytics>('/v3/admin/analytics/users');
-      return response;
+      const response = await apiClient.get<ApiResult<UserAnalytics>>('/v3/admin/analytics/users');
+      return this.handleResponse(response);
     } catch (error) {
       console.error('Failed to fetch user analytics:', error);
-      // Return mock data for development
       return {
         totalUsers: 12543,
         activeUsers: 8932,
@@ -129,11 +244,10 @@ class DashboardService {
 
   async getContentAnalytics(): Promise<ContentAnalytics> {
     try {
-      const response = await apiClient.get<ContentAnalytics>('/v3/admin/analytics/content');
-      return response;
+      const response = await apiClient.get<ApiResult<ContentAnalytics>>('/v3/admin/analytics/content');
+      return this.handleResponse(response);
     } catch (error) {
       console.error('Failed to fetch content analytics:', error);
-      // Return mock data for development
       return {
         totalPosts: 45678,
         totalComments: 123456,
@@ -181,11 +295,10 @@ class DashboardService {
 
   async getSystemAnalytics(): Promise<SystemAnalytics> {
     try {
-      const response = await apiClient.get<SystemAnalytics>('/v3/admin/analytics/system');
-      return response;
+      const response = await apiClient.get<ApiResult<SystemAnalytics>>('/v3/admin/analytics/system');
+      return this.handleResponse(response);
     } catch (error) {
       console.error('Failed to fetch system analytics:', error);
-      // Return mock data for development
       return {
         cpuUsage: 45.2,
         memoryUsage: 67.8,
@@ -229,11 +342,9 @@ class DashboardService {
 
   async getRevenueAnalytics(): Promise<RevenueAnalytics> {
     try {
-      const response = await apiClient.get<RevenueAnalytics>('/v3/admin/analytics/revenue');
-      return response;
+      const response = await apiClient.get<ApiResult<RevenueAnalytics>>('/v3/admin/analytics/revenue');
+      return this.handleResponse(response);
     } catch (error) {
-      console.error('Failed to fetch revenue analytics:', error);
-      // Return mock data for development
       return {
         totalRevenue: 89432.50,
         monthlyRevenue: 12543.75,
@@ -276,5 +387,6 @@ class DashboardService {
     }
   }
 }
+
 
 export const dashboardService = new DashboardService();

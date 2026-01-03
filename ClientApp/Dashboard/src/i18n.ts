@@ -1,39 +1,68 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
+
+// Local translations
+const resources = {
+  en: {
+    translation: {
+      // Navigation
+      dashboard: 'Dashboard',
+      analytics: 'Analytics',
+      users: 'Users',
+      content: 'Content',
+      ai_agent: 'AI Agent',
+      system: 'System',
+      settings: 'Settings',
+      
+      // Common
+      welcome: 'Welcome',
+      login: 'Login',
+      logout: 'Logout',
+      save: 'Save',
+      cancel: 'Cancel',
+      delete: 'Delete',
+      edit: 'Edit',
+      create: 'Create',
+      update: 'Update',
+      
+      // Auth
+      email: 'Email',
+      password: 'Password',
+      remember_me: 'Remember me',
+      forgot_password: 'Forgot password?',
+      sign_in: 'Sign In',
+      sign_up: 'Sign Up',
+      
+      // Dashboard
+      overview: 'Overview',
+      statistics: 'Statistics',
+      recent_activity: 'Recent Activity',
+      
+      // Errors
+      error_occurred: 'An error occurred',
+      try_again: 'Try again',
+      page_not_found: 'Page not found'
+    }
+  }
+};
 
 i18n
-    .use(Backend)
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-        fallbackLng: 'en-US',
-        debug: false, // Disable debug to prevent console spam
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    debug: false,
 
-        interpolation: {
-            escapeValue: false, // React already safe from XSS
-        },
+    interpolation: {
+      escapeValue: false, // React already safe from XSS
+    },
 
-        backend: {
-            // Endpoint to fetch translations from ASP.NET Core Backend
-            loadPath: 'http://localhost:5101/api/v4/shared/localization/resources/{{lng}}',
-
-            // Parse the response because our backend returns a flat dictionary directly
-            parse: (data: string) => {
-                try {
-                    return JSON.parse(data);
-                } catch (error) {
-                    console.warn('Failed to parse translation data:', error);
-                    return {};
-                }
-            }
-        },
-
-        // React-specific options
-        react: {
-            useSuspense: false, // Disable suspense to prevent loading issues
-        }
-    });
+    // React-specific options
+    react: {
+      useSuspense: false, // Disable suspense to prevent loading issues
+    }
+  });
 
 export default i18n;

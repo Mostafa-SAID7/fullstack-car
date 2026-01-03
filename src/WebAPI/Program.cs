@@ -60,7 +60,6 @@ try
         c.SwaggerEndpoint("/swagger/v2/swagger.json", "Community (v2)");
         c.SwaggerEndpoint("/swagger/v3/swagger.json", "Admin (v3)");
         c.SwaggerEndpoint("/swagger/v4/swagger.json", "Shared (v4)");
-        c.SwaggerEndpoint("/swagger/v5/swagger.json", "AI Agent (v5)");
         c.RoutePrefix = string.Empty;
         c.InjectStylesheet("/swagger-ui/custom.css");
     });

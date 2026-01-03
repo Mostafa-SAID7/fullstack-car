@@ -157,7 +157,6 @@ namespace WebAPI.Extensions
                     new { Version = "v2", Title = "Community API (v2)" },
                     new { Version = "v3", Title = "Admin API (v3)" },
                     new { Version = "v4", Title = "Shared API (v4)" },
-                    new { Version = "v5", Title = "AI Agent API (v5)" },
                     new { Version = "v6", Title = "Marketplace API (v6)" },
                     new { Version = "v7", Title = "Media API (v7)" }
                 };

@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:5101/api';
+import { API_ENDPOINTS } from '../constants/api';
+
+const API_BASE_URL = 'http://localhost:5100/api';
 
 export class ApiClient {
   private baseUrl: string;

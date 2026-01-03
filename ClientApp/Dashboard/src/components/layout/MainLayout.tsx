@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Bell } from 'lucide-react';
@@ -8,6 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { SearchPalette } from './SearchPalette';
+import { AIAssistant } from '../dashboard/AIAssistant';
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();
@@ -33,9 +34,9 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
     return (
         <div className={cn("flex h-screen bg-background overflow-hidden flex-col", i18n.language.startsWith('ar') && "font-arabic text-right")} dir={i18n.language.startsWith('ar') ? 'rtl' : 'ltr'}>
             {/* Search Palette Modal */}
-            <SearchPalette 
-                isOpen={showSearch} 
-                onClose={() => setShowSearch(false)} 
+            <SearchPalette
+                isOpen={showSearch}
+                onClose={() => setShowSearch(false)}
             />
 
             {/* Email Confirmation Banner */}
@@ -49,9 +50,9 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
 
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <Sidebar 
-                    collapsed={collapsed} 
-                    onToggleCollapse={() => setCollapsed(!collapsed)} 
+                <Sidebar
+                    collapsed={collapsed}
+                    onToggleCollapse={() => setCollapsed(!collapsed)}
                 />
 
                 {/* Main Content Area */}
@@ -64,7 +65,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                     <Header onSearchClick={() => setShowSearch(true)} />
 
                     {/* Scrollable Content */}
-                    <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-muted/40 transition-colors">
+                    <main className="flex-1 overflow-y-auto p-md sm:p-lg bg-muted/40 transition-colors">
                         <motion.div
                             key={location.pathname}
                             initial={{ opacity: 0, y: 10 }}
@@ -77,6 +78,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                     </main>
                 </div>
             </div>
+            <AIAssistant />
         </div>
     );
 };

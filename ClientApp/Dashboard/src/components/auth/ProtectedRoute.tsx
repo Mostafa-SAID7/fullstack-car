@@ -7,9 +7,9 @@ interface ProtectedRouteProps {
   requiredRoles?: string[];
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requiredRoles = [] 
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRoles = []
 }) => {
   const { user, isAuthenticated } = useAuth();
 
@@ -18,7 +18,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (requiredRoles.length > 0 && user) {
-    const hasRequiredRole = requiredRoles.some(role => user.roles.includes(role));
+    const hasRequiredRole = requiredRoles.some(role => user.roles?.includes(role));
     if (!hasRequiredRole) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">

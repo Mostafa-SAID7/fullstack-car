@@ -2,15 +2,17 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { MainLayout } from './components/layout/MainLayout';
 import { AuthDebug } from './components/debug/AuthDebug';
+import { LoginForm } from './components/auth/LoginForm';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { 
-  DashboardOverview, 
-  Analytics, 
-  Users, 
-  Content, 
-  System, 
-  Settings, 
-  AIAgentManagement 
+import { DashboardTest } from './pages/DashboardTest';
+import {
+  DashboardOverview,
+  Analytics,
+  Users,
+  Content,
+  System,
+  Settings,
+  AIAgentManagement
 } from './pages';
 
 function App() {
@@ -18,8 +20,11 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<LoginForm />} />
           <Route path="/debug" element={<AuthDebug />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/test" element={<DashboardTest />} />
+          <Route path="/simple" element={<div className="p-8"><h1 className="text-2xl font-bold">Simple Test</h1><p>This is a simple test page without authentication.</p></div>} />
           <Route
             path="/dashboard"
             element={

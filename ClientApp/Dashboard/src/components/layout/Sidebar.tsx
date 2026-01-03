@@ -1,213 +1,202 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { cn } from '../../lib/utils';
 import {
-    Users,
-    Settings,
-    Home,
-    Grid,
-    ChevronLeft,
-    LogOut,
-    Bot,
-    Shield,
-    Activity,
-    FileText,
-    Database
+  LayoutDashboard,
+  BarChart3,
+  Users,
+  FileText,
+  Settings,
+  Bot,
+  Server,
+  ChevronLeft,
+  Car,
+  Sparkles
 } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
-
-interface SidebarItemProps {
-    icon: React.ElementType;
-    label: string;
-    path: string;
-    active?: boolean;
-    collapsed?: boolean;
-    onClick?: () => void;
-    description?: string;
-}
-
-const SidebarItem = ({ icon: Icon, label, path, active, collapsed, onClick, description }: SidebarItemProps) => {
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        if (onClick) {
-            onClick();
-        } else {
-            navigate(path);
-        }
-    };
-
-    return (
-        <motion.div
-            whileHover={{ x: 4 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleClick}
-            className={cn(
-                "flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all duration-200 relative group",
-                active ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground",
-                collapsed && "justify-center px-2 py-2"
-            )}
-        >
-            {active && (
-                <motion.div
-                    layoutId="active-pill"
-                    className="absolute left-0 w-1 h-6 bg-primary-foreground rounded-r-full"
-                />
-            )}
-            <Icon className={cn("w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110", active && "scale-110")} />
-            {!collapsed && (
-                <div className="flex-1 min-w-0">
-                    <div className="font-medium truncate">{label}</div>
-                    {description && (
-                        <div className="text-xs text-muted-foreground/70 truncate mt-0.5">{description}</div>
-                    )}
-                </div>
-            )}
-        </motion.div>
-    );
-};
 
 interface SidebarProps {
-    collapsed: boolean;
-    onToggleCollapse: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse }) => {
-    const { t, i18n } = useTranslation();
-    const { user, logout } = useAuth();
-    const location = useLocation();
+  const { t } = useTranslation();
 
-    const menuItems = [
-        { 
-            icon: Home, 
-            label: t('dashboard'), 
-            path: '/dashboard',
-            description: 'Overview & Quick Stats'
-        },
-        { 
-            icon: Activity, 
-            label: t('analytics'), 
-            path: '/analytics', 
-            roles: ['Admin'],
-            description: 'Reports & Performance Insights'
-        },
-        { 
-            icon: Users, 
-            label: t('user_management'), 
-            path: '/users', 
-            roles: ['Admin'],
-            description: 'Manage Users & Permissions'
-        },
-        { 
-            icon: FileText, 
-            label: t('content_moderation'), 
-            path: '/content', 
-            roles: ['Admin'],
-            description: 'Posts, Media & Community Content'
-        },
-        { 
-            icon: Database, 
-            label: t('system_management'), 
-            path: '/system', 
-            roles: ['Admin'],
-            description: 'System Health & Configuration'
-        },
-        { 
-            icon: Bot, 
-            label: 'AI Agent Management', 
-            path: '/ai-agent',
-            roles: ['Admin'],
-            description: 'AI Assistant & Automation'
-        },
-    ];
+  const menuItems = [
+    {
+      path: '/dashboard',
+      icon: LayoutDashboard,
+      label: t('dashboard', 'Dashboard'),
+      color: 'text-blue-500'
+    },
+    {
+      path: '/analytics',
+      icon: BarChart3,
+      label: t('analytics', 'Analytics'),
+      color: 'text-green-500'
+    },
+    {
+      path: '/users',
+      icon: Users,
+      label: t('users', 'Users'),
+      color: 'text-purple-500'
+    },
+    {
+      path: '/content',
+      icon: FileText,
+      label: t('content', 'Content'),
+      color: 'text-orange-500'
+    },
+    {
+      path: '/ai-agent',
+      icon: Bot,
+      label: t('ai_agent', 'AI Agent'),
+      color: 'text-pink-500'
+    },
+    {
+      path: '/system',
+      icon: Server,
+      label: t('system', 'System'),
+      color: 'text-red-500'
+    },
+    {
+      path: '/settings',
+      icon: Settings,
+      label: t('settings', 'Settings'),
+      color: 'text-gray-500'
+    }
+  ];
 
-    const filteredMenuItems = menuItems.filter(item =>
-        !item.roles || item.roles.some(role => user?.roles?.includes(role))
-    );
-
-    return (
-        <motion.aside
-            initial={false}
-            animate={{ width: collapsed ? 64 : 256 }}
-            className={cn(
-                "flex flex-col border-r border-border bg-card/50 backdrop-blur-xl transition-colors duration-300 ease-in-out z-20",
-            )}
+  return (
+    <motion.aside
+      initial={false}
+      animate={{ width: collapsed ? 80 : 280 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      className="bg-card border-r border-border/50 flex flex-col relative z-40 shadow-xl"
+    >
+      {/* Logo Section */}
+      <div className="h-16 flex items-center justify-between px-4 border-b border-border/50">
+        <motion.div
+          initial={false}
+          animate={{ opacity: collapsed ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center gap-3"
         >
-            <div className="h-16 flex items-center justify-between px-4 border-b border-border/50">
-                {!collapsed && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex items-center gap-2 font-bold text-xl tracking-tight text-primary px-2"
-                    >
-                        <Grid className="w-6 h-6" />
-                        <span>ADMIN PANEL</span>
-                    </motion.div>
-                )}
-                {collapsed && <Grid className="w-6 h-6 text-primary mx-auto" />}
-                <button
-                    onClick={onToggleCollapse}
-                    className="p-1.5 rounded-md hover:bg-primary/10 hover:text-primary transition-all text-muted-foreground"
-                >
-                    <ChevronLeft className={cn("w-5 h-5 transition-transform duration-500", collapsed && "rotate-180", i18n.language === 'ar' && "rotate-180")} />
-                </button>
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center shadow-lg">
+            <Car className="w-5 h-5 text-white" />
+          </div>
+          {!collapsed && (
+            <div>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Community Car
+              </h1>
+              <p className="text-xs text-muted-foreground font-medium">Admin Dashboard</p>
             </div>
+          )}
+        </motion.div>
+        
+        <button
+          onClick={onToggleCollapse}
+          className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className={cn("w-4 h-4 transition-transform", collapsed && "rotate-180")} />
+        </button>
+      </div>
 
-            <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto custom-scrollbar">
-                {!collapsed && (
-                    <div className="px-3 py-2 mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Shield className="w-4 h-4 text-primary" />
-                            <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">
-                                Admin Dashboard
-                            </h3>
-                        </div>
-                        <p className="text-xs text-muted-foreground/60">
-                            Manage your community platform
-                        </p>
-                    </div>
-                )}
-                
-                {filteredMenuItems.map((item) => (
-                    <SidebarItem
-                        key={item.path}
-                        icon={item.icon}
-                        label={item.label}
-                        path={item.path}
-                        active={location.pathname === item.path}
-                        collapsed={collapsed}
-                        description={item.description}
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden",
+                  isActive
+                    ? "bg-primary/10 text-primary shadow-lg shadow-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
-                ))}
-
-                <div className="pt-4 mt-4 border-t border-border/50">
-                    {!collapsed && (
-                        <div className="px-3 py-2 mb-2">
-                            <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">
-                                Account
-                            </h3>
-                        </div>
+                  )}
+                  
+                  <div className={cn(
+                    "relative z-10 p-2 rounded-lg transition-all",
+                    isActive ? "bg-primary/20 shadow-lg" : "group-hover:bg-muted"
+                  )}>
+                    <Icon className={cn(
+                      "w-5 h-5 transition-all",
+                      isActive ? item.color : "text-muted-foreground group-hover:text-foreground"
+                    )} />
+                  </div>
+                  
+                  <motion.span
+                    initial={false}
+                    animate={{ 
+                      opacity: collapsed ? 0 : 1,
+                      x: collapsed ? -10 : 0
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className={cn(
+                      "font-medium text-sm relative z-10",
+                      isActive ? "text-primary" : "group-hover:text-foreground"
                     )}
-                    <SidebarItem
-                        icon={Settings}
-                        label={t('settings')}
-                        path="/settings"
-                        active={location.pathname === '/settings'}
-                        collapsed={collapsed}
-                        description="Profile & Preferences"
+                  >
+                    {item.label}
+                  </motion.span>
+                  
+                  {isActive && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute right-3 w-2 h-2 bg-primary rounded-full"
                     />
-                    <SidebarItem
-                        icon={LogOut}
-                        label={t('logout')}
-                        path=""
-                        collapsed={collapsed}
-                        onClick={logout}
-                        description="Sign out of dashboard"
-                    />
+                  )}
+                </>
+              )}
+            </NavLink>
+          );
+        })}
+      </nav>
+
+      {/* Bottom Section */}
+      <div className="p-4 border-t border-border/50">
+        <div className={cn(
+          "bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 border border-primary/20",
+          collapsed && "p-3"
+        )}>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-primary" />
+            </div>
+            <motion.div
+              initial={false}
+              animate={{ opacity: collapsed ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              {!collapsed && (
+                <div>
+                  <p className="text-sm font-semibold text-primary">AI Powered</p>
+                  <p className="text-xs text-muted-foreground">Smart Analytics</p>
                 </div>
-            </nav>
-        </motion.aside>
-    );
+              )}
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </motion.aside>
+  );
 };

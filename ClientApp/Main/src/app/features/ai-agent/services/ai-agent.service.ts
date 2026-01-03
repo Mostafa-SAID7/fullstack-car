@@ -13,7 +13,7 @@ import {
     providedIn: 'root'
 })
 export class AIAgentService {
-    private apiUrl = `${environment.apiUrl}/v5.0/ai-agent`;
+    private apiUrl = 'http://localhost:8000/api';
 
     constructor(private http: HttpClient) { }
 

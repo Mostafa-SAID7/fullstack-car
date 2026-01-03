@@ -9,14 +9,30 @@
     <div class="ai-chat-window">
         <div class="chat-header">
             <div class="header-info">
-                <div class="bot-avatar">
+                <div class="bot-avatar" (click)="showModes = !showModes">
                     <i class="fas fa-robot"></i>
                 </div>
                 <div>
-                    <span class="name">AI Assistant</span>
-                    <span class="status">Online</span>
+                    <div class="header-title" (click)="showModes = !showModes">
+                        <span class="name">AI Assistant</span>
+                        <i class="fas fa-chevron-down mode-arrow" [class.rotated]="showModes"></i>
+                    </div>
+                    <span class="status">{{ mode | uppercase }} Mode</span>
                 </div>
             </div>
+
+            <div class="mode-dropdown" *ngIf="showModes">
+                <button (click)="setMode('chat')" [class.active]="mode === 'chat'">
+                    <i class="fas fa-comments"></i> General Chat
+                </button>
+                <button (click)="setMode('maintenance')" [class.active]="mode === 'maintenance'">
+                    <i class="fas fa-wrench"></i> Maintenance
+                </button>
+                <button (click)="setMode('recommendation')" [class.active]="mode === 'recommendation'">
+                    <i class="fas fa-search"></i> Car Matching
+                </button>
+            </div>
+
             <button class="close-btn" (click)="toggleChat()">
                 <i class="fas fa-times"></i>
             </button>

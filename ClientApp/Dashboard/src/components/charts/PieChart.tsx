@@ -7,6 +7,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { COMMON_CHART_PROPS, CHART_PALETTE } from '../../services/chartTheme';
 
 interface PieChartProps {
   data: any[];
@@ -17,17 +18,14 @@ interface PieChartProps {
   height?: number;
 }
 
-const DEFAULT_COLORS = [
-  '#3b82f6', '#ef4444', '#10b981', '#f59e0b', 
-  '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'
-];
+const colorsPalette = CHART_PALETTE;
 
 export const PieChart: React.FC<PieChartProps> = ({
   data,
   dataKey,
   nameKey,
   title,
-  colors = DEFAULT_COLORS,
+  colors = colorsPalette,
   height = 300
 }) => {
   return (
@@ -43,25 +41,18 @@ export const PieChart: React.FC<PieChartProps> = ({
             data={data}
             cx="50%"
             cy="50%"
-            labelLine={false}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            innerRadius={60}
             outerRadius={80}
-            fill="#8884d8"
+            paddingAngle={5}
             dataKey={dataKey}
+            nameKey={nameKey}
           >
-            {data.map((entry, index) => (
+            {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Pie>
-          <Tooltip 
-            contentStyle={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }}
-          />
-          <Legend />
+          <Tooltip {...COMMON_CHART_PROPS.tooltip} />
+          <Legend iconType="circle" />
         </RechartsPieChart>
       </ResponsiveContainer>
     </div>

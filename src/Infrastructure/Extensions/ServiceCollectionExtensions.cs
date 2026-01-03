@@ -1,5 +1,4 @@
 using Application.Common.Interfaces;
-using Application.Features.AIAgent.Interfaces;
 using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Core.Services;
@@ -204,9 +203,6 @@ namespace Infrastructure.Extensions
                 options.Fields.Add("name");
                 options.Fields.Add("email");
             });
-
-            // AI Agent Service
-            services.AddHttpClient<IAIAgentService, Application.Features.AIAgent.Services.AIAgentService>();
 
             // Media Services
             services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
