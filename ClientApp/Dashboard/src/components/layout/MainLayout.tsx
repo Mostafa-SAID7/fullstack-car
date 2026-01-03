@@ -8,7 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { SearchPalette } from './SearchPalette';
-import { AIAssistant } from '../dashboard/AIAssistant';
+import { AIAssistant } from '../../pages/dashboard/components/AIAssistant';
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();

@@ -6,7 +6,7 @@ import {
   Clock 
 } from 'lucide-react';
 import type { PerformanceMetric, ErrorDistribution } from '../../../types/monitoring';
-import { generateMockChartData } from '../../../utils/helpers';
+import { generateMockChartData } from '../utils/helpers';
 
 export const AIAgentMonitoring: React.FC = () => {
   const metrics: PerformanceMetric[] = [
