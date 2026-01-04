@@ -106,6 +106,21 @@ export interface DashboardStats {
   performanceMetrics?: PerformanceMetrics;
   recentActivity: Activity[];
   systemAlerts: SystemAlert[];
+  // Analytics and growth fields
+  userGrowth?: number;
+  activeListings?: number;
+  listingGrowth?: number;
+  postGrowth?: number;
+  totalRevenue?: number;
+  revenueGrowth?: number;
+  activeSessions?: number;
+  sessionGrowth?: number;
+  verifiedUsers?: number;
+  verificationGrowth?: number;
+  pendingReviews?: number;
+  reviewGrowth?: number;
+  overallGrowth?: number;
+  growthTrend?: number;
   // Kept for backward compatibility or future use
   revenue?: number;
   userGrowthRate?: number;
@@ -126,10 +141,18 @@ export interface ChartData {
 export interface UserAnalytics {
   totalUsers: number;
   activeUsers: number;
+  dailyActiveUsers: number;
   newUsers: number;
+  newUsersToday: number;
   usersByRole: { role: string; count: number }[];
   userGrowthData: ChartData;
+  userGrowthRate: number;
   userActivityData: ChartData;
+  avgSessionDuration: number;
+  sessionChange: number;
+  bounceRate: number;
+  bounceChange: number;
+  dauChange: number;
 }
 
 export interface ContentAnalytics {
@@ -139,7 +162,14 @@ export interface ContentAnalytics {
   totalShares: number;
   contentByType: { type: string; count: number }[];
   engagementData: ChartData;
+  engagementRate: number;
+  engagementChange: number;
   contentGrowthData: ChartData;
+  contentGrowthRate: number;
+  postsPerDay: number;
+  postsChange: number;
+  commentsPerPost: number;
+  commentsChange: number;
 }
 
 export interface SystemAnalytics {
@@ -157,9 +187,14 @@ export interface RevenueAnalytics {
   totalRevenue: number;
   monthlyRevenue: number;
   revenueGrowth: number;
+  revenueChange: number;
   revenueBySource: { source: string; amount: number }[];
   revenueData: ChartData;
   subscriptionData: ChartData;
+  avgOrderValue: number;
+  aovChange: number;
+  conversionRate: number;
+  conversionChange: number;
 }
 
 class DashboardService {
@@ -211,7 +246,9 @@ class DashboardService {
       return {
         totalUsers: 12543,
         activeUsers: 8932,
+        dailyActiveUsers: 5423,
         newUsers: 234,
+        newUsersToday: 45,
         usersByRole: [
           { role: 'User', count: 11200 },
           { role: 'Premium', count: 1200 },
@@ -228,6 +265,7 @@ class DashboardService {
             borderWidth: 2
           }]
         },
+        userGrowthRate: 12.5,
         userActivityData: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           datasets: [{
@@ -237,7 +275,12 @@ class DashboardService {
             borderColor: 'rgb(16, 185, 129)',
             borderWidth: 2
           }]
-        }
+        },
+        avgSessionDuration: 1250,
+        sessionChange: 8.5,
+        bounceRate: 35.2,
+        bounceChange: -2.1,
+        dauChange: 5.3
       };
     }
   }
@@ -288,7 +331,14 @@ class DashboardService {
             borderColor: 'rgb(168, 85, 247)',
             borderWidth: 2
           }]
-        }
+        },
+        engagementRate: 68.3,
+        engagementChange: 5.2,
+        contentGrowthRate: 15.7,
+        postsPerDay: 245,
+        postsChange: 8.9,
+        commentsPerPost: 2.7,
+        commentsChange: 12.3
       };
     }
   }
@@ -382,7 +432,12 @@ class DashboardService {
             ],
             borderWidth: 2
           }]
-        }
+        },
+        revenueChange: 12.8,
+        avgOrderValue: 89.50,
+        aovChange: 5.2,
+        conversionRate: 3.4,
+        conversionChange: 0.8
       };
     }
   }

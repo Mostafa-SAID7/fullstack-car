@@ -12,7 +12,7 @@ from app.core.config import settings
 sys.path.insert(0, str(Path(__file__).parent))
 
 if __name__ == "__main__":
-    print("🚀 Starting FastAPI server...", flush=True)
+    print("Starting FastAPI server...", flush=True)
     try:
         uvicorn.run(
             "main:app",
@@ -22,7 +22,7 @@ if __name__ == "__main__":
             log_level="info"
         )
     except KeyboardInterrupt:
-        print("\n👋 Shutting down AI Agent...")
+        print("\nShutting down AI Agent...")
     except Exception as e:
-        print(f"❌ Error starting AI Agent: {str(e)}")
+        print(f"Error starting AI Agent: {str(e)}")
         sys.exit(1)

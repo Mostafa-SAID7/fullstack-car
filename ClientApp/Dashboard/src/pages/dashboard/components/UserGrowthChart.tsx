@@ -17,7 +17,7 @@ export const UserGrowthChart: React.FC<UserGrowthChartProps> = ({ data, loading 
     return (
         <ChartCard
             title="User Growth"
-            subtitle="Monthly new user registrations"
+            description="Monthly new user registrations"
             loading={loading}
         >
             <LineChart

@@ -2,7 +2,8 @@
 export * from './helpers';
 export * from './storage';
 export * from './validation';
-export * from './api';
+export { apiClient, ApiClient, ApiError } from '../services/api';
+export type { RequestConfig, RequestInterceptor } from '../services/api';
 
 // Re-export commonly used utilities
 export { cn } from '../lib/utils';

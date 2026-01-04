@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import { apiClient, type ApiResult } from './api';
 import { API_ENDPOINTS } from '../constants/api';
 
 export interface ChatMessage {
@@ -11,15 +11,17 @@ export interface ChatResponse {
     context?: any;
 }
 
+const AI_AGENT_BASE = API_ENDPOINTS.AI_AGENT.BASE;
+
 export const aiAgentService = {
     chat: async (message: string, history: ChatMessage[] = [], context?: string): Promise<ChatResponse> => {
         try {
-            const response = await apiClient.post(API_ENDPOINTS.AI_AGENT.CHAT, {
+            const response = await apiClient.post<ApiResult<ChatResponse>>(API_ENDPOINTS.AI_AGENT.CHAT, {
                 message,
                 history,
                 context
             });
-            return response.data;
+            return response.data!;
         } catch (error) {
             console.error('Error calling AI Agent Chat:', error);
             throw error;
@@ -28,7 +30,7 @@ export const aiAgentService = {
 
     getMaintenanceAdvice: async (params: { make: string; model: string; year: number; mileage?: number }): Promise<any> => {
         try {
-            const response = await axios.post(`${AI_AGENT_URL}/maintenance/advice`, params);
+            const response = await apiClient.post<ApiResult<any>>(`${AI_AGENT_BASE}/maintenance/advice`, params);
             return response.data;
         } catch (error) {
             console.error('Error getting maintenance advice:', error);
@@ -38,7 +40,7 @@ export const aiAgentService = {
 
     getRecommendations: async (params: { budget?: string; car_type?: string; fuel_type?: string; usage?: string; features?: string[] }): Promise<any> => {
         try {
-            const response = await axios.post(`${AI_AGENT_URL}/recommendations`, params);
+            const response = await apiClient.post<ApiResult<any>>(`${AI_AGENT_BASE}/recommendations`, params);
             return response.data;
         } catch (error) {
             console.error('Error getting car recommendations:', error);
@@ -48,7 +50,7 @@ export const aiAgentService = {
 
     analyzeMarket: async (carQuery: string, location?: string): Promise<any> => {
         try {
-            const response = await axios.post(`${AI_AGENT_URL}/analysis/market`, {
+            const response = await apiClient.post<ApiResult<any>>(`${AI_AGENT_BASE}/analysis/market`, {
                 car_query: carQuery,
                 location
             });
@@ -61,7 +63,7 @@ export const aiAgentService = {
 
     startTraining: async (params: { base_model: string; epochs: number; dataset_name: string }): Promise<any> => {
         try {
-            const response = await axios.post(`${AI_AGENT_URL}/training/start`, params);
+            const response = await apiClient.post<ApiResult<any>>(`${AI_AGENT_BASE}/training/start`, params);
             return response.data;
         } catch (error) {
             console.error('Error starting model training:', error);
@@ -71,7 +73,7 @@ export const aiAgentService = {
 
     getTrainingStatus: async (): Promise<any> => {
         try {
-            const response = await axios.get(`${AI_AGENT_URL}/training/status`);
+            const response = await apiClient.get<ApiResult<any>>(`${AI_AGENT_BASE}/training/status`);
             return response.data;
         } catch (error) {
             console.error('Error getting training status:', error);

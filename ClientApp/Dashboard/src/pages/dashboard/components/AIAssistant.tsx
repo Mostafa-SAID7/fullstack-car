@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Send, X, Minimize2, Maximize2, Loader2, MessageSquare, Wrench, Search, BarChart3, ChevronDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { aiAgentService, type ChatMessage } from '../../services/aiAgentService';
+import { aiAgentService, type ChatMessage } from '../../../services/aiAgentService';
 
 type AIMode = 'chat' | 'maintenance' | 'recommendation' | 'analysis';
 
@@ -179,7 +179,7 @@ export const AIAssistant: React.FC = () => {
                         {/* Chat Body */}
                         {!isMinimized && (
                             <>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 bg-gray-50/30 dark:bg-gray-900/10">
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-gray-50/30 dark:bg-gray-900/10">
                                     {messages.map((msg, i) => (
                                         <div
                                             key={i}

@@ -12,7 +12,7 @@ export const ContentTypesChart: React.FC<ContentTypesChartProps> = ({ data, load
     return (
         <ChartCard
             title="Content Types"
-            subtitle="Posts by content type"
+            description="Posts by content type"
             loading={loading}
         >
             <PieChart

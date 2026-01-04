@@ -14,17 +14,19 @@ export const ContentSections: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Recent Posts */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Posts</h3>
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">Recent Posts</h3>
         <div className="space-y-4">
           {recentPosts.map((post, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900">{post.title}</h4>
-                <p className="text-xs text-gray-500">{post.author} • {post.time}</p>
+                <h4 className="text-sm font-medium text-card-foreground">{post.title}</h4>
+                <p className="text-xs text-muted-foreground">{post.author} • {post.time}</p>
               </div>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                post.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                post.status === 'Published'
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                  : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
               }`}>
                 {post.status}
               </span>
@@ -34,26 +36,28 @@ export const ContentSections: React.FC = () => {
       </div>
 
       {/* Moderation Queue */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Moderation Queue</h3>
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">Moderation Queue</h3>
         <div className="space-y-4">
           {moderationQueue.map((item, index) => (
-            <div key={index} className="p-3 border border-gray-200 rounded-lg">
+            <div key={index} className="p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-gray-500">{item.type}</span>
+                <span className="text-xs font-medium text-muted-foreground">{item.type}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  item.severity === 'High' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                  item.severity === 'High'
+                    ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
                 }`}>
                   {item.severity}
                 </span>
               </div>
-              <p className="text-sm text-gray-900 mb-1">{item.content}</p>
-              <p className="text-xs text-gray-500">Reported by {item.reporter}</p>
+              <p className="text-sm text-card-foreground mb-1">{item.content}</p>
+              <p className="text-xs text-muted-foreground">Reported by {item.reporter}</p>
               <div className="flex space-x-2 mt-2">
-                <button className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                <button className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 transition-colors">
                   Approve
                 </button>
-                <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 transition-colors">
                   Remove
                 </button>
               </div>

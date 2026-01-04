@@ -13,29 +13,50 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
   onConfigUpdate
 }) => {
   const models: AIModel[] = [
-    { 
-      name: 'DialoGPT-medium', 
-      provider: 'Microsoft', 
-      size: '345M', 
-      accuracy: 89.2, 
+    {
+      id: '1',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      name: 'DialoGPT-medium',
+      provider: 'microsoft',
+      size: '345M',
+      accuracy: 89.2,
       active: true,
-      description: 'Conversational AI model optimized for dialogue'
+      description: 'Conversational AI model optimized for dialogue',
+      version: '1.0',
+      parameters: { temperature: 0.7, maxTokens: 1024, topP: 0.9, topK: 40 },
+      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: false, translation: false, summarization: false, questionAnswering: true },
+      performance: { averageResponseTime: 120, throughput: 50, memoryUsage: 1024, cpuUsage: 30, accuracy: 89.2, errorRate: 0.05 }
     },
-    { 
-      name: 'GPT-3.5-turbo', 
-      provider: 'OpenAI', 
-      size: '175B', 
-      accuracy: 94.1, 
+    {
+      id: '2',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      name: 'GPT-3.5-turbo',
+      provider: 'openai',
+      size: '175B',
+      accuracy: 94.1,
       active: false,
-      description: 'Advanced language model with high accuracy'
+      description: 'Advanced language model with high accuracy',
+      version: '1.0',
+      parameters: { temperature: 0.7, maxTokens: 2048, topP: 1, topK: 50 },
+      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: true, translation: true, summarization: true, questionAnswering: true },
+      performance: { averageResponseTime: 800, throughput: 10, memoryUsage: 4096, cpuUsage: 80, accuracy: 94.1, errorRate: 0.01 }
     },
-    { 
-      name: 'BERT-base', 
-      provider: 'Google', 
-      size: '110M', 
-      accuracy: 87.5, 
+    {
+      id: '3',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      name: 'BERT-base',
+      provider: 'google',
+      size: '110M',
+      accuracy: 87.5,
       active: false,
-      description: 'Bidirectional encoder for understanding context'
+      description: 'Bidirectional encoder for understanding context',
+      version: '1.0',
+      parameters: { temperature: 0.5, maxTokens: 512, topP: 0.9, topK: 30 },
+      capabilities: { textGeneration: false, textCompletion: true, conversation: false, codeGeneration: false, translation: false, summarization: true, questionAnswering: true },
+      performance: { averageResponseTime: 60, throughput: 100, memoryUsage: 512, cpuUsage: 20, accuracy: 87.5, errorRate: 0.08 }
     }
   ];
 
@@ -45,20 +66,19 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <h3 className="font-bold text-lg mb-6">Available Models</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {models.map((model, i) => (
-            <div 
-              key={i} 
-              className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                model.active 
-                  ? 'border-primary bg-primary/5' 
+            <div
+              key={i}
+              className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${model.active
+                  ? 'border-primary bg-primary/5'
                   : 'border-border hover:border-primary/50'
-              }`}
-              onClick={() => {/* Handle model selection */}}
+                }`}
+              onClick={() => {/* Handle model selection */ }}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -69,9 +89,9 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 )}
               </div>
-              
+
               <p className="text-sm text-muted-foreground mb-3">{model.description}</p>
-              
+
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Provider:</span>
@@ -86,13 +106,12 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
                   <span className="font-medium text-green-500">{model.accuracy}%</span>
                 </div>
               </div>
-              
-              <button 
-                className={`w-full mt-4 py-2 rounded-lg font-medium transition-colors ${
-                  model.active 
-                    ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' 
+
+              <button
+                className={`w-full mt-4 py-2 rounded-lg font-medium transition-colors ${model.active
+                    ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
                     : 'bg-primary/10 text-primary hover:bg-primary/20'
-                }`}
+                  }`}
               >
                 {model.active ? 'Deactivate' : 'Activate'}
               </button>
@@ -106,10 +125,10 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <h3 className="font-bold text-lg mb-6">Model Configuration</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
@@ -127,7 +146,7 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
                 Controls randomness: Lower is more focused, higher is more creative
               </p>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-2">Top-P ({config.topP})</label>
               <input
@@ -144,7 +163,7 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
               </p>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">Max Tokens</label>
@@ -155,7 +174,7 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/50"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-2">Top-K</label>
               <input

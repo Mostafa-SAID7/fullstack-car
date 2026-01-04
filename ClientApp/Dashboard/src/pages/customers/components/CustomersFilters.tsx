@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Search, Filter, SlidersHorizontal, X, Calendar } from 'lucide-react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
 
 export const CustomersFilters: React.FC = () => {
   const { t } = useTranslation();

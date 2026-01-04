@@ -43,7 +43,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="dashboard-card rounded-2xl p-6">
+      <div className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-2xl p-6">
         <div className="animate-pulse space-y-4">
           <div className="flex items-center justify-between">
             <div className="h-4 bg-muted rounded w-24"></div>
@@ -69,7 +69,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.3 }}
-      className="dashboard-card rounded-2xl p-6 relative overflow-hidden group"
+      className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-2xl p-6 relative overflow-hidden group"
     >
       {/* Background decoration */}
       <div className={cn(

@@ -1,11 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Plus, 
-  Users, 
-  FileText, 
-  Settings, 
+import {
+  Plus,
+  FileText,
+  Settings,
   Bot,
   BarChart3,
   Shield,

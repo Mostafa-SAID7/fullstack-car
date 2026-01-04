@@ -1,18 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { 
-  Edit, 
-  Trash2, 
-  Eye, 
-  MoreVertical, 
-  Mail, 
+import {
+  Edit,
+  Trash2,
+  Eye,
+  MoreVertical,
+  Mail,
   Shield,
   User as UserIcon,
   CheckCircle,
   XCircle
 } from 'lucide-react';
-import type { User } from '../../../types/auth';
+import type { UserInfo as User } from '../../../types/auth';
 
 interface UsersTableProps {
   users: User[];
@@ -90,11 +90,11 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      {user.avatar ? (
+                      {user.profileImageUrl ? (
                         <img
                           className="h-10 w-10 rounded-full object-cover"
-                          src={user.avatar}
-                          alt={user.name || user.email}
+                          src={user.profileImageUrl}
+                          alt={`${user.firstName} ${user.lastName}`}
                         />
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -104,7 +104,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-foreground">
-                        {user.name || t('unnamed_user', 'Unnamed User')}
+                        {user.firstName} {user.lastName}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {user.email}
@@ -115,9 +115,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
 
                 {/* Role */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full border ${getRoleColor(user.role || 'user')}`}>
+                  <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full border ${getRoleColor(user.roles?.[0] || 'user')}`}>
                     <Shield className="w-3 h-3" />
-                    {user.role || 'User'}
+                    {user.roles?.[0] || 'User'}
                   </span>
                 </td>
 
@@ -172,7 +172,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
                     >
                       <Eye className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -182,7 +182,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
                     >
                       <Edit className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -192,7 +192,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) =
                     >
                       <Trash2 className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}

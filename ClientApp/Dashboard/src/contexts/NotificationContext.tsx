@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { ToastMessage } from '../types/ui';
-import { TOAST_TYPES } from '../constants/ui';
 
 interface NotificationContextType {
   notifications: ToastMessage[];

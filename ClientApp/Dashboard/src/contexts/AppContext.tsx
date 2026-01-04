@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { STORAGE_KEYS, LANGUAGES } from '../constants/app';
+import { STORAGE_KEYS } from '../constants/app';
 
 interface AppSettings {
   language: string;
@@ -122,7 +122,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     document.documentElement.lang = settings.language;
     
     // Find language direction (RTL for Arabic)
-    const language = LANGUAGES.find(lang => lang.code === settings.language);
     const isRTL = settings.language === 'ar';
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
   }, [settings.language]);

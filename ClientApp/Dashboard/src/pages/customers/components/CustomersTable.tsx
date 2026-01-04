@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import type { User } from '../../../types/auth';
+import type { UserInfo as User } from '../../../types/auth';
 
 interface CustomersTableProps {
   users: User[];

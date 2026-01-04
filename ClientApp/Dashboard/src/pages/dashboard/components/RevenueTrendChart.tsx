@@ -17,7 +17,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data, load
     return (
         <ChartCard
             title="Revenue Trend"
-            subtitle="Monthly revenue performance"
+            description="Monthly revenue performance"
             loading={loading}
         >
             <AreaChart

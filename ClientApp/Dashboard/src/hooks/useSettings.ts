@@ -5,7 +5,7 @@ import type { UserSessionResponse, SecurityLogResponse } from '../types/auth';
 
 export const useSettings = () => {
   const {
-    user, updateProfile, changePassword, logout,
+    user, updateProfile, changePassword,
     loading, error, getActiveSessions, revokeSession,
     getTwoFactorStatus, toggleTwoFactor, uploadAvatar,
     deleteAvatar, getPrivacySettings, updatePrivacySettings,
@@ -23,7 +23,7 @@ export const useSettings = () => {
 
   // Data state
   const [sessions, setSessions] = useState<UserSessionResponse[]>([]);
-  const [logs, setLogs] = useState<SecurityLogResponse[]>([]);
+  const [logs] = useState<SecurityLogResponse[]>([]);
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [deactivateReason, setDeactivateReason] = useState('');
   const [deletePassword, setDeletePassword] = useState('');

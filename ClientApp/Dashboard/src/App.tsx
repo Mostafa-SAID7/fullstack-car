@@ -9,6 +9,8 @@ import {
   DashboardOverview,
   Analytics,
   Users,
+  Customers,
+  Products,
   Content,
   System,
   Settings,
@@ -51,6 +53,26 @@ function App() {
               <ProtectedRoute requiredRoles={["Admin"]}>
                 <MainLayout>
                   <Users />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <ProtectedRoute requiredRoles={["Admin"]}>
+                <MainLayout>
+                  <Customers />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute requiredRoles={["Admin"]}>
+                <MainLayout>
+                  <Products />
                 </MainLayout>
               </ProtectedRoute>
             }

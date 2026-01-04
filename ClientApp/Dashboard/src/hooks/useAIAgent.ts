@@ -22,7 +22,7 @@ export const useAIAgent = () => {
   });
 
   const [isTraining, setIsTraining] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'training' | 'models' | 'monitoring' | 'datasets' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<string>('overview');
 
   // Mock data - in real app, this would come from API
   const [metrics] = useState<ModelMetrics>({

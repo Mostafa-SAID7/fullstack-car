@@ -17,7 +17,7 @@ export const ContentCreationChart: React.FC<ContentCreationChartProps> = ({ data
     return (
         <ChartCard
             title="Content Creation"
-            subtitle="Posts created per month"
+            description="Posts created per month"
             loading={loading}
         >
             <BarChart

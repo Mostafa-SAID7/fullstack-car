@@ -1,14 +1,54 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { UserPlus, Search, Filter, Loader2 } from 'lucide-react';
+import { Loader2, BarChart3, UserCheck, Users, TrendingUp } from 'lucide-react';
 import { useCustomers } from '../../hooks/useCustomers';
 import { CustomersHeader } from './components/CustomersHeader';
 import { CustomersFilters } from './components/CustomersFilters';
 import { CustomersTable } from './components/CustomersTable';
+import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
 
 export const Customers = () => {
-  const { t } = useTranslation();
   const { users, loading } = useCustomers();
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'management', label: 'Management', icon: UserCheck },
+    { id: 'segments', label: 'Segments', icon: Users },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return <CustomersHeader />;
+      case 'management':
+        return (
+          <div className="space-y-6">
+            <CustomersFilters />
+            <CustomersTable users={users} />
+          </div>
+        );
+      case 'segments':
+        return (
+          <div className="text-center py-12">
+            <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">Customer Segments</h3>
+            <p className="text-muted-foreground">Advanced customer segmentation and targeting tools coming soon.</p>
+          </div>
+        );
+      case 'analytics':
+        return (
+          <div className="text-center py-12">
+            <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">Customer Analytics</h3>
+            <p className="text-muted-foreground">Detailed customer behavior analytics and insights coming soon.</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   if (loading) {
     return (
@@ -22,11 +62,17 @@ export const Customers = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-6"
     >
-      <CustomersHeader />
-      <CustomersFilters />
-      <CustomersTable users={users} />
+      <TabNavigation
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+
+      <TabContent activeTab={activeTab}>
+        {renderTabContent()}
+      </TabContent>
     </motion.div>
   );
 };

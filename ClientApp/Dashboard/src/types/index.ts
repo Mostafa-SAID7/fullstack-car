@@ -6,6 +6,5 @@ export * from './datasets';
 export * from './config';
 export * from './common';
 export * from './auth';
-export * from './dashboard';
 export * from './ui';
 export * from './products';

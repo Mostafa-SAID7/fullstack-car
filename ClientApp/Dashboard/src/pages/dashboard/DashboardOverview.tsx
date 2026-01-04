@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -33,7 +32,7 @@ export const DashboardOverview = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-2xl"
+      className="space-y-6"
     >
       <DashboardHeader user={user} />
 

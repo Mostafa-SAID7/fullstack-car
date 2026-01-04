@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Loader2 } from 'lucide-react';
+import { Loader2, BarChart3, Server, Database, FileText } from 'lucide-react';
 import { SystemHeader } from './components/SystemHeader';
 import { SystemOverview } from './components/SystemOverview';
 import { SystemServices } from './components/SystemServices';
 import { SystemMetrics } from './components/SystemMetrics';
 import { SystemResources } from './components/SystemResources';
 import { SystemChart } from './components/SystemChart';
+import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
 
 export const System: React.FC = () => {
   const { t } = useTranslation();
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'services', label: 'Services', icon: Server },
+    { id: 'resources', label: 'Resources', icon: Database },
+    { id: 'logs', label: 'Logs', icon: FileText }
+  ];
 
   // Mock data - in real app, this would come from API
   const [systemInfo] = useState({
@@ -50,9 +60,45 @@ export const System: React.FC = () => {
     return status === 'running' ? 'success' : 'error';
   };
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="space-y-6">
+            <SystemHeader onRefresh={loadSystemData} />
+            {systemInfo && <SystemOverview systemInfo={systemInfo} />}
+            {performanceMetrics && <SystemMetrics performanceMetrics={performanceMetrics} />}
+          </div>
+        );
+      case 'services':
+        return (
+          <div className="space-y-6">
+            {systemInfo && <SystemServices systemInfo={systemInfo} getServiceStatus={getServiceStatus} />}
+          </div>
+        );
+      case 'resources':
+        return (
+          <div className="space-y-6">
+            {systemInfo && <SystemResources formatBytes={formatBytes} />}
+            {performanceMetrics && <SystemChart />}
+          </div>
+        );
+      case 'logs':
+        return (
+          <div className="text-center py-12">
+            <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">System Logs</h3>
+            <p className="text-muted-foreground">System activity logs and audit trails coming soon.</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-[60vh]">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
         <span className="ml-2 text-muted-foreground">{t('loading_system', 'Loading system information...')}</span>
       </div>
@@ -76,13 +122,20 @@ export const System: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <SystemHeader onRefresh={loadSystemData} />
-      {systemInfo && <SystemOverview systemInfo={systemInfo} />}
-      {systemInfo && <SystemServices systemInfo={systemInfo} getServiceStatus={getServiceStatus} />}
-      {performanceMetrics && <SystemMetrics performanceMetrics={performanceMetrics} />}
-      {systemInfo && <SystemResources systemInfo={systemInfo} formatBytes={formatBytes} />}
-      {performanceMetrics && <SystemChart />}
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
+      <TabNavigation
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+
+      <TabContent activeTab={activeTab}>
+        {renderTabContent()}
+      </TabContent>
+    </motion.div>
   );
 };

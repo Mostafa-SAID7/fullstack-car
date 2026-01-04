@@ -17,7 +17,7 @@ export const SystemHealthChart: React.FC<SystemHealthChartProps> = ({ data, load
     return (
         <ChartCard
             title="System Health"
-            subtitle="Resource usage overview"
+            description="Resource usage overview"
             loading={loading}
         >
             <PieChart

@@ -20,7 +20,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className={cn("dashboard-card rounded-2xl p-6", className)}>
+      <div className={cn("bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-2xl p-6", className)}>
         <div className="animate-pulse space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -48,7 +48,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={cn("dashboard-card rounded-2xl p-6", className)}
+      className={cn("bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-2xl p-6", className)}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-6">

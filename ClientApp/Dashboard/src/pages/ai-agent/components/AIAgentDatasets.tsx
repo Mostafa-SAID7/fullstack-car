@@ -9,29 +9,110 @@ import type { Dataset } from '../../../types/datasets';
 
 export const AIAgentDatasets: React.FC = () => {
   const datasets: Dataset[] = [
-    { 
-      name: 'Car Knowledge Base', 
-      samples: 15000, 
-      size: '45.2 MB', 
-      type: 'Q&A', 
+    {
+      id: '1',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-03T00:00:00Z',
+      name: 'Car Knowledge Base',
+      samples: 15000,
+      size: '45.2 MB',
+      type: 'Q&A',
       lastUpdated: '2 days ago',
-      accuracy: 94.2
+      accuracy: 94.2,
+      tags: ['automotive', 'knowledge'],
+      metadata: {
+        format: 'json',
+        encoding: 'utf-8',
+        language: 'en',
+        domain: 'automotive',
+        source: 'internal',
+        version: '1.0'
+      },
+      validation: {
+        isValid: true,
+        errors: [],
+        warnings: [],
+        statistics: {
+          totalSamples: 15000,
+          averageLength: 250,
+          minLength: 10,
+          maxLength: 1000,
+          uniqueTokens: 50000,
+          duplicates: 0,
+          emptyEntries: 0,
+          languageDistribution: { en: 15000 }
+        }
+      }
     },
-    { 
-      name: 'Customer Service', 
-      samples: 25000, 
-      size: '78.5 MB', 
-      type: 'Conversation', 
+    {
+      id: '2',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-08T00:00:00Z',
+      name: 'Customer Service',
+      samples: 25000,
+      size: '78.5 MB',
+      type: 'Conversation',
       lastUpdated: '1 week ago',
-      accuracy: 91.8
+      accuracy: 91.8,
+      tags: ['customer-service', 'conversations'],
+      metadata: {
+        format: 'json',
+        encoding: 'utf-8',
+        language: 'en',
+        domain: 'customer-service',
+        source: 'internal',
+        version: '1.0'
+      },
+      validation: {
+        isValid: true,
+        errors: [],
+        warnings: [],
+        statistics: {
+          totalSamples: 25000,
+          averageLength: 300,
+          minLength: 15,
+          maxLength: 1500,
+          uniqueTokens: 75000,
+          duplicates: 0,
+          emptyEntries: 0,
+          languageDistribution: { en: 25000 }
+        }
+      }
     },
-    { 
-      name: 'Maintenance Guide', 
-      samples: 8000, 
-      size: '23.1 MB', 
-      type: 'Instructions', 
+    {
+      id: '3',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-04T00:00:00Z',
+      name: 'Maintenance Guide',
+      samples: 8000,
+      size: '23.1 MB',
+      type: 'Instructions',
       lastUpdated: '3 days ago',
-      accuracy: 89.5
+      accuracy: 89.5,
+      tags: ['maintenance', 'instructions'],
+      metadata: {
+        format: 'json',
+        encoding: 'utf-8',
+        language: 'en',
+        domain: 'maintenance',
+        source: 'internal',
+        version: '1.0'
+      },
+      validation: {
+        isValid: true,
+        errors: [],
+        warnings: [],
+        statistics: {
+          totalSamples: 8000,
+          averageLength: 200,
+          minLength: 20,
+          maxLength: 800,
+          uniqueTokens: 40000,
+          duplicates: 0,
+          emptyEntries: 0,
+          languageDistribution: { en: 8000 }
+        }
+      }
     }
   ];
 
@@ -41,7 +122,7 @@ export const AIAgentDatasets: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg">Dataset Management</h3>

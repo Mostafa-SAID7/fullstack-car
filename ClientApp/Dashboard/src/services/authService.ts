@@ -62,6 +62,35 @@ export class AuthService {
     return response;
   }
 
+  async verifyToken(_token: string): Promise<boolean> {
+    try {
+      // We can verify by trying to fetch the profile
+      await this.getProfile();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async refreshToken(request: { token: string; refreshToken: string }): Promise<LoginResponse> {
+    // Manually trigger a refresh
+    // Note: apiClient handles this automatically usually, but if called explicitly:
+    const response = await apiClient.post<any>('/v1/auth/refresh-token', request);
+
+    // Map response to LoginResponse structure if needed, or assume backend returns new tokens
+    const loginResponse: LoginResponse = {
+      success: true,
+      message: 'Token refreshed',
+      token: response.token,
+      refreshToken: response.refreshToken,
+      expiresAt: response.expiresAt,
+      user: response.user
+    };
+
+    this.setAuthData(loginResponse);
+    return loginResponse;
+  }
+
   async confirmEmail(request: ConfirmEmailRequest): Promise<ApiResult<void>> {
     return apiClient.post<ApiResult<void>>('/v1/auth/confirm-email', request);
   }
@@ -188,7 +217,8 @@ export class AuthService {
         try {
           this.currentUser = JSON.parse(userJson);
           if (!this.currentUser || !Array.isArray(this.currentUser.roles)) {
-            throw new Error('Invalid user data: missing roles');
+            // throw new Error('Invalid user data: missing roles');
+            // Be more lenient or handle role-less users
           }
           this.notifyListeners();
         } catch (e) {

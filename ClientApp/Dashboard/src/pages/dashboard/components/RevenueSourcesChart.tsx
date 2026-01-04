@@ -12,7 +12,7 @@ export const RevenueSourcesChart: React.FC<RevenueSourcesChartProps> = ({ data, 
     return (
         <ChartCard
             title="Revenue Sources"
-            subtitle="Income by source"
+            description="Income by source"
             loading={loading}
         >
             <PieChart

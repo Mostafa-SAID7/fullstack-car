@@ -21,7 +21,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
   isAIEnabled, 
   metrics 
 }) => {
-  const chartData = generateMockChartData(24);
+  const chartData = generateMockChartData('accuracy', 24);
 
   return (
     <div className="space-y-6">
@@ -30,7 +30,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-2xl bg-primary/10">
@@ -38,7 +38,17 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
             </div>
             <div className={`w-3 h-3 rounded-full ${isAIEnabled ? 'bg-emerald-500' : 'bg-red-500'} animate-pulse`} />
           </div>
-          <h3 className="text-2xl font-bold">{isAIEnabled ? 'Active' : 'Offline'}</h3>
+          <div className="flex items-center gap-3 mb-2">
+            <h3 className="text-2xl font-bold">{isAIEnabled ? 'Active' : 'Offline'}</h3>
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
+              isAIEnabled
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
+                : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+            }`}>
+              <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+              {isAIEnabled ? 'Online' : 'Offline'}
+            </div>
+          </div>
           <p className="text-muted-foreground text-sm">Agent Status</p>
         </motion.div>
 
@@ -46,7 +56,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-2xl bg-green-500/10">
@@ -61,7 +71,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-2xl bg-blue-500/10">
@@ -76,7 +86,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-2xl bg-purple-500/10">
@@ -93,7 +103,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg">Performance Metrics</h3>
@@ -105,7 +115,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
         </div>
         
         <div className="h-64 flex items-end gap-2">
-          {chartData.map((height, i) => (
+          {chartData.datasets[0].data.map((height: number, i: number) => (
             <div
               key={i}
               className="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 rounded-t-sm hover:from-primary/30 hover:to-primary/80 transition-all cursor-pointer"
@@ -128,7 +138,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <h3 className="font-bold text-lg mb-6">System Resources</h3>
           
@@ -178,7 +188,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="dashboard-card rounded-3xl p-6"
+          className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <h3 className="font-bold text-lg mb-6">Recent Activity</h3>
           

@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LineChart } from '../../charts/LineChart';
-import { ChartCard } from '../ChartCard';
-import type { 
-  UserAnalytics, 
-  ContentAnalytics, 
-  SystemAnalytics, 
-  RevenueAnalytics 
+import { LineChart } from '../../../components/charts/LineChart';
+import { ChartCard } from './ChartCard';
+import type {
+  UserAnalytics,
+  ContentAnalytics,
+  SystemAnalytics,
+  RevenueAnalytics
 } from '../../../services/dashboardService';
 
 interface DashboardChartsProps {
@@ -24,6 +24,16 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
   revenueAnalytics,
   loading
 }) => {
+  // Helper to transform Chart.js style data to Recharts format
+  const transformData = (data: any) => {
+    if (!data || !data.labels || !data.datasets?.[0]?.data) return [];
+
+    return data.labels.map((label: string, index: number) => ({
+      label,
+      value: data.datasets[0].data[index]
+    }));
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <motion.div
@@ -37,7 +47,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
           loading={loading}
         >
           <LineChart
-            data={userAnalytics?.chartData || []}
+            data={transformData(userAnalytics?.userGrowthData)}
+            dataKey="value"
+            xAxisKey="label"
             color="#3b82f6"
             height={300}
           />
@@ -55,7 +67,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
           loading={loading}
         >
           <LineChart
-            data={revenueAnalytics?.chartData || []}
+            data={transformData(revenueAnalytics?.revenueData)}
+            dataKey="value"
+            xAxisKey="label"
             color="#10b981"
             height={300}
           />
@@ -73,7 +87,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
           loading={loading}
         >
           <LineChart
-            data={contentAnalytics?.chartData || []}
+            data={transformData(contentAnalytics?.contentGrowthData)}
+            dataKey="value"
+            xAxisKey="label"
             color="#8b5cf6"
             height={300}
           />
@@ -91,7 +107,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
           loading={loading}
         >
           <LineChart
-            data={systemAnalytics?.chartData || []}
+            data={transformData(systemAnalytics?.performanceData)}
+            dataKey="value"
+            xAxisKey="label"
             color="#f59e0b"
             height={300}
           />

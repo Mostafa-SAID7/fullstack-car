@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, RotateCcw, CheckCircle, Database, Layers, Terminal } from 'lucide-react';
-import { aiAgentService } from '../../services/aiAgentService';
+import { aiAgentService } from '../../../services/aiAgentService';
 
 interface TrainingStatus {
     is_training: boolean;
@@ -71,7 +71,7 @@ export const ModelTraining: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Configuration Panel */}
-                <div className="lg:col-span-1 glass-card p-6 space-y-6">
+                <div className="lg:col-span-1 glass p-6 space-y-6">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                         <Layers size={20} className="text-blue-400" />
                         Parameters
@@ -130,7 +130,7 @@ export const ModelTraining: React.FC = () => {
                 {/* Progress & Logs */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Progress Card */}
-                    <div className="glass-card p-6 relative overflow-hidden">
+                    <div className="glass p-6 relative overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-semibold text-white">Live Progress</h3>
                             <span className="text-2xl font-bold text-blue-400">{Math.round(status?.progress || 0)}%</span>
@@ -183,7 +183,7 @@ export const ModelTraining: React.FC = () => {
                     )}
 
                     {/* Console Logs */}
-                    <div className="bg-black/60 rounded-2xl border border-white/10 p-6 font-mono text-sm h-48 overflow-y-auto">
+                    <div className="bg-black/60 rounded-2xl border border-white/10 p-6 font-mono text-sm h-48 overflow-y-auto custom-scrollbar">
                         <div className="flex items-center gap-2 mb-4 text-gray-500 border-b border-white/5 pb-2">
                             <Terminal size={14} /> System Console
                         </div>

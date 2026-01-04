@@ -1,9 +1,7 @@
 // Common Types and Enums
 
-export type TabId = 'overview' | 'training' | 'models' | 'monitoring' | 'datasets' | 'settings';
-
 export interface TabConfig {
-  id: TabId;
+  id: string;
   label: string;
   icon: any;
 }

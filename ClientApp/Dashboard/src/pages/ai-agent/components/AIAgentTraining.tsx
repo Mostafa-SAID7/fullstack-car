@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
-import { 
-  Play, 
-  Square, 
-  Upload, 
-  RefreshCw, 
-  Filter, 
-  Eye, 
-  Download 
+import {
+  Play,
+  Square,
+  Upload,
+  RefreshCw,
+  Filter,
+  Eye,
+  Download
 } from 'lucide-react';
 import type { TrainingSession } from '../../../types/training';
-import { getStatusColor, getStatusIcon } from '../utils/helpers';
+import { getStatusColor, getStatusIcon } from '../../../utils/helpers';
 
 interface AIAgentTrainingProps {
   trainingSessions: TrainingSession[];
@@ -30,18 +30,17 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg">Training Controls</h3>
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={isTraining ? onStopTraining : onStartTraining}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
-                isTraining 
-                  ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' 
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${isTraining
+                  ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
                   : 'bg-primary text-primary-foreground hover:opacity-90'
-              }`}
+                }`}
             >
               {isTraining ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               {isTraining ? 'Stop Training' : 'Start Training'}
@@ -64,7 +63,7 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
                 <option>Custom Dataset</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-2">Training Mode</label>
               <select className="w-full bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/50">
@@ -86,7 +85,7 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/50"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-2">Batch Size</label>
               <select className="w-full bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/50">
@@ -107,7 +106,7 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/50"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-2">Validation Split</label>
               <input
@@ -128,7 +127,7 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg">Training Sessions</h3>
@@ -169,12 +168,11 @@ export const AIAgentTraining: React.FC<AIAgentTrainingProps> = ({
                   <span>{session.progress}%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      session.status === 'running' ? 'bg-blue-500' :
-                      session.status === 'completed' ? 'bg-green-500' :
-                      session.status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'
-                    }`}
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${session.status === 'running' ? 'bg-blue-500' :
+                        session.status === 'completed' ? 'bg-green-500' :
+                          session.status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'
+                      }`}
                     style={{ width: `${session.progress}%` }}
                   />
                 </div>

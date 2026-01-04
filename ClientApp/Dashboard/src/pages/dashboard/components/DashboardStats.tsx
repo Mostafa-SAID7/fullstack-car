@@ -19,13 +19,22 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, loading }) => {
-  const statsConfig = [
+  const statsConfig: Array<{
+    title: string;
+    value: number;
+    change: number;
+    icon: any;
+    color: 'blue' | 'green' | 'red' | 'yellow' | 'purple' | 'indigo' | 'orange' | 'pink' | 'cyan' | 'emerald';
+    description: string;
+    prefix?: string;
+    suffix?: string;
+  }> = [
     {
       title: 'Total Users',
       value: stats?.totalUsers || 0,
       change: stats?.userGrowth || 0,
       icon: Users,
-      color: 'blue',
+      color: 'blue' as const,
       description: 'Active community members'
     },
     {

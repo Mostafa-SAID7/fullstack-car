@@ -1,6 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import { useSettings } from '../../hooks/useSettings';
 import { SettingsHeader } from './components/SettingsHeader';
 import { ProfileSettings } from './components/ProfileSettings';
@@ -10,7 +8,6 @@ import { DangerZone } from './components/DangerZone';
 import { SettingsModals } from './components/SettingsModals';
 
 export const Settings = () => {
-  const { t } = useTranslation();
   const {
     user,
     profileData,
@@ -46,10 +43,10 @@ export const Settings = () => {
       animate={{ opacity: 1 }}
       className="space-y-8 pb-20"
     >
-      <SettingsHeader successMessage={successMessage} />
+      <SettingsHeader successMessage={successMessage || undefined} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6">
           <ProfileSettings
             user={user}
             profileData={profileData}

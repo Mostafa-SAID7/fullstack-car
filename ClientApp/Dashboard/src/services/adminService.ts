@@ -1,121 +1,55 @@
+import type { ApiResult } from './api';
 import { apiClient } from './api';
+import type {
+  DashboardStats,
+  QuickStats,
+  SystemInfo,
+  SystemMetrics,
+  DatabaseMetrics,
+  Activity,
+  SystemAlert,
+  PerformanceMetrics,
+  MemoryUsage,
+  DiskUsage,
+  NetworkTraffic,
+  ResponseTimes,
+  CacheMetrics,
+  UserAnalytics as ServiceUserAnalytics,
+  ContentAnalytics as ServiceContentAnalytics,
+  SystemAnalytics as ServiceSystemAnalytics
+} from './dashboardService';
 
-// Dashboard Models
-export interface DashboardStats {
-  quickStats: QuickStats;
-  systemInfo: SystemInfo;
-  recentActivity: Activity[];
-  systemAlerts: SystemAlert[];
-  performanceMetrics: PerformanceMetrics;
-}
-
-export interface QuickStats {
-  newUsersToday: number;
-  postsToday: number;
-  commentsToday: number;
-  reportsToday: number;
-}
-
-export interface SystemInfo {
-  version: string;
-  environment: string;
-  serverTime: string;
-  databaseStatus: string;
-  aiServiceStatus: string;
-  cacheStatus: string;
-  uptime: string;
-  systemMetrics: SystemMetrics;
-  databaseMetrics: DatabaseMetrics;
-}
-
-export interface SystemMetrics {
-  workingSet: number;
-  privateMemory: number;
-  threadCount: number;
-  handleCount: number;
-}
-
-export interface DatabaseMetrics {
-  totalTables: number;
-  totalRecords: number;
-  databaseSize: string;
-  connectionCount: number;
-}
-
-export interface Activity {
-  type: string;
-  user: string;
-  title: string;
-  timestamp: string;
-  icon: string;
-  priority: string;
-}
-
-export interface SystemAlert {
-  message: string;
-  timestamp: string;
-  type: string;
-  severity: string;
-}
-
-export interface PerformanceMetrics {
-  cpuUsage: number;
-  memoryUsage: MemoryUsage;
-  diskUsage: DiskUsage;
-  networkTraffic: NetworkTraffic;
-  responseTimes: ResponseTimes;
-  errorRate: number;
-  databaseMetrics: DatabaseMetrics;
-  cacheMetrics: CacheMetrics;
-}
-
-export interface MemoryUsage {
-  workingSet: number;
-  privateMemory: number;
-  gcMemory: number;
-}
-
-export interface DiskUsage {
-  used: number;
-  available: number;
-  total: number;
-}
-
-export interface NetworkTraffic {
-  incoming: number;
-  outgoing: number;
-}
-
-export interface ResponseTimes {
-  average: number;
-  p95: number;
-  p99: number;
-}
-
-export interface CacheMetrics {
-  hitRate: number;
-  missRate: number;
-  totalKeys: number;
-  memoryUsage: string;
-}
+// Re-map internal types to match dashboard service where they differ or are redundant
+export type {
+  DashboardStats,
+  QuickStats,
+  SystemInfo,
+  SystemMetrics,
+  DatabaseMetrics,
+  Activity,
+  SystemAlert,
+  PerformanceMetrics,
+  MemoryUsage,
+  DiskUsage,
+  NetworkTraffic,
+  ResponseTimes,
+  CacheMetrics
+};
 
 // Analytics Models
 export interface AdvancedAnalytics {
-  users: UserAnalytics;
-  content: ContentAnalytics;
+  users: ServiceUserAnalytics;
+  content: ServiceContentAnalytics;
   engagement: EngagementAnalytics;
-  system: SystemAnalytics;
+  system: ServiceSystemAnalytics;
   security: SecurityAnalytics;
   performance: PerformanceAnalytics;
   metadata: AnalyticsMetadata;
 }
 
-export interface UserAnalytics {
-  totalUsers: number;
-  activeUsers: number;
+export interface UserAnalytics extends ServiceUserAnalytics {
   newUsersToday: number;
   userGrowthRate: number;
-  usersByRole: Record<string, number>;
   userActivity: UserActivityData[];
   demographics: UserDemographics;
 }
@@ -133,10 +67,7 @@ export interface UserDemographics {
   devices: Record<string, number>;
 }
 
-export interface ContentAnalytics {
-  totalPosts: number;
-  totalComments: number;
-  totalLikes: number;
+export interface ContentAnalytics extends ServiceContentAnalytics {
   contentGrowthRate: number;
   topCategories: CategoryData[];
   contentTrends: ContentTrendData[];
@@ -178,10 +109,9 @@ export interface EngagementTrendData {
   avgSessionDuration: number;
 }
 
-export interface SystemAnalytics {
+export interface SystemAnalytics extends ServiceSystemAnalytics {
   serverUptime: number;
   averageResponseTime: number;
-  errorRate: number;
   throughput: number;
   resourceUsage: ResourceUsageData[];
   errorLogs: ErrorLogData[];
@@ -290,18 +220,11 @@ export interface PaginatedResult<T> {
   hasNextPage: boolean;
 }
 
-export interface ApiResult<T = any> {
-  succeeded: boolean;
-  data?: T;
-  errors?: string[];
-  message?: string;
-}
-
 export class AdminService {
   private static instance: AdminService;
   private readonly baseUrl = '/v3/admin';
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): AdminService {
     if (!AdminService.instance) {
@@ -315,10 +238,10 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     const queryString = params.toString();
     const url = `${this.baseUrl}/dashboard${queryString ? `?${queryString}` : ''}`;
-    
+
     return apiClient.get<ApiResult<DashboardStats>>(url);
   }
 
@@ -331,7 +254,7 @@ export class AdminService {
     params.append('limit', limit.toString());
     if (activityType) params.append('activityType', activityType);
     if (fromDate) params.append('fromDate', fromDate);
-    
+
     return apiClient.get<ApiResult<{ activities: Activity[]; totalCount: number }>>(`${this.baseUrl}/dashboard/recent-activity?${params.toString()}`);
   }
 
@@ -339,7 +262,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (severity) params.append('severity', severity);
     params.append('includeAcknowledged', includeAcknowledged.toString());
-    
+
     return apiClient.get<ApiResult<SystemAlert[]>>(`${this.baseUrl}/dashboard/alerts?${params.toString()}`);
   }
 
@@ -348,7 +271,7 @@ export class AdminService {
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
     params.append('granularity', granularity);
-    
+
     return apiClient.get<ApiResult<PerformanceMetrics>>(`${this.baseUrl}/dashboard/performance?${params.toString()}`);
   }
 
@@ -357,7 +280,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<AdvancedAnalytics>>(`${this.baseUrl}/analytics/advanced?${params.toString()}`);
   }
 
@@ -365,7 +288,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<UserAnalytics>>(`${this.baseUrl}/analytics/users?${params.toString()}`);
   }
 
@@ -373,7 +296,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<ContentAnalytics>>(`${this.baseUrl}/analytics/content?${params.toString()}`);
   }
 
@@ -381,7 +304,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<EngagementAnalytics>>(`${this.baseUrl}/analytics/engagement?${params.toString()}`);
   }
 
@@ -389,7 +312,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<SystemAnalytics>>(`${this.baseUrl}/analytics/system?${params.toString()}`);
   }
 
@@ -397,7 +320,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<SecurityAnalytics>>(`${this.baseUrl}/analytics/security?${params.toString()}`);
   }
 
@@ -405,7 +328,7 @@ export class AdminService {
     const params = new URLSearchParams();
     if (fromDate) params.append('fromDate', fromDate);
     if (toDate) params.append('toDate', toDate);
-    
+
     return apiClient.get<ApiResult<PerformanceAnalytics>>(`${this.baseUrl}/analytics/performance?${params.toString()}`);
   }
 
@@ -414,7 +337,7 @@ export class AdminService {
     const params = new URLSearchParams();
     params.append('pageNumber', pageNumber.toString());
     params.append('pageSize', pageSize.toString());
-    
+
     if (filters) {
       if (filters.searchTerm) params.append('searchTerm', filters.searchTerm);
       if (filters.role) params.append('role', filters.role);
@@ -423,7 +346,7 @@ export class AdminService {
       if (filters.fromDate) params.append('fromDate', filters.fromDate);
       if (filters.toDate) params.append('toDate', filters.toDate);
     }
-    
+
     return apiClient.get<ApiResult<PaginatedResult<AdminUser>>>(`${this.baseUrl}/management/users?${params.toString()}`);
   }
 

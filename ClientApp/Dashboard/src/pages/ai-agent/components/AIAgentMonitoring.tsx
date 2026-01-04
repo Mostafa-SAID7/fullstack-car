@@ -1,29 +1,29 @@
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  TrendingUp, 
-  AlertTriangle, 
-  Clock 
+import {
+  Users,
+  TrendingUp,
+  AlertTriangle,
+  Clock
 } from 'lucide-react';
 import type { PerformanceMetric, ErrorDistribution } from '../../../types/monitoring';
-import { generateMockChartData } from '../utils/helpers';
+import { generateMockChartData } from '../../../utils/helpers';
 
 export const AIAgentMonitoring: React.FC = () => {
   const metrics: PerformanceMetric[] = [
-    { label: 'Active Users', value: '1,247', change: '+12%', icon: Users, color: 'blue' },
-    { label: 'Requests/min', value: '156', change: '+8%', icon: TrendingUp, color: 'green' },
-    { label: 'Error Rate', value: '2.1%', change: '-5%', icon: AlertTriangle, color: 'red' },
-    { label: 'Avg Response', value: '1.2s', change: '-15%', icon: Clock, color: 'purple' }
+    { label: 'Active Users', value: '1,247', change: '+12%', icon: Users, color: 'blue', trend: 'up' },
+    { label: 'Requests/min', value: '156', change: '+8%', icon: TrendingUp, color: 'green', trend: 'up' },
+    { label: 'Error Rate', value: '2.1%', change: '-5%', icon: AlertTriangle, color: 'red', trend: 'down' },
+    { label: 'Avg Response', value: '1.2s', change: '-15%', icon: Clock, color: 'purple', trend: 'down' }
   ];
 
   const errorDistribution: ErrorDistribution[] = [
-    { type: 'Timeout Errors', count: 12, percentage: 45 },
-    { type: 'Model Errors', count: 8, percentage: 30 },
-    { type: 'Input Validation', count: 4, percentage: 15 },
-    { type: 'Other', count: 3, percentage: 10 }
+    { type: 'Timeout Errors', count: 12, percentage: 45, severity: 'critical' },
+    { type: 'Model Errors', count: 8, percentage: 30, severity: 'high' },
+    { type: 'Input Validation', count: 4, percentage: 15, severity: 'medium' },
+    { type: 'Other', count: 3, percentage: 10, severity: 'low' }
   ];
 
-  const responseTimeData = generateMockChartData(20);
+  const responseTimeData = generateMockChartData(20) as number[];
 
   return (
     <div className="space-y-6">
@@ -35,15 +35,14 @@ export const AIAgentMonitoring: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="dashboard-card rounded-3xl p-6"
+            className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-2xl bg-${metric.color}-500/10`}>
                 <metric.icon className={`w-6 h-6 text-${metric.color}-500`} />
               </div>
-              <span className={`text-sm font-medium ${
-                metric.change.startsWith('+') ? 'text-green-500' : 'text-red-500'
-              }`}>
+              <span className={`text-sm font-medium ${metric.change.startsWith('+') ? 'text-green-500' : 'text-red-500'
+                }`}>
                 {metric.change}
               </span>
             </div>
@@ -58,7 +57,7 @@ export const AIAgentMonitoring: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="dashboard-card rounded-3xl p-6"
+        className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-lg">Performance Dashboard</h3>
@@ -68,12 +67,12 @@ export const AIAgentMonitoring: React.FC = () => {
             <button className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded-lg">24h</button>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <h4 className="font-medium mb-4">Response Time Trend</h4>
             <div className="h-48 flex items-end gap-1">
-              {responseTimeData.map((height, i) => (
+              {responseTimeData.map((height: number, i: number) => (
                 <div
                   key={i}
                   className="flex-1 bg-gradient-to-t from-blue-500/20 to-blue-500/60 rounded-t-sm"
@@ -82,7 +81,7 @@ export const AIAgentMonitoring: React.FC = () => {
               ))}
             </div>
           </div>
-          
+
           <div>
             <h4 className="font-medium mb-4">Error Distribution</h4>
             <div className="space-y-3">
@@ -91,7 +90,7 @@ export const AIAgentMonitoring: React.FC = () => {
                   <span className="text-sm">{error.type}</span>
                   <div className="flex items-center gap-2">
                     <div className="w-20 bg-muted rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-red-500 h-2 rounded-full"
                         style={{ width: `${error.percentage}%` }}
                       />
