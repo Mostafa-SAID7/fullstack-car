@@ -5,8 +5,7 @@ import { useProducts } from '../../hooks/useProducts';
 import { ProductsHeader } from './components/ProductsHeader';
 import { ProductsFilters } from './components/ProductsFilters';
 import { ProductsGrid } from './components/ProductsGrid';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { Pagination } from '../../components/ui/Pagination';
+import { TabNavigation, TabContent, Pagination } from '../../components/ui';
 
 export const Products = () => {
   const { products } = useProducts();

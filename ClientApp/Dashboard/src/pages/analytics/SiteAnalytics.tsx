@@ -22,58 +22,8 @@ import { AreaChart, PieChart } from '../../components/charts';
 import { StatsSkeleton, ChartSkeleton } from '../../components/ui/Skeleton';
 import { useToast } from '../../hooks/useToast';
 import { AnalyticsHeader } from './components/AnalyticsHeader';
+import { MetricCard } from '../../components/ui/MetricCard';
 
-interface MetricCardProps {
-  title: string;
-  value: string | number;
-  change?: number;
-  changeLabel?: string;
-  icon: React.ReactNode;
-  loading?: boolean;
-}
-
-const MetricCard: React.FC<MetricCardProps> = ({
-  title,
-  value,
-  change,
-  changeLabel,
-  icon,
-  loading = false
-}) => {
-  if (loading) {
-    return <StatsSkeleton count={1} />;
-  }
-
-  return (
-    <Card>
-      <CardContent className="pt-4 sm:pt-6">
-        <div className="flex items-center justify-between">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
-            <p className="text-xl sm:text-2xl font-bold mt-1">{value}</p>
-            {change !== undefined && (
-              <div className="flex items-center gap-1 mt-1">
-                {change > 0 ? (
-                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                ) : (
-                  <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 flex-shrink-0" />
-                )}
-                <span className={`text-xs sm:text-sm font-medium ${
-                  change > 0 ? 'text-green-500' : 'text-red-500'
-                }`}>
-                  {Math.abs(change)}% {changeLabel || 'vs last period'}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className="p-2 sm:p-3 bg-primary/10 rounded-full flex-shrink-0 ml-2">
-            {icon}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 
 export const SiteAnalytics: React.FC = () => {

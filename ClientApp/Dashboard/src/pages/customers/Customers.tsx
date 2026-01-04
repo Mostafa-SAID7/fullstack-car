@@ -5,8 +5,7 @@ import { useCustomers } from '../../hooks/useCustomers';
 import { CustomersHeader } from './components/CustomersHeader';
 import { CustomersFilters } from './components/CustomersFilters';
 import { CustomersTable } from './components/CustomersTable';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { Pagination } from '../../components/ui/Pagination';
+import { TabNavigation, TabContent, Pagination } from '../../components/ui';
 
 export const Customers = () => {
   const { users, loading } = useCustomers();

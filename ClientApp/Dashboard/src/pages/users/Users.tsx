@@ -6,8 +6,7 @@ import { UsersHeader } from './components/UsersHeader';
 import { UsersFilters } from './components/UsersFilters';
 import { UsersTable } from './components/UsersTable';
 import { UsersEmptyState } from './components/UsersEmptyState';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { Pagination } from '../../components/ui/Pagination';
+import { TabNavigation, TabContent, Pagination } from '../../components/ui';
 
 export const Users: React.FC = () => {
   const { t } = useTranslation();
@@ -332,11 +331,11 @@ export const Users: React.FC = () => {
   };
 
   const handleUserAction = (action: string, userId: string) => {
-    console.log('User action:', action, 'for user:', userId);
+    // Handle user action - implement actual logic here
   };
 
   const loadUsers = () => {
-    console.log('Loading users...');
+    // Load users - implement actual API call here
   };
 
   const renderTabContent = () => {

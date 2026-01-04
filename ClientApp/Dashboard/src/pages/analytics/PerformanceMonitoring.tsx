@@ -5,9 +5,6 @@ import {
   HardDrive,
   Server,
   AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  TrendingDown,
   Activity,
   Cpu,
   BarChart3,
@@ -22,84 +19,9 @@ import { Button } from '../../components/ui/Button';
 import { Progress } from '../../components/ui/Progress';
 import { Badge } from '../../components/ui/Badge';
 import { ChartSkeleton, StatsSkeleton } from '../../components/ui/Skeleton';
+import { MetricCard } from '../../components/ui/MetricCard';
 import { useToast } from '../../hooks/useToast';
 
-interface MetricCardProps {
-  title: string;
-  value: string | number;
-  unit?: string;
-  status: 'good' | 'warning' | 'critical';
-  change?: number;
-  icon: React.ReactNode;
-  loading?: boolean;
-}
-
-const MetricCard: React.FC<MetricCardProps> = ({
-  title,
-  value,
-  unit,
-  status,
-  change,
-  icon,
-  loading = false
-}) => {
-  if (loading) {
-    return <StatsSkeleton count={1} />;
-  }
-
-  const statusColors = {
-    good: 'text-green-500 bg-green-50',
-    warning: 'text-yellow-500 bg-yellow-50',
-    critical: 'text-red-500 bg-red-50'
-  };
-
-  const getStatusIcon = () => {
-    switch (status) {
-      case 'good':
-        return <CheckCircle className="w-4 h-4" />;
-      case 'warning':
-        return <AlertTriangle className="w-4 h-4" />;
-      case 'critical':
-        return <AlertTriangle className="w-4 h-4" />;
-    }
-  };
-
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className={`p-2 rounded-full ${statusColors[status]}`}>
-            {icon}
-          </div>
-          {getStatusIcon()}
-        </div>
-
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold">
-            {value}
-            {unit && <span className="text-sm font-normal text-muted-foreground ml-1">{unit}</span>}
-          </p>
-
-          {change !== undefined && (
-            <div className="flex items-center gap-1 mt-1">
-              {change > 0 ? (
-                <TrendingUp className="w-4 h-4 text-green-500" />
-              ) : (
-                <TrendingDown className="w-4 h-4 text-red-500" />
-              )}
-              <span className={`text-sm font-medium ${
-                change > 0 ? 'text-green-500' : 'text-red-500'
-              }`}>
-                {Math.abs(change)}% vs last period
-              </span>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 interface PerformanceScoreProps {
   score: number;

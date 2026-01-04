@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, ShieldCheck, TrendingUp, FileText } from 'lucide-react';
-import { ContentHeader } from './components/ContentHeader';
-import { ContentStats } from './components/ContentStats';
-import { ContentList } from './components/ContentList';
-import { ContentAnalytics } from './components/ContentAnalytics';
-import { ContentTypeSelector, ContentType } from '../../components/ui/ContentTypeSelector';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { ContentHeader, ContentStats, ContentList, ContentAnalytics } from './components';
+import { ContentTypeSelector, ContentType, TabNavigation, TabContent } from '../../components/ui';
 
 export const Content: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');

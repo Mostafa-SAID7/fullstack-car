@@ -80,14 +80,3 @@ export interface LoadingState {
   message?: string;
   progress?: number;
 }
-
-export interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
-  onPageChange: (page: number) => void;
-  onItemsPerPageChange?: (itemsPerPage: number) => void;
-  showItemsPerPage?: boolean;
-  showTotalItems?: boolean;
-}

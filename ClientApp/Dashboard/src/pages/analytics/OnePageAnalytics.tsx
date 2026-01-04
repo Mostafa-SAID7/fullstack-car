@@ -23,68 +23,9 @@ import { Progress } from '../../components/ui/Progress';
 import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/ui/Input';
 import { ChartSkeleton, StatsSkeleton } from '../../components/ui/Skeleton';
+import { MetricCard } from '../../components/ui/MetricCard';
 import { useToast } from '../../hooks/useToast';
 
-interface MetricCardProps {
-  title: string;
-  value: string | number;
-  unit?: string;
-  change?: number;
-  icon: React.ReactNode;
-  color?: string;
-  loading?: boolean;
-}
-
-const MetricCard: React.FC<MetricCardProps> = ({
-  title,
-  value,
-  unit,
-  change,
-  icon,
-  color = 'blue',
-  loading = false
-}) => {
-  if (loading) {
-    return <StatsSkeleton count={1} />;
-  }
-
-  const colorClasses = {
-    blue: 'text-blue-500 bg-blue-50',
-    green: 'text-green-500 bg-green-50',
-    purple: 'text-purple-500 bg-purple-50',
-    orange: 'text-orange-500 bg-orange-50',
-    red: 'text-red-500 bg-red-50'
-  };
-
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className={`p-2 rounded-full ${colorClasses[color as keyof typeof colorClasses]}`}>
-            {icon}
-          </div>
-          {change !== undefined && (
-            <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-              change > 0 ? 'bg-green-100 text-green-700' :
-              'bg-red-100 text-red-700'
-            }`}>
-              {change > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingUp className="w-3 h-3 rotate-180" />}
-              {Math.abs(change)}%
-            </div>
-          )}
-        </div>
-
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold">
-            {value}
-            {unit && <span className="text-sm font-normal text-muted-foreground ml-1">{unit}</span>}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 interface ScrollDepthChartProps {
   data: { [key: string]: number };
