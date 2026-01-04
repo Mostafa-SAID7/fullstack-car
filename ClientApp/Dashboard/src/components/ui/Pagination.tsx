@@ -124,7 +124,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 <span className="px-2 py-1 text-muted-foreground">...</span>
               ) : (
                 <Button
-                  variant={currentPage === page ? "default" : "outline"}
+                  variant={currentPage === page ? "primary" : "outline"}
                   size="sm"
                   onClick={() => onPageChange(page as number)}
                   className={cn(
