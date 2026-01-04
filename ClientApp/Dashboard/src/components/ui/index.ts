@@ -7,7 +7,8 @@ export { TabNavigation, TabContent } from './TabNavigation';
 export { Switch } from './Switch';
 export { Progress } from './Progress';
 export { Badge } from './Badge';
-export { ContentTypeSelector, type ContentType } from './ContentTypeSelector';
+export { ContentTypeSelector } from './ContentTypeSelector';
+export type { ContentType } from './ContentTypeSelector';
 export { Pagination } from './Pagination';
 export { MetricCard } from './MetricCard';
 export {
