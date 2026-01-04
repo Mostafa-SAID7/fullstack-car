@@ -435,7 +435,7 @@ export const PerformanceMonitoring: React.FC = () => {
             )}
 
             {metrics.coreWebVitals.cls > 0.1 && (
-              <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5" />
                 <div>
                   <p className="font-medium text-orange-800 ">
@@ -449,7 +449,7 @@ export const PerformanceMonitoring: React.FC = () => {
             )}
 
             {metrics.javascript.unusedJs > 0.5 && (
-              <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="font-medium text-blue-800 ">
@@ -463,7 +463,7 @@ export const PerformanceMonitoring: React.FC = () => {
             )}
 
             {metrics.images.unoptimizedImages > 0 && (
-              <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-green-500 mt-0.5" />
                 <div>
                   <p className="font-medium text-green-800 ">

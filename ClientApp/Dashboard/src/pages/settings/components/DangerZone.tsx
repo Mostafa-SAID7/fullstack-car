@@ -10,13 +10,13 @@ interface DangerZoneProps {
 
 export const DangerZone: React.FC<DangerZoneProps> = ({ onDeactivate, onDelete }) => {
     return (
-        <Card className="border-red-200 dark:border-red-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-            <div className="bg-red-50 dark:bg-red-950/30 p-6 border-b border-red-200 dark:border-red-900">
-                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+        <Card className="border-red-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+            <div className="bg-red-50 p-6 border-b border-red-200">
+                <div className="flex items-center gap-2 text-red-600">
                     <AlertTriangle className="w-5 h-5" />
                     <h3 className="font-bold text-lg">Danger Zone</h3>
                 </div>
-                <p className="text-red-600/80 dark:text-red-400/80 mt-1 text-sm">
+                <p className="text-red-600/80 mt-1 text-sm">
                     Irreversible and destructive actions. Please be careful.
                 </p>
             </div>

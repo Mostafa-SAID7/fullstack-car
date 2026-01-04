@@ -92,8 +92,8 @@ export const CustomersHeader: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className={`text-sm font-semibold px-2 py-1 rounded-full ${
                     stat.changeType === 'positive'
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                      : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                   }`}>
                     {stat.change}
                   </span>
@@ -101,7 +101,7 @@ export const CustomersHeader: React.FC = () => {
                 </div>
               </div>
               <div className="p-4 bg-gradient-to-br from-indigo-500/10 to-indigo-600/10 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                <stat.icon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+                <stat.icon className="w-7 h-7 text-indigo-600" />
               </div>
             </div>
           </motion.div>

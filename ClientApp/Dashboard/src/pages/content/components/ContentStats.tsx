@@ -17,8 +17,8 @@ export const ContentStats: React.FC = () => {
               <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
               <p className="text-2xl font-bold text-card-foreground mt-1">{stat.value}</p>
             </div>
-            <div className={`p-3 rounded-lg bg-${stat.color}-50 dark:bg-${stat.color}-900/20`}>
-              <stat.icon className={`w-6 h-6 text-${stat.color}-600 dark:text-${stat.color}-400`} />
+            <div className={`p-3 rounded-lg bg-${stat.color}-50`}>
+              <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
             </div>
           </div>
         </div>

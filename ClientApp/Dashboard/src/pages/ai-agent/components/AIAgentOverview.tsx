@@ -42,8 +42,8 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
             <h3 className="text-2xl font-bold">{isAIEnabled ? 'Active' : 'Offline'}</h3>
             <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
               isAIEnabled
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
-                : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-red-100 text-red-700'
             }`}>
               <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
               {isAIEnabled ? 'Online' : 'Offline'}

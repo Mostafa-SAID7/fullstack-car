@@ -194,7 +194,7 @@ export const AIAssistant: React.FC = () => {
                                                     : 'bg-card text-card-foreground rounded-tl-sm border border-border'
                                                     }`}
                                             >
-                                                <div className="prose prose-sm dark:prose-invert max-w-none">
+                                                <div className="prose prose-sm max-w-none">
                                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                         {msg.content}
                                                     </ReactMarkdown>

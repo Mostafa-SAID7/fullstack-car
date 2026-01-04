@@ -38,12 +38,12 @@ export const COMMON_CHART_PROPS = {
         vertical: false,
     },
     xAxis: {
-        className: 'text-[10px] text-gray-500 dark:text-gray-400',
+        className: 'text-[10px] text-gray-500',
         tickLine: false,
         axisLine: false,
     },
     yAxis: {
-        className: 'text-[10px] text-gray-500 dark:text-gray-400',
+        className: 'text-[10px] text-gray-500',
         tickLine: false,
         axisLine: false,
     },

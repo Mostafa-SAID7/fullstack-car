@@ -31,7 +31,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   return (
     <div className="w-full">
       {title && (
-        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900">
           {title}
         </h3>
       )}

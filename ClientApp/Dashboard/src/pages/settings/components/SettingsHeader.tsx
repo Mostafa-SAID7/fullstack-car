@@ -48,8 +48,8 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({ successMessage }
             <CheckCircle className="w-5 h-5 text-green-600" />
           </div>
           <div>
-            <h4 className="font-semibold text-green-800 dark:text-green-200">Success!</h4>
-            <p className="text-green-700 dark:text-green-300 text-sm">{successMessage}</p>
+            <h4 className="font-semibold text-green-800">Success!</h4>
+            <p className="text-green-700 text-sm">{successMessage}</p>
           </div>
         </motion.div>
       )}

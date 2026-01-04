@@ -442,7 +442,7 @@ export const OnePageAnalytics: React.FC = () => {
                   <p className="font-medium text-blue-800">
                     Optimize First Contentful Paint
                   </p>
-                  <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                  <p className="text-sm text-blue-700 mt-1">
                     Your FCP is {metrics.performance.firstContentfulPaint}s. Consider optimizing images, reducing render-blocking resources, and improving server response time.
                   </p>
                 </div>
@@ -450,13 +450,13 @@ export const OnePageAnalytics: React.FC = () => {
             )}
 
             {metrics.userExperience.scrollDepth['100%'] < 50 && (
-              <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
                 <Eye className="w-5 h-5 text-orange-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-orange-800 dark:text-orange-200">
+                  <p className="font-medium text-orange-800">
                     Improve Content Engagement
                   </p>
-                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                  <p className="text-sm text-orange-700 mt-1">
                     Only {metrics.userExperience.scrollDepth['100%']}% of users scroll to the bottom. Consider improving content flow and adding more engaging elements.
                   </p>
                 </div>
@@ -464,13 +464,13 @@ export const OnePageAnalytics: React.FC = () => {
             )}
 
             {metrics.technical.unusedDependencies > 5 && (
-              <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
                 <Code className="w-5 h-5 text-red-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-red-800 dark:text-red-200">
+                  <p className="font-medium text-red-800">
                     Reduce Bundle Size
                   </p>
-                  <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+                  <p className="text-sm text-red-700 mt-1">
                     You have {metrics.technical.unusedDependencies} unused dependencies. Consider tree-shaking and removing unnecessary packages.
                   </p>
                 </div>

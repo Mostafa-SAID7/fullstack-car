@@ -104,14 +104,14 @@ export const AIAgentManagement: React.FC = () => {
                 <div className="flex items-center gap-3 mt-3">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
                     <div className="w-2.5 h-2.5 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse shadow-sm" />
-                    <span className="text-sm font-semibold text-green-600 dark:text-green-400">System Online</span>
+                    <span className="text-sm font-semibold text-green-600">System Online</span>
                     <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
                     <div className="w-2.5 h-2.5 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">AI Active</span>
+                    <span className="text-sm font-semibold text-blue-600">AI Active</span>
                     <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>

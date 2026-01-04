@@ -70,8 +70,8 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
                   <div className="flex items-center gap-2 mt-3">
                     <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
                       config.isEnabled
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
                     }`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${config.isEnabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                       {config.isEnabled ? 'Active' : 'Inactive'}
@@ -119,8 +119,8 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
                   <div className="flex items-center gap-2 mt-3">
                     <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
                       config.autoLearning
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
-                        : 'bg-gray-100 text-gray-600 dark:bg-gray-800/50 dark:text-gray-400'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-100 text-gray-600'
                     }`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${config.autoLearning ? 'bg-blue-500 animate-pulse' : 'bg-gray-400'}`} />
                       {config.autoLearning ? 'Learning Enabled' : 'Learning Disabled'}
@@ -169,8 +169,8 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
                   <div className="flex items-center gap-2 mt-3">
                     <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
                       config.debugMode
-                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400'
-                        : 'bg-gray-100 text-gray-600 dark:bg-gray-800/50 dark:text-gray-400'
+                        ? 'bg-orange-100 text-orange-700'
+                        : 'bg-gray-100 text-gray-600'
                     }`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${config.debugMode ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`} />
                       {config.debugMode ? 'Debug Active' : 'Debug Inactive'}
