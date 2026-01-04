@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui
 import { generateMockChartData } from '../../../utils/helpers';
 
 export const SystemChart: React.FC = () => {
-    const chartData = generateMockChartData(24) as number[];
+    const chartData = generateMockChartData(24);
 
     return (
         <Card>
@@ -12,7 +12,7 @@ export const SystemChart: React.FC = () => {
             </CardHeader>
             <CardContent>
                 <div className="h-[300px] w-full flex items-end gap-1">
-                    {chartData.map((value, i) => (
+                    {chartData.datasets[0].data.map((value, i) => (
                         <div
                             key={i}
                             className="flex-1 bg-primary/20 hover:bg-primary/40 transition-colors rounded-t"

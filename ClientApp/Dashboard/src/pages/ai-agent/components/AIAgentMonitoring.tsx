@@ -23,7 +23,7 @@ export const AIAgentMonitoring: React.FC = () => {
     { type: 'Other', count: 3, percentage: 10, severity: 'low' }
   ];
 
-  const responseTimeData = generateMockChartData(20) as number[];
+  const responseTimeData = generateMockChartData(20);
 
   return (
     <div className="space-y-6">
@@ -72,7 +72,7 @@ export const AIAgentMonitoring: React.FC = () => {
           <div>
             <h4 className="font-medium mb-4">Response Time Trend</h4>
             <div className="h-48 flex items-end gap-1">
-              {responseTimeData.map((height: number, i: number) => (
+              {responseTimeData.datasets[0].data.map((height: number, i: number) => (
                 <div
                   key={i}
                   className="flex-1 bg-gradient-to-t from-blue-500/20 to-blue-500/60 rounded-t-sm"
