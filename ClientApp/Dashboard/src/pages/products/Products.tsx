@@ -21,7 +21,12 @@ export const Products = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <ProductsHeader />;
+        return (
+          <div className="space-y-6">
+            <ProductsFilters />
+            <ProductsGrid products={products} />
+          </div>
+        );
       case 'catalog':
         return (
           <div className="space-y-6">
@@ -56,6 +61,8 @@ export const Products = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      <ProductsHeader />
+
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}

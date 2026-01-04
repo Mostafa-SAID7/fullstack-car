@@ -82,7 +82,43 @@ export const Users: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <UsersHeader showFilters={showFilters} setShowFilters={setShowFilters} />;
+        return (
+          <div className="space-y-6">
+            <UsersFilters
+              filters={filters}
+              showFilters={showFilters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={() => {
+                handleFilterChange('searchTerm', '');
+                handleFilterChange('role', undefined);
+                handleFilterChange('isActive', undefined);
+                handleFilterChange('isEmailConfirmed', undefined);
+              }}
+            />
+
+            {error && (
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                <span className="text-destructive">{error}</span>
+                <button
+                  onClick={loadUsers}
+                  className="mt-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
+                >
+                  {t('retry', 'Retry')}
+                </button>
+              </div>
+            )}
+
+            <UsersTable users={users} onUserAction={handleUserAction} />
+
+            {pagination.totalPages > 1 && (
+              <UsersPagination pagination={pagination} onPageChange={handlePageChange} />
+            )}
+
+            {!loading && users.length === 0 && (
+              <UsersEmptyState hasFilters={Object.values(filters).some(v => v !== undefined && v !== '')} />
+            )}
+          </div>
+        );
       case 'management':
         return (
           <div className="space-y-6">
@@ -157,6 +193,8 @@ export const Users: React.FC = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      <UsersHeader showFilters={showFilters} setShowFilters={setShowFilters} />
+
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}

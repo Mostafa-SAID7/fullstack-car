@@ -21,7 +21,12 @@ export const Customers = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <CustomersHeader />;
+        return (
+          <div className="space-y-6">
+            <CustomersFilters />
+            <CustomersTable users={users} />
+          </div>
+        );
       case 'management':
         return (
           <div className="space-y-6">
@@ -64,6 +69,8 @@ export const Customers = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      <CustomersHeader />
+
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}

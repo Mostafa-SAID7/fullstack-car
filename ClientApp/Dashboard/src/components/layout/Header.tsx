@@ -45,6 +45,9 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick, onToggleSidebar }
     const [showThemeMenu, setShowThemeMenu] = useState(false);
     const themeRef = useRef<HTMLDivElement>(null);
 
+    // Search focus state
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
@@ -111,35 +114,72 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick, onToggleSidebar }
     };
 
     return (
-        <header className="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700 main-content-bg backdrop-blur-xl sticky top-0 z-50">
-            {/* Sidebar Toggle Button */}
-            <button
-                onClick={onToggleSidebar}
-                className="p-2 mr-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-                title="Toggle sidebar"
-            >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-                </svg>
-            </button>
+        <header className={cn(
+            "h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700 main-content-bg backdrop-blur-xl sticky top-0 z-50 transition-all duration-300",
+            isSearchFocused ? "justify-end" : "justify-between"
+        )}>
+            {/* Sidebar Toggle Button - Hidden when search is focused */}
+            {!isSearchFocused && (
+                <motion.button
+                    initial={{ opacity: 1, x: 0 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={onToggleSidebar}
+                    className="p-2 mr-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                    title="Toggle sidebar"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                </motion.button>
+            )}
 
-            <div className="flex-1 max-w-xl">
-                <div className="relative group">
+            {/* Search Bar */}
+            <motion.div
+                className={cn(
+                    "relative group transition-all duration-300",
+                    isSearchFocused
+                        ? "flex-1 max-w-2xl mr-4"
+                        : "flex-1 max-w-xl"
+                )}
+                layout
+            >
+                <motion.div
+                    className="relative"
+                    animate={{
+                        width: isSearchFocused ? "100%" : "auto"
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 transition-colors group-focus-within:text-pink-600 dark:group-focus-within:text-pink-400" />
                     <input
                         type="text"
                         placeholder={t('search_anything')}
-                        className="w-full bg-gray-100/50 dark:bg-gray-800/50 border border-transparent focus:border-pink-500/20 focus:bg-white dark:focus:bg-gray-900 h-10 pl-10 pr-4 rounded-lg outline-none transition-all"
+                        className={cn(
+                            "bg-gray-100/50 dark:bg-gray-800/50 border border-transparent focus:border-pink-500/20 focus:bg-white dark:focus:bg-gray-900 h-10 pl-10 pr-4 rounded-lg outline-none transition-all duration-200",
+                            isSearchFocused && "w-full"
+                        )}
                         onClick={onSearchClick}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1">
                         <kbd className="px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-[10px] font-bold text-gray-500 dark:text-gray-400">⌘</kbd>
                         <kbd className="px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-[10px] font-bold text-gray-500 dark:text-gray-400">K</kbd>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Right side elements - Hidden when search is focused */}
+            {!isSearchFocused && (
+                <motion.div
+                    initial={{ opacity: 1, x: 0 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-2 sm:gap-4"
+                >
                 {/* Theme Toggle */}
                 <div className="relative" ref={themeRef}>
                     <button
@@ -297,6 +337,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick, onToggleSidebar }
                     </div>
                 </div>
             </div>
+            )}
         </header>
     );
 };
