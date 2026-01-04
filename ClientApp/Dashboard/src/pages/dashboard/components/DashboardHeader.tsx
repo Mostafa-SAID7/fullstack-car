@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Not currently used
 import { Calendar, Clock, Sparkles } from 'lucide-react';
 import type { UserInfo as User } from '../../../types/auth';
 
@@ -9,7 +9,7 @@ interface DashboardHeaderProps {
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Not currently used
   
   const currentTime = new Date();
   const greeting = currentTime.getHours() < 12 ? 'Good morning' : 
@@ -36,12 +36,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
             </div>
             <div>
               <motion.h1
-                className="text-3xl lg:text-4xl font-bold text-foreground mb-1"
+                className="text-3xl lg:text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-1"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                {greeting}, {user?.firstName || 'Admin'}! 👋
+                Dashboard
               </motion.h1>
               <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full mb-3" />
               <motion.p
@@ -50,8 +50,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {t('dashboard_welcome', 'Welcome back to your Community Car dashboard. Here\'s what\'s happening today.')}
+                {greeting}, {user?.firstName || 'Admin'}! Welcome to your Community Car dashboard overview. 👋
               </motion.p>
+              <div className="flex items-center gap-2 mt-3">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-sm text-muted-foreground font-medium">System Online</span>
+              </div>
             </div>
           </div>
 

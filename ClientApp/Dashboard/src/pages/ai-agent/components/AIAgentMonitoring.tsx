@@ -23,7 +23,7 @@ export const AIAgentMonitoring: React.FC = () => {
     { type: 'Other', count: 3, percentage: 10, severity: 'low' }
   ];
 
-  const responseTimeData = generateMockChartData(20);
+  const responseTimeData = generateMockChartData('response_time', 20) as { labels: string[]; datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; tension: number; fill: boolean; }[]; };
 
   return (
     <div className="space-y-6">

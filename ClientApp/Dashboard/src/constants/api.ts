@@ -59,6 +59,13 @@ export const API_ENDPOINTS = {
     METRICS: '/system/metrics',
     LOGS: '/system/logs',
     BACKUP: '/system/backup'
+  },
+
+  // Shared
+  SHARED: {
+    NOTIFICATIONS: '/shared/notifications',
+    SETTINGS: '/shared/settings',
+    SEARCH: '/shared/search'
   }
 } as const;
 

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { User, Shield, Palette, AlertTriangle } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
 import { SettingsHeader } from './components/SettingsHeader';
 import { ProfileSettings } from './components/ProfileSettings';
@@ -6,8 +8,11 @@ import { SecuritySettings } from './components/SecuritySettings';
 import { AppearanceSettings } from './components/AppearanceSettings';
 import { DangerZone } from './components/DangerZone';
 import { SettingsModals } from './components/SettingsModals';
+import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
 
 export const Settings = () => {
+  const [activeTab, setActiveTab] = useState('profile');
+
   const {
     user,
     profileData,
@@ -37,46 +42,82 @@ export const Settings = () => {
     setDeletePassword
   } = useSettings();
 
+  const tabs = [
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'security', label: 'Security', icon: Shield },
+    { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'danger', label: 'Danger Zone', icon: AlertTriangle }
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'profile':
+        return (
+          <div className="space-y-6">
+            <ProfileSettings
+              user={user}
+              profileData={profileData}
+              setProfileData={setProfileData}
+              onSubmit={handleProfileSubmit}
+              onAvatarUpload={handleAvatarUpload}
+              onAvatarDelete={handleAvatarDelete}
+              loading={loading}
+              error={error}
+            />
+          </div>
+        );
+      case 'security':
+        return (
+          <div className="space-y-6">
+            <SecuritySettings
+              profileData={profileData}
+              onPrivacyToggle={handlePrivacyToggle}
+              onPasswordChange={() => setShowModals(prev => ({ ...prev, password: true }))}
+              onSessionsView={() => setShowModals(prev => ({ ...prev, sessions: true }))}
+              onLogsView={() => setShowModals(prev => ({ ...prev, logs: true }))}
+              is2FAEnabled={is2FAEnabled}
+              onToggle2FA={handleToggle2FA}
+              sessionsCount={sessions.length}
+            />
+          </div>
+        );
+      case 'appearance':
+        return (
+          <div className="space-y-6">
+            <AppearanceSettings />
+          </div>
+        );
+      case 'danger':
+        return (
+          <div className="space-y-6">
+            <DangerZone
+              onDeactivate={() => setShowModals(prev => ({ ...prev, deactivate: true }))}
+              onDelete={() => setShowModals(prev => ({ ...prev, delete: true }))}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8 pb-20"
+      className="space-y-6 pb-20"
     >
       <SettingsHeader successMessage={successMessage || undefined} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <ProfileSettings
-            user={user}
-            profileData={profileData}
-            setProfileData={setProfileData}
-            onSubmit={handleProfileSubmit}
-            onAvatarUpload={handleAvatarUpload}
-            onAvatarDelete={handleAvatarDelete}
-            loading={loading}
-            error={error}
-          />
-          <DangerZone
-            onDeactivate={() => setShowModals(prev => ({ ...prev, deactivate: true }))}
-            onDelete={() => setShowModals(prev => ({ ...prev, delete: true }))}
-          />
-        </div>
+      <TabNavigation
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
-        <div className="space-y-6">
-          <SecuritySettings
-            profileData={profileData}
-            onPrivacyToggle={handlePrivacyToggle}
-            onPasswordChange={() => setShowModals(prev => ({ ...prev, password: true }))}
-            onSessionsView={() => setShowModals(prev => ({ ...prev, sessions: true }))}
-            onLogsView={() => setShowModals(prev => ({ ...prev, logs: true }))}
-            is2FAEnabled={is2FAEnabled}
-            onToggle2FA={handleToggle2FA}
-            sessionsCount={sessions.length}
-          />
-          <AppearanceSettings />
-        </div>
-      </div>
+      <TabContent activeTab={activeTab}>
+        {renderTabContent()}
+      </TabContent>
 
       <SettingsModals
         showModals={showModals}

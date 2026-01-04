@@ -108,10 +108,10 @@ export const AIAssistant: React.FC = () => {
                             height: isMinimized ? 'auto' : '550px'
                         }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="w-80 md:w-[400px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 flex flex-col"
+                        className="w-80 md:w-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 flex flex-col"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 p-4 text-white">
+                        <div className="bg-gradient-to-r from-pink-500 to-pink-600 p-4 text-white">
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
                                     <div className="p-1.5 bg-white/20 rounded-lg">
@@ -126,10 +126,10 @@ export const AIAssistant: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => setIsMinimized(!isMinimized)} className="p-1 hover:bg-white/10 rounded transition-colors">
+                                    <button onClick={() => setIsMinimized(!isMinimized)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
                                         {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
                                     </button>
-                                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded transition-colors">
+                                    <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
                                         <X size={16} />
                                     </button>
                                 </div>
@@ -154,7 +154,7 @@ export const AIAssistant: React.FC = () => {
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -10 }}
-                                            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-700 rounded-xl shadow-xl border border-gray-100 dark:border-gray-600 overflow-hidden z-10"
+                                            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-10"
                                         >
                                             {modes.map((m) => (
                                                 <button
@@ -163,7 +163,10 @@ export const AIAssistant: React.FC = () => {
                                                         setMode(m.id as AIMode);
                                                         setShowModes(false);
                                                     }}
-                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors ${mode === m.id ? 'bg-gray-50 dark:bg-gray-600 font-semibold' : 'text-gray-600 dark:text-gray-300'
+                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+                                                        mode === m.id
+                                                            ? 'bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 font-semibold'
+                                                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                                                         }`}
                                                 >
                                                     <m.icon size={16} className={m.color} />
@@ -179,7 +182,7 @@ export const AIAssistant: React.FC = () => {
                         {/* Chat Body */}
                         {!isMinimized && (
                             <>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-gray-50/30 dark:bg-gray-900/10">
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-gray-50/50 dark:bg-gray-800/30">
                                     {messages.map((msg, i) => (
                                         <div
                                             key={i}
@@ -187,8 +190,8 @@ export const AIAssistant: React.FC = () => {
                                         >
                                             <div
                                                 className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm ${msg.role === 'user'
-                                                    ? 'bg-indigo-600 text-white rounded-tr-none'
-                                                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-tl-none border border-gray-100 dark:border-gray-600'
+                                                    ? 'bg-pink-500 text-white rounded-tr-sm'
+                                                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-tl-sm border border-gray-200 dark:border-gray-700'
                                                     }`}
                                             >
                                                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -201,10 +204,10 @@ export const AIAssistant: React.FC = () => {
                                     ))}
                                     {loading && (
                                         <div className="flex justify-start">
-                                            <div className="bg-white dark:bg-gray-700 p-3 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-600 flex gap-1">
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" />
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                                                <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                                            <div className="bg-white dark:bg-gray-800 p-3 rounded-2xl rounded-tl-sm border border-gray-200 dark:border-gray-700 flex gap-1">
+                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" />
+                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.4s]" />
                                             </div>
                                         </div>
                                     )}
@@ -212,7 +215,7 @@ export const AIAssistant: React.FC = () => {
                                 </div>
 
                                 {/* Input Area */}
-                                <div className="p-4 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
                                     <div className="relative flex items-center">
                                         <input
                                             type="text"
@@ -220,12 +223,12 @@ export const AIAssistant: React.FC = () => {
                                             onChange={(e) => setInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                                             placeholder={`Ask in ${currentModeInfo?.label.toLowerCase()}...`}
-                                            className="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none dark:text-white"
+                                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all outline-none dark:text-white"
                                         />
                                         <button
                                             onClick={handleSend}
                                             disabled={!input.trim() || loading}
-                                            className="absolute right-1.5 p-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-lg transition-colors shadow-lg"
+                                            className="absolute right-1.5 p-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 text-white rounded-lg transition-colors shadow-lg disabled:shadow-none"
                                         >
                                             {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                                         </button>
@@ -238,12 +241,13 @@ export const AIAssistant: React.FC = () => {
             </AnimatePresence>
 
             <motion.button
-                whileHover={{ scale: 1.05, rotate: 5 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-4 rounded-full shadow-2xl flex items-center justify-center transition-all ${isOpen
-                    ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100'
-                    : 'bg-gradient-to-tr from-indigo-600 via-blue-600 to-indigo-700 text-white'
+                className={`p-3 rounded-xl shadow-lg flex items-center justify-center transition-all border-2 ${
+                    isOpen
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-200 dark:border-gray-700'
+                        : 'bg-gradient-to-r from-pink-500 to-pink-600 text-white border-transparent hover:shadow-xl'
                     }`}
             >
                 {isOpen ? <X size={26} /> : (

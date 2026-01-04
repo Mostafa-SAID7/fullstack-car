@@ -102,7 +102,7 @@ export const LoginForm: React.FC = () => {
             </div>
           </motion.div>
           <motion.h2
-            className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground via-foreground to-foreground/90 bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}

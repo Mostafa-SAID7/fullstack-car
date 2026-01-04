@@ -22,7 +22,6 @@ export const Content: React.FC = () => {
       case 'overview':
         return (
           <div className="space-y-6">
-            <ContentHeader />
             <ContentStats />
           </div>
         );
@@ -49,6 +48,8 @@ export const Content: React.FC = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      <ContentHeader />
+
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}

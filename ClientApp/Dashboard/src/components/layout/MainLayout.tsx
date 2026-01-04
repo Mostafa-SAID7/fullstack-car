@@ -12,19 +12,23 @@ import { AIAssistant } from '../../pages/dashboard/components/AIAssistant';
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();
-    const [collapsed, setCollapsed] = useState(() => {
-        // Start collapsed on mobile screens
+    const { user } = useAuth();
+    const location = useLocation();
+
+    // Sidebar state
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        // Start collapsed on smaller screens
         if (typeof window !== 'undefined') {
-            return window.innerWidth < 768;
+            return window.innerWidth < 1024; // lg breakpoint
         }
         return false;
     });
-    const { user } = useAuth();
-    const location = useLocation();
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     // Search state
     const [showSearch, setShowSearch] = useState(false);
 
+    // Handle search shortcut
     useEffect(() => {
         const handleSearchShortcut = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -37,16 +41,29 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         return () => window.removeEventListener('keydown', handleSearchShortcut);
     }, []);
 
-    return (
-        <div className={cn("flex h-screen bg-white dark:bg-gray-900 overflow-hidden flex-col", i18n.language.startsWith('ar') && "font-arabic text-right")} dir={i18n.language.startsWith('ar') ? 'rtl' : 'ltr'}>
-            {/* Mobile Sidebar Backdrop */}
-            {!collapsed && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                    onClick={() => setCollapsed(true)}
-                />
-            )}
+    // Handle window resize for responsive sidebar
+    useEffect(() => {
+        const handleResize = () => {
+            const isLargeScreen = window.innerWidth >= 1024; // lg breakpoint
+            setSidebarCollapsed(!isLargeScreen);
 
+            // Close mobile sidebar on large screens
+            if (isLargeScreen && mobileSidebarOpen) {
+                setMobileSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [mobileSidebarOpen]);
+
+    // Close mobile sidebar when route changes
+    useEffect(() => {
+        setMobileSidebarOpen(false);
+    }, [location.pathname]);
+
+    return (
+        <div className={cn("flex h-screen bg-background overflow-hidden max-w-full", i18n.language.startsWith('ar') && "font-arabic text-right")} dir={i18n.language.startsWith('ar') ? 'rtl' : 'ltr'}>
             {/* Search Palette Modal */}
             <SearchPalette
                 isOpen={showSearch}
@@ -65,20 +82,22 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
                 <Sidebar
-                    collapsed={collapsed}
-                    onToggleCollapse={() => setCollapsed(!collapsed)}
+                    collapsed={sidebarCollapsed}
+                    onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    isMobileOpen={mobileSidebarOpen}
+                    onMobileClose={() => setMobileSidebarOpen(false)}
                 />
 
                 {/* Main Content Area */}
-                <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative main-content-bg">
-                    {/* Background Decor */}
-                    <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/5 dark:bg-pink-400/10 rounded-full blur-[120px] -z-10" />
-                    <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-pink-500/10 dark:bg-pink-400/20 rounded-full blur-[100px] -z-10" />
+                <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative main-content-bg max-w-full">
+                    {/* Background Decor - Constrained within container */}
+                    <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-pink-500/5 dark:bg-pink-400/10 rounded-full blur-[120px] -z-10 opacity-50" />
+                    <div className="absolute bottom-0 left-0 w-[30%] h-[30%] bg-pink-500/10 dark:bg-pink-400/20 rounded-full blur-[100px] -z-10 opacity-50" />
 
                     {/* Header */}
                     <Header
                         onSearchClick={() => setShowSearch(true)}
-                        onToggleSidebar={() => setCollapsed(!collapsed)}
+                        onToggleMobileSidebar={() => setMobileSidebarOpen(true)}
                     />
 
                     {/* Scrollable Content */}

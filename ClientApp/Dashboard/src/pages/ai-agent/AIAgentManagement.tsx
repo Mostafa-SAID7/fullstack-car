@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
 import { 
   Save, 
@@ -100,7 +99,7 @@ export const AIAgentManagement: React.FC = () => {
                 <div className="absolute -top-2 -right-2 w-3 h-3 md:w-4 md:h-4 bg-yellow-400 rounded-full" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-1">
                   AI Agent Management
                 </h1>
                 <div className="w-16 h-1 md:w-20 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" />

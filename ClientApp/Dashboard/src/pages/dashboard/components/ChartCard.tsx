@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
@@ -11,7 +11,7 @@ interface ChartCardProps {
   className?: string;
 }
 
-export const ChartCard: React.FC<ChartCardProps> = ({
+export const ChartCard: React.FC<ChartCardProps> = React.memo(({
   title,
   description,
   children,
@@ -35,13 +35,13 @@ export const ChartCard: React.FC<ChartCardProps> = ({
     );
   }
 
-  const handleAIInsight = () => {
+  const handleAIInsight = useCallback(() => {
     window.dispatchEvent(new CustomEvent('ai-insight', {
-      detail: { 
-        prompt: `Can you analyze the "${title}" chart for me? ${description ? `It shows ${description}.` : ''}` 
+      detail: {
+        prompt: `Can you analyze the "${title}" chart for me? ${description ? `It shows ${description}.` : ''}`
       }
     }));
-  };
+  }, [title, description]);
 
   return (
     <motion.div
@@ -81,4 +81,4 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       </div>
     </motion.div>
   );
-};
+});

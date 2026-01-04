@@ -65,7 +65,6 @@ export const System: React.FC = () => {
       case 'overview':
         return (
           <div className="space-y-6">
-            <SystemHeader onRefresh={loadSystemData} />
             {systemInfo && <SystemOverview systemInfo={systemInfo} />}
             {performanceMetrics && <SystemMetrics performanceMetrics={performanceMetrics} />}
           </div>
@@ -127,6 +126,8 @@ export const System: React.FC = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      <SystemHeader onRefresh={loadSystemData} />
+
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}

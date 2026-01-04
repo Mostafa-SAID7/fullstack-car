@@ -21,7 +21,7 @@ export const SystemHeader: React.FC<SystemHeaderProps> = ({ onRefresh }) => {
                         <Server className="w-7 h-7 md:w-8 md:h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
+                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-1">
                             System Status
                         </h1>
                         <div className="w-20 h-1 md:w-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full mb-3" />

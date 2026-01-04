@@ -53,12 +53,12 @@ export interface AlertRule {
 export interface MonitoringDashboard {
   id: string;
   name: string;
-  widgets: DashboardWidget[];
+  widgets: MonitoringWidget[];
   refreshInterval: number;
   timeRange: string;
 }
 
-export interface DashboardWidget {
+export interface MonitoringWidget {
   id: string;
   type: 'metric' | 'chart' | 'table' | 'alert';
   title: string;

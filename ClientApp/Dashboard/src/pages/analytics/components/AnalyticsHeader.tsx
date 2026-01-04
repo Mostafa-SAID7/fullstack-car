@@ -19,7 +19,7 @@ export const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ period, setPer
             <BarChart3 className="w-7 h-7 md:w-8 md:h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2">
               Analytics Dashboard
             </h1>
             <div className="w-16 h-1 md:w-24 bg-gradient-to-r from-blue-500 to-green-500 rounded-full mb-3" />

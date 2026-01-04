@@ -30,24 +30,24 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --background: 210 20% 98%;
+    --foreground: 210 10% 15%;
+    --card: 210 15% 97%;
+    --card-foreground: 210 10% 20%;
+    --popover: 210 15% 97%;
+    --popover-foreground: 210 10% 20%;
     --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --secondary: 210 15% 92%;
+    --secondary-foreground: 210 8% 25%;
+    --muted: 210 10% 94%;
+    --muted-foreground: 210 5% 45%;
+    --accent: 210 15% 92%;
+    --accent-foreground: 210 8% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 210 10% 85%;
+    --input: 210 10% 88%;
     --ring: 346.8 77.2% 49.8%;
     --radius: 1rem;
   }
@@ -82,8 +82,8 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     background-image:
-      radial-gradient(at 0% 0%, hsla(346, 77%, 49%, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(220, 100%, 50%, 0.05) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, hsla(210, 20%, 85%, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(210, 15%, 90%, 0.06) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
@@ -100,8 +100,8 @@
 .main-content-bg {
   background-color: hsl(var(--background));
   background-image:
-    radial-gradient(at 0% 0%, hsla(346, 77%, 49%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(220, 100%, 50%, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, hsla(210, 20%, 85%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(210, 15%, 90%, 0.06) 0px, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -115,10 +115,10 @@
 
 /* Glassmorphism */
 .glass {
-  background: hsla(0, 0%, 100%, 0.7);
+  background: hsla(210, 15%, 97%, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid hsla(210, 10%, 85%, 0.4);
 }
 
 .dark .glass {

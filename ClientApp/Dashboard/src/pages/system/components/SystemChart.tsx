@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui
 import { generateMockChartData } from '../../../utils/helpers';
 
 export const SystemChart: React.FC = () => {
-    const chartData = generateMockChartData(24);
+    const chartData = generateMockChartData('cpu', 24) as { labels: string[]; datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; tension: number; fill: boolean; }[]; };
 
     return (
         <Card>

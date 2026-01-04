@@ -1,4 +1,5 @@
 import { apiClient } from './api';
+import { API_ENDPOINTS } from '../constants/api';
 
 export interface Notification {
   id: string;
@@ -19,7 +20,7 @@ export interface NotificationResponse {
 class NotificationService {
   async getNotifications(): Promise<NotificationResponse> {
     try {
-      const response = await apiClient.get<Notification[]>('/v4/shared/notifications');
+      const response = await apiClient.get<Notification[]>(API_ENDPOINTS.SHARED.NOTIFICATIONS);
       return {
         succeeded: true,
         data: response

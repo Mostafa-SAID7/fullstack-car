@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 import {
@@ -14,264 +14,428 @@ import {
   Car,
   Sparkles,
   UserCheck,
-  Package
+  Package,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  FileImage
 } from 'lucide-react';
 
 interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggleCollapse }) => {
-  const { t } = useTranslation();
+interface MenuSection {
+  title: string;
+  icon: React.ComponentType<any>;
+  items: MenuItem[];
+}
 
-  const menuItems = [
+interface MenuItem {
+  path: string;
+  icon: React.ComponentType<any>;
+  label: string;
+  color: string;
+  badge?: string | number;
+  description?: string;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  collapsed,
+  onToggleCollapse,
+  isMobileOpen = false,
+  onMobileClose
+}) => {
+  const { t } = useTranslation();
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Handle mobile backdrop click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && isMobileOpen) {
+        onMobileClose?.();
+      }
+    };
+
+    if (isMobileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileOpen, onMobileClose]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMobileOpen) {
+        onMobileClose?.();
+      }
+    };
+
+    if (isMobileOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isMobileOpen, onMobileClose]);
+
+  const menuSections: MenuSection[] = [
     {
-      path: '/dashboard',
+      title: 'Overview',
       icon: LayoutDashboard,
-      label: t('dashboard', 'Dashboard'),
-      color: 'text-blue-600 dark:text-blue-400'
+      items: [
+        {
+          path: '/dashboard',
+          icon: LayoutDashboard,
+          label: t('dashboard', 'Dashboard'),
+          color: 'text-blue-600 dark:text-blue-400',
+          description: 'Main dashboard overview'
+        },
+        {
+          path: '/analytics',
+          icon: BarChart3,
+          label: t('analytics', 'Analytics'),
+          color: 'text-green-600 dark:text-green-400',
+          description: 'Data insights and reports'
+        }
+      ]
     },
     {
-      path: '/analytics',
-      icon: BarChart3,
-      label: t('analytics', 'Analytics'),
-      color: 'text-green-600 dark:text-green-400'
-    },
-    {
-      path: '/users',
+      title: 'Management',
       icon: Users,
-      label: t('users', 'Users'),
-      color: 'text-purple-600 dark:text-purple-400'
+      items: [
+        {
+          path: '/users',
+          icon: Users,
+          label: t('users', 'Users'),
+          color: 'text-purple-600 dark:text-purple-400',
+          description: 'User management'
+        },
+        {
+          path: '/customers',
+          icon: UserCheck,
+          label: t('customers', 'Customers'),
+          color: 'text-cyan-600 dark:text-cyan-400',
+          description: 'Customer relationships'
+        },
+        {
+          path: '/products',
+          icon: Package,
+          label: t('products', 'Products'),
+          color: 'text-emerald-600 dark:text-emerald-400',
+          description: 'Product catalog'
+        }
+      ]
     },
     {
-      path: '/customers',
-      icon: UserCheck,
-      label: t('customers', 'Customers'),
-      color: 'text-cyan-600 dark:text-cyan-400'
-    },
-    {
-      path: '/products',
-      icon: Package,
-      label: t('products', 'Products'),
-      color: 'text-emerald-600 dark:text-emerald-400'
-    },
-    {
-      path: '/content',
+      title: 'Content',
       icon: FileText,
-      label: t('content', 'Content'),
-      color: 'text-orange-600 dark:text-orange-400'
+      items: [
+        {
+          path: '/content',
+          icon: FileText,
+          label: t('content', 'Content'),
+          color: 'text-orange-600 dark:text-orange-400',
+          description: 'Content management'
+        },
+        {
+          path: '/media',
+          icon: FileImage,
+          label: t('media', 'Media'),
+          color: 'text-indigo-600 dark:text-indigo-400',
+          description: 'Media library'
+        }
+      ]
     },
     {
-      path: '/ai-agent',
+      title: 'AI & System',
       icon: Bot,
-      label: t('ai_agent', 'AI Agent'),
-      color: 'text-pink-600 dark:text-pink-400'
-    },
-    {
-      path: '/system',
-      icon: Server,
-      label: t('system', 'System'),
-      color: 'text-red-600 dark:text-red-400'
-    },
-    {
-      path: '/settings',
-      icon: Settings,
-      label: t('settings', 'Settings'),
-      color: 'text-gray-600 dark:text-gray-400'
+      items: [
+        {
+          path: '/ai-agent',
+          icon: Bot,
+          label: t('ai_agent', 'AI Agent'),
+          color: 'text-pink-600 dark:text-pink-400',
+          description: 'AI assistant'
+        },
+        {
+          path: '/system',
+          icon: Server,
+          label: t('system', 'System'),
+          color: 'text-red-600 dark:text-red-400',
+          description: 'System administration'
+        },
+        {
+          path: '/settings',
+          icon: Settings,
+          label: t('settings', 'Settings'),
+          color: 'text-gray-600 dark:text-gray-400',
+          description: 'Application settings'
+        }
+      ]
     }
   ];
 
   return (
-    <motion.aside
-      initial={false}
-      animate={{
-        width: collapsed ? 80 : 320
-      }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={cn(
-        "main-content-bg border-r border-gray-100 dark:border-gray-800 flex flex-col shadow-xl",
-        // Mobile overlay behavior - always positioned as overlay on mobile
-        "fixed inset-y-0 left-0 z-50",
-        // Desktop normal sidebar
-        "md:relative md:z-40",
-        // Mobile visibility and positioning
-        collapsed
-          ? "md:translate-x-0 md:w-20"
-          : "translate-x-0 md:w-80",
-        // Better mobile touch targets
-        "min-h-screen md:min-h-0"
-      )}
-    >
-      {/* Logo Section */}
-      <div className="h-16 md:h-16 flex items-center px-3 md:px-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
-        <div className={cn(
-          "flex items-center transition-all duration-300",
-          collapsed ? "justify-center w-full" : "justify-between w-full"
-        )}>
+    <>
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={onMobileClose}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <motion.aside
+        ref={sidebarRef}
+        initial={false}
+        animate={{
+          width: isMobileOpen ? 280 : (collapsed ? 72 : 280),
+          x: isMobileOpen ? 0 : window.innerWidth < 768 ? -280 : 0
+        }}
+        transition={{
+          duration: 0.3,
+          ease: 'easeInOut',
+          type: 'spring',
+          stiffness: 300,
+          damping: 30
+        }}
+        className={cn(
+          "main-content-bg border-r border-gray-200/50 dark:border-gray-700/50 flex flex-col shadow-2xl",
+          "fixed inset-y-0 left-0 z-50 md:relative md:z-40",
+          "backdrop-blur-xl bg-white/95 dark:bg-gray-900/95",
+          "min-h-screen md:min-h-0",
+          "overflow-hidden"
+        )}
+      >
+        {/* Header */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200/50 dark:border-gray-700/50 flex-shrink-0">
+          {/* Logo */}
           <motion.div
             initial={false}
             animate={{
-              opacity: collapsed ? 0 : 1,
-              scale: collapsed ? 0.8 : 1
+              opacity: (isMobileOpen || !collapsed) ? 1 : 0,
+              scale: (isMobileOpen || !collapsed) ? 1 : 0.8
             }}
             transition={{ duration: 0.2 }}
-            className={cn(
-              "flex items-center",
-              collapsed ? "gap-0" : "gap-3"
-            )}
+            className="flex items-center gap-3 flex-1 min-w-0"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
               <Car className="w-5 h-5 text-white" />
             </div>
-            {!collapsed && (
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            {(isMobileOpen || !collapsed) && (
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg font-bold bg-gradient-to-r from-pink-600 to-pink-500 bg-clip-text text-transparent truncate">
                   Community Car
                 </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Admin Dashboard</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium truncate">
+                  Admin Dashboard
+                </p>
               </div>
             )}
           </motion.div>
 
-        </div>
-
-      </div>
-
-      {/* Navigation */}
-      <nav className={cn(
-        "flex-1",
-        collapsed
-          ? "p-1 md:p-2 space-y-1"
-          : "p-3 md:p-4 space-y-2"
-      )}>
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center rounded-xl transition-all duration-200 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-1",
-                  collapsed
-                    ? "justify-center py-2 md:py-3 w-full min-h-[44px] md:min-h-[48px]"
-                    : "py-3 px-3 gap-3 min-h-[48px]",
-                  isActive
-                    ? collapsed
-                      ? "bg-pink-100 dark:bg-pink-800/40 text-pink-600 dark:text-pink-400 shadow-lg ring-2 ring-pink-500/30"
-                      : "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 shadow-lg shadow-pink-500/10"
-                    : collapsed
-                      ? "text-gray-600 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
-                )
-              }
+          {/* Controls */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Mobile Close */}
+            <button
+              onClick={onMobileClose}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+              title="Close sidebar"
             >
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className={cn(
-                        "absolute rounded-xl",
-                        collapsed
-                          ? "inset-0 bg-pink-500/10 dark:bg-pink-600/20 border border-pink-500/30 dark:border-pink-600/40"
-                          : "inset-0 bg-gradient-to-r from-pink-50 dark:from-pink-900/20 to-pink-25 dark:to-pink-900/10"
-                      )}
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  
-                  <div className={cn(
-                    "relative z-10 rounded-lg transition-all flex items-center justify-center",
-                    collapsed ? "w-10 h-10 md:w-8 md:h-8" : "p-2",
-                    isActive
-                      ? collapsed
-                        ? "bg-pink-500/20 dark:bg-pink-600/30 shadow-md"
-                        : "bg-pink-100 dark:bg-pink-800/30 shadow-lg"
-                      : collapsed
-                        ? "group-hover:bg-pink-50 dark:group-hover:bg-pink-900/20"
-                        : "group-hover:bg-gray-100 dark:group-hover:bg-gray-800"
-                  )}>
-                    <Icon className={cn(
-                      "transition-all",
-                      collapsed ? "w-6 h-6 md:w-5 md:h-5" : "w-5 h-5",
-                      isActive
-                        ? collapsed
-                          ? "text-pink-600 dark:text-pink-400"
-                          : item.color
-                        : collapsed
-                          ? "text-gray-500 dark:text-gray-400 group-hover:text-pink-500 dark:group-hover:text-pink-400"
-                          : "text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100"
-                    )} />
-                  </div>
-                  
-                  <motion.span
-                    initial={false}
-                    animate={{ 
-                      opacity: collapsed ? 0 : 1,
-                      x: collapsed ? -10 : 0
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className={cn(
-                      "font-medium text-sm relative z-10",
-                      isActive ? "text-pink-600 dark:text-pink-400" : "group-hover:text-gray-900 dark:group-hover:text-gray-100"
-                    )}
-                  >
-                    {item.label}
-                  </motion.span>
-                  
-                  {isActive && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className={cn(
-                        "absolute rounded-full",
-                        collapsed
-                          ? "top-1 right-1 w-2 h-2 bg-pink-500 dark:bg-pink-400"
-                          : "right-3 w-2 h-2 bg-pink-600 dark:bg-pink-500"
-                      )}
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
-          );
-        })}
-      </nav>
+              <X className="w-5 h-5" />
+            </button>
 
-      {/* Bottom Section */}
-      <div className="p-3 md:p-4 border-t border-gray-100 dark:border-gray-800 flex-shrink-0">
-        <div className={cn(
-          "bg-gradient-to-br from-pink-50 dark:from-pink-900/20 to-pink-25 dark:to-pink-900/10 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-200",
-          collapsed ? "p-2 flex items-center justify-center" : "p-4"
-        )}>
-          <div className={cn(
-            "flex items-center",
-            collapsed ? "justify-center" : "gap-3"
-          )}>
-            <div className="w-8 h-8 bg-pink-100 dark:bg-pink-800/30 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-            </div>
-            <motion.div
-              initial={false}
-              animate={{
-                opacity: collapsed ? 0 : 1,
-                scale: collapsed ? 0.8 : 1
-              }}
-              transition={{ duration: 0.2 }}
+            {/* Desktop Collapse */}
+            <button
+              onClick={onToggleCollapse}
+              className="hidden md:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              {!collapsed && (
-                <div>
-                  <p className="text-sm font-semibold text-pink-600 dark:text-pink-400">AI Powered</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Smart Analytics</p>
-                </div>
-              )}
-            </motion.div>
+              {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            </button>
           </div>
         </div>
-      </div>
-    </motion.aside>
+
+        {/* Scrollable Navigation */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <nav className="p-3 space-y-6">
+            {menuSections.map((section) => (
+              <div key={section.title} className="space-y-2">
+                {/* Section Header */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: (isMobileOpen || !collapsed) ? 1 : 0,
+                    height: (isMobileOpen || !collapsed) ? 'auto' : 0
+                  }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex items-center gap-2 px-3 py-1">
+                    <section.icon className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      {section.title}
+                    </h3>
+                  </div>
+                </motion.div>
+
+                {/* Section Items */}
+                <div className="space-y-1">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onMouseEnter={() => setHoveredItem(item.path)}
+                        onMouseLeave={() => setHoveredItem(null)}
+                        onClick={onMobileClose}
+                        className={({ isActive: navActive }) =>
+                          cn(
+                            "group relative flex items-center rounded-xl transition-all duration-200",
+                            "focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-1",
+                            "min-h-[44px] touch-manipulation",
+                            (isMobileOpen || !collapsed)
+                              ? "px-3 py-3 gap-3"
+                              : "justify-center px-2 py-3",
+                            navActive
+                              ? "bg-gradient-to-r from-pink-50 to-pink-100/50 dark:from-pink-900/30 dark:to-pink-800/20 text-pink-700 dark:text-pink-300 shadow-lg shadow-pink-500/10"
+                              : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+                          )
+                        }
+                      >
+                        {({ isActive: navActive }) => (
+                          <>
+
+                            {/* Icon Container */}
+                            <div className={cn(
+                              "relative flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0",
+                              (isMobileOpen || !collapsed) ? "w-10 h-10" : "w-8 h-8",
+                              navActive
+                                ? "bg-pink-500/20 dark:bg-pink-600/30 shadow-md"
+                                : hoveredItem === item.path
+                                ? "bg-gray-200/50 dark:bg-gray-700/50"
+                                : "group-hover:bg-gray-200/30 dark:group-hover:bg-gray-700/30"
+                            )}>
+                              <Icon className={cn(
+                                "transition-all duration-200",
+                                collapsed ? "w-5 h-5" : "w-5 h-5",
+                                navActive
+                                  ? "text-pink-600 dark:text-pink-400"
+                                  : item.color
+                              )} />
+
+                              {/* Badge */}
+                              {item.badge && (
+                                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Text Content */}
+                            <motion.div
+                              initial={false}
+                              animate={{
+                                opacity: (isMobileOpen || !collapsed) ? 1 : 0,
+                                x: (isMobileOpen || !collapsed) ? 0 : -20,
+                                width: (isMobileOpen || !collapsed) ? 'auto' : 0
+                              }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden flex-1 min-w-0"
+                            >
+                              <div className="flex flex-col gap-0.5">
+                                <span className={cn(
+                                  "font-medium text-sm truncate block",
+                                  navActive && "text-pink-700 dark:text-pink-300"
+                                )}>
+                                  {item.label}
+                                </span>
+                                {item.description && (isMobileOpen || !collapsed) && (
+                                  <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    {item.description}
+                                  </span>
+                                )}
+                              </div>
+                            </motion.div>
+
+                            {/* Hover Tooltip for Collapsed State */}
+                            {collapsed && hoveredItem === item.path && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                                animate={{ opacity: 1, scale: 1, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                                className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50"
+                              >
+                                <div className="bg-gray-900 dark:bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                                  <div className="font-medium text-sm">{item.label}</div>
+                                  {item.description && (
+                                    <div className="text-xs text-gray-300 mt-1">{item.description}</div>
+                                  )}
+                                </div>
+                                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-800"></div>
+                              </motion.div>
+                            )}
+                          </>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 flex-shrink-0">
+          <div className={cn(
+            "bg-gradient-to-br from-pink-50/50 to-pink-100/30 dark:from-pink-900/20 dark:to-pink-800/10 rounded-xl border border-pink-200/50 dark:border-pink-700/50 transition-all duration-200",
+            (isMobileOpen || !collapsed) ? "p-4" : "p-3 flex items-center justify-center"
+          )}>
+            <div className={cn(
+              "flex items-center transition-all duration-200",
+              (isMobileOpen || !collapsed) ? "gap-3" : "justify-center"
+            )}>
+              <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              {(isMobileOpen || !collapsed) && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="min-w-0 flex-1 overflow-hidden"
+                >
+                  <p className="text-sm font-semibold text-pink-700 dark:text-pink-300 whitespace-nowrap">
+                    AI Powered
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                    Smart Analytics
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.aside>
+    </>
   );
 };

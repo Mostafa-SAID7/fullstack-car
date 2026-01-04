@@ -76,12 +76,12 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={notificationRef}>
             <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-full hover:bg-muted relative transition-colors text-muted-foreground"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 relative transition-colors text-gray-500 dark:text-gray-400"
                 title="Notifications"
             >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-primary text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-background animate-pulse">
+                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-pink-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-gray-900 animate-pulse">
                         {unreadCount}
                     </span>
                 )}
@@ -92,12 +92,12 @@ export const NotificationDropdown: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-border rounded-3xl shadow-2xl overflow-hidden z-50"
+                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden z-50"
                     >
-                        <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 flex justify-between items-center">
                             <h4 className="font-black text-sm uppercase tracking-widest">{t('notifications')}</h4>
                             {unreadCount > 0 && (
-                                <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                <span className="text-[10px] font-bold bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 px-2 py-0.5 rounded-full">
                                     {unreadCount} New
                                 </span>
                             )}
@@ -109,17 +109,17 @@ export const NotificationDropdown: React.FC = () => {
                                         key={n.id}
                                         onClick={() => !n.isRead && handleMarkAsRead(n.id)}
                                         className={cn(
-                                            "p-4 border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/50 flex gap-4 ring-inset",
+                                            "p-4 border-b border-gray-200/50 dark:border-gray-700/50 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 flex gap-4",
                                             !n.isRead && "bg-primary/5"
                                         )}
                                     >
                                         <div className="mt-1">{getNotificationIcon(n.type)}</div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-black mb-0.5">{n.title}</p>
-                                            <p className="text-[11px] text-muted-foreground font-medium leading-normal line-clamp-2">
+                                            <p className="text-[11px] text-gray-600 dark:text-gray-300 font-medium leading-normal line-clamp-2">
                                                 {n.message}
                                             </p>
-                                            <p className="text-[9px] text-primary/60 font-black mt-2 uppercase tracking-tight">
+                                            <p className="text-[9px] text-pink-500/60 dark:text-pink-400/60 font-black mt-2 uppercase tracking-tight">
                                                 {new Date(n.createdAt).toLocaleString()}
                                             </p>
                                         </div>
@@ -128,15 +128,15 @@ export const NotificationDropdown: React.FC = () => {
                                 ))
                             ) : (
                                 <div className="p-8 text-center">
-                                    <div className="w-12 h-12 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center text-muted-foreground">
+                                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4 flex items-center justify-center text-gray-500 dark:text-gray-400">
                                         <Bell className="w-6 h-6" />
                                     </div>
-                                    <p className="text-sm font-bold text-muted-foreground">All caught up!</p>
-                                    <p className="text-xs text-muted-foreground/60 mt-1">No new notifications.</p>
+                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400">All caught up!</p>
+                                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">No new notifications.</p>
                                 </div>
                             )}
                         </div>
-                        <button className="w-full p-3 text-[10px] font-black uppercase text-center hover:bg-muted transition-colors text-primary tracking-widest bg-muted/10">
+                        <button className="w-full p-3 text-[10px] font-black uppercase text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-pink-600 dark:text-pink-400 tracking-widest bg-gray-50 dark:bg-gray-800/50">
                             View All Notifications
                         </button>
                     </motion.div>

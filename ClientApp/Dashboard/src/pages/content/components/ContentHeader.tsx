@@ -12,7 +12,7 @@ export const ContentHeader: React.FC = () => {
           <FileText className="w-7 h-7 md:w-8 md:h-8 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-1">
             Content Management
           </h1>
           <div className="w-20 h-1 md:w-24 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full mb-3" />

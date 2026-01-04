@@ -44,7 +44,7 @@ export const ProductsHeader: React.FC = () => {
               <Package className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
                 {t('products', 'Product Management')}
               </h1>
               <div className="w-16 h-1 md:w-24 bg-gradient-to-r from-green-500 to-blue-500 rounded-full mb-3" />

@@ -23,7 +23,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({ successMessage }
             <Settings className="w-7 h-7 md:w-8 md:h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-1">
               {t('settings', 'Settings')}
             </h1>
             <div className="w-20 h-1 md:w-24 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-3" />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Languages } from 'lucide-react';
@@ -36,7 +36,7 @@ export const LanguageSwitcher: React.FC = () => {
         <div className="relative" ref={langRef}>
             <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
-                className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
                 title="Switch language"
             >
                 <Languages className="w-5 h-5" />
@@ -47,15 +47,15 @@ export const LanguageSwitcher: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-36 bg-card border border-border rounded-2xl shadow-2xl p-2 z-50"
+                        className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-2 z-50"
                     >
                         {languages.map((lang) => (
                             <button
                                 key={lang.id}
                                 onClick={() => toggleLanguage(lang.id)}
                                 className={cn(
-                                    "w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-muted",
-                                    i18n.language === lang.id && "bg-primary/10 text-primary"
+                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
+                                    i18n.language === lang.id && "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
                                 )}
                             >
                                 <span className="text-base">{lang.flag}</span>
