@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Users,
   Eye,
@@ -9,18 +9,19 @@ import {
   Tablet,
   TrendingUp,
   TrendingDown,
-  Calendar,
-  Download,
   RefreshCw
 } from 'lucide-react';
 import type { SiteAnalytics as SiteAnalyticsType } from '../../services/analyticsService';
 import { analyticsService } from '../../services/analyticsService';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { TabContent } from '../../components/ui/TabNavigation';
+import { ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, PieChart } from '../../components/charts';
 import { StatsSkeleton, ChartSkeleton } from '../../components/ui/Skeleton';
 import { useToast } from '../../hooks/useToast';
+import { AnalyticsHeader } from './components/AnalyticsHeader';
 
 interface MetricCardProps {
   title: string;
@@ -45,19 +46,19 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
   return (
     <Card>
-      <CardContent className="pt-6">
+      <CardContent className="pt-4 sm:pt-6">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold">{value}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+            <p className="text-xl sm:text-2xl font-bold mt-1">{value}</p>
             {change !== undefined && (
               <div className="flex items-center gap-1 mt-1">
                 {change > 0 ? (
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
                 ) : (
-                  <TrendingDown className="w-4 h-4 text-red-500" />
+                  <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 flex-shrink-0" />
                 )}
-                <span className={`text-sm font-medium ${
+                <span className={`text-xs sm:text-sm font-medium ${
                   change > 0 ? 'text-green-500' : 'text-red-500'
                 }`}>
                   {Math.abs(change)}% {changeLabel || 'vs last period'}
@@ -65,7 +66,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
               </div>
             )}
           </div>
-          <div className="p-3 bg-primary/10 rounded-full">
+          <div className="p-2 sm:p-3 bg-primary/10 rounded-full flex-shrink-0 ml-2">
             {icon}
           </div>
         </div>
@@ -74,83 +75,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
   );
 };
 
-interface DateRangeSelectorProps {
-  startDate: string;
-  endDate: string;
-  onDateChange: (startDate: string, endDate: string) => void;
-}
-
-const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
-  startDate,
-  endDate,
-  onDateChange
-}) => {
-  const [customRange, setCustomRange] = useState(false);
-
-  const presetRanges = [
-    { label: 'Last 7 days', days: 7 },
-    { label: 'Last 30 days', days: 30 },
-    { label: 'Last 90 days', days: 90 },
-    { label: 'Last year', days: 365 },
-    { label: 'Custom', custom: true }
-  ];
-
-  const handlePresetSelect = (preset: typeof presetRanges[0]) => {
-    if (preset.custom) {
-      setCustomRange(true);
-    } else {
-      const end = new Date();
-      const start = new Date();
-      start.setDate(end.getDate() - (preset.days || 7));
-      onDateChange(
-        start.toISOString().split('T')[0],
-        end.toISOString().split('T')[0]
-      );
-      setCustomRange(false);
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2">
-        <Calendar className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Date Range:</span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        {presetRanges.map((preset) => (
-          <Button
-            key={preset.label}
-            variant="outline"
-            size="sm"
-            onClick={() => handlePresetSelect(preset)}
-            className="text-xs"
-          >
-            {preset.label}
-          </Button>
-        ))}
-      </div>
-
-      {customRange && (
-        <div className="flex items-center gap-2">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => onDateChange(e.target.value, endDate)}
-            className="px-3 py-1 border border-border rounded text-sm"
-          />
-          <span className="text-sm text-muted-foreground">to</span>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => onDateChange(startDate, e.target.value)}
-            className="px-3 py-1 border border-border rounded text-sm"
-          />
-        </div>
-      )}
-    </div>
-  );
-};
 
 export const SiteAnalytics: React.FC = () => {
   const [analytics, setAnalytics] = useState<SiteAnalyticsType | null>(null);
@@ -162,7 +86,21 @@ export const SiteAnalytics: React.FC = () => {
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showTabDropdown, setShowTabDropdown] = useState(false);
+  const tabDropdownRef = useRef<HTMLDivElement>(null);
   const { success, error: toastError } = useToast();
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (tabDropdownRef.current && !tabDropdownRef.current.contains(event.target as Node)) {
+        setShowTabDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
@@ -250,9 +188,9 @@ export const SiteAnalytics: React.FC = () => {
     }));
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <MetricCard
             title="Total Visitors"
             value={analytics.visitors.total.toLocaleString()}
@@ -281,33 +219,37 @@ export const SiteAnalytics: React.FC = () => {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Traffic Overview</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Traffic Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <AreaChart
-                data={visitorData}
-                dataKey="visitors"
-                xAxisKey="name"
-                height={300}
-                color="#3b82f6"
-              />
+              <div className="w-full overflow-x-auto">
+                <AreaChart
+                  data={visitorData}
+                  dataKey="visitors"
+                  xAxisKey="name"
+                  height={250}
+                  color="#3b82f6"
+                />
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Device Breakdown</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Device Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
-              <PieChart
-                data={deviceData}
-                dataKey="value"
-                nameKey="name"
-                height={300}
-              />
+              <div className="w-full overflow-x-auto">
+                <PieChart
+                  data={deviceData}
+                  dataKey="value"
+                  nameKey="name"
+                  height={250}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -315,25 +257,25 @@ export const SiteAnalytics: React.FC = () => {
         {/* Top Pages */}
         <Card>
           <CardHeader>
-            <CardTitle>Top Pages</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Top Pages</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {analytics.pageviews.topPages.slice(0, 5).map((page, index) => (
-                <div key={page.path} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
+                <div key={page.path} className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium flex-shrink-0">
                       {index + 1}
                     </div>
-                    <div>
-                      <p className="font-medium">{page.path}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base truncate">{page.path}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {page.views.toLocaleString()} views
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs sm:text-sm font-medium">
                       {Math.round(page.averageTime / 60)} min
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -361,26 +303,26 @@ export const SiteAnalytics: React.FC = () => {
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Demographics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Geographic Distribution</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Geographic Distribution</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {analytics.geography.countries.slice(0, 10).map((country) => (
-                  <div key={country.code} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-6 bg-muted rounded text-xs flex items-center justify-center font-medium">
+                  <div key={country.code} className="flex items-center justify-between gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <div className="w-6 h-4 sm:w-8 sm:h-6 bg-muted rounded text-xs flex items-center justify-center font-medium flex-shrink-0">
                         {country.code}
                       </div>
-                      <span className="font-medium">{country.country}</span>
+                      <span className="font-medium text-sm sm:text-base truncate">{country.country}</span>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">{country.sessions.toLocaleString()}</p>
-                      <p className="text-sm text-muted-foreground">{country.percentage}%</p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-medium text-sm sm:text-base">{country.sessions.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{country.percentage}%</p>
                     </div>
                   </div>
                 ))}
@@ -390,22 +332,22 @@ export const SiteAnalytics: React.FC = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Device Types</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Device Types</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {analytics.traffic.devices.map((device) => {
                   const Icon = device.device === 'Desktop' ? Monitor :
                               device.device === 'Mobile' ? Smartphone : Tablet;
                   return (
-                    <div key={device.device} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5 text-muted-foreground" />
-                        <span className="font-medium">{device.device}</span>
+                    <div key={device.device} className="flex items-center justify-between gap-2 sm:gap-4">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground flex-shrink-0" />
+                        <span className="font-medium text-sm sm:text-base">{device.device}</span>
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium">{device.sessions.toLocaleString()}</p>
-                        <p className="text-sm text-muted-foreground">{device.percentage}%</p>
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-medium text-sm sm:text-base">{device.sessions.toLocaleString()}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{device.percentage}%</p>
                       </div>
                     </div>
                   );
@@ -418,24 +360,24 @@ export const SiteAnalytics: React.FC = () => {
         {/* Returning vs New Visitors */}
         <Card>
           <CardHeader>
-            <CardTitle>Visitor Types</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Visitor Types</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-500 mb-2">
                   {analytics.visitors.new.toLocaleString()}
                 </div>
-                <p className="text-sm text-muted-foreground">New Visitors</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">New Visitors</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {Math.round((analytics.visitors.new / analytics.visitors.total) * 100)}% of total
                 </p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-green-500 mb-2">
                   {analytics.visitors.returning.toLocaleString()}
                 </div>
-                <p className="text-sm text-muted-foreground">Returning Visitors</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Returning Visitors</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {Math.round((analytics.visitors.returning / analytics.visitors.total) * 100)}% of total
                 </p>
@@ -458,26 +400,26 @@ export const SiteAnalytics: React.FC = () => {
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Traffic Sources */}
         <Card>
           <CardHeader>
-            <CardTitle>Traffic Sources</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Traffic Sources</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {analytics.traffic.sources.slice(0, 8).map((source) => (
-                <div key={source.source} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-primary rounded-full"></div>
-                    <div>
-                      <p className="font-medium capitalize">{source.source}</p>
-                      <p className="text-sm text-muted-foreground">{source.medium}</p>
+                <div key={source.source} className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full flex-shrink-0"></div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base capitalize truncate">{source.source}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground truncate">{source.medium}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">{source.sessions.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground">{source.percentage}%</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-medium text-sm sm:text-base">{source.sessions.toLocaleString()}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{source.percentage}%</p>
                   </div>
                 </div>
               ))}
@@ -488,19 +430,19 @@ export const SiteAnalytics: React.FC = () => {
         {/* Channels */}
         <Card>
           <CardHeader>
-            <CardTitle>Traffic Channels</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Traffic Channels</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {analytics.traffic.channels.map((channel) => (
-                <div key={channel.channel} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                    <span className="font-medium">{channel.channel}</span>
+                <div key={channel.channel} className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 bg-secondary rounded-full flex-shrink-0"></div>
+                    <span className="font-medium text-sm sm:text-base truncate">{channel.channel}</span>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">{channel.sessions.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground">{channel.percentage}%</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-medium text-sm sm:text-base">{channel.sessions.toLocaleString()}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{channel.percentage}%</p>
                   </div>
                 </div>
               ))}
@@ -522,26 +464,26 @@ export const SiteAnalytics: React.FC = () => {
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Page Performance */}
         <Card>
           <CardHeader>
-            <CardTitle>Page Performance</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Page Performance</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {analytics.pageviews.topPages.map((page) => (
-                <div key={page.path} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                  <div className="flex-1">
-                    <p className="font-medium">{page.path}</p>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                <div key={page.path} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 bg-muted/30 rounded-lg">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm sm:text-base truncate">{page.path}</p>
+                    <div className="flex items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm text-muted-foreground">
                       <span>{page.views.toLocaleString()} views</span>
                       <span>{page.uniqueViews.toLocaleString()} unique</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">{Math.round(page.averageTime / 60)} min</p>
-                    <p className={`text-sm ${page.bounceRate < 30 ? 'text-green-500' : page.bounceRate < 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                  <div className="text-left sm:text-right flex-shrink-0">
+                    <p className="font-medium text-sm sm:text-base">{Math.round(page.averageTime / 60)} min</p>
+                    <p className={`text-xs sm:text-sm ${page.bounceRate < 30 ? 'text-green-500' : page.bounceRate < 50 ? 'text-yellow-500' : 'text-red-500'}`}>
                       {page.bounceRate}% bounce
                     </p>
                   </div>
@@ -552,36 +494,36 @@ export const SiteAnalytics: React.FC = () => {
         </Card>
 
         {/* Engagement Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-500 mb-2">
                   {analytics.pageviews.total.toLocaleString()}
                 </div>
-                <p className="text-sm text-muted-foreground">Total Pageviews</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total Pageviews</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-green-500 mb-2">
                   {Math.round(analytics.pageviews.averageDuration / 60)} min
                 </div>
-                <p className="text-sm text-muted-foreground">Avg. Session Duration</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Avg. Session Duration</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-orange-500 mb-2">
                   {analytics.visitors.bounceRate}%
                 </div>
-                <p className="text-sm text-muted-foreground">Bounce Rate</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Bounce Rate</p>
               </div>
             </CardContent>
           </Card>
@@ -617,38 +559,38 @@ export const SiteAnalytics: React.FC = () => {
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Real-time Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-green-500 mb-2">
                   {realtimeData.activeUsers}
                 </div>
-                <p className="text-sm text-muted-foreground">Active Users (now)</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Active Users (now)</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-500 mb-2">
                   {realtimeData.currentPageViews}
                 </div>
-                <p className="text-sm text-muted-foreground">Current Pageviews</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Current Pageviews</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-500 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-purple-500 mb-2">
                   {realtimeData.topActivePages.length}
                 </div>
-                <p className="text-sm text-muted-foreground">Active Pages</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Active Pages</p>
               </div>
             </CardContent>
           </Card>
@@ -657,25 +599,25 @@ export const SiteAnalytics: React.FC = () => {
         {/* Top Active Pages */}
         <Card>
           <CardHeader>
-            <CardTitle>Top Active Pages (Real-time)</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Top Active Pages (Real-time)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {realtimeData.topActivePages.map((page, _index) => (
-                <div key={page.path} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                <div key={page.path} className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     </div>
-                    <div>
-                      <p className="font-medium">{page.path}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base truncate">{page.path}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {page.pageViews} pageviews
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">{page.activeUsers} active</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-medium text-sm sm:text-base">{page.activeUsers} active</p>
                   </div>
                 </div>
               ))}
@@ -703,42 +645,70 @@ export const SiteAnalytics: React.FC = () => {
     }
   };
 
+  const currentTab = tabs.find(tab => tab.id === activeTab);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
+      <AnalyticsHeader
+        startDate={startDate}
+        endDate={endDate}
+        onDateChange={handleDateChange}
+        onRefresh={loadAnalytics}
+        onExport={exportData}
+        loading={loading}
+      />
+
+      {/* Inner Tab Navigation */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Site Analytics</h1>
-          <p className="text-muted-foreground mt-1">
-            Comprehensive website analytics and insights
-          </p>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <DateRangeSelector
-            startDate={startDate}
-            endDate={endDate}
-            onDateChange={handleDateChange}
-          />
-
-          <Button variant="outline" onClick={loadAnalytics} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
+        <div className="relative" ref={tabDropdownRef}>
+          <Button
+            variant="outline"
+            onClick={() => setShowTabDropdown(!showTabDropdown)}
+            className="flex items-center gap-2"
+          >
+            {currentTab && (
+              <>
+                <currentTab.icon className="w-4 h-4" />
+                <span>{currentTab.label}</span>
+              </>
+            )}
+            <ChevronDown className={`w-4 h-4 transition-transform ${showTabDropdown ? 'rotate-180' : ''}`} />
           </Button>
-
-          <Button variant="outline" onClick={exportData}>
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
+          <AnimatePresence>
+            {showTabDropdown && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="absolute left-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden"
+              >
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        setShowTabDropdown(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
+                        activeTab === tab.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-medium text-sm">{tab.label}</span>
+                      {activeTab === tab.id && (
+                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 ml-auto" />
+                      )}
+                    </button>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* Navigation */}
-      <TabNavigation
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
 
       {/* Content */}
       <TabContent activeTab={activeTab}>

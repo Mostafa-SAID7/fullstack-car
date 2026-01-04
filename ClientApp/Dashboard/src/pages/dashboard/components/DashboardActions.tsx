@@ -118,7 +118,7 @@ export const DashboardActions: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 + index * 0.1 }}
                 onClick={action.action}
-                className="glass rounded-2xl p-6 text-left hover:scale-105 transition-all duration-300 group border border-border/50 hover:border-border"
+                className="bg-card rounded-2xl p-6 text-left hover:scale-105 transition-all duration-300 group border border-border/50 hover:border-border"
               >
                 <div className={cn(
                   "w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all",
@@ -161,7 +161,7 @@ export const DashboardActions: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.4 + index * 0.1 }}
                 onClick={action.action}
-                className="glass rounded-2xl p-6 text-left hover:scale-105 transition-all duration-300 group border border-border/50 hover:border-border"
+                className="bg-card rounded-2xl p-6 text-left hover:scale-105 transition-all duration-300 group border border-border/50 hover:border-border"
               >
                 <div className={cn(
                   "w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all",

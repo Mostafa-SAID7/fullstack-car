@@ -72,7 +72,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
 
             {/* Email Confirmation Banner */}
             {user && !user.isEmailConfirmed && (
-                <div className="bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border-b border-pink-200 dark:border-pink-800 px-4 py-2 text-sm font-bold flex items-center justify-center gap-2">
+                <div className="bg-pink-50 text-pink-600 border-b border-pink-200 px-4 py-2 text-sm font-bold flex items-center justify-center gap-2">
                     <Bell className="w-4 h-4" />
                     {t('confirm_email_notice', 'Please confirm your email address to access all features.')}
                     <button className="underline hover:opacity-80 transition-opacity ml-2">{t('resend_confirmation', 'Resend confirmation')}</button>
@@ -91,8 +91,6 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative main-content-bg max-w-full">
                     {/* Background Decor - Constrained within container */}
-                    <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-pink-500/5 dark:bg-pink-400/10 rounded-full blur-[120px] -z-10 opacity-50" />
-                    <div className="absolute bottom-0 left-0 w-[30%] h-[30%] bg-pink-500/10 dark:bg-pink-400/20 rounded-full blur-[100px] -z-10 opacity-50" />
 
                     {/* Header */}
                     <Header

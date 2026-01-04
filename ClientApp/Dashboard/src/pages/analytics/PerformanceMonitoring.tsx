@@ -48,9 +48,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
   }
 
   const statusColors = {
-    good: 'text-green-500 bg-green-50 dark:bg-green-900/20',
-    warning: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20',
-    critical: 'text-red-500 bg-red-50 dark:bg-red-900/20'
+    good: 'text-green-500 bg-green-50',
+    warning: 'text-yellow-500 bg-yellow-50',
+    critical: 'text-red-500 bg-red-50'
   };
 
   const getStatusIcon = () => {
@@ -504,13 +504,13 @@ export const PerformanceMonitoring: React.FC = () => {
         <CardContent>
           <div className="space-y-3">
             {metrics.coreWebVitals.lcp > 2.5 && (
-              <div className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-yellow-50  rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-yellow-800 dark:text-yellow-200">
+                  <p className="font-medium text-yellow-800 ">
                     Improve Largest Contentful Paint (LCP)
                   </p>
-                  <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                  <p className="text-sm text-yellow-700  mt-1">
                     Your LCP is {metrics.coreWebVitals.lcp}s. Consider optimizing images, reducing server response time, and removing render-blocking resources.
                   </p>
                 </div>
@@ -521,10 +521,10 @@ export const PerformanceMonitoring: React.FC = () => {
               <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-orange-800 dark:text-orange-200">
+                  <p className="font-medium text-orange-800 ">
                     Reduce Cumulative Layout Shift (CLS)
                   </p>
-                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                  <p className="text-sm text-orange-700  mt-1">
                     Your CLS score is {metrics.coreWebVitals.cls}. Include size attributes on images and avoid inserting content above existing content.
                   </p>
                 </div>
@@ -535,10 +535,10 @@ export const PerformanceMonitoring: React.FC = () => {
               <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-blue-800 dark:text-blue-200">
+                  <p className="font-medium text-blue-800 ">
                     Reduce Unused JavaScript
                   </p>
-                  <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                  <p className="text-sm text-blue-700  mt-1">
                     You have {metrics.javascript.unusedJs} MB of unused JavaScript. Consider code splitting and removing unused dependencies.
                   </p>
                 </div>
@@ -549,10 +549,10 @@ export const PerformanceMonitoring: React.FC = () => {
               <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-green-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-green-800 dark:text-green-200">
+                  <p className="font-medium text-green-800 ">
                     Optimize Images
                   </p>
-                  <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                  <p className="text-sm text-green-700  mt-1">
                     {metrics.images.unoptimizedImages} out of {metrics.images.totalImages} images are not optimized. Use modern formats like WebP and compress images.
                   </p>
                 </div>

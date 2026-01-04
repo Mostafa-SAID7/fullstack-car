@@ -46,7 +46,7 @@ export const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({ data }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1 }}
-          className="bg-card/40 backdrop-blur-md p-6 rounded-2xl border border-border/50"
+          className="bg-card p-6 rounded-2xl border border-border/50"
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-2 bg-${metric.color}-500/10 rounded-lg`}>

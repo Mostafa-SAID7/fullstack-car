@@ -43,7 +43,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     const percentage = ((data.value / data.payload.total) * 100).toFixed(1);
 
     return (
-      <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl shadow-xl p-4 min-w-[200px]">
+      <div className="bg-card border border-border rounded-xl shadow-xl p-4 min-w-[200px]">
         <div className="flex items-center gap-3 mb-2">
           <div
             className="w-3 h-3 rounded-full"
@@ -127,8 +127,6 @@ export const PieChart: React.FC<PieChartProps> = ({
       <div className="relative">
         {/* Background decorative elements */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-32 h-32 bg-primary/5 rounded-full blur-xl"></div>
-          <div className="absolute w-24 h-24 bg-secondary/5 rounded-full blur-lg"></div>
         </div>
 
         <ResponsiveContainer width="100%" height={height}>

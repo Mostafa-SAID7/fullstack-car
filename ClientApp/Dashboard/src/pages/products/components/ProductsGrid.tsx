@@ -84,7 +84,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({ products }) => {
 
             {/* Actions Menu */}
             <div className="absolute top-2 right-2">
-              <button className="p-1 bg-background/80 backdrop-blur-sm rounded-lg hover:bg-background transition-colors">
+              <button className="p-1 bg-background rounded-lg hover:bg-background transition-colors">
                 <MoreVertical className="w-4 h-4" />
               </button>
             </div>

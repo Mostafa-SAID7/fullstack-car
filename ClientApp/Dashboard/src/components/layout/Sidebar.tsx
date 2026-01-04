@@ -98,14 +98,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           path: '/dashboard',
           icon: LayoutDashboard,
           label: t('dashboard', 'Dashboard'),
-          color: 'text-blue-600 dark:text-blue-400',
+          color: 'text-blue-600',
           description: 'Main dashboard overview'
         },
         {
           path: '/analytics',
           icon: BarChart3,
           label: t('analytics', 'Analytics'),
-          color: 'text-green-600 dark:text-green-400',
+          color: 'text-green-600',
           description: 'Data insights and reports'
         }
       ]
@@ -118,21 +118,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           path: '/users',
           icon: Users,
           label: t('users', 'Users'),
-          color: 'text-purple-600 dark:text-purple-400',
+          color: 'text-purple-600',
           description: 'User management'
         },
         {
           path: '/customers',
           icon: UserCheck,
           label: t('customers', 'Customers'),
-          color: 'text-cyan-600 dark:text-cyan-400',
+          color: 'text-cyan-600',
           description: 'Customer relationships'
         },
         {
           path: '/products',
           icon: Package,
           label: t('products', 'Products'),
-          color: 'text-emerald-600 dark:text-emerald-400',
+          color: 'text-emerald-600',
           description: 'Product catalog'
         }
       ]
@@ -145,14 +145,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           path: '/content',
           icon: FileText,
           label: t('content', 'Content'),
-          color: 'text-orange-600 dark:text-orange-400',
+          color: 'text-orange-600',
           description: 'Content management'
         },
         {
           path: '/media',
           icon: FileImage,
           label: t('media', 'Media'),
-          color: 'text-indigo-600 dark:text-indigo-400',
+          color: 'text-indigo-600',
           description: 'Media library'
         }
       ]
@@ -165,21 +165,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           path: '/ai-agent',
           icon: Bot,
           label: t('ai_agent', 'AI Agent'),
-          color: 'text-pink-600 dark:text-pink-400',
+          color: 'text-pink-600',
           description: 'AI assistant'
         },
         {
           path: '/system',
           icon: Server,
           label: t('system', 'System'),
-          color: 'text-red-600 dark:text-red-400',
+          color: 'text-red-600',
           description: 'System administration'
         },
         {
           path: '/settings',
           icon: Settings,
           label: t('settings', 'Settings'),
-          color: 'text-gray-600 dark:text-gray-400',
+          color: 'text-gray-600',
           description: 'Application settings'
         }
       ]
@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           path: '/localization',
           icon: Languages,
           label: 'Localization',
-          color: 'text-blue-600 dark:text-blue-400',
+          color: 'text-blue-600',
           description: 'Translation management'
         }
       ]
@@ -230,15 +230,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           damping: 30
         }}
         className={cn(
-          "main-content-bg border-r border-gray-200/50 dark:border-gray-700/50 flex flex-col shadow-2xl",
+          "main-content-bg border-r border-border flex flex-col shadow-2xl",
           "fixed inset-y-0 left-0 z-50 md:relative md:z-40",
-          "backdrop-blur-xl bg-card/95 dark:bg-gray-900/95",
+          "bg-card",
           "min-h-screen md:min-h-0",
           "overflow-hidden"
         )}
       >
         {/* Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200/50 dark:border-gray-700/50 flex-shrink-0">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border flex-shrink-0">
           {/* Logo */}
           <motion.div
             initial={false}
@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <h1 className="text-lg font-bold bg-gradient-to-r from-pink-600 to-pink-500 bg-clip-text text-transparent truncate">
                   Community Car
                 </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium truncate">
+                <p className="text-xs text-muted-foreground font-medium truncate">
                   Admin Dashboard
                 </p>
               </div>
@@ -269,7 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Close */}
             <button
               onClick={onMobileClose}
-              className="md:hidden p-2 rounded-lg hover:bg-muted/50 dark:hover:bg-gray-800 transition-colors text-muted-foreground dark:text-gray-400"
+              className="md:hidden p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground"
               title="Close sidebar"
             >
               <X className="w-5 h-5" />
@@ -278,7 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Desktop Collapse */}
             <button
               onClick={onToggleCollapse}
-              className="hidden md:flex p-2 rounded-lg hover:bg-muted/50 dark:hover:bg-gray-800 transition-colors text-muted-foreground dark:text-gray-400"
+              className="hidden md:flex p-2 rounded-lg hover:bg-muted/50  transition-colors text-muted-foreground "
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
@@ -302,8 +302,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="overflow-hidden"
                 >
                   <div className="flex items-center gap-2 px-3 py-1">
-                    <section.icon className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <section.icon className="w-4 h-4 text-gray-500  flex-shrink-0" />
+                    <h3 className="text-xs font-semibold text-gray-500  uppercase tracking-wider">
                       {section.title}
                     </h3>
                   </div>
@@ -330,8 +330,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               ? "px-3 py-3 gap-3"
                               : "justify-center px-2 py-3",
                             navActive
-                              ? "bg-gradient-to-r from-pink-50 to-pink-100/50 dark:from-pink-900/30 dark:to-pink-800/20 text-pink-700 dark:text-pink-300 shadow-lg shadow-pink-500/10"
-                              : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+                              ? "bg-gradient-to-r from-pink-50 to-pink-100/50  text-pink-700  shadow-lg shadow-pink-500/10"
+                              : "text-gray-600  hover:text-gray-900  hover:bg-gray-100/50 /50"
                           )
                         }
                       >
@@ -343,16 +343,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               "relative flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0",
                               (isMobileOpen || !collapsed) ? "w-10 h-10" : "w-8 h-8",
                               navActive
-                                ? "bg-pink-500/20 dark:bg-pink-600/30 shadow-md"
+                                ? "bg-pink-500/20  shadow-md"
                                 : hoveredItem === item.path
-                                ? "bg-gray-200/50 dark:bg-gray-700/50"
-                                : "group-hover:bg-gray-200/30 dark:group-hover:bg-gray-700/30"
+                                ? "bg-gray-200/50 "
+                                : "group-hover:bg-gray-200/30 "
                             )}>
                               <Icon className={cn(
                                 "transition-all duration-200",
                                 collapsed ? "w-5 h-5" : "w-5 h-5",
                                 navActive
-                                  ? "text-pink-600 dark:text-pink-400"
+                                  ? "text-pink-600"
                                   : item.color
                               )} />
 
@@ -378,12 +378,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               <div className="flex flex-col gap-0.5">
                                 <span className={cn(
                                   "font-medium text-sm truncate block",
-                                  navActive && "text-pink-700 dark:text-pink-300"
+                                  navActive && "text-pink-700 "
                                 )}>
                                   {item.label}
                                 </span>
                                 {item.description && (isMobileOpen || !collapsed) && (
-                                  <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                  <span className="text-xs text-gray-500  truncate">
                                     {item.description}
                                   </span>
                                 )}
@@ -398,13 +398,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 exit={{ opacity: 0, scale: 0.8, x: -10 }}
                                 className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50"
                               >
-                                <div className="bg-gray-900 dark:bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                                <div className="bg-gray-900  text-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
                                   <div className="font-medium text-sm">{item.label}</div>
                                   {item.description && (
                                     <div className="text-xs text-gray-300 mt-1">{item.description}</div>
                                   )}
                                 </div>
-                                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-800"></div>
+                                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 "></div>
                               </motion.div>
                             )}
                           </>
@@ -419,17 +419,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Bottom Section */}
-        <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 flex-shrink-0">
+        <div className="p-4 border-t border-gray-200/50  flex-shrink-0">
           <div className={cn(
-            "bg-gradient-to-br from-pink-50/50 to-pink-100/30 dark:from-pink-900/20 dark:to-pink-800/10 rounded-xl border border-pink-200/50 dark:border-pink-700/50 transition-all duration-200",
+            "bg-gradient-to-br from-pink-50/50 to-pink-100/30  rounded-xl border border-pink-200/50  transition-all duration-200",
             (isMobileOpen || !collapsed) ? "p-4" : "p-3 flex items-center justify-center"
           )}>
             <div className={cn(
               "flex items-center transition-all duration-200",
               (isMobileOpen || !collapsed) ? "gap-3" : "justify-center"
             )}>
-              <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+              <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200  rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-pink-600" />
               </div>
               {(isMobileOpen || !collapsed) && (
                 <motion.div
@@ -439,10 +439,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   transition={{ duration: 0.2 }}
                   className="min-w-0 flex-1 overflow-hidden"
                 >
-                  <p className="text-sm font-semibold text-pink-700 dark:text-pink-300 whitespace-nowrap">
+                  <p className="text-sm font-semibold text-pink-700  whitespace-nowrap">
                     AI Powered
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                  <p className="text-xs text-gray-600 whitespace-nowrap">
                     Smart Analytics
                   </p>
                 </motion.div>

@@ -36,7 +36,7 @@ export const LanguageSwitcher: React.FC = () => {
         <div className="relative" ref={langRef}>
             <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                className="p-2 rounded-lg hover:bg-gray-100  transition-colors text-gray-500 "
                 title="Switch language"
             >
                 <Languages className="w-5 h-5" />
@@ -55,7 +55,7 @@ export const LanguageSwitcher: React.FC = () => {
                                 onClick={() => toggleLanguage(lang.id)}
                                 className={cn(
                                     "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
-                                    i18n.language === lang.id && "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
+                                    i18n.language === lang.id && "bg-pink-50 text-pink-600"
                                 )}
                             >
                                 <span className="text-base">{lang.flag}</span>

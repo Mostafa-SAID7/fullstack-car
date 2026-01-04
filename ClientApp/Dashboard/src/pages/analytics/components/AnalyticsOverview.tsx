@@ -11,7 +11,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({ data }) =>
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="bg-card/40 backdrop-blur-md rounded-3xl border border-border/50 p-8"
+      className="bg-card rounded-3xl border border-border/50 p-8"
     >
       <h3 className="font-bold text-xl mb-6">Analytics Overview</h3>
       <div className="space-y-4">

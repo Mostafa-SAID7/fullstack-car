@@ -51,11 +51,8 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden main-content-bg">
-      {/* Enhanced Background Effects */}
+      {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-pink-500/5 to-purple-500/8" />
-      <div className="absolute top-0 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-gradient-to-br from-primary/15 to-pink-500/10 rounded-full blur-3xl -translate-y-36 md:-translate-y-48 animate-pulse" />
-      <div className="absolute bottom-0 right-1/4 w-80 h-80 md:w-96 md:h-96 bg-gradient-to-br from-purple-500/15 to-blue-500/10 rounded-full blur-3xl translate-y-40 md:translate-y-48 animate-pulse" style={{ animationDelay: '2s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/3 via-transparent to-purple-500/3 rounded-full blur-[100px]" />
 
       {/* Floating particles effect */}
       <div className="absolute inset-0 overflow-hidden">
@@ -88,7 +85,6 @@ export const LoginForm: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-primary via-pink-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-primary/30 group-hover:shadow-primary/40 transition-all duration-300 group-hover:scale-105">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent rounded-3xl group-hover:from-white/40 transition-all duration-300" />
                 <Car className="w-12 h-12 sm:w-14 sm:h-14 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
@@ -130,15 +126,8 @@ export const LoginForm: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
           className="relative"
         >
-          {/* Glassmorphism container */}
-          <div className="bg-card/95 backdrop-blur-2xl border border-border/60 rounded-3xl shadow-2xl shadow-black/20 p-6 sm:p-8 lg:p-10 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500">
-            {/* Enhanced inner glow effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-pink-500/5 to-purple-500/8 rounded-3xl" />
-            <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 rounded-3xl" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl group-hover:blur-xl transition-all duration-500" />
-
-            {/* Animated border */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-sm" />
+          {/* Form container */}
+          <div className="bg-card border border-border rounded-3xl shadow-2xl shadow-black/20 p-6 sm:p-8 lg:p-10 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500">
           <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Enhanced Email Field */}
             <motion.div
@@ -160,7 +149,7 @@ export const LoginForm: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="relative bg-background/60 backdrop-blur-sm border border-border/70 rounded-2xl px-4 py-4 pl-12 sm:pl-14 pr-4 text-sm sm:text-base font-medium w-full h-14 sm:h-16 transition-all duration-300 focus:outline-none focus:border-primary/80 focus:ring-4 focus:ring-primary/10 focus:bg-background/80 hover:border-border/90 hover:shadow-lg hover:shadow-primary/5 placeholder:text-muted-foreground/70"
+                  className="relative bg-background border border-border rounded-2xl px-4 py-4 pl-12 sm:pl-14 pr-4 text-sm sm:text-base font-medium w-full h-14 sm:h-16 transition-all duration-300 focus:outline-none focus:border-primary/80 focus:ring-4 focus:ring-primary/10 hover:border-border/90 hover:shadow-lg hover:shadow-primary/5 placeholder:text-muted-foreground/70"
                   placeholder="Enter your email address"
                 />
                 <Mail className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground/80 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300 z-10" />
@@ -188,7 +177,7 @@ export const LoginForm: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="relative bg-background/60 backdrop-blur-sm border border-border/70 rounded-2xl px-4 py-4 pl-12 sm:pl-14 pr-14 sm:pr-16 text-sm sm:text-base font-medium w-full h-14 sm:h-16 transition-all duration-300 focus:outline-none focus:border-primary/80 focus:ring-4 focus:ring-primary/10 focus:bg-background/80 hover:border-border/90 hover:shadow-lg hover:shadow-primary/5 placeholder:text-muted-foreground/70"
+                  className="relative bg-background border border-border rounded-2xl px-4 py-4 pl-12 sm:pl-14 pr-14 sm:pr-16 text-sm sm:text-base font-medium w-full h-14 sm:h-16 transition-all duration-300 focus:outline-none focus:border-primary/80 focus:ring-4 focus:ring-primary/10 hover:border-border/90 hover:shadow-lg hover:shadow-primary/5 placeholder:text-muted-foreground/70"
                   placeholder="Enter your password"
                 />
                 <Lock className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground/80 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300 z-10" />
@@ -253,18 +242,18 @@ export const LoginForm: React.FC = () => {
                 transition={{ duration: 0.4, ease: "easeOut" }}
                 className="relative mt-6 sm:mt-8"
               >
-                <div className="bg-gradient-to-r from-red-50/80 via-red-100/40 to-red-50/80 dark:from-red-950/60 dark:via-red-900/30 dark:to-red-950/60 backdrop-blur-sm border border-red-200/60 dark:border-red-800/40 rounded-2xl p-5 shadow-lg shadow-red-500/10">
+                <div className="bg-gradient-to-r from-red-50/80 via-red-100/40 to-red-50/80 border border-red-200/60 rounded-2xl p-5 shadow-lg shadow-red-500/10">
                   <div className="flex items-start gap-4">
                     <motion.div
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/50 dark:to-red-800/50 flex items-center justify-center flex-shrink-0 shadow-sm"
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center flex-shrink-0 shadow-sm"
                       animate={{ rotate: [0, -10, 10, 0] }}
                       transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
                     >
-                      <Shield className="w-4 h-4 text-red-600 dark:text-red-400" />
+                      <Shield className="w-4 h-4 text-red-600" />
                     </motion.div>
                     <div className="flex-1">
-                      <p className="text-sm font-bold text-red-800 dark:text-red-200 leading-relaxed">{error}</p>
-                      <div className="mt-2 w-full h-1 bg-red-200/50 dark:bg-red-800/30 rounded-full overflow-hidden">
+                      <p className="text-sm font-bold text-red-800 leading-relaxed">{error}</p>
+                      <div className="mt-2 w-full h-1 bg-red-200/50 rounded-full overflow-hidden">
                         <div className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full animate-pulse" />
                       </div>
                     </div>
@@ -313,7 +302,7 @@ export const LoginForm: React.FC = () => {
                 </div>
 
                 {/* Border glow effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 via-pink-500/50 to-purple-600/50 opacity-0 group-hover:opacity-100 blur-sm -z-10 transition-opacity duration-500" />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 via-pink-500/50 to-purple-600/50 opacity-0 group-hover:opacity-100 -z-10 transition-opacity duration-500" />
               </motion.button>
             </motion.div>
           </form>
@@ -329,7 +318,7 @@ export const LoginForm: React.FC = () => {
               <div className="w-full border-t border-gradient-to-r from-transparent via-border/60 to-transparent" />
             </div>
             <div className="relative flex justify-center">
-              <div className="px-6 py-2 bg-card/80 backdrop-blur-sm border border-border/40 rounded-full shadow-sm">
+              <div className="px-6 py-2 bg-card border border-border/40 rounded-full shadow-sm">
                 <span className="text-sm font-semibold text-muted-foreground bg-gradient-to-r from-muted-foreground to-muted-foreground/80 bg-clip-text">
                   Or continue with
                 </span>
@@ -356,9 +345,9 @@ export const LoginForm: React.FC = () => {
                     <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
                 ),
-                bgColor: 'bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-950/40 dark:to-red-900/20',
-                borderColor: 'border-red-200/60 dark:border-red-800/40',
-                iconColor: 'text-red-600 dark:text-red-400',
+                bgColor: 'bg-gradient-to-br from-red-50 to-red-100/50',
+                borderColor: 'border-red-200/60',
+                iconColor: 'text-red-600',
                 hoverColor: 'hover:shadow-red-500/20'
               },
               {
@@ -369,9 +358,9 @@ export const LoginForm: React.FC = () => {
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 ),
-                bgColor: 'bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-950/40 dark:to-gray-900/20',
-                borderColor: 'border-gray-200/60 dark:border-gray-800/40',
-                iconColor: 'text-gray-700 dark:text-gray-300',
+                bgColor: 'bg-gradient-to-br from-gray-50 to-gray-100/50',
+                borderColor: 'border-gray-200/60',
+                iconColor: 'text-gray-700',
                 hoverColor: 'hover:shadow-gray-500/20'
               },
               {
@@ -382,9 +371,9 @@ export const LoginForm: React.FC = () => {
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
                 ),
-                bgColor: 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20',
-                borderColor: 'border-blue-200/60 dark:border-blue-800/40',
-                iconColor: 'text-blue-600 dark:text-blue-400',
+                bgColor: 'bg-gradient-to-br from-blue-50 to-blue-100/50',
+                borderColor: 'border-blue-200/60',
+                iconColor: 'text-blue-600',
                 hoverColor: 'hover:shadow-blue-500/20'
               }
             ].map((provider, index) => (
@@ -429,7 +418,7 @@ export const LoginForm: React.FC = () => {
             ))}
           </motion.div>
 
-          {/* Close the glassmorphism container */}
+          {/* Close the form container */}
           </div>
         </motion.div>
 

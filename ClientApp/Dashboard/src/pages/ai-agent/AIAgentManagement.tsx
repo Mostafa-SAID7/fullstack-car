@@ -84,10 +84,8 @@ export const AIAgentManagement: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-6 md:p-8 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 shadow-lg">
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-primary/5 rounded-full blur-2xl md:blur-3xl -translate-y-24 md:-translate-y-32 translate-x-24 md:translate-x-32" />
-        <div className="absolute bottom-0 left-0 w-36 h-36 md:w-48 md:h-48 bg-pink-500/5 rounded-full blur-xl md:blur-2xl translate-y-18 md:translate-y-24 -translate-x-18 md:-translate-x-24" />
 
         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex-1">
@@ -151,7 +149,7 @@ export const AIAgentManagement: React.FC = () => {
               <span className="hidden sm:inline">Save Changes</span>
               <span className="sm:hidden">Save</span>
             </button>
-            <button className="flex items-center justify-center gap-3 px-4 md:px-6 py-3 bg-card border border-border/50 text-card-foreground rounded-2xl font-semibold hover:bg-muted/50 hover:shadow-lg transition-all duration-200 backdrop-blur-sm text-sm md:text-base">
+            <button className="flex items-center justify-center gap-3 px-4 md:px-6 py-3 bg-card border border-border/50 text-card-foreground rounded-2xl font-semibold hover:bg-muted/50 hover:shadow-lg transition-all duration-200 text-sm md:text-base">
               <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
               <span className="hidden sm:inline">Refresh</span>
               <span className="sm:hidden">Sync</span>

@@ -66,16 +66,14 @@ namespace WebAPI.Extensions
             // Add HttpContextAccessor for CurrentUserService
             services.AddHttpContextAccessor();
 
-            var corsSettings = configuration.GetSection("CorsSettings");
-            var allowedOrigins = corsSettings.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-
+            // CORS: Allow all origins for development and production
             services.AddCors(options =>
             {
                 options.AddPolicy(
                     "AllowAngularApp",
                     policy =>
                     {
-                        policy.WithOrigins(allowedOrigins)
+                        policy.SetIsOriginAllowed(_ => true) // Allow all origins
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials();

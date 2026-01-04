@@ -49,11 +49,11 @@ const MetricCard: React.FC<MetricCardProps> = ({
   }
 
   const colorClasses = {
-    blue: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20',
-    green: 'text-green-500 bg-green-50 dark:bg-green-900/20',
-    purple: 'text-purple-500 bg-purple-50 dark:bg-purple-900/20',
-    orange: 'text-orange-500 bg-orange-50 dark:bg-orange-900/20',
-    red: 'text-red-500 bg-red-50 dark:bg-red-900/20'
+    blue: 'text-blue-500 bg-blue-50',
+    green: 'text-green-500 bg-green-50',
+    purple: 'text-purple-500 bg-purple-50',
+    orange: 'text-orange-500 bg-orange-50',
+    red: 'text-red-500 bg-red-50'
   };
 
   return (
@@ -65,8 +65,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
           </div>
           {change !== undefined && (
             <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-              change > 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-              'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+              change > 0 ? 'bg-green-100 text-green-700' :
+              'bg-red-100 text-red-700'
             }`}>
               {change > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingUp className="w-3 h-3 rotate-180" />}
               {Math.abs(change)}%
@@ -501,10 +501,10 @@ export const OnePageAnalytics: React.FC = () => {
         <CardContent>
           <div className="space-y-3">
             {metrics.performance.firstContentfulPaint > 2 && (
-              <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
                 <Zap className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-blue-800 dark:text-blue-200">
+                  <p className="font-medium text-blue-800">
                     Optimize First Contentful Paint
                   </p>
                   <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">

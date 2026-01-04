@@ -73,7 +73,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     >
       {/* Background decoration */}
       <div className={cn(
-        "absolute -right-8 -top-8 w-24 h-24 rounded-full opacity-5 blur-2xl transition-opacity group-hover:opacity-10",
+        "absolute -right-8 -top-8 w-24 h-24 rounded-full opacity-5 transition-opacity group-hover:opacity-10",
         colorClasses[color].split(' ')[1]
       )} />
 

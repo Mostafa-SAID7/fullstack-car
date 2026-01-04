@@ -141,7 +141,7 @@ export const MediaList: React.FC<MediaListProps> = ({ files, onFileClick, onDele
                     e.stopPropagation();
                     onDelete(file.id);
                   }}
-                  className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />

@@ -45,10 +45,8 @@ export const UsersHeader: React.FC<UsersHeaderProps> = ({ showFilters, setShowFi
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-6 md:p-8 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 shadow-lg">
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-purple-500/5 rounded-full blur-2xl md:blur-3xl -translate-y-24 md:-translate-y-32 translate-x-24 md:translate-x-32" />
-        <div className="absolute bottom-0 left-0 w-36 h-36 md:w-48 md:h-48 bg-blue-500/5 rounded-full blur-xl md:blur-2xl translate-y-18 md:translate-y-24 -translate-x-18 md:-translate-x-24" />
 
         <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-center gap-4 md:gap-6">
@@ -75,7 +73,7 @@ export const UsersHeader: React.FC<UsersHeaderProps> = ({ showFilters, setShowFi
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 border border-border/50 rounded-2xl bg-card/50 backdrop-blur-sm text-card-foreground hover:bg-muted/50 hover:shadow-lg transition-all duration-200 text-sm md:text-base"
+              className="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 border border-border/50 rounded-2xl bg-card text-card-foreground hover:bg-muted/50 hover:shadow-lg transition-all duration-200 text-sm md:text-base"
             >
               <Filter className="w-4 h-4 md:w-5 md:h-5" />
               <span className="hidden sm:inline">{t('filters', 'Filters')}</span>
@@ -113,8 +111,8 @@ export const UsersHeader: React.FC<UsersHeaderProps> = ({ showFilters, setShowFi
                 <div className="flex items-center gap-2">
                   <span className={`text-sm font-semibold px-2 py-1 rounded-full ${
                     stat.changeType === 'positive'
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                      : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                   }`}>
                     {stat.change}
                   </span>
@@ -122,7 +120,7 @@ export const UsersHeader: React.FC<UsersHeaderProps> = ({ showFilters, setShowFi
                 </div>
               </div>
               <div className="p-4 bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                <stat.icon className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+                <stat.icon className="w-7 h-7 text-purple-600" />
               </div>
             </div>
           </motion.div>

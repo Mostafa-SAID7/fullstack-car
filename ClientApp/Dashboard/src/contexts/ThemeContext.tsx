@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import type { ThemeConfig } from '../themes';
 import { defaultTheme, availableThemes, getThemeById } from '../themes';
 
+type ThemeMode = 'light' | 'dark' | 'system';
+
 interface LayoutConfig {
   header: {
     showLogo: boolean;
@@ -57,6 +59,11 @@ interface ThemeContextType {
   // Persistence
   saveTheme: () => void;
   loadSavedTheme: () => void;
+
+  // Dark mode
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
+  resolvedTheme: 'light' | 'dark';
 }
 
 const defaultLayout: LayoutConfig = {
@@ -110,6 +117,56 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [layout, setLayout] = useState<LayoutConfig>(defaultLayout);
   const [previewTheme, setPreviewTheme] = useState<ThemeConfig | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
+    // Load from localStorage or default to 'dark'
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme-mode');
+      return (saved as ThemeMode) || 'dark';
+    }
+    return 'dark';
+  });
+
+  // Get system preference
+  const getSystemTheme = (): 'light' | 'dark' => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'dark'; // Default to dark if system preference cannot be determined
+  };
+
+  // Get resolved theme (actual theme to apply)
+  const resolvedTheme: 'light' | 'dark' = themeMode === 'system' ? getSystemTheme() : themeMode;
+
+  // Apply dark mode class to document (runs on mount and when resolvedTheme changes)
+  useEffect(() => {
+    const root = document.documentElement;
+    if (resolvedTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [resolvedTheme]);
+
+  // Listen to system theme changes when in system mode
+  useEffect(() => {
+    if (themeMode !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      const root = document.documentElement;
+      if (mediaQuery.matches) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    };
+
+    // Apply initial system theme
+    handleChange();
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [themeMode]);
 
   // Load saved theme on mount
   useEffect(() => {
@@ -236,6 +293,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   };
 
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    localStorage.setItem('theme-mode', mode);
+    
+    // Apply immediately
+    const root = document.documentElement;
+    const newResolvedTheme = mode === 'system' ? getSystemTheme() : mode;
+    if (newResolvedTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  };
+
   // Auto-save theme changes
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -257,7 +328,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     confirmPreview,
     cancelPreview,
     saveTheme,
-    loadSavedTheme
+    loadSavedTheme,
+    themeMode,
+    setThemeMode,
+    resolvedTheme
   };
 
   return (

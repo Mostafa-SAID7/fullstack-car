@@ -9,6 +9,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
   <title>dashboard</title>
+  <script>
+    // Apply dark mode before React loads to prevent flash
+    (function() {
+      const savedMode = localStorage.getItem('theme-mode');
+      const root = document.documentElement;
+      
+      if (savedMode === 'light') {
+        root.classList.remove('dark');
+      } else if (savedMode === 'system') {
+        // Check system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          root.classList.add('dark');
+        } else {
+          root.classList.remove('dark');
+        }
+      } else {
+        // Default to dark mode
+        root.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 
 <body>

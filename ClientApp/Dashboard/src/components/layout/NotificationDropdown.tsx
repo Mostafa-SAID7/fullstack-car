@@ -76,12 +76,12 @@ export const NotificationDropdown: React.FC = () => {
         <div className="relative" ref={notificationRef}>
             <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 relative transition-colors text-gray-500 dark:text-gray-400"
+                className="p-2 rounded-lg hover:bg-gray-100  relative transition-colors text-gray-500 "
                 title="Notifications"
             >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-pink-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-gray-900 animate-pulse">
+                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-pink-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white  animate-pulse">
                         {unreadCount}
                     </span>
                 )}
@@ -97,7 +97,7 @@ export const NotificationDropdown: React.FC = () => {
                         <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
                             <h4 className="font-black text-sm uppercase tracking-widest">{t('notifications')}</h4>
                             {unreadCount > 0 && (
-                                <span className="text-[10px] font-bold bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 px-2 py-0.5 rounded-full">
+                                <span className="text-[10px] font-bold bg-pink-50  text-pink-600  px-2 py-0.5 rounded-full">
                                     {unreadCount} New
                                 </span>
                             )}
@@ -116,10 +116,10 @@ export const NotificationDropdown: React.FC = () => {
                                         <div className="mt-1">{getNotificationIcon(n.type)}</div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-black mb-0.5">{n.title}</p>
-                                            <p className="text-[11px] text-gray-600 dark:text-gray-300 font-medium leading-normal line-clamp-2">
+                                            <p className="text-[11px] text-gray-600  font-medium leading-normal line-clamp-2">
                                                 {n.message}
                                             </p>
-                                            <p className="text-[9px] text-pink-500/60 dark:text-pink-400/60 font-black mt-2 uppercase tracking-tight">
+                                            <p className="text-[9px] text-pink-500/60 /60 font-black mt-2 uppercase tracking-tight">
                                                 {new Date(n.createdAt).toLocaleString()}
                                             </p>
                                         </div>
@@ -131,8 +131,8 @@ export const NotificationDropdown: React.FC = () => {
                                     <div className="w-12 h-12 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center text-muted-foreground">
                                         <Bell className="w-6 h-6" />
                                     </div>
-                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400">All caught up!</p>
-                                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">No new notifications.</p>
+                                    <p className="text-sm font-bold text-gray-500 ">All caught up!</p>
+                                    <p className="text-xs text-gray-400  mt-1">No new notifications.</p>
                                 </div>
                             )}
                         </div>

@@ -21,10 +21,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
       animate={{ opacity: 1, y: 0 }}
       className="mb-8"
     >
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-8 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-8 shadow-lg">
         {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-48 h-48 bg-blue-500/5 rounded-full blur-2xl -translate-y-24 -translate-x-24" />
-        <div className="absolute bottom-0 right-0 w-40 h-40 bg-green-500/5 rounded-full blur-xl translate-y-20 translate-x-20" />
 
         <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center gap-6">
@@ -61,11 +59,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             <motion.div
-              className="bg-card/50 backdrop-blur-sm border border-border/30 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
+              className="bg-card border border-border/30 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
               whileHover={{ scale: 1.02 }}
             >
               <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-5 h-5 md:w-6 md:h-6 text-blue-600 dark:text-blue-400" />
+                <Calendar className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-card-foreground truncate">
@@ -82,11 +80,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
             </motion.div>
 
             <motion.div
-              className="bg-card/50 backdrop-blur-sm border border-border/30 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
+              className="bg-card border border-border/30 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
               whileHover={{ scale: 1.02 }}
             >
               <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 md:w-6 md:h-6 text-green-600 dark:text-green-400" />
+                <Clock className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-card-foreground">
@@ -102,17 +100,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
             </motion.div>
 
             <motion.div
-              className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/20 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
+              className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 rounded-2xl p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-sm hover:shadow-md transition-all"
               whileHover={{ scale: 1.02 }}
             >
               <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-pink-600 dark:text-pink-400" />
+                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-pink-600" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-pink-600 dark:text-pink-400">
+                <p className="text-sm font-bold text-pink-600">
                   AI Powered
                 </p>
-                <p className="text-xs text-pink-500/70 dark:text-pink-400/70">
+                <p className="text-xs text-pink-500/70">
                   Smart insights
                 </p>
               </div>

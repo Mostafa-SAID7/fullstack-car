@@ -33,10 +33,8 @@ export const ProductsHeader: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-6 md:p-8 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 shadow-lg">
         {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-42 h-42 md:w-56 md:h-56 bg-green-500/5 rounded-full blur-2xl md:blur-3xl -translate-y-21 md:-translate-y-28 -translate-x-21 md:-translate-x-28" />
-        <div className="absolute bottom-0 right-0 w-36 h-36 md:w-48 md:h-48 bg-blue-500/5 rounded-full blur-xl md:blur-2xl translate-y-18 md:translate-y-24 translate-x-18 md:translate-x-24" />
 
         <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-center gap-4 md:gap-6">

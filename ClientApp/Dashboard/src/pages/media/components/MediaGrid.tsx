@@ -39,10 +39,10 @@ const getFileIcon = (type: string) => {
 
 const getFileColor = (type: string) => {
   switch (type) {
-    case 'image': return 'text-blue-500 bg-blue-50 dark:bg-blue-900/20';
-    case 'video': return 'text-red-500 bg-red-50 dark:bg-red-900/20';
-    case 'document': return 'text-green-500 bg-green-50 dark:bg-green-900/20';
-    default: return 'text-gray-500 bg-gray-50 dark:bg-gray-900/20';
+    case 'image': return 'text-blue-500 bg-blue-50';
+    case 'video': return 'text-red-500 bg-red-50';
+    case 'document': return 'text-green-500 bg-green-50';
+    default: return 'text-gray-500 bg-gray-50';
   }
 };
 
@@ -64,7 +64,7 @@ export const MediaGrid: React.FC<MediaGridProps> = ({ files, onFileClick, onDele
             onClick={() => onFileClick(file)}
           >
             {/* Thumbnail/Image Preview */}
-            <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
+            <div className="aspect-square bg-gray-100 relative overflow-hidden">
               {file.thumbnail ? (
                 <img
                   src={file.thumbnail}
@@ -110,7 +110,7 @@ export const MediaGrid: React.FC<MediaGridProps> = ({ files, onFileClick, onDele
 
               {/* File type indicator */}
               <div className="absolute top-2 right-2">
-                <div className="px-2 py-1 bg-black/50 text-white text-xs rounded-full backdrop-blur-sm">
+                <div className="px-2 py-1 bg-black/50 text-white text-xs rounded-full">
                   {file.type.toUpperCase()}
                 </div>
               </div>

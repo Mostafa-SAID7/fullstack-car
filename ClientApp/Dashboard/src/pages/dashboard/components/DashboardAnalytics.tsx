@@ -118,7 +118,7 @@ export const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="glass rounded-2xl p-6 animate-pulse">
+          <div key={i} className="bg-card border border-border rounded-2xl p-6 animate-pulse">
             <div className="h-6 bg-muted rounded mb-4"></div>
             <div className="space-y-4">
               {[1, 2, 3].map((j) => (
@@ -142,7 +142,7 @@ export const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 + sectionIndex * 0.1 }}
-          className="glass rounded-2xl p-6 border border-border/50 hover:border-border transition-all duration-300"
+          className="bg-card rounded-2xl p-6 border border-border/50 hover:border-border transition-all duration-300"
         >
           <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary"></div>

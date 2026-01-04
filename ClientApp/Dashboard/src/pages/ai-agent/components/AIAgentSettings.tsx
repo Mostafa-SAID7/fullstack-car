@@ -20,11 +20,9 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-gradient-to-br from-card to-card/80 border border-border/50 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
+        className="relative overflow-hidden bg-card border border-border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
       >
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full blur-2xl -translate-y-16 translate-x-16" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl translate-y-12 -translate-x-12" />
 
         <div className="relative">
           <div className="flex items-center justify-between mb-8">
@@ -209,11 +207,9 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="relative overflow-hidden bg-gradient-to-br from-card to-card/80 border border-border/50 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
+        className="relative overflow-hidden bg-card border border-border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
       >
         {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-28 h-28 bg-cyan-500/5 rounded-full blur-2xl -translate-y-14 -translate-x-14" />
-        <div className="absolute bottom-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-xl translate-y-16 translate-x-16" />
 
         <div className="relative">
           <div className="flex items-center gap-4 mb-8">

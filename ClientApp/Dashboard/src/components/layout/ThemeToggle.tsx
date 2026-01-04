@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Laptop } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
+type ThemeMode = 'light' | 'dark' | 'system';
+
 export const ThemeToggle: React.FC = () => {
-    const { currentTheme, setTheme } = useTheme();
-    const theme = currentTheme.id;
+    const { themeMode, setThemeMode, resolvedTheme } = useTheme();
     const [showThemeMenu, setShowThemeMenu] = useState(false);
     const themeRef = useRef<HTMLDivElement>(null);
 
@@ -28,14 +29,24 @@ export const ThemeToggle: React.FC = () => {
         { id: 'system', icon: Laptop, label: 'System' }
     ];
 
+    // Get icon based on resolved theme
+    const getIcon = () => {
+        if (resolvedTheme === 'dark') {
+            return Moon;
+        }
+        return Sun;
+    };
+
+    const Icon = getIcon();
+
     return (
         <div className="relative" ref={themeRef}>
             <button
                 onClick={() => setShowThemeMenu(!showThemeMenu)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
                 title="Toggle theme"
             >
-                <Sun className="w-5 h-5" />
+                <Icon className="w-5 h-5" />
             </button>
             <AnimatePresence>
                 {showThemeMenu && (
@@ -49,12 +60,12 @@ export const ThemeToggle: React.FC = () => {
                             <button
                                 key={item.id}
                                 onClick={() => { 
-                                    setTheme(item.id as any); 
+                                    setThemeMode(item.id as ThemeMode); 
                                     setShowThemeMenu(false); 
                                 }}
                                 className={cn(
                                     "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
-                                    theme === item.id && "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
+                                    themeMode === item.id && "bg-primary/10 text-primary"
                                 )}
                             >
                                 <item.icon className="w-4 h-4" />

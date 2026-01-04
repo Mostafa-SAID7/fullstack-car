@@ -85,7 +85,6 @@ export default {
       },
       blur: {
         'ultra': '80px',
-        'glass': '12px',
       },
       colors: {
         border: "hsl(var(--border))",
@@ -93,6 +92,9 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        heading: "hsl(var(--heading))",
+        text: "hsl(var(--text))",
+        paragraph: "hsl(var(--paragraph))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -143,8 +145,6 @@ export default {
         'full': '9999px',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-        'glass-hover': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
         'premium': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
         'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         'glow': '0 0 15px rgba(var(--primary), 0.5)',

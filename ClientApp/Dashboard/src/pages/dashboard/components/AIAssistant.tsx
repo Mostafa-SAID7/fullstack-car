@@ -108,7 +108,7 @@ export const AIAssistant: React.FC = () => {
                             height: isMinimized ? 'auto' : '550px'
                         }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="w-80 md:w-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 flex flex-col"
+                        className="w-80 md:w-[400px] bg-card rounded-2xl shadow-xl border border-border overflow-hidden mb-4 flex flex-col"
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-r from-pink-500 to-pink-600 p-4 text-white">
@@ -154,7 +154,7 @@ export const AIAssistant: React.FC = () => {
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -10 }}
-                                            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-10"
+                                            className="absolute top-full left-0 right-0 mt-2 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-10"
                                         >
                                             {modes.map((m) => (
                                                 <button
@@ -163,10 +163,10 @@ export const AIAssistant: React.FC = () => {
                                                         setMode(m.id as AIMode);
                                                         setShowModes(false);
                                                     }}
-                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-muted transition-colors ${
                                                         mode === m.id
-                                                            ? 'bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 font-semibold'
-                                                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
+                                                            ? 'bg-primary/10 text-primary font-semibold'
+                                                            : 'text-muted-foreground hover:text-foreground'
                                                         }`}
                                                 >
                                                     <m.icon size={16} className={m.color} />
@@ -182,7 +182,7 @@ export const AIAssistant: React.FC = () => {
                         {/* Chat Body */}
                         {!isMinimized && (
                             <>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-gray-50/50 dark:bg-gray-800/30">
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-muted/30">
                                     {messages.map((msg, i) => (
                                         <div
                                             key={i}
@@ -191,7 +191,7 @@ export const AIAssistant: React.FC = () => {
                                             <div
                                                 className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm ${msg.role === 'user'
                                                     ? 'bg-pink-500 text-white rounded-tr-sm'
-                                                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-tl-sm border border-gray-200 dark:border-gray-700'
+                                                    : 'bg-card text-card-foreground rounded-tl-sm border border-border'
                                                     }`}
                                             >
                                                 <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -204,7 +204,7 @@ export const AIAssistant: React.FC = () => {
                                     ))}
                                     {loading && (
                                         <div className="flex justify-start">
-                                            <div className="bg-white dark:bg-gray-800 p-3 rounded-2xl rounded-tl-sm border border-gray-200 dark:border-gray-700 flex gap-1">
+                                            <div className="bg-card p-3 rounded-2xl rounded-tl-sm border border-border flex gap-1">
                                                 <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" />
                                                 <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.2s]" />
                                                 <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -215,7 +215,7 @@ export const AIAssistant: React.FC = () => {
                                 </div>
 
                                 {/* Input Area */}
-                                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+                                <div className="p-4 border-t border-border bg-card">
                                     <div className="relative flex items-center">
                                         <input
                                             type="text"
@@ -223,7 +223,7 @@ export const AIAssistant: React.FC = () => {
                                             onChange={(e) => setInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                                             placeholder={`Ask in ${currentModeInfo?.label.toLowerCase()}...`}
-                                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all outline-none dark:text-white"
+                                            className="w-full bg-background border border-border rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
                                         />
                                         <button
                                             onClick={handleSend}
@@ -246,7 +246,7 @@ export const AIAssistant: React.FC = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`p-3 rounded-xl shadow-lg flex items-center justify-center transition-all border-2 ${
                     isOpen
-                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-200 dark:border-gray-700'
+                        ? 'bg-muted text-foreground border-border'
                         : 'bg-gradient-to-r from-pink-500 to-pink-600 text-white border-transparent hover:shadow-xl'
                     }`}
             >
@@ -255,7 +255,7 @@ export const AIAssistant: React.FC = () => {
                         <Bot size={26} />
                         <span className="absolute -top-1 -right-1 flex h-4 w-4">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white dark:border-gray-800"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-background"></span>
                         </span>
                     </div>
                 )}

@@ -25,13 +25,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
+# CORS middleware - Allow all origins
+# Note: When allow_credentials=True, we cannot use ["*"] for origins
+# Using regex pattern to allow all HTTP/HTTPS origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_HOSTS,
+    allow_origin_regex=r"https?://.*",  # Allow all HTTP/HTTPS origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Include routers

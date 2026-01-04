@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Loader2, BarChart3, UserCheck, Shield, Activity } from 'lucide-react';
 import { UsersHeader } from './components/UsersHeader';
 import { UsersFilters } from './components/UsersFilters';
 import { UsersTable } from './components/UsersTable';
-import { UsersPagination } from './components/UsersPagination';
 import { UsersEmptyState } from './components/UsersEmptyState';
 import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { Pagination } from '../../components/ui/Pagination';
 
 export const Users: React.FC = () => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ export const Users: React.FC = () => {
   ];
 
   // Mock data - in real app, this would come from API
-  const [users] = useState<any[]>([
+  const [allUsers] = useState<any[]>([
     {
       id: '1',
       firstName: 'John',
@@ -46,6 +46,226 @@ export const Users: React.FC = () => {
       isEmailConfirmed: false,
       profileImageUrl: '',
       createdAt: '2024-01-02T00:00:00Z'
+    },
+    {
+      id: '3',
+      firstName: 'Bob',
+      lastName: 'Johnson',
+      email: 'bob@example.com',
+      roles: ['user'],
+      isActive: false,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-03T00:00:00Z'
+    },
+    {
+      id: '4',
+      firstName: 'Alice',
+      lastName: 'Brown',
+      email: 'alice@example.com',
+      roles: ['moderator'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-04T00:00:00Z'
+    },
+    {
+      id: '5',
+      firstName: 'Charlie',
+      lastName: 'Wilson',
+      email: 'charlie@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-05T00:00:00Z'
+    },
+    {
+      id: '6',
+      firstName: 'Diana',
+      lastName: 'Davis',
+      email: 'diana@example.com',
+      roles: ['admin'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-06T00:00:00Z'
+    },
+    {
+      id: '7',
+      firstName: 'Edward',
+      lastName: 'Miller',
+      email: 'edward@example.com',
+      roles: ['user'],
+      isActive: false,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-07T00:00:00Z'
+    },
+    {
+      id: '8',
+      firstName: 'Fiona',
+      lastName: 'Garcia',
+      email: 'fiona@example.com',
+      roles: ['moderator'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-08T00:00:00Z'
+    },
+    {
+      id: '9',
+      firstName: 'George',
+      lastName: 'Martinez',
+      email: 'george@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-09T00:00:00Z'
+    },
+    {
+      id: '10',
+      firstName: 'Helen',
+      lastName: 'Lopez',
+      email: 'helen@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-10T00:00:00Z'
+    },
+    {
+      id: '11',
+      firstName: 'Ian',
+      lastName: 'Gonzalez',
+      email: 'ian@example.com',
+      roles: ['admin'],
+      isActive: false,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-11T00:00:00Z'
+    },
+    {
+      id: '12',
+      firstName: 'Julia',
+      lastName: 'Anderson',
+      email: 'julia@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-12T00:00:00Z'
+    },
+    {
+      id: '13',
+      firstName: 'Kevin',
+      lastName: 'Thomas',
+      email: 'kevin@example.com',
+      roles: ['moderator'],
+      isActive: true,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-13T00:00:00Z'
+    },
+    {
+      id: '14',
+      firstName: 'Laura',
+      lastName: 'Jackson',
+      email: 'laura@example.com',
+      roles: ['user'],
+      isActive: false,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-14T00:00:00Z'
+    },
+    {
+      id: '15',
+      firstName: 'Michael',
+      lastName: 'White',
+      email: 'michael@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-15T00:00:00Z'
+    },
+    {
+      id: '16',
+      firstName: 'Nina',
+      lastName: 'Harris',
+      email: 'nina@example.com',
+      roles: ['admin'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-16T00:00:00Z'
+    },
+    {
+      id: '17',
+      firstName: 'Oliver',
+      lastName: 'Clark',
+      email: 'oliver@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-17T00:00:00Z'
+    },
+    {
+      id: '18',
+      firstName: 'Paula',
+      lastName: 'Lewis',
+      email: 'paula@example.com',
+      roles: ['moderator'],
+      isActive: false,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-18T00:00:00Z'
+    },
+    {
+      id: '19',
+      firstName: 'Quinn',
+      lastName: 'Robinson',
+      email: 'quinn@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-19T00:00:00Z'
+    },
+    {
+      id: '20',
+      firstName: 'Rachel',
+      lastName: 'Walker',
+      email: 'rachel@example.com',
+      roles: ['user'],
+      isActive: true,
+      isEmailConfirmed: false,
+      profileImageUrl: '',
+      createdAt: '2024-01-20T00:00:00Z'
+    },
+    {
+      id: '21',
+      firstName: 'Steve',
+      lastName: 'Hall',
+      email: 'steve@example.com',
+      roles: ['admin'],
+      isActive: true,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-21T00:00:00Z'
+    },
+    {
+      id: '22',
+      firstName: 'Tina',
+      lastName: 'Young',
+      email: 'tina@example.com',
+      roles: ['user'],
+      isActive: false,
+      isEmailConfirmed: true,
+      profileImageUrl: '',
+      createdAt: '2024-01-22T00:00:00Z'
     }
   ]);
 
@@ -56,19 +276,59 @@ export const Users: React.FC = () => {
     isEmailConfirmed: undefined
   });
 
-  const pagination = {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: users.length,
-    itemsPerPage: 10
-  };
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+
+  // Filtered users based on current filters
+  const filteredUsers = useMemo(() => {
+    let filtered = allUsers;
+
+    if (filters.searchTerm) {
+      const searchLower = filters.searchTerm.toLowerCase();
+      filtered = filtered.filter(user =>
+        user.firstName.toLowerCase().includes(searchLower) ||
+        user.lastName.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (filters.role) {
+      filtered = filtered.filter(user => user.roles.includes(filters.role));
+    }
+
+    if (filters.isActive !== undefined) {
+      filtered = filtered.filter(user => user.isActive === filters.isActive);
+    }
+
+    if (filters.isEmailConfirmed !== undefined) {
+      filtered = filtered.filter(user => user.isEmailConfirmed === filters.isEmailConfirmed);
+    }
+
+    return filtered;
+  }, [allUsers, filters]);
+
+  // Paginated users for current page
+  const users = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, currentPage, itemsPerPage]);
+
+  // Pagination info
+  const totalItems = filteredUsers.length;
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const handlePageChange = (page: number) => {
-    console.log('Page changed to:', page);
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
   };
 
   const handleUserAction = (action: string, userId: string) => {
@@ -110,11 +370,16 @@ export const Users: React.FC = () => {
 
             <UsersTable users={users} onUserAction={handleUserAction} />
 
-            {pagination.totalPages > 1 && (
-              <UsersPagination pagination={pagination} onPageChange={handlePageChange} />
-            )}
+            <Pagination
+              currentPage={currentPage}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              itemsPerPageOptions={[5, 10, 20, 50]}
+            />
 
-            {!loading && users.length === 0 && (
+            {!loading && totalItems === 0 && (
               <UsersEmptyState hasFilters={Object.values(filters).some(v => v !== undefined && v !== '')} />
             )}
           </div>
@@ -148,11 +413,16 @@ export const Users: React.FC = () => {
 
             <UsersTable users={users} onUserAction={handleUserAction} />
 
-            {pagination.totalPages > 1 && (
-              <UsersPagination pagination={pagination} onPageChange={handlePageChange} />
-            )}
+            <Pagination
+              currentPage={currentPage}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              itemsPerPageOptions={[5, 10, 20, 50]}
+            />
 
-            {!loading && users.length === 0 && (
+            {!loading && totalItems === 0 && (
               <UsersEmptyState hasFilters={Object.values(filters).some(v => v !== undefined && v !== '')} />
             )}
           </div>

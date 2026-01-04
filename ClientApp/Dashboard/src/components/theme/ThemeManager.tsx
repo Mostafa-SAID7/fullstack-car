@@ -119,7 +119,7 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
             e.stopPropagation();
             onPreview(themeId);
           }}
-          className="px-3 py-1.5 bg-secondary/80 hover:bg-secondary text-secondary-foreground text-sm rounded-md backdrop-blur-sm transition-colors flex items-center gap-1"
+          className="px-3 py-1.5 bg-secondary hover:bg-secondary text-secondary-foreground text-sm rounded-md transition-colors flex items-center gap-1"
         >
           <Eye className="w-4 h-4" />
           Preview

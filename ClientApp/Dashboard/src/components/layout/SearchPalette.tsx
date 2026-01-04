@@ -163,7 +163,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-16 md:pt-[10vh]"
+        className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-16 md:pt-[10vh]"
         onClick={onClose}
       >
         <motion.div
@@ -175,15 +175,15 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Input */}
-          <div className="flex items-center gap-4 p-6 border-b border-gray-200 dark:border-gray-700">
-            <Search className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          <div className="flex items-center gap-4 p-6 border-b border-gray-200 ">
+            <Search className="w-5 h-5 text-gray-500 " />
             <input
               ref={inputRef}
               type="text"
               placeholder={t('search_anything', 'Search anything...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-lg placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="flex-1 bg-transparent outline-none text-lg placeholder:text-gray-500 "
             />
             <kbd className="px-2 py-1 text-xs font-mono bg-muted text-muted-foreground rounded border border-border">ESC</kbd>
           </div>
@@ -192,7 +192,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
           <div className="max-h-96 overflow-y-auto custom-scrollbar">
             {query.length === 0 && (
               <div className="p-6">
-                <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-gray-600  mb-4 flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   Recent Searches
                 </h3>
@@ -222,7 +222,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                       className={cn(
                         "w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left group",
                         isSelected
-                          ? "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
+                          ? "bg-pink-50 text-pink-600"
                           : "hover:bg-muted text-muted-foreground hover:text-foreground"
                       )}
                       onClick={() => handleSelect(result)}

@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, FileText, ShieldCheck, TrendingUp } from 'lucide-react';
+import { BarChart3, ShieldCheck, TrendingUp, FileText } from 'lucide-react';
 import { ContentHeader } from './components/ContentHeader';
 import { ContentStats } from './components/ContentStats';
-import { ContentSections } from './components/ContentSections';
+import { ContentList } from './components/ContentList';
 import { ContentAnalytics } from './components/ContentAnalytics';
+import { ContentTypeSelector, ContentType } from '../../components/ui/ContentTypeSelector';
 import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
 
 export const Content: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedContentType, setSelectedContentType] = useState<ContentType>('posts');
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'posts', label: 'Posts', icon: FileText },
+    { id: 'content', label: 'Content', icon: FileText },
     { id: 'moderation', label: 'Moderation', icon: ShieldCheck },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp }
   ];
@@ -25,14 +27,30 @@ export const Content: React.FC = () => {
             <ContentStats />
           </div>
         );
-      case 'posts':
-        return <ContentSections />;
+      case 'content':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Content Management</h2>
+                <p className="text-muted-foreground">Manage and moderate all community content types</p>
+              </div>
+              <ContentTypeSelector
+                selectedType={selectedContentType}
+                onTypeChange={setSelectedContentType}
+              />
+            </div>
+            <ContentList contentType={selectedContentType} />
+          </div>
+        );
       case 'moderation':
         return (
-          <div className="text-center py-12">
-            <ShieldCheck className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">Content Moderation</h3>
-            <p className="text-muted-foreground">Advanced content moderation and review tools coming soon.</p>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Content Moderation</h2>
+              <p className="text-muted-foreground">Review and moderate reported content</p>
+            </div>
+            <ContentList contentType="reports" />
           </div>
         );
       case 'analytics':

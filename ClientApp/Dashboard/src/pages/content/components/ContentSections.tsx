@@ -23,11 +23,11 @@ export const ContentSections: React.FC = () => {
                 <h4 className="text-sm font-medium text-card-foreground">{post.title}</h4>
                 <p className="text-xs text-muted-foreground">{post.author} • {post.time}</p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                post.status === 'Published'
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                  : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
-              }`}>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  post.status === 'Published'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
                 {post.status}
               </span>
             </div>
@@ -45,8 +45,8 @@ export const ContentSections: React.FC = () => {
                 <span className="text-xs font-medium text-muted-foreground">{item.type}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                   item.severity === 'High'
-                    ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-yellow-100 text-yellow-800'
                 }`}>
                   {item.severity}
                 </span>
@@ -54,10 +54,10 @@ export const ContentSections: React.FC = () => {
               <p className="text-sm text-card-foreground mb-1">{item.content}</p>
               <p className="text-xs text-muted-foreground">Reported by {item.reporter}</p>
               <div className="flex space-x-2 mt-2">
-                <button className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 transition-colors">
+                <button className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors">
                   Approve
                 </button>
-                <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 transition-colors">
+                <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors">
                   Remove
                 </button>
               </div>

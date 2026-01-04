@@ -10,10 +10,8 @@ import { motion } from 'framer-motion';
 
 export const SystemHeader: React.FC<SystemHeaderProps> = ({ onRefresh }) => {
     return (
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/50 p-6 md:p-8 shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl bg-card border border-border p-6 md:p-8 shadow-lg">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-36 h-36 md:w-48 md:h-48 bg-red-500/5 rounded-full blur-xl md:blur-2xl -translate-y-18 md:-translate-y-24 translate-x-18 md:translate-x-24" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 bg-orange-500/5 rounded-full blur-xl md:blur-xl translate-y-16 md:translate-y-20 -translate-x-16 md:-translate-x-20" />
 
             <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4 md:gap-6">
@@ -39,7 +37,7 @@ export const SystemHeader: React.FC<SystemHeaderProps> = ({ onRefresh }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
-                    <Button variant="outline" onClick={onRefresh} className="gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-muted/50 transition-all duration-200 text-sm md:text-base">
+                    <Button variant="outline" onClick={onRefresh} className="gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 bg-card border-border/50 hover:bg-muted/50 transition-all duration-200 text-sm md:text-base">
                         <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
                         <span className="hidden sm:inline">Refresh Data</span>
                         <RefreshCw className="w-4 h-4 sm:hidden" />

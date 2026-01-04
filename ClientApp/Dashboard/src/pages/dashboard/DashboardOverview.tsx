@@ -66,7 +66,7 @@ export const DashboardOverview = () => {
             <DashboardStats stats={stats} loading={loading} />
 
             {/* Compact Analytics Controls */}
-            <div className="bg-card/50 border border-border/50 rounded-2xl p-6 backdrop-blur-sm">
+            <div className="bg-card border border-border/50 rounded-2xl p-6">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 {/* Title and Description */}
                 <div className="min-w-0 flex-1">

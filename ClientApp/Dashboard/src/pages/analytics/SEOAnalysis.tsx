@@ -45,9 +45,9 @@ const SEOScoreCard: React.FC<SEOScoreCardProps> = ({
 
   const percentage = (score / maxScore) * 100;
   const statusColors = {
-    good: 'text-green-500 bg-green-50 dark:bg-green-900/20',
-    warning: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20',
-    critical: 'text-red-500 bg-red-50 dark:bg-red-900/20'
+    good: 'text-green-500 bg-green-50',
+    warning: 'text-yellow-500 bg-yellow-50',
+    critical: 'text-red-500 bg-red-50'
   };
 
   return (
@@ -534,11 +534,11 @@ export const SEOAnalysis: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {seoData.technical.mobileFriendliness.mobileIssues.map((issue, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <div key={index} className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-red-800 dark:text-red-200">{issue.issue}</p>
-                  <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+                  <p className="font-medium text-red-800">{issue.issue}</p>
+                  <p className="text-sm text-red-700 mt-1">
                     {issue.pages} pages affected • Severity: {issue.severity}
                   </p>
                 </div>
@@ -546,13 +546,13 @@ export const SEOAnalysis: React.FC = () => {
             ))}
 
             {seoData.technical.crawlability.crawlErrors > 0 && (
-              <div className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+              <div className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-yellow-800 dark:text-yellow-200">
+                  <p className="font-medium text-yellow-800">
                     Crawl Errors Detected
                   </p>
-                  <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                  <p className="text-sm text-yellow-700 mt-1">
                     {seoData.technical.crawlability.crawlErrors} errors found that may prevent search engines from crawling your site properly.
                   </p>
                 </div>

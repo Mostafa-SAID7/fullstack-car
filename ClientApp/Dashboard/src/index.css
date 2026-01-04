@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* Global scrollbar styles */
+/* Global scrollbar styles - using Tailwind color variables */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border) / 0.6) transparent;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -12,18 +12,18 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: hsla(var(--muted), 0.3);
+  background: hsl(var(--muted));
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: hsl(var(--border) / 0.6);
+  background: hsl(var(--border));
   border-radius: 4px;
   border: 1px solid hsl(var(--background));
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.4);
+  background: hsl(var(--muted-foreground));
 }
 
 #root {
@@ -52,86 +52,116 @@
     --input: 220 15% 78%;
     --ring: 346.8 77.2% 49.8%;
     --radius: 1rem;
+    /* Typography colors - Light mode */
+    --heading: 220 13% 9%;
+    --text: 220 13% 9%;
+    --paragraph: 220 10% 20%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
     --primary: 346.8 85% 55%;
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 6% 12%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 15%;
-    --muted-foreground: 240 5% 70%;
-    --accent: 240 5% 15%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 75% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 18%;
-    --input: 240 5% 18%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 346.8 85% 55%;
+    /* Typography colors - Dark mode */
+    --heading: 210 40% 98%;
+    --text: 210 40% 98%;
+    --paragraph: 215 20.2% 75%;
   }
 
   * {
-    border-color: hsl(var(--border) / 0.5);
+    border-color: hsl(var(--border));
   }
 
   body {
     background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    background-image:
-      radial-gradient(at 20% 50%, hsla(220, 15%, 80%, 0.12) 0px, transparent 50%),
-      radial-gradient(at 80% 20%, hsla(220, 20%, 75%, 0.08) 0px, transparent 50%),
-      radial-gradient(at 40% 80%, hsla(220, 25%, 85%, 0.06) 0px, transparent 50%);
-    background-attachment: fixed;
+    color: hsl(var(--text));
   }
 
-  .dark body {
-    background-image:
-      radial-gradient(at 0% 0%, hsla(346, 77%, 49%, 0.1) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, hsla(260, 100%, 50%, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(200, 100%, 50%, 0.05) 0px, transparent 50%);
-    background-color: #0c0c0e;
+  /* Heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    color: hsl(var(--heading));
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+  }
+
+  h6 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+  }
+
+  /* Text and paragraph styles */
+  p {
+    color: hsl(var(--paragraph));
+    line-height: 1.625;
+  }
+
+  /* Default text color for all text elements */
+  span, div, label, small, strong, em, b, i, u, mark, del, ins, sub, sup {
+    color: hsl(var(--text));
+  }
+
+  /* Links inherit text color but can be overridden */
+  a {
+    color: hsl(var(--primary));
+  }
+
+  a:hover {
+    color: hsl(var(--primary));
+    opacity: 0.8;
   }
 }
 
 /* Main Content Background */
 .main-content-bg {
   background-color: hsl(var(--background));
-  background-image:
-    radial-gradient(at 20% 50%, hsla(220, 15%, 80%, 0.12) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, hsla(220, 20%, 75%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 40% 80%, hsla(220, 25%, 85%, 0.06) 0px, transparent 50%);
-  background-attachment: fixed;
 }
 
-.dark .main-content-bg {
-  background-color: #0c0c0e;
-  background-image:
-    radial-gradient(at 0% 0%, hsla(346, 77%, 49%, 0.1) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, hsla(260, 100%, 50%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(200, 100%, 50%, 0.05) 0px, transparent 50%);
-}
-
-/* Glassmorphism */
-.glass {
-  background: hsla(220, 20%, 88%, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid hsla(220, 15%, 75%, 0.3);
-  box-shadow: 0 8px 32px hsla(220, 15%, 75%, 0.2);
-}
-
-.dark .glass {
-  background: hsla(240, 10%, 4%, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
 
 /* Animations */
 @keyframes float {
@@ -156,9 +186,9 @@
   font-family: 'Cairo', 'Inter', sans-serif !important;
 }
 
-/* Enhanced Loading states */
+/* Enhanced Loading states - using Tailwind color variables */
 .loading-skeleton {
-  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted) / 0.5) 50%, hsl(var(--muted)) 75%);
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted)) 50%, hsl(var(--muted)) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
 }
@@ -173,13 +203,13 @@
   }
 }
 
-/* Enhanced skeleton with subtle gradient */
+/* Enhanced skeleton with subtle gradient - using Tailwind color variables */
 .skeleton-enhanced {
   background: linear-gradient(
     110deg,
     hsl(var(--muted)) 8%,
-    hsl(var(--muted) / 0.8) 18%,
-    hsl(var(--muted) / 0.6) 33%,
+    hsl(var(--muted)) 18%,
+    hsl(var(--muted)) 33%,
     hsl(var(--muted)) 100%
   );
   background-size: 200% 100%;
@@ -208,9 +238,13 @@
 
 
 /* Responsive improvements */
-@media (max-width: 768px) {
-  .glass {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }

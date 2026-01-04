@@ -71,7 +71,7 @@ export const ModelTraining: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Configuration Panel */}
-                <div className="lg:col-span-1 glass p-6 space-y-6">
+                <div className="lg:col-span-1 bg-card border border-border rounded-2xl p-6 space-y-6">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                         <Layers size={20} className="text-blue-400" />
                         Parameters
@@ -130,7 +130,7 @@ export const ModelTraining: React.FC = () => {
                 {/* Progress & Logs */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Progress Card */}
-                    <div className="glass p-6 relative overflow-hidden">
+                    <div className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-semibold text-white">Live Progress</h3>
                             <span className="text-2xl font-bold text-blue-400">{Math.round(status?.progress || 0)}%</span>
