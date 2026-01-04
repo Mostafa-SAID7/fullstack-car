@@ -13,16 +13,12 @@ import {
 } from 'lucide-react';
 import type { SiteAnalytics as SiteAnalyticsType } from '../../services/analyticsService';
 import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { TabContent } from '../../components/ui/TabNavigation';
+import { Card, CardContent, CardHeader, CardTitle, Button, TabContent, StatsSkeleton, ChartSkeleton, MetricCard } from '../../components/ui';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, PieChart } from '../../components/charts';
-import { StatsSkeleton, ChartSkeleton } from '../../components/ui/Skeleton';
 import { useToast } from '../../hooks/useToast';
 import { AnalyticsHeader } from './components/AnalyticsHeader';
-import { MetricCard } from '../../components/ui/MetricCard';
 
 
 

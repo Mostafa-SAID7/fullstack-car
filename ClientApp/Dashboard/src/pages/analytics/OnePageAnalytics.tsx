@@ -17,13 +17,7 @@ import {
 } from 'lucide-react';
 import type { OnePageMetrics as OnePageMetricsType } from '../../services/analyticsService';
 import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { Progress } from '../../components/ui/Progress';
-import { Badge } from '../../components/ui/Badge';
-import { Input } from '../../components/ui/Input';
-import { ChartSkeleton, StatsSkeleton } from '../../components/ui/Skeleton';
-import { MetricCard } from '../../components/ui/MetricCard';
+import { Card, CardContent, CardHeader, CardTitle, Button, Progress, Badge, Input, ChartSkeleton, StatsSkeleton, MetricCard } from '../../components/ui';
 import { useToast } from '../../hooks/useToast';
 
 

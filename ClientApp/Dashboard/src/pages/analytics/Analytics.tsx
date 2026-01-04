@@ -8,15 +8,12 @@ import {
   Eye,
   RefreshCw
 } from 'lucide-react';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { TabNavigation, TabContent, Input, Button, Card, CardContent } from '../../components/ui';
 import { SiteAnalytics } from './SiteAnalytics';
 import { PerformanceMonitoring } from './PerformanceMonitoring';
 import { SEOAnalysis } from './SEOAnalysis';
 import { OnePageAnalytics } from './OnePageAnalytics';
 import { AnalyticsSettings } from './AnalyticsSettings';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
-import { Card, CardContent } from '../../components/ui/Card';
 
 export const Analytics: React.FC = () => {
   const [activeTab, setActiveTab] = useState('site-analytics');

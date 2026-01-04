@@ -9,6 +9,7 @@ export { Progress } from './Progress';
 export { Badge } from './Badge';
 export { ContentTypeSelector, type ContentType } from './ContentTypeSelector';
 export { Pagination } from './Pagination';
+export { MetricCard } from './MetricCard';
 export {
   Skeleton,
   CardSkeleton,
