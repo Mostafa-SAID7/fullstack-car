@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, ShieldCheck, TrendingUp, FileText } from 'lucide-react';
 import { ContentHeader, ContentStats, ContentList, ContentAnalytics } from './components';
-import { ContentTypeSelector, ContentType, TabNavigation, TabContent } from '../../components/ui';
+import { ContentTypeSelector, type ContentType, TabNavigation, TabContent } from '../../components/ui';
 
 export const Content: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');

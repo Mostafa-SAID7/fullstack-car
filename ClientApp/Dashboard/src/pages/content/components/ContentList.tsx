@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Eye, ThumbsUp, MessageSquare, Clock, User, Calendar, Image, Video, Star, Flag, AlertTriangle } from 'lucide-react';
-import { ContentType, Pagination } from '../../../components/ui';
+import { Eye, ThumbsUp, MessageSquare, Clock, User, Image, Video, Flag, AlertTriangle } from 'lucide-react';
+import { type ContentType, Pagination } from '../../../components/ui';
 
 interface ContentItem {
   id: string;
