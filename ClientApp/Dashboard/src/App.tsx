@@ -5,7 +5,8 @@ import { MainLayout } from './components/layout/MainLayout';
 import { AuthDebug } from './components/debug/AuthDebug';
 import { LoginForm } from './components/auth/LoginForm';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { DashboardTest } from './pages/DashboardTest';
+import { ToastProvider } from './components/ui/ToastProvider';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Lazy load all page components for better performance
 const DashboardOverview = React.lazy(() => import('./pages').then(module => ({ default: module.DashboardOverview })));
@@ -15,27 +16,27 @@ const Customers = React.lazy(() => import('./pages').then(module => ({ default: 
 const Products = React.lazy(() => import('./pages').then(module => ({ default: module.Products })));
 const Content = React.lazy(() => import('./pages').then(module => ({ default: module.Content })));
 const System = React.lazy(() => import('./pages').then(module => ({ default: module.System })));
+const LocalizationManagement = React.lazy(() => import('./pages').then(module => ({ default: module.LocalizationManagement })));
 const Settings = React.lazy(() => import('./pages').then(module => ({ default: module.Settings })));
 const AIAgentManagement = React.lazy(() => import('./pages').then(module => ({ default: module.AIAgentManagement })));
 const Media = React.lazy(() => import('./pages').then(module => ({ default: module.Media })));
 
+import { PageSkeleton } from './components/ui/Skeleton';
+
 // Loading component for Suspense fallback
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-  </div>
-);
+const PageLoader = () => <PageSkeleton />;
 
 function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <ThemeProvider>
+        <ToastProvider>
+          <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/debug" element={<AuthDebug />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/test" element={<DashboardTest />} />
             <Route path="/simple" element={<div className="p-8"><h1 className="text-2xl font-bold">Simple Test</h1><p>This is a simple test page without authentication.</p></div>} />
             <Route
               path="/dashboard"
@@ -134,6 +135,18 @@ function App() {
               }
             />
             <Route
+              path="/localization"
+              element={
+                <ProtectedRoute requiredRoles={["Admin"]}>
+                  <MainLayout>
+                    <Suspense fallback={<PageLoader />}>
+                      <LocalizationManagement />
+                    </Suspense>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute requiredRoles={["Admin"]}>
@@ -159,7 +172,9 @@ function App() {
             />
           </Routes>
         </Suspense>
-      </BrowserRouter>
+          </BrowserRouter>
+        </ToastProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

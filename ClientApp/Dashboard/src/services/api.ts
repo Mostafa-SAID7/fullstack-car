@@ -90,7 +90,11 @@ export class ApiClient {
 
     for (let attempt = 0; attempt <= (retries || 0); attempt++) {
       try {
-        const response = await fetch(url, { ...config, signal: requestSignal });
+        const response = await fetch(url, {
+          ...config,
+          signal: requestSignal,
+          credentials: 'include'
+        });
         clearTimeout(timeoutId);
 
         if (!response.ok) {

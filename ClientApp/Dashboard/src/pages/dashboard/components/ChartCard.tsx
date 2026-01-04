@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { useToast } from '../../../hooks/useToast';
+import { ChartSkeleton } from '../../../components/ui/Skeleton';
 
 interface ChartCardProps {
   title: string;
@@ -18,30 +20,19 @@ export const ChartCard: React.FC<ChartCardProps> = React.memo(({
   loading = false,
   className = ''
 }) => {
+  const { info } = useToast();
   if (loading) {
-    return (
-      <div className={cn("bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-2xl p-6", className)}>
-        <div className="animate-pulse space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="h-6 bg-muted rounded w-48 mb-2"></div>
-              {description && <div className="h-4 bg-muted rounded w-32"></div>}
-            </div>
-            <div className="h-8 w-8 bg-muted rounded-lg"></div>
-          </div>
-          <div className="h-64 bg-muted rounded-xl"></div>
-        </div>
-      </div>
-    );
+    return <ChartSkeleton className={className} showTitle showLegend />;
   }
 
   const handleAIInsight = useCallback(() => {
+    info(`Requesting AI analysis for "${title}" chart...`);
     window.dispatchEvent(new CustomEvent('ai-insight', {
       detail: {
         prompt: `Can you analyze the "${title}" chart for me? ${description ? `It shows ${description}.` : ''}`
       }
     }));
-  }, [title, description]);
+  }, [title, description, info]);
 
   return (
     <motion.div

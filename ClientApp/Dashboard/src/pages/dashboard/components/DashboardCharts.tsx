@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, BarChart3, TrendingUp, PieChart, Activity } from 'lucide-react';
+import React, { useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { LineChart } from '../../../components/charts/LineChart';
 import { BarChart } from '../../../components/charts/BarChart';
 import { AreaChart } from '../../../components/charts/AreaChart';
@@ -19,6 +18,7 @@ interface DashboardChartsProps {
   systemAnalytics: SystemAnalytics | null;
   revenueAnalytics: RevenueAnalytics | null;
   loading: boolean;
+  chartType?: 'line' | 'bar' | 'area' | 'pie';
 }
 
 export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
@@ -26,23 +26,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
   contentAnalytics,
   systemAnalytics,
   revenueAnalytics,
-  loading
+  loading,
+  chartType = 'line'
 }) => {
-  const [chartType, setChartType] = useState<'line' | 'bar' | 'area' | 'pie'>('line');
-  const [showChartTypeSelector, setShowChartTypeSelector] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowChartTypeSelector(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Helper to transform Chart.js style data to Recharts format
   const transformData = (data: any) => {
@@ -54,17 +40,6 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
     }));
   };
 
-  const chartTypeOptions = useMemo(() => [
-    { id: 'line', label: 'Line Chart', icon: TrendingUp, description: 'Trend visualization' },
-    { id: 'bar', label: 'Bar Chart', icon: BarChart3, description: 'Comparison view' },
-    { id: 'area', label: 'Area Chart', icon: Activity, description: 'Filled trend view' },
-    { id: 'pie', label: 'Pie Chart', icon: PieChart, description: 'Proportion view' }
-  ], []);
-
-  const currentChartType = useMemo(() =>
-    chartTypeOptions.find(option => option.id === chartType),
-    [chartTypeOptions, chartType]
-  );
 
   // Helper to render the selected chart type
   const renderChart = useCallback((data: any, _title: string, color: string, height: number = 300) => {
@@ -194,68 +169,12 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Chart Type Selector */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">Chart Visualization</h3>
-          <p className="text-sm text-muted-foreground">Choose your preferred chart type for data display</p>
-        </div>
-
-        {/* Chart Type Dropdown */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setShowChartTypeSelector(!showChartTypeSelector)}
-            className="inline-flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl hover:bg-muted/50 transition-all"
-          >
-            {currentChartType && <currentChartType.icon className="w-4 h-4 text-primary" />}
-            <span className="font-medium text-sm">{currentChartType?.label}</span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${showChartTypeSelector ? 'rotate-180' : ''}`} />
-          </button>
-
-          <AnimatePresence>
-            {showChartTypeSelector && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden"
-              >
-                {chartTypeOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => {
-                      setChartType(option.id as any);
-                      setShowChartTypeSelector(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
-                      chartType === option.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    <option.icon className="w-5 h-5 flex-shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-sm">{option.label}</div>
-                      <div className="text-xs opacity-70 truncate">{option.description}</div>
-                    </div>
-                    {chartType === option.id && (
-                      <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                    )}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Charts Grid */}
-      <div className={`grid gap-6 ${
-        availableCharts.length === 1
-          ? 'grid-cols-1'
-          : 'grid-cols-1 lg:grid-cols-2'
-      }`}>
-        {availableCharts}
-      </div>
+    <div className={`grid gap-6 ${
+      availableCharts.length === 1
+        ? 'grid-cols-1'
+        : 'grid-cols-1 lg:grid-cols-2'
+    }`}>
+      {availableCharts}
     </div>
   );
 });

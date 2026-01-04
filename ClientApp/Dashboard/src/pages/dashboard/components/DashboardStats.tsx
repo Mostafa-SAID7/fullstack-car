@@ -1,16 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  Car, 
-  MessageSquare, 
-  TrendingUp, 
+import {
+  Users,
+  Car,
+  MessageSquare,
+  TrendingUp,
   DollarSign,
   Activity,
   UserCheck,
   AlertTriangle
 } from 'lucide-react';
 import { StatCard } from './StatCard';
+import { StatsSkeleton } from '../../../components/ui/Skeleton';
 import type { DashboardStats as StatsType } from '../../../services/dashboardService';
 
 interface DashboardStatsProps {
@@ -19,6 +20,9 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, loading }) => {
+  if (loading) {
+    return <StatsSkeleton count={4} />;
+  }
   const statsConfig: Array<{
     title: string;
     value: number;
@@ -115,7 +119,6 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, loading }
             description={stat.description}
             prefix={stat.prefix}
             suffix={stat.suffix}
-            loading={loading}
           />
         </motion.div>
       ))}

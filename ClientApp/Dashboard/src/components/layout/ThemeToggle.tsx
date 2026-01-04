@@ -5,7 +5,8 @@ import { Sun, Moon, Laptop } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 export const ThemeToggle: React.FC = () => {
-    const { theme, setTheme, resolvedTheme } = useTheme();
+    const { currentTheme, setTheme } = useTheme();
+    const theme = currentTheme.id;
     const [showThemeMenu, setShowThemeMenu] = useState(false);
     const themeRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +35,7 @@ export const ThemeToggle: React.FC = () => {
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
                 title="Toggle theme"
             >
-                {resolvedTheme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                <Sun className="w-5 h-5" />
             </button>
             <AnimatePresence>
                 {showThemeMenu && (
@@ -42,7 +43,7 @@ export const ThemeToggle: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-2 z-50"
+                        className="absolute right-0 mt-2 w-36 bg-card border border-border rounded-xl shadow-lg p-2 z-50"
                     >
                         {themeOptions.map((item) => (
                             <button
@@ -52,7 +53,7 @@ export const ThemeToggle: React.FC = () => {
                                     setShowThemeMenu(false); 
                                 }}
                                 className={cn(
-                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
+                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
                                     theme === item.id && "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
                                 )}
                             >

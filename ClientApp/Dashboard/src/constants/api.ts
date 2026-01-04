@@ -3,69 +3,92 @@
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    REFRESH: '/auth/refresh',
-    LOGOUT: '/auth/logout',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    RESET_PASSWORD: '/auth/reset-password',
-    VERIFY_EMAIL: '/auth/verify-email'
+    LOGIN: '/v1/auth/login',
+    REGISTER: '/v1/auth/register',
+    REFRESH: '/v1/auth/refresh-token',
+    LOGOUT: '/v1/auth/logout',
+    FORGOT_PASSWORD: '/v1/auth/forgot-password',
+    RESET_PASSWORD: '/v1/auth/reset-password',
+    VERIFY_EMAIL: '/v1/auth/verify-email'
   },
   
   // User Management
   USERS: {
-    BASE: '/users',
-    PROFILE: '/users/profile',
-    AVATAR: '/users/avatar',
-    PREFERENCES: '/users/preferences'
+    BASE: '/v1/users',
+    PROFILE: '/v1/users/profile',
+    AVATAR: '/v1/users/avatar',
+    PREFERENCES: '/v1/users/preferences'
   },
-  
+
   // Dashboard
   DASHBOARD: {
-    STATS: '/dashboard/stats',
-    ANALYTICS: '/dashboard/analytics',
-    ACTIVITIES: '/dashboard/activities'
+    STATS: '/v1/dashboard/stats',
+    ANALYTICS: '/v1/dashboard/analytics',
+    ACTIVITIES: '/v1/dashboard/activities'
   },
-  
+
   // AI Agent
   AI_AGENT: {
-    BASE: '/ai-agent',
-    CHAT: '/ai-agent/chat',
-    TRAINING: '/ai-agent/training',
-    MODELS: '/ai-agent/models',
-    DATASETS: '/ai-agent/datasets',
-    CONFIG: '/ai-agent/config'
+    BASE: '/v1/ai-agent',
+    CHAT: '/v1/ai-agent/chat',
+    TRAINING: '/v1/ai-agent/training',
+    MODELS: '/v1/ai-agent/models',
+    DATASETS: '/v1/ai-agent/datasets',
+    CONFIG: '/v1/ai-agent/config'
   },
-  
+
   // Analytics
   ANALYTICS: {
-    BASE: '/analytics',
-    USERS: '/analytics/users',
-    CONTENT: '/analytics/content',
-    SYSTEM: '/analytics/system',
-    EXPORT: '/analytics/export'
+    BASE: '/v1/analytics',
+    SITE: '/v1/analytics/site',
+    PERFORMANCE: '/v1/analytics/performance',
+    SEO: '/v1/analytics/seo',
+    ONEPAGE: '/v1/analytics/onepage',
+    REALTIME: '/v1/analytics/realtime',
+    AUDIT: '/v1/analytics/audit',
+    KEYWORDS: '/v1/analytics/keywords',
+    BACKLINKS: '/v1/analytics/backlinks',
+    JOURNEY: '/v1/analytics/journey',
+    SETTINGS: '/v1/analytics/settings',
+    TEST_GA: '/v1/analytics/test-google-analytics',
+    USERS: '/v1/analytics/users',
+    CONTENT: '/v1/analytics/content',
+    SYSTEM: '/v1/analytics/system',
+    EXPORT: '/v1/analytics/export'
   },
-  
+
   // Content Management
   CONTENT: {
-    POSTS: '/content/posts',
-    COMMENTS: '/content/comments',
-    MODERATION: '/content/moderation'
+    POSTS: '/v1/content/posts',
+    COMMENTS: '/v1/content/comments',
+    MODERATION: '/v1/content/moderation'
   },
-  
+
   // System
   SYSTEM: {
-    HEALTH: '/system/health',
-    METRICS: '/system/metrics',
-    LOGS: '/system/logs',
-    BACKUP: '/system/backup'
+    HEALTH: '/v1/system/health',
+    METRICS: '/v1/system/metrics',
+    LOGS: '/v1/system/logs',
+    BACKUP: '/v1/system/backup'
   },
 
   // Shared
   SHARED: {
-    NOTIFICATIONS: '/shared/notifications',
-    SETTINGS: '/shared/settings',
-    SEARCH: '/shared/search'
+    NOTIFICATIONS: '/v1/shared/notifications',
+    SETTINGS: '/v1/shared/settings',
+    SEARCH: '/v1/shared/search'
+  },
+
+  // Theme Management
+  THEME: {
+    BASE: '/v1/theme',
+    PREFERENCES: '/v1/theme/preferences',
+    THEMES: '/v1/theme/themes',
+    CUSTOM: '/v1/theme/custom',
+    STATS: '/v1/theme/stats',
+    EXPORT: '/v1/theme/export',
+    IMPORT: '/v1/theme/import',
+    RESET: '/v1/theme/reset'
   }
 } as const;
 

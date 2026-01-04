@@ -171,7 +171,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -20 }}
           transition={{ type: "spring", duration: 0.3 }}
-          className="w-full max-w-2xl mx-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden"
+          className="w-full max-w-2xl mx-4 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Input */}
@@ -185,7 +185,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
               onChange={(e) => setQuery(e.target.value)}
               className="flex-1 bg-transparent outline-none text-lg placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
-            <kbd className="px-2 py-1 text-xs font-mono bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded border border-gray-300 dark:border-gray-600">ESC</kbd>
+            <kbd className="px-2 py-1 text-xs font-mono bg-muted text-muted-foreground rounded border border-border">ESC</kbd>
           </div>
 
           {/* Results */}
@@ -200,7 +200,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                   {recentSearches.map((search, index) => (
                     <button
                       key={index}
-                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground"
                       onClick={() => setQuery(search)}
                     >
                       {search}
@@ -223,7 +223,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                         "w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left group",
                         isSelected
                           ? "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
-                          : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                          : "hover:bg-muted text-muted-foreground hover:text-foreground"
                       )}
                       onClick={() => handleSelect(result)}
                       whileHover={{ scale: 1.02 }}

@@ -3,25 +3,27 @@
 /* Global scrollbar styles */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border) / 0.5) transparent;
+  scrollbar-color: hsl(var(--border) / 0.6) transparent;
 }
 
 *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: hsla(var(--muted), 0.3);
+  border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: hsl(var(--border) / 0.5);
-  border-radius: 10px;
+  background: hsl(var(--border) / 0.6);
+  border-radius: 4px;
+  border: 1px solid hsl(var(--background));
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.3);
+  background: hsl(var(--muted-foreground) / 0.4);
 }
 
 #root {
@@ -30,24 +32,24 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 210 10% 15%;
-    --card: 210 15% 97%;
-    --card-foreground: 210 10% 20%;
-    --popover: 210 15% 97%;
-    --popover-foreground: 210 10% 20%;
+    --background: 220 15% 92%;
+    --foreground: 220 13% 9%;
+    --card: 220 20% 88%;
+    --card-foreground: 220 15% 12%;
+    --popover: 220 20% 88%;
+    --popover-foreground: 220 15% 12%;
     --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 210 15% 92%;
-    --secondary-foreground: 210 8% 25%;
-    --muted: 210 10% 94%;
-    --muted-foreground: 210 5% 45%;
-    --accent: 210 15% 92%;
-    --accent-foreground: 210 8% 25%;
+    --secondary: 220 15% 80%;
+    --secondary-foreground: 220 10% 25%;
+    --muted: 220 12% 82%;
+    --muted-foreground: 220 8% 45%;
+    --accent: 220 15% 80%;
+    --accent-foreground: 220 10% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 10% 85%;
-    --input: 210 10% 88%;
+    --border: 220 15% 75%;
+    --input: 220 15% 78%;
     --ring: 346.8 77.2% 49.8%;
     --radius: 1rem;
   }
@@ -82,8 +84,9 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     background-image:
-      radial-gradient(at 0% 0%, hsla(210, 20%, 85%, 0.08) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(210, 15%, 90%, 0.06) 0px, transparent 50%);
+      radial-gradient(at 20% 50%, hsla(220, 15%, 80%, 0.12) 0px, transparent 50%),
+      radial-gradient(at 80% 20%, hsla(220, 20%, 75%, 0.08) 0px, transparent 50%),
+      radial-gradient(at 40% 80%, hsla(220, 25%, 85%, 0.06) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
@@ -100,8 +103,9 @@
 .main-content-bg {
   background-color: hsl(var(--background));
   background-image:
-    radial-gradient(at 0% 0%, hsla(210, 20%, 85%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(210, 15%, 90%, 0.06) 0px, transparent 50%);
+    radial-gradient(at 20% 50%, hsla(220, 15%, 80%, 0.12) 0px, transparent 50%),
+    radial-gradient(at 80% 20%, hsla(220, 20%, 75%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 40% 80%, hsla(220, 25%, 85%, 0.06) 0px, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -115,10 +119,11 @@
 
 /* Glassmorphism */
 .glass {
-  background: hsla(210, 15%, 97%, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid hsla(210, 10%, 85%, 0.4);
+  background: hsla(220, 20%, 88%, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsla(220, 15%, 75%, 0.3);
+  box-shadow: 0 8px 32px hsla(220, 15%, 75%, 0.2);
 }
 
 .dark .glass {
@@ -151,16 +156,43 @@
   font-family: 'Cairo', 'Inter', sans-serif !important;
 }
 
-
-
-
-
-
-/* Loading states */
+/* Enhanced Loading states */
 .loading-skeleton {
   background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted) / 0.5) 50%, hsl(var(--muted)) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
+}
+
+/* Skeleton pulse animation */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Enhanced skeleton with subtle gradient */
+.skeleton-enhanced {
+  background: linear-gradient(
+    110deg,
+    hsl(var(--muted)) 8%,
+    hsl(var(--muted) / 0.8) 18%,
+    hsl(var(--muted) / 0.6) 33%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes loading {

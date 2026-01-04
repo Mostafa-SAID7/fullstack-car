@@ -8,3 +8,4 @@ export { AIAgentManagement } from './ai-agent';
 export { Customers } from './customers';
 export { Products } from './products';
 export { Media } from './media';
+export { LocalizationManagement } from './localization';

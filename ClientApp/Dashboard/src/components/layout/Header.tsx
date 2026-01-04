@@ -34,12 +34,12 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick, onToggleMobileSid
                         onClick={onSearchClick}
                         className="relative group w-full text-left"
                     >
-                        <div className="w-full bg-gray-100/50 dark:bg-gray-800/50 border border-transparent hover:border-pink-500/20 hover:bg-white dark:hover:bg-gray-900 h-10 pl-10 pr-4 rounded-lg outline-none transition-all flex items-center">
+                        <div className="w-full bg-muted/50 border border-transparent hover:border-primary/20 hover:bg-background h-10 pl-10 pr-4 rounded-lg outline-none transition-all flex items-center">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 transition-colors group-focus-within:text-pink-600 dark:group-focus-within:text-pink-400" />
                             <span className="text-gray-500 dark:text-gray-400 text-sm">{t('search_anything')}</span>
                             <div className="ml-auto hidden lg:flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-[10px] font-bold text-gray-500 dark:text-gray-400">⌘</kbd>
-                                <kbd className="px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-[10px] font-bold text-gray-500 dark:text-gray-400">K</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded border border-border bg-card text-[10px] font-bold text-muted-foreground">⌘</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded border border-border bg-card text-[10px] font-bold text-muted-foreground">K</kbd>
                             </div>
                         </div>
                     </button>

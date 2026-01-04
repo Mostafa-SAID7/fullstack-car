@@ -18,6 +18,8 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Languages,
+  Shield,
   FileImage
 } from 'lucide-react';
 
@@ -181,6 +183,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           description: 'Application settings'
         }
       ]
+    },
+    {
+      title: 'Administration',
+      icon: Shield,
+      items: [
+        {
+          path: '/localization',
+          icon: Languages,
+          label: 'Localization',
+          color: 'text-blue-600 dark:text-blue-400',
+          description: 'Translation management'
+        }
+      ]
     }
   ];
 
@@ -217,7 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className={cn(
           "main-content-bg border-r border-gray-200/50 dark:border-gray-700/50 flex flex-col shadow-2xl",
           "fixed inset-y-0 left-0 z-50 md:relative md:z-40",
-          "backdrop-blur-xl bg-white/95 dark:bg-gray-900/95",
+          "backdrop-blur-xl bg-card/95 dark:bg-gray-900/95",
           "min-h-screen md:min-h-0",
           "overflow-hidden"
         )}
@@ -254,7 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Close */}
             <button
               onClick={onMobileClose}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+              className="md:hidden p-2 rounded-lg hover:bg-muted/50 dark:hover:bg-gray-800 transition-colors text-muted-foreground dark:text-gray-400"
               title="Close sidebar"
             >
               <X className="w-5 h-5" />
@@ -263,7 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Desktop Collapse */}
             <button
               onClick={onToggleCollapse}
-              className="hidden md:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+              className="hidden md:flex p-2 rounded-lg hover:bg-muted/50 dark:hover:bg-gray-800 transition-colors text-muted-foreground dark:text-gray-400"
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}

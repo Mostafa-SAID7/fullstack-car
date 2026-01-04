@@ -122,6 +122,105 @@ namespace WebAPI.Controllers.Shared.Localization
                 return BadRequest(new { Message = ex.Message, Language = request.Language });
             }
         }
+
+        // CRUD Operations for Translation Management
+        [Authorize(Roles = "Admin")]
+        [HttpGet("translations")]
+        public async Task<IActionResult> GetTranslations([FromQuery] GetTranslationsQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("translations")]
+        public async Task<IActionResult> CreateTranslation([FromBody] CreateTranslationCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return CreatedAtAction(nameof(GetTranslations),
+                    new { language = result.Language, category = result.Category },
+                    result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("translations/{id}")]
+        public async Task<IActionResult> UpdateTranslation(string id, [FromBody] UpdateTranslationCommand command)
+        {
+            try
+            {
+                command.Id = id;
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { Message = "Translation not found" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("translations/{id}")]
+        public async Task<IActionResult> DeleteTranslation(string id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new DeleteTranslationCommand { Id = id });
+                return Ok(new { Success = result, Message = "Translation deleted successfully" });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { Message = "Translation not found" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetTranslationStats()
+        {
+            var result = await _mediator.Send(new GetTranslationStatsQuery());
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("bulk-import")]
+        public async Task<IActionResult> BulkImportTranslations([FromBody] BulkImportTranslationsCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("export")]
+        public async Task<IActionResult> ExportTranslations([FromBody] ExportTranslationsCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return File(result.Content, result.ContentType, result.FileName);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 
     public class SetLanguageRequest

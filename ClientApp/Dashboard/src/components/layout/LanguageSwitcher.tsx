@@ -47,14 +47,14 @@ export const LanguageSwitcher: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-2 z-50"
+                        className="absolute right-0 mt-2 w-36 bg-card border border-border rounded-xl shadow-lg p-2 z-50"
                     >
                         {languages.map((lang) => (
                             <button
                                 key={lang.id}
                                 onClick={() => toggleLanguage(lang.id)}
                                 className={cn(
-                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
+                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
                                     i18n.language === lang.id && "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
                                 )}
                             >
