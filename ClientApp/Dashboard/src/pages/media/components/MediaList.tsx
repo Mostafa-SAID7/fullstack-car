@@ -2,23 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FileImage, FileVideo, FileText, File, Download, Eye, Trash2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
-
-interface MediaFile {
-  id: string;
-  name: string;
-  type: 'image' | 'video' | 'document' | 'other';
-  size: number;
-  url: string;
-  thumbnail?: string;
-  uploadedAt: string;
-  dimensions?: { width: number; height: number };
-}
-
-interface MediaListProps {
-  files: MediaFile[];
-  onFileClick: (file: MediaFile) => void;
-  onDelete: (fileId: string) => void;
-}
+// import type { MediaFile, MediaListProps } from '../../../types/pages/media';
+import type { MediaListProps } from '../../../types/pages/media';
 
 const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';

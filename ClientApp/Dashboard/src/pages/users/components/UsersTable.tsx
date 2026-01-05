@@ -12,12 +12,8 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react';
-import type { UserInfo as User } from '../../../types/auth';
-
-interface UsersTableProps {
-  users: User[];
-  onUserAction: (action: string, userId: string) => void;
-}
+// import type { UserInfo as User } from '../../../types/auth/user';
+import type { UsersTableProps } from '../../../types/pages/users';
 
 export const UsersTable: React.FC<UsersTableProps> = ({ users, onUserAction }) => {
   const { t } = useTranslation();

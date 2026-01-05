@@ -1,6 +1,6 @@
 import React from 'react';
 import { RefreshCw, Server } from 'lucide-react';
-import { Button } from '../../../components/ui/Button';
+import { Button } from '../../../components/forms/buttons/Button';
 
 interface SystemHeaderProps {
     onRefresh: () => void;

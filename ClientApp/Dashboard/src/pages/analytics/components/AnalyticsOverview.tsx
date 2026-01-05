@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { AdvancedAnalytics } from '../../../services/adminService';
+import type { AdvancedAnalytics } from '../../../services/admin';
 
 interface AnalyticsOverviewProps {
   data: AdvancedAnalytics | null;
@@ -34,12 +34,12 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({ data }) =>
             <div className="w-2 h-2 rounded-full bg-green-500" />
             <div>
               <p className="text-sm font-black uppercase tracking-wider">System Performance</p>
-              <p className="text-xs text-muted-foreground font-medium">Response time: {data?.performance.averageLoadTime || 0}ms</p>
+              <p className="text-xs text-muted-foreground font-medium">Response time: {data?.performance.averageResponseTime || 0}ms</p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-bold text-muted-foreground uppercase">Availability</p>
-            <p className="text-[10px] font-black text-green-500 uppercase tracking-tighter">{data?.performance.availability || 0}%</p>
+            <p className="text-[10px] font-black text-green-500 uppercase tracking-tighter">{Math.max(0, 100 - (data?.performance.errorRate || 0))}%</p>
           </div>
         </div>
 

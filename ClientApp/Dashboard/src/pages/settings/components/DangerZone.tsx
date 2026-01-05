@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertTriangle, Trash2, Ban } from 'lucide-react';
-import { Card, CardContent } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
+import { Card, CardContent } from '../../../components/layout/cards/Card';
+import { Button } from '../../../components/forms/buttons/Button';
 
 interface DangerZoneProps {
     onDeactivate: () => void;

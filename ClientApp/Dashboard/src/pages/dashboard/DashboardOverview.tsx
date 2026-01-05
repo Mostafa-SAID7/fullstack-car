@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, TrendingUp, Brain, Zap, ChevronDown, PieChart, Activity, Users, DollarSign } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
-import { useDashboard } from '../../hooks/useDashboard';
+import { useAuth, useDashboard } from '../../hooks';
 import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardStats } from './components/DashboardStats';
 import { DashboardCharts } from './components/DashboardCharts';
 import { DashboardAnalytics } from './components/DashboardAnalytics';
 import { DashboardActions } from './components/DashboardActions';
 import { ModelTraining } from './components/ModelTraining';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { DashboardSkeleton } from '../../components/ui/Skeleton';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import { ChartSkeleton as DashboardSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
 
 export const DashboardOverview = () => {
   const { user } = useAuth();
@@ -30,10 +29,10 @@ export const DashboardOverview = () => {
   const [showChartTypeSelector, setShowChartTypeSelector] = useState(false);
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-    { id: 'ai-training', label: 'AI Training', icon: Brain },
-    { id: 'actions', label: 'Actions', icon: Zap }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-4 h-4" /> },
+    { id: 'ai-training', label: 'AI Training', icon: <Brain className="w-4 h-4" /> },
+    { id: 'actions', label: 'Actions', icon: <Zap className="w-4 h-4" /> }
   ];
 
   const chartViews = [
@@ -101,9 +100,8 @@ export const DashboardOverview = () => {
                               setChartView(view.id);
                               setShowChartSelector(false);
                             }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
-                              chartView === view.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
-                            }`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${chartView === view.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
+                              }`}
                           >
                             <view.icon className="w-5 h-5 flex-shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -144,9 +142,8 @@ export const DashboardOverview = () => {
                               setChartType(option.id as any);
                               setShowChartTypeSelector(false);
                             }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
-                              chartType === option.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
-                            }`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${chartType === option.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
+                              }`}
                           >
                             <option.icon className="w-5 h-5 flex-shrink-0" />
                             <div className="min-w-0 flex-1">

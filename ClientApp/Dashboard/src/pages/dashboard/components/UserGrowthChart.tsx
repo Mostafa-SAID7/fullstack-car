@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChartCard } from './ChartCard';
-import { LineChart } from '../../../components/charts/LineChart';
-import { CHART_COLORS } from '../../../services/chartTheme';
+import { LineChart } from '../../../components/charts/line/LineChart';
+import { CHART_COLORS } from '../../../components/services/chart-theme';
 
 interface UserGrowthChartProps {
     data: any;
@@ -10,8 +10,8 @@ interface UserGrowthChartProps {
 
 export const UserGrowthChart: React.FC<UserGrowthChartProps> = ({ data, loading }) => {
     const chartData = data?.labels.map((label: string, index: number) => ({
-        month: label,
-        users: data.datasets[0].data[index]
+        x: label,
+        y: data.datasets[0].data[index]
     })) || [];
 
     return (
@@ -22,8 +22,6 @@ export const UserGrowthChart: React.FC<UserGrowthChartProps> = ({ data, loading 
         >
             <LineChart
                 data={chartData}
-                dataKey="users"
-                xAxisKey="month"
                 color={CHART_COLORS.primary}
                 height={300}
             />

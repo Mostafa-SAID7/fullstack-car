@@ -6,7 +6,8 @@ import { UsersHeader } from './components/UsersHeader';
 import { UsersFilters } from './components/UsersFilters';
 import { UsersTable } from './components/UsersTable';
 import { UsersEmptyState } from './components/UsersEmptyState';
-import { TabNavigation, TabContent, Pagination } from '../../components/ui';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import { Pagination } from '../../components/layout/pagination/Pagination';
 
 export const Users: React.FC = () => {
   const { t } = useTranslation();
@@ -16,10 +17,10 @@ export const Users: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'management', label: 'Management', icon: UserCheck },
-    { id: 'roles', label: 'Roles', icon: Shield },
-    { id: 'activity', label: 'Activity', icon: Activity }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'management', label: 'Management', icon: <UserCheck className="w-4 h-4" /> },
+    { id: 'roles', label: 'Roles', icon: <Shield className="w-4 h-4" /> },
+    { id: 'activity', label: 'Activity', icon: <Activity className="w-4 h-4" /> }
   ];
 
   // Mock data - in real app, this would come from API
@@ -330,7 +331,7 @@ export const Users: React.FC = () => {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
-  const handleUserAction = (action: string, userId: string) => {
+  const handleUserAction = (_action: string, _userId: string) => {
     // Handle user action - implement actual logic here
   };
 

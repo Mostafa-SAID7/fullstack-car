@@ -2,8 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { ThemeProvider } from './contexts/ThemeContext'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { ThemeProvider } from './contexts'
+import { ErrorBoundary } from './components/special/error-boundary/ErrorBoundary'
 import './i18n' // Import i18n configuration
 
 createRoot(document.getElementById('root')!).render(

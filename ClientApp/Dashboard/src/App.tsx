@@ -1,12 +1,8 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { MainLayout } from './components/layout/MainLayout';
-import { AuthDebug } from './components/debug/AuthDebug';
-import { LoginForm } from './components/auth/LoginForm';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { ToastProvider } from './components/ui/ToastProvider';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ProtectedRoute, MainLayout, ErrorBoundary, ToastProvider, LoginForm, AuthDebug } from './components';
+import { AuthLayout, RegisterForm, ForgotPasswordForm, ResetPasswordForm } from './components/auth';
+import { ThemeProvider } from './contexts';
 
 // Lazy load all page components for better performance
 const DashboardOverview = React.lazy(() => import('./pages').then(module => ({ default: module.DashboardOverview })));
@@ -21,10 +17,10 @@ const Settings = React.lazy(() => import('./pages').then(module => ({ default: m
 const AIAgentManagement = React.lazy(() => import('./pages').then(module => ({ default: module.AIAgentManagement })));
 const Media = React.lazy(() => import('./pages').then(module => ({ default: module.Media })));
 
-import { PageSkeleton } from './components/ui/Skeleton';
+import { Skeleton } from './components';
 
 // Loading component for Suspense fallback
-const PageLoader = () => <PageSkeleton />;
+const PageLoader = () => <Skeleton width="100%" height="400px" className="rounded-lg" />;
 
 function App() {
   return (
@@ -32,146 +28,165 @@ function App() {
       <ThemeProvider>
         <ToastProvider>
           <BrowserRouter>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/debug" element={<AuthDebug />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/simple" element={<div className="p-8"><h1 className="text-2xl font-bold">Simple Test</h1><p>This is a simple test page without authentication.</p></div>} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <DashboardOverview />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Analytics />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Users />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/customers"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Customers />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Products />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/content"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Content />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/media"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Media />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/system"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <System />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/localization"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <LocalizationManagement />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <Settings />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ai-agent"
-              element={
-                <ProtectedRoute requiredRoles={["Admin"]}>
-                  <MainLayout>
-                    <Suspense fallback={<PageLoader />}>
-                      <AIAgentManagement />
-                    </Suspense>
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Suspense>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/login" element={
+                  <AuthLayout title="Welcome Back">
+                    <LoginForm />
+                  </AuthLayout>
+                } />
+                <Route path="/register" element={
+                  <AuthLayout title="Join Us" subtitle="Create your community account">
+                    <RegisterForm />
+                  </AuthLayout>
+                } />
+                <Route path="/forgot-password" element={
+                  <AuthLayout title="Reset Password" subtitle="We'll help you get back in">
+                    <ForgotPasswordForm />
+                  </AuthLayout>
+                } />
+                <Route path="/reset-password" element={
+                  <AuthLayout title="New Password" subtitle="Setup your new secure password">
+                    <ResetPasswordForm />
+                  </AuthLayout>
+                } />
+                <Route path="/debug" element={<AuthDebug />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/simple" element={<div className="p-8"><h1 className="text-2xl font-bold">Simple Test</h1><p>This is a simple test page without authentication.</p></div>} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <DashboardOverview />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Analytics />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Users />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/customers"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Customers />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/products"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Products />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/content"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Content />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/media"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Media />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/system"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <System />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/localization"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <LocalizationManagement />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Settings />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ai-agent"
+                  element={
+                    <ProtectedRoute requiredRoles={["Admin"]}>
+                      <MainLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <AIAgentManagement />
+                        </Suspense>
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         </ToastProvider>
       </ThemeProvider>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shield, Key, Smartphone, History, Lock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/layout/cards/Card';
+import { Button } from '../../../components/forms/buttons/Button';
 
 interface SecuritySettingsProps {
     profileData: {

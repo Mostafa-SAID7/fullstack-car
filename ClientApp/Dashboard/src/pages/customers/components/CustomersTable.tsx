@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { 
-  Edit, 
-  Trash2, 
-  Eye, 
-  MoreVertical, 
-  Mail, 
-  Phone, 
+import {
+  Edit,
+  Trash2,
+  Eye,
+  MoreVertical,
+  Mail,
+  Phone,
   Calendar,
   User as UserIcon,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import type { UserInfo as User } from '../../../types/auth';
-
-interface CustomersTableProps {
-  users: User[];
-}
+import type { CustomersTableProps } from '../../../types/pages/customers/components';
 
 export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
   const { t } = useTranslation();
@@ -114,7 +110,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {currentUsers.map((user, index) => (
+            {currentUsers.map((user, index: number) => (
               <motion.tr
                 key={user.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -191,7 +187,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
                     >
                       <Eye className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -200,7 +196,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
                     >
                       <Edit className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -209,7 +205,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
                     >
                       <Trash2 className="w-4 h-4" />
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -237,7 +233,7 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
                 total: users.length
               })}
             </div>
-            
+
             <div className="flex items-center gap-2">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -248,11 +244,11 @@ export const CustomersTable: React.FC<CustomersTableProps> = ({ users }) => {
               >
                 <ChevronLeft className="w-4 h-4" />
               </motion.button>
-              
+
               <span className="px-3 py-1 text-sm text-foreground">
                 {currentPage} / {totalPages}
               </span>
-              
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

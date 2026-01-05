@@ -71,14 +71,24 @@
             </button>
         </mat-menu>
 
-        <!-- Theme Toggle Button -->
-        <button class="fb-icon-btn active:scale-95 touch-manipulation group"
-            [matTooltip]="themeService.isDark() ? ('dashboard.admin.dashboard.light' | translate) : ('dashboard.admin.dashboard.dark' | translate)"
-            (click)="themeService.toggleTheme()">
+        <!-- Theme Switcher -->
+        <button class="fb-icon-btn active:scale-95 touch-manipulation group" [matMenuTriggerFor]="themeMenu"
+            matTooltip="Theme">
             <i class="fa-solid text-xl theme-toggle-icon"
                 [ngClass]="themeService.isDark() ? 'fa-sun rotate-180 is-dark' : 'fa-moon rotate-0 is-light'">
             </i>
         </button>
+        <mat-menu #themeMenu="matMenu" class="custom-mat-menu">
+            <button mat-menu-item (click)="setThemeMode('light')" [class.bg-secondary]="getThemeMode() === 'light'">
+                <i class="fa-solid fa-sun mr-2"></i> Light
+            </button>
+            <button mat-menu-item (click)="setThemeMode('dark')" [class.bg-secondary]="getThemeMode() === 'dark'">
+                <i class="fa-solid fa-moon mr-2"></i> Dark
+            </button>
+            <button mat-menu-item (click)="setThemeMode('system')" [class.bg-secondary]="getThemeMode() === 'system'">
+                <i class="fa-solid fa-desktop mr-2"></i> System
+            </button>
+        </mat-menu>
 
         <!-- Menu Button (Mobile Only) -->
         <button class="fb-icon-btn active:scale-95 touch-manipulation lg:hidden" matTooltip="Menu"

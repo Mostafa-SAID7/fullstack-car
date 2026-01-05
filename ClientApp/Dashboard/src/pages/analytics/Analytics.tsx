@@ -8,7 +8,11 @@ import {
   Eye,
   RefreshCw
 } from 'lucide-react';
-import { TabNavigation, TabContent, Input, Button, Card, CardContent } from '../../components/ui';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import type { TabItem } from '../../components/layout/tabs/TabNavigation';
+import { Input } from '../../components/forms/inputs/Input';
+import { Button } from '../../components/forms/buttons/Button';
+import { Card, CardContent } from '../../components/layout/cards/Card';
 import { SiteAnalytics } from './SiteAnalytics';
 import { PerformanceMonitoring } from './PerformanceMonitoring';
 import { SEOAnalysis } from './SEOAnalysis';
@@ -20,36 +24,31 @@ export const Analytics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
 
-  const tabs = [
+  const tabs: TabItem[] = [
     {
       id: 'site-analytics',
       label: 'Site Analytics',
-      icon: BarChart3,
-      description: 'Google Analytics-like insights'
+      icon: <BarChart3 />
     },
     {
       id: 'performance',
       label: 'Performance',
-      icon: Activity,
-      description: 'Core Web Vitals & monitoring'
+      icon: <Activity />
     },
     {
       id: 'seo',
       label: 'SEO Analysis',
-      icon: Search,
-      description: 'Search engine optimization'
+      icon: <Search />
     },
     {
       id: 'onepage',
       label: 'OnePage Analytics',
-      icon: Zap,
-      description: 'Single-page application metrics'
+      icon: <Zap />
     },
     {
       id: 'settings',
       label: 'Settings',
-      icon: Settings,
-      description: 'Configure analytics tools'
+      icon: <Settings />
     }
   ];
 
@@ -86,7 +85,7 @@ export const Analytics: React.FC = () => {
               type="text"
               placeholder="Search analytics..."
               value={searchQuery}
-              onChange={(value) => setSearchQuery(value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-64"
             />
           )}

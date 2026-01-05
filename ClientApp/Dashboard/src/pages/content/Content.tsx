@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, ShieldCheck, TrendingUp, FileText } from 'lucide-react';
 import { ContentHeader, ContentStats, ContentList, ContentAnalytics } from './components';
-import { ContentTypeSelector, type ContentType, TabNavigation, TabContent } from '../../components/ui';
+import { ContentTypeSelector, type ContentType } from '../../components/forms/selects/ContentTypeSelector';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
 
 export const Content: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedContentType, setSelectedContentType] = useState<ContentType>('posts');
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'content', label: 'Content', icon: FileText },
-    { id: 'moderation', label: 'Moderation', icon: ShieldCheck },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'content', label: 'Content', icon: <FileText className="w-4 h-4" /> },
+    { id: 'moderation', label: 'Moderation', icon: <ShieldCheck className="w-4 h-4" /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-4 h-4" /> }
   ];
 
   const renderTabContent = () => {

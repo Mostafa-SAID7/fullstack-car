@@ -9,7 +9,7 @@ interface AnalyticsHeaderProps {
 }
 
 import { BarChart3, RefreshCw, Download, Calendar } from 'lucide-react';
-import { Button } from '../../../components/ui/Button';
+import { Button } from '../../../components/forms/buttons/Button';
 import { useState } from 'react';
 
 export const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({
@@ -97,13 +97,12 @@ export const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={() => handleDateRangeSelect(range)}
-                    className={`text-xs whitespace-nowrap ${
-                      getCurrentRangeLabel() === range.label && !range.custom
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        : range.custom && showCustomDatePicker
+                    className={`text-xs whitespace-nowrap ${getCurrentRangeLabel() === range.label && !range.custom
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      : range.custom && showCustomDatePicker
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                         : 'hover:bg-muted/50'
-                    }`}
+                      }`}
                   >
                     {range.label}
                   </Button>

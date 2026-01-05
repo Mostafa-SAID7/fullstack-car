@@ -8,7 +8,7 @@ import { SystemServices } from './components/SystemServices';
 import { SystemMetrics } from './components/SystemMetrics';
 import { SystemResources } from './components/SystemResources';
 import { SystemChart } from './components/SystemChart';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
 
 export const System: React.FC = () => {
   const { t } = useTranslation();
@@ -17,10 +17,10 @@ export const System: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'services', label: 'Services', icon: Server },
-    { id: 'resources', label: 'Resources', icon: Database },
-    { id: 'logs', label: 'Logs', icon: FileText }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'services', label: 'Services', icon: <Server className="w-4 h-4" /> },
+    { id: 'resources', label: 'Resources', icon: <Database className="w-4 h-4" /> },
+    { id: 'logs', label: 'Logs', icon: <FileText className="w-4 h-4" /> }
   ];
 
   // Mock data - in real app, this would come from API
@@ -110,7 +110,7 @@ export const System: React.FC = () => {
         <div className="flex items-center">
           <span className="text-destructive">{error}</span>
         </div>
-        <button 
+        <button
           onClick={loadSystemData}
           className="mt-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
         >

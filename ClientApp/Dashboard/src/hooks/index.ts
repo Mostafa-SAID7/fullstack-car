@@ -1,8 +1,8 @@
-// Custom Hooks Export
-export { useAuth } from './useAuth';
-export { useDashboard } from './useDashboard';
-export { useAnalytics } from './useAnalytics';
-export { useCustomers } from './useCustomers';
-export { useProducts } from './useProducts';
-export { useSettings } from './useSettings';
-export { useAIAgent } from './useAIAgent';
+// Custom Hooks Export - Organized by Domain
+export { useAuth } from './auth';
+export { useDashboard } from './dashboard';
+export { useAnalytics, useCustomers } from './admin';
+export { useProducts } from './products';
+export { useSettings } from './settings';
+export { useAIAgent } from './ai-agent';
+export { useToast } from '../components/feedback/toasts/ToastProvider';

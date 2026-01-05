@@ -5,7 +5,6 @@ import {
   MousePointer,
   Monitor,
   Target,
-  TrendingUp,
   BarChart3,
   Activity,
   Code,
@@ -15,10 +14,17 @@ import {
   Play,
   Pause
 } from 'lucide-react';
-import type { OnePageMetrics as OnePageMetricsType } from '../../services/analyticsService';
-import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle, Button, Progress, Badge, Input, ChartSkeleton, StatsSkeleton, MetricCard } from '../../components/ui';
-import { useToast } from '../../hooks/useToast';
+import type { OnePageMetrics as OnePageMetricsType } from '../../services/analytics';
+import { analyticsService } from '../../services/analytics';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/layout/cards/Card';
+import { Button } from '../../components/forms/buttons/Button';
+import Progress from '../../components/feedback/progress/Progress';
+import Badge from '../../components/data-display/badges/Badge';
+import { Input } from '../../components/forms/inputs/Input';
+import { ChartSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
+import { StatsSkeleton } from '../../components/feedback/skeletons/StatsSkeleton';
+import { MetricCard } from '../../components/layout/cards/MetricCard';
+import { useToast } from '../../hooks';
 
 
 interface ScrollDepthChartProps {
@@ -62,12 +68,12 @@ export const OnePageAnalytics: React.FC = () => {
   }, [url]);
 
   useEffect(() => {
-    let interval: number;
+    let interval: any;
     if (isTracking) {
       interval = setInterval(() => {
         // Simulate real-time updates
         if (metrics) {
-          setMetrics(prev => prev ? {
+          setMetrics((prev: any) => prev ? {
             ...prev,
             userExperience: {
               ...prev.userExperience,
@@ -117,8 +123,8 @@ export const OnePageAnalytics: React.FC = () => {
         </div>
         <StatsSkeleton count={4} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       </div>
     );
@@ -139,7 +145,7 @@ export const OnePageAnalytics: React.FC = () => {
           <div className="flex items-center gap-2">
             <Input
               value={url}
-              onChange={(value: string) => setUrl(value)}
+              onChange={(e) => setUrl(e.target.value)}
               placeholder="Enter page URL"
               className="w-64"
             />
@@ -166,27 +172,23 @@ export const OnePageAnalytics: React.FC = () => {
           value={metrics.performance.firstContentfulPaint}
           unit="s"
           icon={<Zap className="w-5 h-5" />}
-          color="blue"
         />
         <MetricCard
           title="Largest Contentful Paint"
           value={metrics.performance.largestContentfulPaint}
           unit="s"
           icon={<Activity className="w-5 h-5" />}
-          color="green"
         />
         <MetricCard
           title="Cumulative Layout Shift"
           value={metrics.performance.cumulativeLayoutShift}
           icon={<BarChart3 className="w-5 h-5" />}
-          color="orange"
         />
         <MetricCard
           title="Interaction to Next Paint"
           value={metrics.performance.interactionToNextPaint}
           unit="ms"
           icon={<MousePointer className="w-5 h-5" />}
-          color="purple"
         />
       </div>
 
@@ -397,7 +399,7 @@ export const OnePageAnalytics: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {journeyData.slice(0, 10).map((event, index) => (
+            {journeyData.slice(0, 10).map((event: any, index: number) => (
               <div key={index} className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">

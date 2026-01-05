@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, Package, Archive, TrendingUp } from 'lucide-react';
-import { useProducts } from '../../hooks/useProducts';
+import { useProducts } from '../../hooks';
 import { ProductsHeader } from './components/ProductsHeader';
 import { ProductsFilters } from './components/ProductsFilters';
 import { ProductsGrid } from './components/ProductsGrid';
-import { TabNavigation, TabContent, Pagination } from '../../components/ui';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import { Pagination } from '../../components/layout/pagination/Pagination';
 
 export const Products = () => {
   const { products } = useProducts();
@@ -32,10 +33,10 @@ export const Products = () => {
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'catalog', label: 'Catalog', icon: Package },
-    { id: 'inventory', label: 'Inventory', icon: Archive },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'catalog', label: 'Catalog', icon: <Package className="w-4 h-4" /> },
+    { id: 'inventory', label: 'Inventory', icon: <Archive className="w-4 h-4" /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-4 h-4" /> }
   ];
 
   const renderTabContent = () => {

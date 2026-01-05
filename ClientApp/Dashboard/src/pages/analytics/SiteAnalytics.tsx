@@ -11,16 +11,19 @@ import {
   TrendingDown,
   RefreshCw
 } from 'lucide-react';
-import type { SiteAnalytics as SiteAnalyticsType } from '../../services/analyticsService';
-import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle, Button, TabContent, StatsSkeleton, ChartSkeleton, MetricCard } from '../../components/ui';
+import type { SiteAnalytics as SiteAnalyticsType } from '../../services/analytics';
+import { analyticsService } from '../../services/analytics';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/layout/cards/Card';
+import { MetricCard } from '../../components/layout/cards/MetricCard';
+import { Button } from '../../components/forms/buttons/Button';
+import { TabContent } from '../../components/layout/tabs/TabNavigation';
+import { StatsSkeleton } from '../../components/feedback/skeletons/StatsSkeleton';
+import { ChartSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, PieChart } from '../../components/charts';
-import { useToast } from '../../hooks/useToast';
+import { useToast } from '../../hooks';
 import { AnalyticsHeader } from './components/AnalyticsHeader';
-
-
 
 export const SiteAnalytics: React.FC = () => {
   const [analytics, setAnalytics] = useState<SiteAnalyticsType | null>(null);
@@ -63,7 +66,7 @@ export const SiteAnalytics: React.FC = () => {
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      const data = await analyticsService.getSiteAnalytics(startDate, endDate);
+      const data = await analyticsService.getSiteAnalytics({ dateRange: { start: startDate, end: endDate } });
       setAnalytics(data);
     } catch (err) {
       toastError('Failed to load analytics data');
@@ -109,8 +112,8 @@ export const SiteAnalytics: React.FC = () => {
         <div className="space-y-6">
           <StatsSkeleton count={4} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ChartSkeleton showTitle showLegend />
-            <ChartSkeleton showTitle showLegend />
+            <ChartSkeleton showLegend />
+            <ChartSkeleton showLegend />
           </div>
         </div>
       );
@@ -118,19 +121,18 @@ export const SiteAnalytics: React.FC = () => {
 
     // Prepare chart data
     const visitorData = [
-      { name: 'Mon', visitors: 1200, pageviews: 2400 },
-      { name: 'Tue', visitors: 1400, pageviews: 2800 },
-      { name: 'Wed', visitors: 1100, pageviews: 2200 },
-      { name: 'Thu', visitors: 1600, pageviews: 3200 },
-      { name: 'Fri', visitors: 1800, pageviews: 3600 },
-      { name: 'Sat', visitors: 900, pageviews: 1800 },
-      { name: 'Sun', visitors: 1000, pageviews: 2000 }
+      { x: 'Mon', y: 1200 },
+      { x: 'Tue', y: 1400 },
+      { x: 'Wed', y: 1100 },
+      { x: 'Thu', y: 1600 },
+      { x: 'Fri', y: 1800 },
+      { x: 'Sat', y: 900 },
+      { x: 'Sun', y: 1000 }
     ];
 
     const deviceData = analytics.traffic.devices.map(device => ({
-      name: device.device,
-      value: device.sessions,
-      percentage: device.percentage
+      label: device.device,
+      value: device.sessions
     }));
 
     return (
@@ -174,8 +176,6 @@ export const SiteAnalytics: React.FC = () => {
               <div className="w-full overflow-x-auto">
                 <AreaChart
                   data={visitorData}
-                  dataKey="visitors"
-                  xAxisKey="name"
                   height={250}
                   color="#3b82f6"
                 />
@@ -191,8 +191,6 @@ export const SiteAnalytics: React.FC = () => {
               <div className="w-full overflow-x-auto">
                 <PieChart
                   data={deviceData}
-                  dataKey="value"
-                  nameKey="name"
                   height={250}
                 />
               </div>
@@ -241,9 +239,9 @@ export const SiteAnalytics: React.FC = () => {
     if (loading || !analytics) {
       return (
         <div className="space-y-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       );
     }
@@ -284,7 +282,7 @@ export const SiteAnalytics: React.FC = () => {
               <div className="space-y-3 sm:space-y-4">
                 {analytics.traffic.devices.map((device) => {
                   const Icon = device.device === 'Desktop' ? Monitor :
-                              device.device === 'Mobile' ? Smartphone : Tablet;
+                    device.device === 'Mobile' ? Smartphone : Tablet;
                   return (
                     <div key={device.device} className="flex items-center justify-between gap-2 sm:gap-4">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
@@ -339,8 +337,8 @@ export const SiteAnalytics: React.FC = () => {
     if (loading || !analytics) {
       return (
         <div className="space-y-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       );
     }
@@ -403,8 +401,8 @@ export const SiteAnalytics: React.FC = () => {
     if (loading || !analytics) {
       return (
         <div className="space-y-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       );
     }
@@ -501,7 +499,7 @@ export const SiteAnalytics: React.FC = () => {
     }, []);
 
     if (realtimeLoading || !realtimeData) {
-      return <ChartSkeleton showTitle />;
+      return <ChartSkeleton />;
     }
 
     return (
@@ -523,7 +521,7 @@ export const SiteAnalytics: React.FC = () => {
             <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-blue-500 mb-2">
-                  {realtimeData.currentPageViews}
+                  {realtimeData.pageViews}
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Current Pageviews</p>
               </div>
@@ -534,7 +532,7 @@ export const SiteAnalytics: React.FC = () => {
             <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-purple-500 mb-2">
-                  {realtimeData.topActivePages.length}
+                  {realtimeData.topPages.length}
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Active Pages</p>
               </div>
@@ -549,7 +547,7 @@ export const SiteAnalytics: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3 sm:space-y-4">
-              {realtimeData.topActivePages.map((page, _index) => (
+              {realtimeData.topPages.map((page: any, _index: number) => (
                 <div key={page.path} className="flex items-center justify-between gap-2 sm:gap-4">
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -558,12 +556,12 @@ export const SiteAnalytics: React.FC = () => {
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm sm:text-base truncate">{page.path}</p>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        {page.pageViews} pageviews
+                        {page.views} pageviews
                       </p>
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="font-medium text-sm sm:text-base">{page.activeUsers} active</p>
+                    <p className="font-medium text-sm sm:text-base">N/A active</p>
                   </div>
                 </div>
               ))}
@@ -638,9 +636,8 @@ export const SiteAnalytics: React.FC = () => {
                         setActiveTab(tab.id);
                         setShowTabDropdown(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${
-                        activeTab === tab.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
-                      }`}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors ${activeTab === tab.id ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'
+                        }`}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       <span className="font-medium text-sm">{tab.label}</span>

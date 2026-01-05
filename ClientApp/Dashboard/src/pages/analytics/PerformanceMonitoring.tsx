@@ -12,10 +12,16 @@ import {
   Play,
   Pause
 } from 'lucide-react';
-import type { PerformanceMetrics as PerformanceMetricsType } from '../../services/analyticsService';
-import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle, Button, Progress, Badge, ChartSkeleton, StatsSkeleton, MetricCard } from '../../components/ui';
-import { useToast } from '../../hooks/useToast';
+import type { WebPerformanceMetrics as PerformanceMetricsType } from '../../services/analytics';
+import { analyticsService } from '../../services/analytics';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/layout/cards/Card';
+import { Button } from '../../components/forms/buttons/Button';
+import Progress from '../../components/feedback/progress/Progress';
+import Badge from '../../components/data-display/badges/Badge';
+import { ChartSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
+import { StatsSkeleton } from '../../components/feedback/skeletons/StatsSkeleton';
+import { MetricCard } from '../../components/layout/cards/MetricCard';
+import { useToast } from '../../hooks';
 
 
 interface PerformanceScoreProps {
@@ -85,7 +91,7 @@ export const PerformanceMonitoring: React.FC = () => {
   }, [deviceType]);
 
   useEffect(() => {
-    let interval: number;
+    let interval: any;
     if (autoRefresh) {
       interval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds
     }
@@ -97,11 +103,13 @@ export const PerformanceMonitoring: React.FC = () => {
   const loadMetrics = async () => {
     try {
       setLoading(true);
-      const data = await analyticsService.getPerformanceMetrics(
-        new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        new Date().toISOString().split('T')[0],
-        deviceType
-      );
+      const data = await analyticsService.getPerformanceMetrics({
+        dateRange: {
+          start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          end: new Date().toISOString().split('T')[0]
+        },
+        device: deviceType
+      });
       setMetrics(data);
     } catch (err) {
       toastError('Failed to load performance metrics');
@@ -113,7 +121,13 @@ export const PerformanceMonitoring: React.FC = () => {
 
   const runAudit = async () => {
     try {
-      const result = await analyticsService.runPerformanceAudit(window.location.origin);
+      const result = await analyticsService.getPerformanceMetrics({
+        device: deviceType,
+        dateRange: {
+          start: new Date().toISOString().split('T')[0],
+          end: new Date().toISOString().split('T')[0]
+        }
+      });
       setMetrics(result);
       success('Performance audit completed successfully!');
     } catch (err) {
@@ -139,8 +153,8 @@ export const PerformanceMonitoring: React.FC = () => {
         </div>
         <StatsSkeleton count={4} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       </div>
     );
@@ -320,7 +334,7 @@ export const PerformanceMonitoring: React.FC = () => {
               </div>
 
               <div className="space-y-2 mt-4">
-                {metrics.resources.byType.map((resource) => (
+                {metrics.resources.byType.map((resource: any) => (
                   <div key={resource.type} className="flex items-center gap-3">
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
@@ -404,7 +418,7 @@ export const PerformanceMonitoring: React.FC = () => {
                 {Object.entries(metrics.server.statusCodes).map(([code, count]) => (
                   <div key={code} className="p-2 bg-muted/30 rounded">
                     <div className="text-lg font-bold">{code}</div>
-                    <div className="text-xs text-muted-foreground">{count}</div>
+                    <div className="text-xs text-muted-foreground">{count as number}</div>
                   </div>
                 ))}
               </div>

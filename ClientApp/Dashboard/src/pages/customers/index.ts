@@ -1,2 +1,2 @@
 export { Customers } from './Customers';
-export * from '../../hooks/useCustomers';
+export * from '../../hooks/admin';

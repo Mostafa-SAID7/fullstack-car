@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChartCard } from './ChartCard';
-import { AreaChart } from '../../../components/charts/AreaChart';
-import { CHART_COLORS } from '../../../services/chartTheme';
+import { AreaChart } from '../../../components/charts/area/AreaChart';
+import { CHART_COLORS } from '../../../components/services/chart-theme';
 
 interface RevenueTrendChartProps {
     data: any;
@@ -10,8 +10,8 @@ interface RevenueTrendChartProps {
 
 export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data, loading }) => {
     const chartData = data?.labels.map((label: string, index: number) => ({
-        month: label,
-        revenue: data.datasets[0].data[index]
+        x: label,
+        y: data.datasets[0].data[index]
     })) || [];
 
     return (
@@ -22,8 +22,6 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data, load
         >
             <AreaChart
                 data={chartData}
-                dataKey="revenue"
-                xAxisKey="month"
                 color={CHART_COLORS.success}
                 height={300}
             />

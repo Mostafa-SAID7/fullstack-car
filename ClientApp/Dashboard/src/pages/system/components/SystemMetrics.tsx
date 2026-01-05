@@ -1,24 +1,7 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/Card';
-
-interface Metrics {
-    usage?: number;
-    used?: number;
-    total?: number;
-    percentage?: number;
-    cores?: number;
-    in?: number;
-    out?: number;
-}
-
-interface SystemMetricsProps {
-    performanceMetrics: {
-        cpu: Metrics;
-        memory: Metrics;
-        disk: Metrics;
-        network: Metrics;
-    };
-}
+import { Card, CardHeader, CardTitle, CardContent } from '../../../components/layout/cards/Card';
+// import type { Metrics, SystemMetricsProps } from '../../../types/pages/system';
+import type { SystemMetricsProps } from '../../../types/pages/system';
 
 export const SystemMetrics: React.FC<SystemMetricsProps> = ({ performanceMetrics }) => {
     const getProgressColor = (value: number) => {

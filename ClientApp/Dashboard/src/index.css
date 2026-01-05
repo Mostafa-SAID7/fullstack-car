@@ -38,8 +38,9 @@
     --card-foreground: 220 15% 12%;
     --popover: 220 20% 88%;
     --popover-foreground: 220 15% 12%;
-    --primary: 346.8 77.2% 49.8%;
-    --primary-foreground: 355.7 100% 97.3%;
+    /* Microsoft Blue (Light Mode) */
+    --primary: 206 100% 42%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 220 15% 80%;
     --secondary-foreground: 220 10% 25%;
     --muted: 220 12% 82%;
@@ -50,7 +51,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 220 15% 75%;
     --input: 220 15% 78%;
-    --ring: 346.8 77.2% 49.8%;
+    --ring: 206 100% 42%;
     --radius: 1rem;
     /* Typography colors - Light mode */
     --heading: 220 13% 9%;
@@ -58,15 +59,16 @@
     --paragraph: 220 10% 20%;
   }
 
-  .dark {
+  [data-theme='dark'] {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 346.8 85% 55%;
-    --primary-foreground: 355.7 100% 97.3%;
+    /* Microsoft Blue (Dark Mode - slightly brighter) */
+    --primary: 206 100% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -94,7 +96,12 @@
   }
 
   /* Heading styles */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: hsl(var(--heading));
     font-weight: 600;
   }
@@ -142,7 +149,20 @@
   }
 
   /* Default text color for all text elements */
-  span, div, label, small, strong, em, b, i, u, mark, del, ins, sub, sup {
+  span,
+  div,
+  label,
+  small,
+  strong,
+  em,
+  b,
+  i,
+  u,
+  mark,
+  del,
+  ins,
+  sub,
+  sup {
     color: hsl(var(--text));
   }
 
@@ -155,6 +175,19 @@
     color: hsl(var(--primary));
     opacity: 0.8;
   }
+}
+
+/* Glassmorphism Effect */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='dark'] .glassmorphism {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Main Content Background */
@@ -195,9 +228,12 @@
 
 /* Skeleton pulse animation */
 @keyframes skeleton-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -205,13 +241,11 @@
 
 /* Enhanced skeleton with subtle gradient - using Tailwind color variables */
 .skeleton-enhanced {
-  background: linear-gradient(
-    110deg,
-    hsl(var(--muted)) 8%,
-    hsl(var(--muted)) 18%,
-    hsl(var(--muted)) 33%,
-    hsl(var(--muted)) 100%
-  );
+  background: linear-gradient(110deg,
+      hsl(var(--muted)) 8%,
+      hsl(var(--muted)) 18%,
+      hsl(var(--muted)) 33%,
+      hsl(var(--muted)) 100%);
   background-size: 200% 100%;
   animation: skeleton-wave 1.4s ease-in-out infinite;
 }
@@ -220,6 +254,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -229,6 +264,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -241,10 +277,39 @@
 
 /* Scrollbar hide utility */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none;
+  /* Chrome, Safari and Opera */
+}
+
+@layer utilities {
+  .animate-gradient {
+    background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #312e81);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(var(--primary), 0.5);
 }

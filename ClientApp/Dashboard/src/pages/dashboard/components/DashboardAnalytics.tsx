@@ -14,7 +14,7 @@ import type {
   UserAnalytics, 
   ContentAnalytics, 
   RevenueAnalytics 
-} from '../../../services/dashboardService';
+} from '../../../types/dashboard';
 
 interface DashboardAnalyticsProps {
   userAnalytics: UserAnalytics | null;

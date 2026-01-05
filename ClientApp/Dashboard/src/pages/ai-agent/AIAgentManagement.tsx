@@ -1,15 +1,15 @@
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { 
-  Save, 
-  RefreshCw, 
-  BarChart3, 
-  Brain, 
-  Database, 
-  Activity, 
-  FileText, 
-  Settings 
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import {
+  Save,
+  RefreshCw,
+  BarChart3,
+  Brain,
+  Database,
+  Activity,
+  FileText,
+  Settings
 } from 'lucide-react';
-import { useAIAgent } from '../../hooks/useAIAgent';
+import { useAIAgent } from '../../hooks';
 import type { TabConfig } from '../../types/common';
 import { AIAgentOverview } from './components/AIAgentOverview';
 import { AIAgentTraining } from './components/AIAgentTraining';
@@ -32,21 +32,21 @@ export const AIAgentManagement: React.FC = () => {
   } = useAIAgent();
 
   const tabs: TabConfig[] = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'training', label: 'Training', icon: Brain },
-    { id: 'models', label: 'Models', icon: Database },
-    { id: 'monitoring', label: 'Monitoring', icon: Activity },
-    { id: 'datasets', label: 'Datasets', icon: FileText },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 /> },
+    { id: 'training', label: 'Training', icon: <Brain /> },
+    { id: 'models', label: 'Models', icon: <Database /> },
+    { id: 'monitoring', label: 'Monitoring', icon: <Activity /> },
+    { id: 'datasets', label: 'Datasets', icon: <FileText /> },
+    { id: 'settings', label: 'Settings', icon: <Settings /> }
   ];
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
         return (
-          <AIAgentOverview 
-            isAIEnabled={config.isEnabled} 
-            metrics={metrics} 
+          <AIAgentOverview
+            isAIEnabled={config.isEnabled}
+            metrics={metrics}
           />
         );
       case 'training':

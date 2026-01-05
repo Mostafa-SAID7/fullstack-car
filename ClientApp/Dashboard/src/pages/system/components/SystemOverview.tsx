@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '../../../components/ui/Card';
+import { Card, CardContent } from '../../../components/layout/cards/Card';
 import { Monitor, Clock, Tag, Cpu } from 'lucide-react';
 
 interface SystemOverviewProps {

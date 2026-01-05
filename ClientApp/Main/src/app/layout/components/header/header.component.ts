@@ -53,6 +53,14 @@ export class HeaderComponent implements OnInit {
         }
     }
 
+    setThemeMode(mode: 'light' | 'dark' | 'system') {
+        this.themeService.setThemeMode(mode);
+    }
+
+    getThemeMode(): 'light' | 'dark' | 'system' {
+        return this.themeService.getThemeMode();
+    }
+
     handleNotificationClick(note: Notification) {
         if (!note.isRead) {
             this.notificationService.markAsRead(note.id);

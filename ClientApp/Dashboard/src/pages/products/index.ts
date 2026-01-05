@@ -1,2 +1,2 @@
 export { Products } from './Products';
-export * from '../../hooks/useProducts';
+export * from '../../hooks/products';

@@ -1,2 +1,2 @@
 export { DashboardOverview } from './DashboardOverview';
-export * from '../../hooks/useDashboard';
+export * from '../../hooks/dashboard';

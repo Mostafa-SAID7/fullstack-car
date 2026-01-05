@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
-import { useToast } from '../../../hooks/useToast';
-import { ChartSkeleton } from '../../../components/ui/Skeleton';
+import { useToast } from '../../../hooks';
+import { ChartSkeleton } from '../../../components/feedback/skeletons/Skeleton';
 
 interface ChartCardProps {
   title: string;
@@ -53,7 +53,7 @@ export const ChartCard: React.FC<ChartCardProps> = React.memo(({
             </p>
           )}
         </div>
-        
+
         <button
           onClick={handleAIInsight}
           className="ml-4 p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all duration-200 group flex items-center gap-2"

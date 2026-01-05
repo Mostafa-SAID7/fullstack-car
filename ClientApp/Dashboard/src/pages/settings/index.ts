@@ -1,2 +1,2 @@
 export { Settings } from './Settings';
-export * from '../../hooks/useSettings';
+export * from '../../hooks/settings';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Moon, Sun, Monitor, Type } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/Card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/layout/cards/Card';
 import { useTranslation } from 'react-i18next';
 
 export const AppearanceSettings: React.FC = () => {

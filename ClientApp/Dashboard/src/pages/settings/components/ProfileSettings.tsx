@@ -1,8 +1,8 @@
 import React from 'react';
 import { Camera, Trash2, User } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
-import { Input } from '../../../components/ui/Input';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/layout/cards/Card';
+import { Button } from '../../../components/forms/buttons/Button';
+import { Input } from '../../../components/forms/inputs/Input';
 
 interface ProfileSettingsProps {
     user: any; // Replace with proper User type from auth types if available
@@ -105,13 +105,13 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
                         <Input
                             label="First Name"
                             value={profileData.firstName}
-                            onChange={(val) => setProfileData({ ...profileData, firstName: val })}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProfileData({ ...profileData, firstName: e.target.value })}
                             required
                         />
                         <Input
                             label="Last Name"
                             value={profileData.lastName}
-                            onChange={(val) => setProfileData({ ...profileData, lastName: val })}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProfileData({ ...profileData, lastName: e.target.value })}
                             required
                         />
                     </div>

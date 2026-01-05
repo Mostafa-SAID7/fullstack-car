@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChartCard } from './ChartCard';
-import { BarChart } from '../../../components/charts/BarChart';
-import { CHART_COLORS } from '../../../services/chartTheme';
+import { BarChart } from '../../../components/charts/bar/BarChart';
+import { CHART_COLORS } from '../../../components/services/chart-theme';
 
 interface ContentCreationChartProps {
     data: any;
@@ -10,8 +10,8 @@ interface ContentCreationChartProps {
 
 export const ContentCreationChart: React.FC<ContentCreationChartProps> = ({ data, loading }) => {
     const chartData = data?.labels.map((label: string, index: number) => ({
-        month: label,
-        posts: data.datasets[0].data[index]
+        x: label,
+        y: data.datasets[0].data[index]
     })) || [];
 
     return (
@@ -22,8 +22,6 @@ export const ContentCreationChart: React.FC<ContentCreationChartProps> = ({ data
         >
             <BarChart
                 data={chartData}
-                dataKey="posts"
-                xAxisKey="month"
                 color={CHART_COLORS.secondary}
                 height={300}
             />

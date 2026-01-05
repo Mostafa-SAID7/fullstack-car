@@ -11,14 +11,14 @@ import {
   TestTube,
   Eye
 } from 'lucide-react';
-import type { AnalyticsSettings as AnalyticsSettingsType } from '../../services/analyticsService';
-import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Switch } from '../../components/ui/Switch';
-import { Badge } from '../../components/ui/Badge';
-import { useToast } from '../../hooks/useToast';
+import type { AnalyticsSettings as AnalyticsSettingsType } from '../../services/analytics';
+import { analyticsService } from '../../services/analytics';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/layout/cards/Card';
+import { Button } from '../../components/forms/buttons/Button';
+import { Input } from '../../components/forms/inputs/Input';
+import { Switch } from '../../components/forms/switches/Switch';
+import Badge from '../../components/data-display/badges/Badge';
+import { useToast } from '../../hooks';
 
 interface SettingSectionProps {
   title: string;
@@ -112,28 +112,28 @@ export const AnalyticsSettings: React.FC = () => {
   };
 
 
-  const updateGoogleAnalytics = (updates: Partial<AnalyticsSettingsType['googleAnalytics']>) => {
+  const updateGoogleAnalytics = (updates: Partial<AnalyticsSettingsType['googleAnalytics']>): void => {
     setSettings(prev => prev ? {
       ...prev,
       googleAnalytics: { ...prev.googleAnalytics, ...updates }
     } : null);
   };
 
-  const updatePerformanceMonitoring = (updates: Partial<AnalyticsSettingsType['performanceMonitoring']>) => {
+  const updatePerformanceMonitoring = (updates: Partial<AnalyticsSettingsType['performanceMonitoring']>): void => {
     setSettings(prev => prev ? {
       ...prev,
       performanceMonitoring: { ...prev.performanceMonitoring, ...updates }
     } : null);
   };
 
-  const updateSEOMonitoring = (updates: Partial<AnalyticsSettingsType['seoMonitoring']>) => {
+  const updateSEOMonitoring = (updates: Partial<AnalyticsSettingsType['seoMonitoring']>): void => {
     setSettings(prev => prev ? {
       ...prev,
       seoMonitoring: { ...prev.seoMonitoring, ...updates }
     } : null);
   };
 
-  const updateAlerts = (updates: Partial<AnalyticsSettingsType['alerts']>) => {
+  const updateAlerts = (updates: Partial<AnalyticsSettingsType['alerts']>): void => {
     setSettings(prev => prev ? {
       ...prev,
       alerts: { ...prev.alerts, ...updates }
@@ -196,7 +196,7 @@ export const AnalyticsSettings: React.FC = () => {
                 <div className="flex gap-2">
                   <Input
                     value={settings.googleAnalytics.trackingId}
-                    onChange={(value: string) => updateGoogleAnalytics({ trackingId: value })}
+                    onChange={(e) => updateGoogleAnalytics({ trackingId: e.target.value })}
                     placeholder="GA-XXXXXXXXXX"
                     className="flex-1"
                   />
@@ -234,7 +234,7 @@ export const AnalyticsSettings: React.FC = () => {
             <div>
               <label className="block text-sm font-medium mb-3">Goals</label>
               <div className="space-y-2">
-                {settings.googleAnalytics.goals.map((goal, index) => (
+                {settings.googleAnalytics.goals.map((goal: AnalyticsSettingsType['googleAnalytics']['goals'][0], index: number) => (
                   <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
                     <Badge variant="outline">{goal.type}</Badge>
                     <span className="flex-1 font-medium">{goal.name}</span>
@@ -311,10 +311,10 @@ export const AnalyticsSettings: React.FC = () => {
                 <Input
                   type="number"
                   value={settings.performanceMonitoring.thresholds.lcp.toString()}
-                  onChange={(value: string) => updatePerformanceMonitoring({
+                  onChange={(e) => updatePerformanceMonitoring({
                     thresholds: {
                       ...settings.performanceMonitoring.thresholds,
-                      lcp: parseFloat(value) || 0
+                      lcp: parseFloat(e.target.value) || 0
                     }
                   })}
                 />
@@ -324,10 +324,10 @@ export const AnalyticsSettings: React.FC = () => {
                 <Input
                   type="number"
                   value={settings.performanceMonitoring.thresholds.fid.toString()}
-                  onChange={(value: string) => updatePerformanceMonitoring({
+                  onChange={(e) => updatePerformanceMonitoring({
                     thresholds: {
                       ...settings.performanceMonitoring.thresholds,
-                      fid: parseFloat(value) || 0
+                      fid: parseFloat(e.target.value) || 0
                     }
                   })}
                 />
@@ -337,10 +337,10 @@ export const AnalyticsSettings: React.FC = () => {
                 <Input
                   type="number"
                   value={settings.performanceMonitoring.thresholds.cls.toString()}
-                  onChange={(value: string) => updatePerformanceMonitoring({
+                  onChange={(e) => updatePerformanceMonitoring({
                     thresholds: {
                       ...settings.performanceMonitoring.thresholds,
-                      cls: parseFloat(value) || 0
+                      cls: parseFloat(e.target.value) || 0
                     }
                   })}
                 />
@@ -350,10 +350,10 @@ export const AnalyticsSettings: React.FC = () => {
                 <Input
                   type="number"
                   value={settings.performanceMonitoring.thresholds.ttfb.toString()}
-                  onChange={(value: string) => updatePerformanceMonitoring({
+                  onChange={(e) => updatePerformanceMonitoring({
                     thresholds: {
                       ...settings.performanceMonitoring.thresholds,
-                      ttfb: parseFloat(value) || 0
+                      ttfb: parseFloat(e.target.value) || 0
                     }
                   })}
                 />
@@ -399,7 +399,7 @@ export const AnalyticsSettings: React.FC = () => {
           <div>
             <label className="block text-sm font-medium mb-3">Keyword Tracking</label>
             <div className="space-y-2">
-              {settings.seoMonitoring.keywordTracking.map((keyword, index) => (
+              {settings.seoMonitoring.keywordTracking.map((keyword: AnalyticsSettingsType['seoMonitoring']['keywordTracking'][0], index: number) => (
                 <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
                   <span className="font-medium">{keyword.keyword}</span>
                   <Badge variant="outline">Target: #{keyword.targetPosition}</Badge>
@@ -441,10 +441,10 @@ export const AnalyticsSettings: React.FC = () => {
                     <Input
                       type="number"
                       value={settings.alerts.performance.lcpThreshold.toString()}
-                      onChange={(value: string) => updateAlerts({
+                      onChange={(e) => updateAlerts({
                         performance: {
                           ...settings.alerts.performance,
-                          lcpThreshold: parseFloat(value) || 0
+                          lcpThreshold: parseFloat(e.target.value) || 0
                         }
                       })}
                     />
@@ -454,10 +454,10 @@ export const AnalyticsSettings: React.FC = () => {
                     <Input
                       type="number"
                       value={settings.alerts.performance.fidThreshold.toString()}
-                      onChange={(value: string) => updateAlerts({
+                      onChange={(e) => updateAlerts({
                         performance: {
                           ...settings.alerts.performance,
-                          fidThreshold: parseFloat(value) || 0
+                          fidThreshold: parseFloat(e.target.value) || 0
                         }
                       })}
                     />
@@ -467,10 +467,10 @@ export const AnalyticsSettings: React.FC = () => {
                     <Input
                       type="number"
                       value={settings.alerts.performance.clsThreshold.toString()}
-                      onChange={(value: string) => updateAlerts({
+                      onChange={(e) => updateAlerts({
                         performance: {
                           ...settings.alerts.performance,
-                          clsThreshold: parseFloat(value) || 0
+                          clsThreshold: parseFloat(e.target.value) || 0
                         }
                       })}
                     />
@@ -501,10 +501,10 @@ export const AnalyticsSettings: React.FC = () => {
                     <Input
                       type="number"
                       value={settings.alerts.seo.keywordDropThreshold.toString()}
-                      onChange={(value: string) => updateAlerts({
+                      onChange={(e) => updateAlerts({
                         seo: {
                           ...settings.alerts.seo,
-                          keywordDropThreshold: parseFloat(value) || 0
+                          keywordDropThreshold: parseFloat(e.target.value) || 0
                         }
                       })}
                     />
@@ -514,10 +514,10 @@ export const AnalyticsSettings: React.FC = () => {
                     <Input
                       type="number"
                       value={settings.alerts.seo.newBacklinksThreshold.toString()}
-                      onChange={(value: string) => updateAlerts({
+                      onChange={(e) => updateAlerts({
                         seo: {
                           ...settings.alerts.seo,
-                          newBacklinksThreshold: parseInt(value) || 0
+                          newBacklinksThreshold: parseInt(e.target.value) || 0
                         }
                       })}
                     />

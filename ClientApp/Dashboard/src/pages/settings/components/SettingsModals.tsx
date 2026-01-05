@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal } from '../../../components/ui/Modal';
-import { Button } from '../../../components/ui/Button';
-import { Input } from '../../../components/ui/Input';
+import { Modal } from '../../../components/layout/modals/Modal';
+import { Button } from '../../../components/forms/buttons/Button';
+import { Input } from '../../../components/forms/inputs/Input';
 import { AlertTriangle, Smartphone, Globe, Clock, Shield } from 'lucide-react';
 
 interface SettingsModalsProps {
@@ -69,14 +69,14 @@ export const SettingsModals: React.FC<SettingsModalsProps> = ({
                         type="password"
                         label="Current Password"
                         value={passwordData.currentPassword}
-                        onChange={(val) => setPasswordData({ ...passwordData, currentPassword: val })}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                         required
                     />
                     <Input
                         type="password"
                         label="New Password"
                         value={passwordData.newPassword}
-                        onChange={(val) => setPasswordData({ ...passwordData, newPassword: val })}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                         required
                         helperText="Minimum 8 characters"
                     />
@@ -84,7 +84,7 @@ export const SettingsModals: React.FC<SettingsModalsProps> = ({
                         type="password"
                         label="Confirm New Password"
                         value={passwordData.confirmPassword}
-                        onChange={(val) => setPasswordData({ ...passwordData, confirmPassword: val })}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                         required
                     />
                     <div className="flex justify-end gap-3 pt-4">
@@ -186,7 +186,7 @@ export const SettingsModals: React.FC<SettingsModalsProps> = ({
                         label="Reason for deactivating (Optional)"
                         placeholder="I'm taking a break..."
                         value={deactivateReason}
-                        onChange={(val) => setDeactivateReason(val)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDeactivateReason(e.target.value)}
                     />
                     <div className="flex justify-end gap-3 pt-4">
                         <Button variant="ghost" onClick={() => closeModal('deactivate')}>
@@ -216,7 +216,7 @@ export const SettingsModals: React.FC<SettingsModalsProps> = ({
                         label="Confirm Password"
                         placeholder="Enter your password to confirm"
                         value={deletePassword}
-                        onChange={(val) => setDeletePassword(val)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDeletePassword(e.target.value)}
                         required
                     />
                     <div className="flex justify-end gap-3 pt-4">

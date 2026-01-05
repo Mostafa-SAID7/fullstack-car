@@ -12,10 +12,16 @@ import {
   Download,
   Zap
 } from 'lucide-react';
-import type { SEOMetrics as SEOMetricsType } from '../../services/analyticsService';
-import { analyticsService } from '../../services/analyticsService';
-import { Card, CardContent, CardHeader, CardTitle, Button, Progress, Badge, Input, ChartSkeleton, StatsSkeleton } from '../../components/ui';
-import { useToast } from '../../hooks/useToast';
+import type { SEOMetrics as SEOMetricsType } from '../../services/analytics';
+import { analyticsService } from '../../services/analytics';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/layout/cards/Card';
+import { Button } from '../../components/forms/buttons/Button';
+import Progress from '../../components/feedback/progress/Progress';
+import Badge from '../../components/data-display/badges/Badge';
+import { Input } from '../../components/forms/inputs/Input';
+import { ChartSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
+import { StatsSkeleton } from '../../components/feedback/skeletons/StatsSkeleton';
+import { useToast } from '../../hooks';
 
 interface SEOScoreCardProps {
   title: string;
@@ -193,8 +199,8 @@ export const SEOAnalysis: React.FC = () => {
         </div>
         <StatsSkeleton count={4} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ChartSkeleton showTitle />
-          <ChartSkeleton showTitle />
+          <ChartSkeleton />
+          <ChartSkeleton />
         </div>
       </div>
     );
@@ -242,7 +248,7 @@ export const SEOAnalysis: React.FC = () => {
             <Globe className="w-4 h-4 text-muted-foreground" />
             <Input
               value={domain}
-              onChange={(value: string) => setDomain(value)}
+              onChange={(e) => setDomain(e.target.value)}
               placeholder="Enter domain"
               className="w-48"
             />
@@ -281,17 +287,16 @@ export const SEOAnalysis: React.FC = () => {
                   strokeWidth="3"
                   className={
                     overallScore >= 80 ? 'text-green-500' :
-                    overallScore >= 60 ? 'text-yellow-500' : 'text-red-500'
+                      overallScore >= 60 ? 'text-yellow-500' : 'text-red-500'
                   }
                   strokeDasharray="100, 100"
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className={`text-3xl font-bold ${
-                  overallScore >= 80 ? 'text-green-500' :
-                  overallScore >= 60 ? 'text-yellow-500' : 'text-red-500'
-                }`}>
+                <span className={`text-3xl font-bold ${overallScore >= 80 ? 'text-green-500' :
+                    overallScore >= 60 ? 'text-yellow-500' : 'text-red-500'
+                  }`}>
                   {overallScore}
                 </span>
               </div>
@@ -299,10 +304,10 @@ export const SEOAnalysis: React.FC = () => {
             <h3 className="text-xl font-semibold mb-2">Overall SEO Score</h3>
             <Badge
               variant={getScoreStatus(overallScore) === 'good' ? 'default' :
-                      getScoreStatus(overallScore) === 'warning' ? 'secondary' : 'destructive'}
+                getScoreStatus(overallScore) === 'warning' ? 'secondary' : 'destructive'}
             >
               {getScoreStatus(overallScore) === 'good' ? 'Excellent' :
-               getScoreStatus(overallScore) === 'warning' ? 'Good' : 'Needs Improvement'}
+                getScoreStatus(overallScore) === 'warning' ? 'Good' : 'Needs Improvement'}
             </Badge>
           </div>
         </CardContent>
@@ -314,13 +319,13 @@ export const SEOAnalysis: React.FC = () => {
           title="On-Page SEO"
           score={Math.round(
             (seoData.onPage.titleOptimization.optimized / seoData.onPage.titleOptimization.totalPages +
-             seoData.onPage.metaDescription.optimized / seoData.onPage.metaDescription.totalPages +
-             seoData.onPage.images.withAlt / seoData.onPage.images.totalImages) / 3 * 100
+              seoData.onPage.metaDescription.optimized / seoData.onPage.metaDescription.totalPages +
+              seoData.onPage.images.withAlt / seoData.onPage.images.totalImages) / 3 * 100
           )}
           status={getScoreStatus(
             (seoData.onPage.titleOptimization.optimized / seoData.onPage.titleOptimization.totalPages +
-             seoData.onPage.metaDescription.optimized / seoData.onPage.metaDescription.totalPages +
-             seoData.onPage.images.withAlt / seoData.onPage.images.totalImages) / 3 * 100
+              seoData.onPage.metaDescription.optimized / seoData.onPage.metaDescription.totalPages +
+              seoData.onPage.images.withAlt / seoData.onPage.images.totalImages) / 3 * 100
           )}
           icon={<FileText className="w-5 h-5" />}
         />
@@ -329,11 +334,11 @@ export const SEOAnalysis: React.FC = () => {
           title="Technical SEO"
           score={Math.round(
             (seoData.technical.indexability.indexedPages / (seoData.technical.indexability.indexedPages + seoData.technical.indexability.notIndexedPages) +
-             seoData.technical.mobileFriendliness.mobileFriendly / (seoData.technical.mobileFriendliness.mobileFriendly + seoData.technical.mobileFriendliness.notMobileFriendly)) / 2 * 100
+              seoData.technical.mobileFriendliness.mobileFriendly / (seoData.technical.mobileFriendliness.mobileFriendly + seoData.technical.mobileFriendliness.notMobileFriendly)) / 2 * 100
           )}
           status={getScoreStatus(
             (seoData.technical.indexability.indexedPages / (seoData.technical.indexability.indexedPages + seoData.technical.indexability.notIndexedPages) +
-             seoData.technical.mobileFriendliness.mobileFriendly / (seoData.technical.mobileFriendliness.mobileFriendly + seoData.technical.mobileFriendliness.notMobileFriendly)) / 2 * 100
+              seoData.technical.mobileFriendliness.mobileFriendly / (seoData.technical.mobileFriendliness.mobileFriendly + seoData.technical.mobileFriendliness.notMobileFriendly)) / 2 * 100
           )}
           icon={<Zap className="w-5 h-5" />}
         />
@@ -451,7 +456,7 @@ export const SEOAnalysis: React.FC = () => {
             <div className="flex gap-2">
               <Input
                 value={keywordInput}
-                onChange={(value: string) => setKeywordInput(value)}
+                onChange={(e) => setKeywordInput(e.target.value)}
                 placeholder="Enter keywords separated by commas"
                 className="flex-1"
               />
@@ -463,7 +468,7 @@ export const SEOAnalysis: React.FC = () => {
 
             {keywordResults.length > 0 && (
               <div className="space-y-2">
-                {keywordResults.slice(0, 5).map((result, index) => (
+                {keywordResults.slice(0, 5).map((result: any, index: number) => (
                   <KeywordRanking key={index} {...result} />
                 ))}
               </div>
@@ -507,12 +512,12 @@ export const SEOAnalysis: React.FC = () => {
           <div className="mt-6">
             <h4 className="font-medium mb-3">Top Referring Domains</h4>
             <div className="space-y-2">
-              {seoData.backlinks.topDomains.map((domain, index) => (
+              {seoData.backlinks.topDomains.map((domainItem: any, index: number) => (
                 <div key={index} className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                  <span className="font-medium">{domain.domain}</span>
+                  <span className="font-medium">{domainItem.domain}</span>
                   <div className="text-right">
-                    <span className="text-sm font-medium">{domain.backlinks} links</span>
-                    <span className="text-xs text-muted-foreground ml-2">DA: {domain.domainAuthority}</span>
+                    <span className="text-sm font-medium">{domainItem.backlinks} links</span>
+                    <span className="text-xs text-muted-foreground ml-2">DA: {domainItem.domainAuthority}</span>
                   </div>
                 </div>
               ))}
@@ -528,7 +533,7 @@ export const SEOAnalysis: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {seoData.technical.mobileFriendliness.mobileIssues.map((issue, index) => (
+            {seoData.technical.mobileFriendliness.mobileIssues.map((issue: any, index: number) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5" />
                 <div>

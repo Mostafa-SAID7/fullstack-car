@@ -12,9 +12,9 @@ import {
   FileText,
   CheckCircle
 } from 'lucide-react';
-import { localizationService, type TranslationDto, type TranslationStatsDto, type PagedResult } from '../../services/localizationService';
-import { useToast } from '../../hooks/useToast';
-import { TableSkeleton, StatsSkeleton } from '../../components/ui/Skeleton';
+import { localizationService, type TranslationDto, type TranslationStatsDto, type PagedResult } from '../../components/services/localization';
+import { useToast } from '../../hooks';
+import { SkeletonTable as TableSkeleton, StatsSkeleton as StatsSkeleton } from '../../components/feedback/skeletons/Skeleton';
 import { cn } from '../../lib/utils';
 
 // Components
@@ -38,8 +38,8 @@ const StatCard = ({ title, value, icon: Icon, color = 'blue', trend }: {
         <div className={cn(
           "px-2 py-1 rounded-full text-xs font-medium",
           trend === 'up' ? 'bg-green-100 text-green-700' :
-          trend === 'down' ? 'bg-red-100 text-red-700' :
-          'bg-gray-100 text-gray-700'
+            trend === 'down' ? 'bg-red-100 text-red-700' :
+              'bg-gray-100 text-gray-700'
         )}>
           {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
         </div>

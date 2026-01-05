@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Shield, Palette, AlertTriangle } from 'lucide-react';
-import { useSettings } from '../../hooks/useSettings';
+import { useSettings } from '../../hooks';
 import { SettingsHeader } from './components/SettingsHeader';
 import { ProfileSettings } from './components/ProfileSettings';
 import { SecuritySettings } from './components/SecuritySettings';
 import { AppearanceSettings } from './components/AppearanceSettings';
 import { DangerZone } from './components/DangerZone';
 import { SettingsModals } from './components/SettingsModals';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
-import { ThemeManager } from '../../components/theme/ThemeManager';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import { ThemeManager } from '../../components/special/theme-provider/ThemeManager';
 
 export const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -44,11 +44,11 @@ export const Settings = () => {
   } = useSettings();
 
   const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'appearance', label: 'Appearance', icon: Palette },
-    { id: 'theme', label: 'Theme Manager', icon: Palette },
-    { id: 'danger', label: 'Danger Zone', icon: AlertTriangle }
+    { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
+    { id: 'security', label: 'Security', icon: <Shield className="w-4 h-4" /> },
+    { id: 'appearance', label: 'Appearance', icon: <Palette className="w-4 h-4" /> },
+    { id: 'theme', label: 'Theme Manager', icon: <Palette className="w-4 h-4" /> },
+    { id: 'danger', label: 'Danger Zone', icon: <AlertTriangle className="w-4 h-4" /> }
   ];
 
   const renderTabContent = () => {

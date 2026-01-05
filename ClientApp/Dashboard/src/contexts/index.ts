@@ -1,5 +1,5 @@
 // Context Providers - Main Export
-export { ThemeProvider, useTheme } from './ThemeContext';
-export { AuthProvider, useAuth } from './AuthContext';
-export { NotificationProvider, useNotification } from './NotificationContext';
-export { AppProvider, useApp } from './AppContext';
+export { ThemeProvider, useTheme } from './theme';
+export { AuthProvider } from './auth';
+export { NotificationProvider, useNotification } from './notification';
+export { AppProvider, useApp } from './app';

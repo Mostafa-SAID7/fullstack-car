@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Send, X, Minimize2, Maximize2, Loader2, MessageSquare, Wrench, Search, BarChart3, ChevronDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { aiAgentService, type ChatMessage } from '../../../services/aiAgentService';
+import { aiAgentService, type ChatMessage } from '../../../services/ai-agent';
 
-type AIMode = 'chat' | 'maintenance' | 'recommendation' | 'analysis';
+import type { AIMode } from '../../../types/pages/dashboard/components';
 
 export const AIAssistant: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);

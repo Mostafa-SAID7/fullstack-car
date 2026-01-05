@@ -4,7 +4,7 @@ import { BarChart3, Upload, Filter, FolderOpen } from 'lucide-react';
 import { MediaHeader } from './components/MediaHeader';
 import { MediaGrid } from './components/MediaGrid';
 import { MediaList } from './components/MediaList';
-import { TabNavigation, TabContent } from '../../components/ui/TabNavigation';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
 
 // Mock data - replace with real data from API
 const mockMediaFiles = [
@@ -72,10 +72,10 @@ export const Media = () => {
   // const [selectedFiles, setSelectedFiles] = useState<string[]>([]); // Not currently used
 
   const tabs = [
-    { id: 'library', label: 'Library', icon: FolderOpen },
-    { id: 'uploads', label: 'Recent Uploads', icon: Upload },
-    { id: 'favorites', label: 'Favorites', icon: BarChart3 },
-    { id: 'trash', label: 'Trash', icon: Filter }
+    { id: 'library', label: 'Library', icon: <FolderOpen className="w-4 h-4" /> },
+    { id: 'uploads', label: 'Recent Uploads', icon: <Upload className="w-4 h-4" /> },
+    { id: 'favorites', label: 'Favorites', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'trash', label: 'Trash', icon: <Filter className="w-4 h-4" /> }
   ];
 
   const filteredFiles = mockMediaFiles.filter(file =>
@@ -166,4 +166,3 @@ export const Media = () => {
     </motion.div>
   );
 };
-

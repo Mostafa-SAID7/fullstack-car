@@ -2,18 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 // import { useTranslation } from 'react-i18next'; // Not currently used
 import { Calendar, Clock, Sparkles } from 'lucide-react';
-import type { UserInfo as User } from '../../../types/auth';
-
-interface DashboardHeaderProps {
-  user: User | null;
-}
+import type { DashboardHeaderProps } from '../../../types/pages/dashboard/main';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
   // const { t } = useTranslation(); // Not currently used
-  
+
   const currentTime = new Date();
-  const greeting = currentTime.getHours() < 12 ? 'Good morning' : 
-                  currentTime.getHours() < 18 ? 'Good afternoon' : 'Good evening';
+  const greeting = currentTime.getHours() < 12 ? 'Good morning' :
+    currentTime.getHours() < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
     <motion.div

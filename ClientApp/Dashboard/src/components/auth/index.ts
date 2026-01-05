@@ -1,3 +1,6 @@
-// Authentication Components Export
-export { LoginForm } from './LoginForm';
-export { ProtectedRoute } from './ProtectedRoute';
+export * from './AuthLayout';
+export * from './LoginForm';
+export * from './RegisterForm';
+export * from './ForgotPasswordForm';
+export * from './ResetPasswordForm';
+export * from './AuthDebug';

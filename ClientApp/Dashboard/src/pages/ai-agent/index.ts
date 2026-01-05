@@ -11,4 +11,4 @@ export { AIAgentSettings } from './components/AIAgentSettings';
 export * from '../../types';
 
 // Hooks
-export * from '../../hooks/useAIAgent';
+export * from '../../hooks/ai-agent';

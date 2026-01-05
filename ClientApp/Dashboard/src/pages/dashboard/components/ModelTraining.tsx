@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, RotateCcw, CheckCircle, Database, Layers, Terminal } from 'lucide-react';
-import { aiAgentService } from '../../../services/aiAgentService';
+import { aiAgentService } from '../../../services/ai-agent';
 
 interface TrainingStatus {
     is_training: boolean;

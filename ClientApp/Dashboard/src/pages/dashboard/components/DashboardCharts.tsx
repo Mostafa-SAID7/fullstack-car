@@ -1,16 +1,16 @@
 import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { LineChart } from '../../../components/charts/LineChart';
-import { BarChart } from '../../../components/charts/BarChart';
-import { AreaChart } from '../../../components/charts/AreaChart';
-import { PieChart as PieChartComponent } from '../../../components/charts/PieChart';
+import { LineChart } from '../../../components/charts/line/LineChart';
+import { BarChart } from '../../../components/charts/bar/BarChart';
+import { AreaChart } from '../../../components/charts/area/AreaChart';
+import { PieChart } from '../../../components/charts/pie/PieChart';
 import { ChartCard } from './ChartCard';
 import type {
   UserAnalytics,
   ContentAnalytics,
   SystemAnalytics,
   RevenueAnalytics
-} from '../../../services/dashboardService';
+} from '../../../types/dashboard';
 
 interface DashboardChartsProps {
   userAnalytics: UserAnalytics | null;
@@ -30,8 +30,17 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
   chartType = 'line'
 }) => {
 
-  // Helper to transform Chart.js style data to Recharts format
-  const transformData = (data: any) => {
+  // Helper to transform Chart.js style data to simplified chart format
+  const transformToXY = (data: any) => {
+    if (!data || !data.labels || !data.datasets?.[0]?.data) return [];
+
+    return data.labels.map((label: string, index: number) => ({
+      x: label,
+      y: data.datasets[0].data[index]
+    }));
+  };
+
+  const transformToPie = (data: any) => {
     if (!data || !data.labels || !data.datasets?.[0]?.data) return [];
 
     return data.labels.map((label: string, index: number) => ({
@@ -43,15 +52,11 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
 
   // Helper to render the selected chart type
   const renderChart = useCallback((data: any, _title: string, color: string, height: number = 300) => {
-    const transformedData = transformData(data);
-
     switch (chartType) {
       case 'bar':
         return (
           <BarChart
-            data={transformedData}
-            dataKey="value"
-            xAxisKey="label"
+            data={transformToXY(data)}
             color={color}
             height={height}
           />
@@ -59,19 +64,15 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
       case 'area':
         return (
           <AreaChart
-            data={transformedData}
-            dataKey="value"
-            xAxisKey="label"
+            data={transformToXY(data)}
             color={color}
             height={height}
           />
         );
       case 'pie':
         return (
-          <PieChartComponent
-            data={transformedData}
-            dataKey="value"
-            nameKey="label"
+          <PieChart
+            data={transformToPie(data)}
             colors={[color]}
             height={height}
           />
@@ -79,9 +80,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
       default:
         return (
           <LineChart
-            data={transformedData}
-            dataKey="value"
-            xAxisKey="label"
+            data={transformToXY(data)}
             color={color}
             height={height}
           />
@@ -169,11 +168,10 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = React.memo(({
   }
 
   return (
-    <div className={`grid gap-6 ${
-      availableCharts.length === 1
+    <div className={`grid gap-6 ${availableCharts.length === 1
         ? 'grid-cols-1'
         : 'grid-cols-1 lg:grid-cols-2'
-    }`}>
+      }`}>
       {availableCharts}
     </div>
   );

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, BarChart3, UserCheck, Users, TrendingUp } from 'lucide-react';
-import { useCustomers } from '../../hooks/useCustomers';
+import { useCustomers } from '../../hooks';
 import { CustomersHeader } from './components/CustomersHeader';
 import { CustomersFilters } from './components/CustomersFilters';
 import { CustomersTable } from './components/CustomersTable';
-import { TabNavigation, TabContent, Pagination } from '../../components/ui';
+import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
+import { Pagination } from '../../components/layout/pagination/Pagination';
 
 export const Customers = () => {
   const { users, loading } = useCustomers();
@@ -32,10 +33,10 @@ export const Customers = () => {
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'management', label: 'Management', icon: UserCheck },
-    { id: 'segments', label: 'Segments', icon: Users },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'management', label: 'Management', icon: <UserCheck className="w-4 h-4" /> },
+    { id: 'segments', label: 'Segments', icon: <Users className="w-4 h-4" /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-4 h-4" /> }
   ];
 
   const renderTabContent = () => {

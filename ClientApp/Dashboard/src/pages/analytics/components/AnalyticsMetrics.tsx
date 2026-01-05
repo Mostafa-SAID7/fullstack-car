@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Users, TrendingUp, BarChart2, Eye } from 'lucide-react';
-import type { AdvancedAnalytics } from '../../../services/adminService';
+import type { AdvancedAnalytics } from '../../../services/admin';
 
 interface AnalyticsMetricsProps {
   data: AdvancedAnalytics | null;
