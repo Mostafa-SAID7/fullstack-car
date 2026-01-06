@@ -54,24 +54,45 @@ export const ThemeToggle: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-36 bg-card border border-border rounded-xl shadow-lg p-2 z-50"
+                        className="absolute right-0 mt-2 w-36 glassmorphism rounded-xl shadow-lg p-2 z-50"
                     >
-                        {themeOptions.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => {
-                                    setThemeMode(item.id as ThemeMode);
-                                    setShowThemeMenu(false);
-                                }}
-                                className={cn(
-                                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
-                                    themeMode === item.id && "bg-primary/10 text-primary"
-                                )}
-                            >
-                                <item.icon className="w-4 h-4" />
-                                {item.label}
-                            </button>
-                        ))}
+                        {themeOptions.map((item) => {
+                            // Define static styles for Light/Dark to match body bg
+                            // Values taken from index.css logic
+                            const isLightBtn = item.id === 'light';
+                            const isDarkBtn = item.id === 'dark';
+
+                            // Light mode bg: hsl(220 15% 92%)
+                            // Dark mode bg: hsl(222.2 84% 4.9%)
+
+                            let specificClass = "";
+                            if (isLightBtn) {
+                                specificClass = "bg-[hsl(220,15%,92%)] text-[hsl(220,13%,9%)] hover:bg-[hsl(220,15%,88%)] border border-gray-200";
+                            } else if (isDarkBtn) {
+                                specificClass = "bg-[hsl(222.2,84%,4.9%)] text-[hsl(210,40%,98%)] hover:bg-[hsl(222.2,84%,10%)] border border-gray-800";
+                            }
+
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => {
+                                        setThemeMode(item.id as ThemeMode);
+                                        setShowThemeMenu(false);
+                                    }}
+                                    className={cn(
+                                        "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all mb-1 last:mb-0",
+                                        // If specific class exists (Light/Dark), use it. 
+                                        // Otherwise (System), fallback to default hover logic.
+                                        specificClass || "hover:bg-muted text-foreground",
+                                        // Active state styling: strong ring/border
+                                        themeMode === item.id && "ring-2 ring-primary ring-offset-1 ring-offset-card"
+                                    )}
+                                >
+                                    <item.icon className="w-4 h-4" />
+                                    {item.label}
+                                </button>
+                            );
+                        })}
                     </motion.div>
                 )}
             </AnimatePresence>

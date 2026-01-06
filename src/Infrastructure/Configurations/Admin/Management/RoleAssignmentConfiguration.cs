@@ -1,4 +1,4 @@
-using Domain.Entities.Admin.Management;
+using Domain.Entities.Admin.Management.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

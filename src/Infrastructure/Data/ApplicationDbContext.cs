@@ -8,6 +8,9 @@ using Domain.Entities.Marketplace;
 using Domain.Entities.Admin.Analytics;
 using Domain.Entities.Admin.Dashboard;
 using Domain.Entities.Admin.Management;
+using Domain.Entities.Admin.Management.Users;
+using Domain.Entities.Admin.Management.Products;
+using Domain.Entities.Admin.Management.Customers;
 using Domain.Entities.Admin.Moderation;
 using Domain.Entities.Admin.System;
 using Domain.Entities.Shared.Notifications;
@@ -208,6 +211,8 @@ namespace Infrastructure.Data
         public DbSet<AdminAction> AdminActions { get; set; }
         public DbSet<UserSuspension> UserSuspensions { get; set; }
         public DbSet<RoleAssignment> RoleAssignments { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         // Admin Moderation Tables
         public DbSet<ContentModerationAction> ContentModerationActions { get; set; }

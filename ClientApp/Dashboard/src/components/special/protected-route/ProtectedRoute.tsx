@@ -2,32 +2,14 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loading } from '../../feedback/loading/Loading';
 
+import { authService } from '../../../services/auth';
+
 export interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRoles?: string[];
   fallbackPath?: string;
   loadingComponent?: React.ReactNode;
 }
-
-// Mock authentication service - replace with your actual auth service
-const authService = {
-  isAuthenticated: () => {
-    // Check if user is authenticated (replace with your actual logic)
-    return !!localStorage.getItem('auth_token');
-  },
-  getUserRoles: (): string[] => {
-    // Get user roles from storage or API (replace with your actual logic)
-    const roles = localStorage.getItem('user_roles');
-    return roles ? JSON.parse(roles) : [];
-  },
-  hasRole: (role: string): boolean => {
-    const userRoles = authService.getUserRoles();
-    return userRoles.includes(role);
-  },
-  hasAnyRole: (roles: string[]): boolean => {
-    return roles.some(role => authService.hasRole(role));
-  }
-};
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
@@ -43,11 +25,16 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   React.useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Simulate async auth check (replace with your actual auth check)
-        await new Promise(resolve => setTimeout(resolve, 100));
-
         const authenticated = authService.isAuthenticated();
         const hasRoles = requiredRoles.length === 0 || authService.hasAnyRole(requiredRoles);
+
+        console.log('[ProtectedRoute] Check:', {
+          path: location.pathname,
+          authenticated,
+          requiredRoles,
+          hasRoles,
+          currentUser: authService.getCurrentUser()
+        });
 
         setIsAuthenticated(authenticated);
         setHasRequiredRoles(hasRoles);
@@ -61,7 +48,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     };
 
     checkAuth();
-  }, [requiredRoles]);
+  }, [requiredRoles, location.pathname]); // Re-check on route change
 
   // Show loading state while checking authentication
   if (isChecking) {
@@ -73,8 +60,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={fallbackPath} state={{ from: location }} replace />;
   }
 
-  // Redirect to unauthorized page if user doesn't have required roles
+  // Redirect to unauthorized page (or dashboard root) if user doesn't have required roles
   if (requiredRoles.length > 0 && !hasRequiredRoles) {
+    console.warn('User missing required roles:', requiredRoles);
+    // If we're already at dashboard root and don't have access, maybe go to a generic error page
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 

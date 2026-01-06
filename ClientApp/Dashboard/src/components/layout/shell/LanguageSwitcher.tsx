@@ -47,7 +47,7 @@ export const LanguageSwitcher: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-36 bg-card border border-border rounded-xl shadow-lg p-2 z-50"
+                        className="absolute right-0 mt-2 w-36 glassmorphism rounded-xl shadow-lg p-2 z-50"
                     >
                         {languages.map((lang) => (
                             <button

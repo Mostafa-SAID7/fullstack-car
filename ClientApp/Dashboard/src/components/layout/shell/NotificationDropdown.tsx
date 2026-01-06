@@ -92,9 +92,9 @@ export const NotificationDropdown: React.FC = () => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-border rounded-2xl shadow-xl overflow-hidden z-50"
+                        className="absolute right-0 mt-2 w-80 sm:w-96 glassmorphism rounded-2xl shadow-xl overflow-hidden z-50"
                     >
-                        <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                        <div className="p-4 border-b border-border/50 bg-muted/30 flex justify-between items-center">
                             <h4 className="font-black text-sm uppercase tracking-widest">{t('notifications')}</h4>
                             {unreadCount > 0 && (
                                 <span className="text-[10px] font-bold bg-pink-50  text-pink-600  px-2 py-0.5 rounded-full">

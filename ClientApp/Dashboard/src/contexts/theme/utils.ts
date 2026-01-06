@@ -13,9 +13,23 @@ export const getSystemTheme = (): 'light' | 'dark' => {
 export const applyThemeToCSS = (theme: ThemeConfig): void => {
   const root = document.documentElement;
 
+  // Structural properties we typically want to inherit from CSS classes (for Light/Dark mode)
+  // rather than overriding with static inline styles from the theme config (which are usually just Light).
+  const structuralColors = [
+    'background', 'foreground',
+    'card', 'card-foreground',
+    'popover', 'popover-foreground',
+    'muted', 'muted-foreground',
+    'border', 'input', 'ring'
+  ];
+
   // Apply color variables
   Object.entries(theme.colors).forEach(([key, value]) => {
-    root.style.setProperty(`--${key}`, value);
+    // SKIP structural colors so index.css (and our .dark class) can control them dynamically.
+    // Apply only branding colors (primary, secondary, accent, destructive, etc.)
+    if (!structuralColors.includes(key)) {
+      root.style.setProperty(`--${key}`, value);
+    }
   });
 
   // Apply layout styles
@@ -52,6 +66,10 @@ export const applyThemeToCSS = (theme: ThemeConfig): void => {
 
 export const applyDarkModeClass = (resolvedTheme: 'light' | 'dark'): void => {
   const root = document.documentElement;
+  // Set explicit data attribute for legacy/CSS selectors
+  root.setAttribute('data-theme', resolvedTheme);
+
+  // Set Tailwind class
   if (resolvedTheme === 'dark') {
     root.classList.add('dark');
   } else {
@@ -88,7 +106,7 @@ export const setupSystemThemeListener = (
   themeMode: ThemeMode,
   onThemeChange: (theme: 'light' | 'dark') => void
 ): (() => void) => {
-  if (themeMode !== 'system') return () => {};
+  if (themeMode !== 'system') return () => { };
 
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   const handleChange = () => {

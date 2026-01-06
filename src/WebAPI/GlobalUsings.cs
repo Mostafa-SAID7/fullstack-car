@@ -25,8 +25,6 @@ global using Application.Features.Admin.Analytics.Commands;
 global using Application.Features.Admin.Analytics.DTOs.Requests;
 global using Application.Features.Admin.Analytics.DTOs.Responses;
 global using Application.Features.Admin.Dashboard.Queries;
-global using Application.Features.Admin.Management.Queries;
-global using Application.Features.Admin.Management.Commands;
 global using Application.Features.Identity.Auth.Commands;
 global using Application.Features.Identity.Profile.Commands;
 global using Application.Features.Identity.Profile.Queries;

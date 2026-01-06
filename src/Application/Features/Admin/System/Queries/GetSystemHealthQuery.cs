@@ -1,6 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Admin.System.DTOs;
-using Application.Features.Admin.Management.DTOs.Responses;
+using Application.Features.Admin.Management.Users.Activities.Models;
 using MediatR;
 
 namespace Application.Features.Admin.System.Queries
@@ -80,7 +80,7 @@ namespace Application.Features.Admin.System.Queries
         public DateTime ToDate { get; set; }
     }
 
-    public class GetUserActivityQuery : IRequest<Result<PaginatedList<UserActivityResponse>>>
+    public class GetUserActivityQuery : IRequest<Result<PaginatedList<UserActivity>>>
     {
         public Guid UserId { get; set; }
         public int Page { get; set; } = 1;

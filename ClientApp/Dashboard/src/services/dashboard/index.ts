@@ -1,4 +1,5 @@
 import { apiClient } from '../api';
+import { API_ENDPOINTS } from '../../config/api/endpoints';
 import type { ApiResult } from '../api';
 import type {
   DashboardStats,
@@ -48,7 +49,7 @@ export class DashboardService {
   // Dashboard Stats
   async getDashboardStats(): Promise<ApiResult<DashboardStats>> {
     try {
-      const response = await apiClient.get('/dashboard/stats');
+      const response = await apiClient.get(API_ENDPOINTS.DASHBOARD.STATS);
       return response;
     } catch (error) {
       console.error('Get dashboard stats error:', error);
@@ -267,8 +268,11 @@ export class DashboardService {
   // Analytics Methods
   async getUserAnalytics(): Promise<ApiResult<any>> {
     try {
-      const response = await apiClient.get('/dashboard/user-analytics');
-      return response;
+      // Return mock data for now as backend endpoint is not ready
+      return {
+        succeeded: true,
+        data: this.generateMockUserAnalytics()
+      };
     } catch (error) {
       console.error('Get user analytics error:', error);
       return {
@@ -281,50 +285,42 @@ export class DashboardService {
 
   async getContentAnalytics(): Promise<ApiResult<any>> {
     try {
-      const response = await apiClient.get('/dashboard/content-analytics');
-      return response;
+      return {
+        succeeded: true,
+        data: this.generateMockContentAnalytics()
+      };
     } catch (error) {
       console.error('Get content analytics error:', error);
-      return {
-        succeeded: false,
-        errors: ['Failed to load content analytics'],
-        message: 'An error occurred'
-      };
+      return { succeeded: false, errors: ['Failed'], message: 'Error' };
     }
   }
 
   async getSystemAnalytics(): Promise<ApiResult<any>> {
     try {
-      const response = await apiClient.get('/dashboard/system-analytics');
-      return response;
+      return {
+        succeeded: true,
+        data: this.generateMockSystemAnalytics()
+      };
     } catch (error) {
       console.error('Get system analytics error:', error);
-      return {
-        succeeded: false,
-        errors: ['Failed to load system analytics'],
-        message: 'An error occurred'
-      };
+      return { succeeded: false, errors: ['Failed'], message: 'Error' };
     }
   }
 
   async getRevenueAnalytics(): Promise<ApiResult<any>> {
     try {
-      const response = await apiClient.get('/dashboard/revenue-analytics');
-      return response;
+      return {
+        succeeded: true,
+        data: this.generateMockRevenueAnalytics()
+      };
     } catch (error) {
       console.error('Get revenue analytics error:', error);
-      return {
-        succeeded: false,
-        errors: ['Failed to load revenue analytics'],
-        message: 'An error occurred'
-      };
+      return { succeeded: false, errors: ['Failed'], message: 'Error' };
     }
   }
 
   // Real-time Updates
   async subscribeToUpdates(callback: (data: any) => void): Promise<() => void> {
-    // This would typically connect to WebSocket or Server-Sent Events
-    // For now, we'll simulate with polling
     const intervalId = setInterval(async () => {
       try {
         const stats = await this.getDashboardStats();
@@ -339,7 +335,7 @@ export class DashboardService {
     return () => clearInterval(intervalId);
   }
 
-  // Utility Methods
+  // Utility Methods - MOCK DATA GENERATORS
   generateMockData(): DashboardStats {
     return {
       totalUsers: Math.floor(Math.random() * 10000) + 5000,
@@ -350,13 +346,6 @@ export class DashboardService {
       flaggedContent: Math.floor(Math.random() * 20) + 5,
       activeUsers: Math.floor(Math.random() * 2000) + 1000,
       systemHealth: 'Healthy',
-      totalContent: Math.floor(Math.random() * 5000) + 2000,
-      publishedContent: Math.floor(Math.random() * 4000) + 1500,
-      totalRevenue: Math.floor(Math.random() * 50000) + 25000,
-      monthlyRevenue: Math.floor(Math.random() * 10000) + 5000,
-      serverUptime: Math.floor(Math.random() * 100) + 95,
-      responseTime: Math.floor(Math.random() * 500) + 100,
-      errorRate: Math.random() * 0.01,
       lastUpdated: new Date().toISOString(),
       quickStats: {
         newUsersToday: 15,
@@ -365,7 +354,154 @@ export class DashboardService {
         reportsToday: 2
       },
       recentActivity: [],
-      systemAlerts: []
+      systemAlerts: [],
+      totalContent: 5000,
+      publishedContent: 4500,
+      monthlyRevenue: 25000,
+      serverUptime: 99.9,
+      responseTime: 45,
+      errorRate: 0.01
+    };
+  }
+
+  generateMockUserAnalytics() {
+    return {
+      totalUsers: 12500,
+      activeUsers: 8400,
+      dailyActiveUsers: 3200,
+      newUsers: 450,
+      newUsersToday: 23,
+      userGrowthRate: 12.5,
+      avgSessionDuration: 14.5,
+      sessionChange: 5.2,
+      bounceRate: 24.5,
+      bounceChange: -1.2,
+      dauChange: 8.4,
+      usersByRole: [
+        { role: 'User', count: 11000 },
+        { role: 'Premium', count: 1000 },
+        { role: 'Admin', count: 5 }
+      ],
+      userGrowthData: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'New Users',
+          data: [150, 230, 320, 450, 600, 800],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)'
+        }]
+      },
+      userActivityData: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Active Users',
+          data: [2800, 3100, 3400, 3200, 3800, 4100, 3900],
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)'
+        }]
+      }
+    };
+  }
+
+  generateMockRevenueAnalytics() {
+    return {
+      totalRevenue: 154000,
+      monthlyRevenue: 28500,
+      revenueGrowth: 15.4,
+      revenueChange: 1250,
+      avgOrderValue: 45.50,
+      aovChange: 2.1,
+      conversionRate: 3.2,
+      conversionChange: 0.5,
+      revenueBySource: [
+        { source: 'Subscriptions', amount: 85000 },
+        { source: 'Ads', amount: 45000 },
+        { source: 'Affiliate', amount: 24000 }
+      ],
+      revenueData: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Revenue',
+          data: [12000, 15000, 18000, 22000, 25000, 28500],
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)'
+        }]
+      },
+      subscriptionData: {
+        labels: ['Basic', 'Pro', 'Enterprise'],
+        datasets: [{
+          data: [60, 30, 10],
+          backgroundColor: ['#3b82f6', '#8b5cf6', '#f59e0b']
+        }]
+      }
+    };
+  }
+
+  generateMockContentAnalytics() {
+    return {
+      totalPosts: 45000,
+      totalComments: 120000,
+      totalLikes: 850000,
+      totalShares: 45000,
+      engagementRate: 5.8,
+      engagementChange: 0.4,
+      contentGrowthRate: 8.5,
+      postsPerDay: 150,
+      postsChange: 12,
+      commentsPerPost: 4.5,
+      commentsChange: 0.2,
+      contentByType: [
+        { type: 'Images', count: 15000 },
+        { type: 'Videos', count: 8000 },
+        { type: 'Text', count: 22000 }
+      ],
+      contentGrowthData: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'New Content',
+          data: [1200, 1400, 1800, 2100, 2400, 2800],
+          borderColor: '#8b5cf6',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)'
+        }]
+      },
+      engagementData: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Engagement',
+          data: [15000, 18000, 16000, 19000, 22000, 25000, 24000],
+          borderColor: '#f43f5e',
+          backgroundColor: 'rgba(244, 63, 94, 0.1)'
+        }]
+      }
+    };
+  }
+
+  generateMockSystemAnalytics() {
+    return {
+      cpuUsage: 45,
+      memoryUsage: 62,
+      diskUsage: 38,
+      activeConnections: 1250,
+      requestsPerMinute: 4500,
+      errorRate: 0.05,
+      systemHealthData: {
+        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+        datasets: [{
+          label: 'CPU Usage',
+          data: [35, 42, 38, 45, 40, 45],
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)'
+        }]
+      },
+      performanceData: {
+        labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+        datasets: [{
+          label: 'Response Time (ms)',
+          data: [120, 115, 125, 118, 122, 119],
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)'
+        }]
+      }
     };
   }
 }

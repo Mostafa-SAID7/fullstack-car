@@ -54,7 +54,7 @@ export const RegisterForm: React.FC = () => {
         <div className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-2 text-sm">
+                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-2 text-sm backdrop-blur-sm">
                         <AlertCircle className="w-4 h-4 flex-shrink-0" />
                         <p>{error}</p>
                     </div>
@@ -62,13 +62,14 @@ export const RegisterForm: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="text-sm font-medium text-foreground ml-1">
+                        <label className="text-sm font-medium text-gray-200 ml-1">
                             {t('full_name', 'Full Name')}
                         </label>
                         <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <Input
                                 type="text"
+                                variant="glass"
                                 placeholder="John Doe"
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
@@ -79,13 +80,14 @@ export const RegisterForm: React.FC = () => {
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-sm font-medium text-foreground ml-1">
+                        <label className="text-sm font-medium text-gray-200 ml-1">
                             {t('user_name', 'Username')}
                         </label>
                         <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <Input
                                 type="text"
+                                variant="glass"
                                 placeholder="johndoe"
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
@@ -97,13 +99,14 @@ export const RegisterForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground ml-1">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
                         {t('email_address', 'Email Address')}
                     </label>
                     <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <Input
                             type="email"
+                            variant="glass"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -114,13 +117,14 @@ export const RegisterForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground ml-1">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
                         {t('password', 'Password')}
                     </label>
                     <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <Input
                             type={showPassword ? 'text' : 'password'}
+                            variant="glass"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -130,7 +134,7 @@ export const RegisterForm: React.FC = () => {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
                         >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -138,13 +142,14 @@ export const RegisterForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground ml-1">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
                         {t('confirm_password', 'Confirm Password')}
                     </label>
                     <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <Input
                             type={showPassword ? 'text' : 'password'}
+                            variant="glass"
                             placeholder="••••••••"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -160,17 +165,18 @@ export const RegisterForm: React.FC = () => {
                         checked={acceptTerms}
                         onCheckedChange={(checked) => setAcceptTerms(checked)}
                         required
+                        className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                     />
-                    <label htmlFor="accept-terms" className="ml-2 block text-sm text-muted-foreground cursor-pointer select-none">
+                    <label htmlFor="accept-terms" className="ml-2 block text-sm text-gray-300 cursor-pointer select-none">
                         {t('i_accept_the', 'I accept the')}{' '}
-                        <Link to="/terms" className="text-primary hover:underline">{t('terms_and_conditions', 'Terms & Conditions')}</Link>
+                        <Link to="/terms" className="text-primary-foreground hover:underline hover:text-white transition-colors">{t('terms_and_conditions', 'Terms & Conditions')}</Link>
                     </label>
                 </div>
 
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full flex justify-center py-6 h-auto text-lg font-bold"
+                    className="w-full flex justify-center py-3 h-auto text-lg font-bold shadow-glow hover:shadow-glow/80 transition-all duration-300 border border-primary/20"
                 >
                     {isLoading ? (
                         <>
@@ -184,12 +190,25 @@ export const RegisterForm: React.FC = () => {
             </form>
 
             <div className="mt-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                    {t('already_have_account', 'Already have an account?')}{' '}
-                    <Link to="/login" className="font-semibold text-primary hover:text-primary/80 transition-colors">
+                <div className="relative mb-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-2 bg-transparent text-gray-400">
+                            {t('already_have_account', 'Already have an account?')}
+                        </span>
+                    </div>
+                </div>
+
+                <Link to="/login">
+                    <Button
+                        variant="outline"
+                        className="w-full py-4 h-auto border-white/10 bg-transparent text-white hover:bg-white/5 hover:text-white hover:border-white/20"
+                    >
                         {t('sign_in', 'Sign In')}
-                    </Link>
-                </p>
+                    </Button>
+                </Link>
             </div>
         </div>
     );

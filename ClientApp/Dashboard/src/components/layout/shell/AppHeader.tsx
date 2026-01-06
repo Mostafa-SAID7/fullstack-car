@@ -34,7 +34,7 @@ export const AppHeader: React.FC<HeaderProps> = ({ onSearchClick, onToggleMobile
                         onClick={onSearchClick}
                         className="relative group w-full text-left"
                     >
-                        <div className="w-full bg-muted/50 border border-transparent hover:border-primary/20 hover:bg-background h-10 pl-10 pr-4 rounded-lg outline-none transition-all flex items-center">
+                        <div className="w-full glassmorphism hover:bg-background/80 h-10 pl-10 pr-4 rounded-lg outline-none transition-all flex items-center">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                             <span className="text-muted-foreground text-sm">{t('search_anything')}</span>
                             <div className="ml-auto hidden lg:flex items-center gap-1">

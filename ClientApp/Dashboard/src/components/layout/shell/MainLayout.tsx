@@ -90,8 +90,6 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
 
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative main-content-bg max-w-full">
-                    {/* Background Decor - Constrained within container */}
-
                     {/* Header */}
                     <AppHeader
                         onSearchClick={() => setShowSearch(true)}

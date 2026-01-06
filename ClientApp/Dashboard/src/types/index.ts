@@ -14,7 +14,11 @@ export * from './training';
 export * from './dashboard';
 
 // Admin types (with aliasing for conflicts)
-export * from './admin/user';
+export type { AdminUser } from './admin/user';
+export type { 
+  UserFilters as AdminUserFilters,
+  PaginatedResult as AdminPaginatedResult
+} from './admin/user';
 export type {
     UserAnalytics as AdminUserAnalytics,
     UserActivityData as AdminUserActivityData,

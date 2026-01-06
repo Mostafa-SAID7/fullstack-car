@@ -4,16 +4,16 @@ import { API_CONFIG } from './base';
 
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: `${API_CONFIG.baseURL}/auth/login`,
-    LOGOUT: `${API_CONFIG.baseURL}/auth/logout`,
-    REFRESH: `${API_CONFIG.baseURL}/auth/refresh-token`,
-    PROFILE: `${API_CONFIG.baseURL}/auth/profile`,
-    VERIFY_EMAIL: `${API_CONFIG.baseURL}/auth/verify-email`
+    LOGIN: `${API_CONFIG.baseURL}/v1/auth/login`,
+    LOGOUT: `${API_CONFIG.baseURL}/v1/auth/logout`,
+    REFRESH: `${API_CONFIG.baseURL}/v1/auth/refresh-token`,
+    PROFILE: `${API_CONFIG.baseURL}/v1/auth/profile`,
+    VERIFY_EMAIL: `${API_CONFIG.baseURL}/v1/auth/verify-email`
   },
   DASHBOARD: {
-    STATS: `${API_CONFIG.baseURL}/dashboard/stats`,
-    ANALYTICS: `${API_CONFIG.baseURL}/dashboard/analytics`,
-    ACTIVITIES: `${API_CONFIG.baseURL}/dashboard/activities`
+    STATS: `${API_CONFIG.baseURL}/v3/admin/dashboard`, // Mapped to GetDashboard
+    ANALYTICS: `${API_CONFIG.baseURL}/v3/admin/dashboard/performance`, // Mapped to GetPerformanceMetrics
+    ACTIVITIES: `${API_CONFIG.baseURL}/v3/admin/dashboard/recent-activity` // Mapped to GetRecentActivity
   },
   ANALYTICS: {
     BASE: `${API_CONFIG.baseURL}/analytics`

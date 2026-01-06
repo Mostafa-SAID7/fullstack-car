@@ -62,6 +62,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       // Update document attribute
       document.documentElement.setAttribute(attribute, resolved);
 
+      // Update Tailwind 'dark' class
+      document.documentElement.classList.toggle('dark', resolved === 'dark');
+
       // Update meta theme-color
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {

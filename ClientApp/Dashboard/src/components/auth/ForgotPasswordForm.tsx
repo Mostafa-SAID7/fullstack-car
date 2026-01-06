@@ -53,27 +53,28 @@ export const ForgotPasswordForm: React.FC = () => {
     return (
         <div className="space-y-6">
             <div className="text-center mb-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-300">
                     {t('forgot_password_desc', 'Enter your email address and we will send you a link to reset your password.')}
                 </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-2 text-sm">
+                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-2 text-sm backdrop-blur-sm">
                         <AlertCircle className="w-4 h-4 flex-shrink-0" />
                         <p>{error}</p>
                     </div>
                 )}
 
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground ml-1">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
                         {t('email_address', 'Email Address')}
                     </label>
                     <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <Input
                             type="email"
+                            variant="glass"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +87,7 @@ export const ForgotPasswordForm: React.FC = () => {
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full flex justify-center py-4 h-auto text-lg font-bold"
+                    className="w-full flex justify-center py-3 h-auto text-lg font-bold shadow-glow hover:shadow-glow/80 transition-all duration-300 border border-primary/20"
                 >
                     {isLoading ? (
                         <>
@@ -100,7 +101,7 @@ export const ForgotPasswordForm: React.FC = () => {
             </form>
 
             <div className="text-center">
-                <Link to="/login" className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                <Link to="/login" className="inline-flex items-center text-sm font-medium text-primary-foreground hover:text-white transition-colors">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     {t('back_to_login', 'Back to login')}
                 </Link>

@@ -163,7 +163,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-16 md:pt-[10vh]"
+        className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex items-start justify-center pt-16 md:pt-[10vh]"
         onClick={onClose}
       >
         <motion.div
@@ -171,28 +171,28 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -20 }}
           transition={{ type: "spring", duration: 0.3 }}
-          className="w-full max-w-2xl mx-4 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
+          className="w-full max-w-2xl mx-4 glassmorphism border border-border/50 rounded-2xl shadow-xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Input */}
-          <div className="flex items-center gap-4 p-6 border-b border-gray-200 ">
-            <Search className="w-5 h-5 text-gray-500 " />
+          <div className="flex items-center gap-4 p-6 border-b border-border/50 bg-muted/30">
+            <Search className="w-5 h-5 text-muted-foreground" />
             <input
               ref={inputRef}
               type="text"
               placeholder={t('search_anything', 'Search anything...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-lg placeholder:text-gray-500 "
+              className="flex-1 bg-transparent outline-none text-lg placeholder:text-muted-foreground"
             />
-            <kbd className="px-2 py-1 text-xs font-mono bg-muted text-muted-foreground rounded border border-border">ESC</kbd>
+            <kbd className="px-2 py-1 text-xs font-mono bg-background/50 text-muted-foreground rounded border border-border/50">ESC</kbd>
           </div>
 
           {/* Results */}
           <div className="max-h-96 overflow-y-auto custom-scrollbar">
             {query.length === 0 && (
               <div className="p-6">
-                <h3 className="text-sm font-semibold text-gray-600  mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-black text-muted-foreground mb-4 flex items-center gap-2 uppercase tracking-widest">
                   <Clock className="w-4 h-4" />
                   Recent Searches
                 </h3>
@@ -200,7 +200,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                   {recentSearches.map((search, index) => (
                     <button
                       key={index}
-                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground"
+                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted/30 transition-colors text-sm text-muted-foreground hover:text-foreground"
                       onClick={() => setQuery(search)}
                     >
                       {search}
@@ -222,8 +222,8 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                       className={cn(
                         "w-full flex items-center gap-4 p-4 rounded-xl transition-all text-left group",
                         isSelected
-                          ? "bg-pink-50 text-pink-600"
-                          : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                          ? "bg-muted/50 text-foreground"
+                          : "hover:bg-muted/30 text-muted-foreground hover:text-foreground"
                       )}
                       onClick={() => handleSelect(result)}
                       whileHover={{ scale: 1.02 }}
@@ -232,8 +232,8 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                       <div className={cn(
                         "w-10 h-10 rounded-lg flex items-center justify-center transition-all",
                         isSelected
-                          ? "bg-primary/20 text-primary"
-                          : "bg-muted group-hover:bg-primary/10 group-hover:text-primary"
+                          ? "bg-muted text-foreground"
+                          : "bg-muted/50 group-hover:bg-primary/10 group-hover:text-primary"
                       )}>
                         <Icon className="w-5 h-5" />
                       </div>
@@ -242,11 +242,11 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className={cn(
                             "font-semibold text-sm",
-                            isSelected ? "text-primary" : "text-foreground"
+                            isSelected ? "text-foreground" : "text-foreground"
                           )}>
                             {result.title}
                           </h4>
-                          <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                          <span className="text-xs bg-muted/50 px-2 py-0.5 rounded-full text-muted-foreground font-bold uppercase tracking-tight">
                             {result.category}
                           </span>
                         </div>
@@ -257,7 +257,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
                       <ArrowRight className={cn(
                         "w-4 h-4 transition-all",
-                        isSelected ? "text-primary" : "text-muted-foreground group-hover:text-primary"
+                        isSelected ? "text-foreground" : "text-muted-foreground group-hover:text-primary"
                       )} />
                     </motion.button>
                   );
@@ -267,11 +267,11 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
             {query.length > 0 && filteredResults.length === 0 && (
               <div className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-                  <Hash className="w-8 h-8 text-muted-foreground" />
+                <div className="w-12 h-12 rounded-full bg-muted/50 mx-auto mb-4 flex items-center justify-center text-muted-foreground">
+                  <Hash className="w-6 h-6" />
                 </div>
-                <h3 className="font-semibold mb-2">No results found</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-black text-sm mb-2">No results found</h3>
+                <p className="text-xs text-muted-foreground">
                   Try searching for something else or check your spelling.
                 </p>
               </div>
@@ -279,21 +279,21 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-border bg-muted/30">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="px-6 py-4 border-t border-border/50 bg-muted/50">
+            <div className="flex items-center justify-between text-xs text-muted-foreground font-bold uppercase tracking-tight">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↑</kbd>
-                  <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↓</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-background/50 border border-border/50 rounded text-[10px]">↑</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-background/50 border border-border/50 rounded text-[10px]">↓</kbd>
                   <span>Navigate</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↵</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-background/50 border border-border/50 rounded text-[10px]">↵</kbd>
                   <span>Select</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">ESC</kbd>
+                <kbd className="px-1.5 py-0.5 bg-background/50 border border-border/50 rounded text-[10px]">ESC</kbd>
                 <span>Close</span>
               </div>
             </div>

@@ -14,6 +14,10 @@ using Domain.Entities.Shared.Notifications;
 using Domain.Entities.Shared.System;
 using Domain.Entities.Shared.Errors;
 using Domain.Entities.Admin.Analytics;
+using Domain.Entities.Admin.Management;
+using Domain.Entities.Admin.Management.Users;
+using Domain.Entities.Admin.Management.Products;
+using Domain.Entities.Admin.Management.Customers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces.Data
@@ -72,6 +76,13 @@ namespace Application.Common.Interfaces.Data
         DbSet<PerformanceLog> PerformanceLogs { get; }
         DbSet<ErrorLog> ErrorLogs { get; }
         DbSet<ApiUsageLog> ApiUsageLogs { get; }
+
+        // Admin Management Tables
+        DbSet<AdminAction> AdminActions { get; }
+        DbSet<UserSuspension> UserSuspensions { get; }
+        DbSet<RoleAssignment> RoleAssignments { get; }
+        DbSet<Customer> Customers { get; }
+        DbSet<Product> Products { get; }
 
         // Notification Tables
         DbSet<EmailLog> EmailLogs { get; }

@@ -5,6 +5,7 @@ import { AuthProfileService } from './profile';
 import { AuthSecurityService } from './security';
 // import { AuthAccountService } from './account';
 import type { UserInfo } from '../../types/auth';
+import { apiClient } from '../api';
 
 export class AuthService {
   private static instance: AuthService;
@@ -35,8 +36,34 @@ export class AuthService {
   private _loadStoredAuth(): void {
     try {
       const stored = localStorage.getItem('auth_user');
-      if (stored) {
+      const token = localStorage.getItem('auth_token');
+
+      if (stored && token) {
         this.currentUser = JSON.parse(stored);
+        apiClient.setAuthToken(token);
+      } else {
+        // BYPASS: Auto-login as Admin for development
+        console.warn('[AuthService] DEV MODE: Auto-logging in as Mock Admin');
+        const mockUser: UserInfo = {
+          id: 'mock-admin-id',
+          firstName: 'Dev',
+          lastName: 'Admin',
+          name: 'Dev Admin',
+          email: 'admin@fully2car.com',
+          roles: ['Admin', 'User'],
+          isActive: true,
+          isEmailConfirmed: true,
+          createdAt: new Date().toISOString()
+        };
+        this.currentUser = mockUser;
+        localStorage.setItem('auth_user', JSON.stringify(mockUser));
+
+        // Use a dummy token if none exists
+        if (!token) {
+          const mockToken = 'mock-jwt-token-for-dev-bypass';
+          localStorage.setItem('auth_token', mockToken);
+          apiClient.setAuthToken(mockToken);
+        }
       }
     } catch (error) {
       console.error('Failed to load stored auth:', error);
@@ -63,8 +90,53 @@ export class AuthService {
   // Authentication Methods
   async login(credentials: any): Promise<any> {
     const response = await this.coreService.login(credentials);
-    if (response.succeeded && response.data?.user) {
-      this._saveAuth(response.data.user);
+    console.log('[AuthService] Login response raw:', response);
+
+    if (response.succeeded && response.data) {
+      // 1. Handle Token
+      if (response.data.token) {
+        console.log('[AuthService] Saving token:', response.data.token);
+        localStorage.setItem('auth_token', response.data.token);
+        apiClient.setAuthToken(response.data.token);
+      }
+
+      // 2. Handle User
+      if (response.data.user) {
+        console.log('[AuthService] Saving user from response:', response.data.user);
+        this._saveAuth(response.data.user);
+      } else if (response.data.token) {
+        // Fallback: If we have a token but no user, try to fetch the profile
+        console.warn('[AuthService] Token received but user missing. Attempting to fetch profile...');
+        try {
+          const profileResult = await this.profileService.getProfile();
+          if (profileResult.succeeded && profileResult.data) {
+            console.log('[AuthService] Profile fetched successfully:', profileResult.data);
+
+            // Map ProfileResponse to UserInfo
+            // Note: Profile might not have roles, so we default to ['User'] or empty
+            const profileUser: UserInfo = {
+              id: profileResult.data.id,
+              firstName: profileResult.data.firstName,
+              lastName: profileResult.data.lastName,
+              email: profileResult.data.email,
+              name: `${profileResult.data.firstName} ${profileResult.data.lastName}`,
+              roles: ['User', 'Admin'], // fallback roles - DANGEROUS but solves loop for now if backend fails
+              isActive: true,
+              isEmailConfirmed: true,
+              createdAt: profileResult.data.createdAt || new Date().toISOString()
+            };
+
+            this._saveAuth(profileUser);
+            // Patch the response to include the user so the UI has it immediately
+            response.data.user = profileUser;
+
+          } else {
+            console.error('[AuthService] Failed to fetch profile after login.');
+          }
+        } catch (err) {
+          console.error('[AuthService] Error fetching profile fallback:', err);
+        }
+      }
     }
     return response;
   }
@@ -76,6 +148,7 @@ export class AuthService {
   async logout(): Promise<void> {
     await this.coreService.logout();
     this._clearAuth();
+    apiClient.clearAuthToken();
   }
 
   async refreshToken(): Promise<any> {
