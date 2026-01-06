@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Eye, ThumbsUp, MessageSquare, Clock, User, Image, Video, Flag, AlertTriangle } from 'lucide-react';
 import { type ContentType } from '../../../components/forms/selects/ContentTypeSelector';
-import { Pagination } from '../../../components/layout/pagination/Pagination';
+import { Pagination } from '../../../components/shared/Pagination';
 
 interface ContentItem {
   id: string;

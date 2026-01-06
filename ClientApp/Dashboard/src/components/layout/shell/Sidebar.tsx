@@ -15,12 +15,13 @@ import {
   Sparkles,
   UserCheck,
   Package,
+  Wrench,
   ChevronLeft,
   ChevronRight,
   X,
   Languages,
-  Shield,
-  FileImage
+  FileImage,
+  Palette
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -134,11 +135,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('products', 'Products'),
           color: 'text-emerald-600',
           description: 'Product catalog'
+        },
+        {
+          path: '/services',
+          icon: Wrench,
+          label: t('services', 'Services'),
+          color: 'text-blue-600',
+          description: 'Marketplace services'
         }
       ]
     },
     {
-      title: 'Content',
+      title: 'Pages',
       icon: FileText,
       items: [
         {
@@ -149,11 +157,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
           description: 'Content management'
         },
         {
-          path: '/media',
+          path: '/content/media',
           icon: FileImage,
           label: t('media', 'Media'),
           color: 'text-indigo-600',
           description: 'Media library'
+        },
+        {
+          path: '/content/localization',
+          icon: Languages,
+          label: t('localization', 'Localization'),
+          color: 'text-blue-600',
+          description: 'Translation management'
+        },
+        {
+          path: '/content/themes',
+          icon: Palette,
+          label: t('themes', 'Themes'),
+          color: 'text-purple-600',
+          description: 'Theme management'
         }
       ]
     },
@@ -181,19 +203,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('settings', 'Settings'),
           color: 'text-gray-600',
           description: 'Application settings'
-        }
-      ]
-    },
-    {
-      title: 'Administration',
-      icon: Shield,
-      items: [
-        {
-          path: '/localization',
-          icon: Languages,
-          label: 'Localization',
-          color: 'text-blue-600',
-          description: 'Translation management'
         }
       ]
     }

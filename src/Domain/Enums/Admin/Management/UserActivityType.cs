@@ -1,0 +1,35 @@
+namespace Domain.Enums.Admin.Management;
+
+public enum UserActivityType
+{
+    Login = 1,
+    Logout = 2,
+    ProfileUpdate = 3,
+    PasswordChange = 4,
+    PostCreated = 5,
+    PostUpdated = 6,
+    PostDeleted = 7,
+    CommentAdded = 8,
+    CommentUpdated = 9,
+    CommentDeleted = 10,
+    LikeGiven = 11,
+    LikeRemoved = 12,
+    MessageSent = 13,
+    MessageReceived = 14,
+    GroupJoined = 15,
+    GroupLeft = 16,
+    FriendRequestSent = 17,
+    FriendRequestAccepted = 18,
+    FriendRequestDeclined = 19,
+    SettingsChanged = 20,
+    AccountDeactivated = 21,
+    AccountReactivated = 22,
+    EmailVerified = 23,
+    PhoneVerified = 24,
+    TwoFactorEnabled = 25,
+    TwoFactorDisabled = 26,
+    SecurityAlert = 27,
+    SuspiciousActivity = 28,
+    DataExport = 29,
+    DataDeletion = 30
+}

@@ -9,8 +9,8 @@ using Domain.Entities.Admin.Analytics;
 using Domain.Entities.Admin.Dashboard;
 using Domain.Entities.Admin.Management;
 using Domain.Entities.Admin.Management.Users;
-using Domain.Entities.Admin.Management.Products;
-using Domain.Entities.Admin.Management.Customers;
+using Domain.Entities.Marketplace.Products;
+using Domain.Entities.Marketplace.Customers;
 using Domain.Entities.Admin.Moderation;
 using Domain.Entities.Admin.System;
 using Domain.Entities.Shared.Notifications;
@@ -195,7 +195,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Marketplace.Reviews.ReviewHelpfulness> ReviewHelpfulnessVotes { get; set; }
 
         // Analytics Tables (Admin)
-        public DbSet<UserActivity> UserActivities { get; set; }
+        public DbSet<Domain.Entities.Admin.Management.Users.UserActivity> UserActivities { get; set; }
         public DbSet<UserPreference> UserPreferences { get; set; }
         public DbSet<AdminSystemMetric> AdminSystemMetrics { get; set; }
         public DbSet<PerformanceLog> PerformanceLogs { get; set; }

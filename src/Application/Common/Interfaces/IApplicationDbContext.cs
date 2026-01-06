@@ -16,8 +16,8 @@ using Domain.Entities.Shared.Errors;
 using Domain.Entities.Admin.Analytics;
 using Domain.Entities.Admin.Management;
 using Domain.Entities.Admin.Management.Users;
-using Domain.Entities.Admin.Management.Products;
-using Domain.Entities.Admin.Management.Customers;
+using Domain.Entities.Marketplace.Products;
+using Domain.Entities.Marketplace.Customers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces.Data
@@ -70,7 +70,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<BookingStatusHistory> BookingStatusHistories { get; }
 
         // Analytics Tables
-        DbSet<UserActivity> UserActivities { get; }
+        DbSet<Domain.Entities.Admin.Management.Users.UserActivity> UserActivities { get; }
         DbSet<UserPreference> UserPreferences { get; }
         DbSet<SystemMetric> SystemMetrics { get; }
         DbSet<PerformanceLog> PerformanceLogs { get; }

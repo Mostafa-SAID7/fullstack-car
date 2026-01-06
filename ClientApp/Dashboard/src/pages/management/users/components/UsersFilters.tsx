@@ -14,18 +14,18 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
   loading = false
 }) => {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
+    <div className="bg-card rounded-lg border border-border p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <input
             type="text"
             placeholder="Search users..."
             value={filters.search || ''}
             onChange={(e) => onFiltersChange({ search: e.target.value })}
             disabled={loading}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
           />
         </div>
 
@@ -34,7 +34,7 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
           value={filters.status || ''}
           onChange={(e) => onFiltersChange({ status: e.target.value })}
           disabled={loading}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+          className="px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
         >
           <option value="">All Statuses</option>
           <option value="Active">Active</option>
@@ -48,7 +48,7 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
           value={filters.role || ''}
           onChange={(e) => onFiltersChange({ role: e.target.value })}
           disabled={loading}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+          className="px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
         >
           <option value="">All Roles</option>
           <option value="Admin">Admin</option>
@@ -64,7 +64,7 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
             value={filters.sortBy || 'CreatedAt'}
             onChange={(e) => onFiltersChange({ sortBy: e.target.value })}
             disabled={loading}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="flex-1 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
           >
             <option value="CreatedAt">Join Date</option>
             <option value="FirstName">First Name</option>
@@ -77,7 +77,7 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
             value={filters.sortDirection || 'desc'}
             onChange={(e) => onFiltersChange({ sortDirection: e.target.value })}
             disabled={loading}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
@@ -87,16 +87,16 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
 
       {/* Active Filters Display */}
       {(filters.search || filters.status || filters.role) && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-border">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-gray-600">Active filters:</span>
+            <span className="text-sm text-muted-foreground">Active filters:</span>
             
             {filters.search && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
                 Search: {filters.search}
                 <button
                   onClick={() => onFiltersChange({ search: '' })}
-                  className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -104,11 +104,11 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
             )}
             
             {filters.status && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 text-xs rounded-full">
                 Status: {filters.status}
                 <button
                   onClick={() => onFiltersChange({ status: '' })}
-                  className="ml-1 hover:bg-green-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-green-500/20 rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -116,11 +116,11 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
             )}
             
             {filters.role && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-600 text-xs rounded-full">
                 Role: {filters.role}
                 <button
                   onClick={() => onFiltersChange({ role: '' })}
-                  className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-purple-500/20 rounded-full p-0.5"
                 >
                   ×
                 </button>
@@ -129,7 +129,7 @@ export const UsersFilters: React.FC<UsersFiltersProps> = ({
             
             <button
               onClick={() => onFiltersChange({ search: '', status: '', role: '' })}
-              className="text-xs text-gray-500 hover:text-gray-700 underline"
+              className="text-xs text-muted-foreground hover:text-foreground underline"
             >
               Clear all
             </button>

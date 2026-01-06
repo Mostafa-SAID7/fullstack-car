@@ -22,6 +22,6 @@ global using Domain.ValueObjects.Shared;
 global using Domain.Enums.Community.Notifications;
 global using Domain.Enums.Shared;
 global using Domain.Enums.Admin.Dashboard;
-global using Domain.Enums.Admin.Management;
+global using Domain.Enums.Marketplace;
 global using Domain.Enums.Admin.Moderation;
 global using Domain.Enums.Admin.System;

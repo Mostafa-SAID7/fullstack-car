@@ -7,8 +7,13 @@ import { aiAgentService, type ChatMessage } from '../../../services/ai-agent';
 
 import type { AIMode } from '../../../types/pages/dashboard/components';
 
-export const AIAssistant: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+interface AIAssistantProps {
+    isEmbedded?: boolean;
+    onClose?: () => void;
+}
+
+export const AIAssistant: React.FC<AIAssistantProps> = ({ isEmbedded = false, onClose }) => {
+    const [isOpen, setIsOpen] = useState(isEmbedded ? true : false);
     const [isMinimized, setIsMinimized] = useState(false);
     const [mode, setMode] = useState<AIMode>('chat');
     const [showModes, setShowModes] = useState(false);
@@ -95,26 +100,184 @@ export const AIAssistant: React.FC = () => {
 
     const currentModeInfo = modes.find(m => m.id === mode);
 
+    // If embedded, render only the chat interface
+    if (isEmbedded) {
+        return (
+            <div className="flex flex-col h-[550px]">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-primary to-primary/90 p-4 text-primary-foreground">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-primary-foreground/20 rounded-lg">
+                                <Bot size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-sm">AI Assistant</h3>
+                                <div className="flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                                    <span className="text-[10px] opacity-80 uppercase tracking-wider">Online</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <button onClick={() => setIsMinimized(!isMinimized)} className="p-1.5 hover:bg-primary-foreground/20 rounded-lg transition-colors">
+                                {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
+                            </button>
+                            {onClose && (
+                                <button onClick={onClose} className="p-1.5 hover:bg-primary-foreground/20 rounded-lg transition-colors">
+                                    <X size={16} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Mode Selector */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowModes(!showModes)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg text-xs font-medium transition-all w-full justify-between"
+                        >
+                            <div className="flex items-center gap-2">
+                                {currentModeInfo && <currentModeInfo.icon size={14} className="text-primary-foreground" />}
+                                <span>{currentModeInfo?.label}</span>
+                            </div>
+                            <ChevronDown size={14} className={`transition-transform ${showModes ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                            {showModes && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-full left-0 right-0 mt-2 glassmorphism rounded-xl shadow-xl border border-border/30 overflow-hidden z-10 bg-background/20 backdrop-blur-md"
+                                >
+                                    {modes.map((m) => (
+                                        <button
+                                            key={m.id}
+                                            onClick={() => {
+                                                setMode(m.id as AIMode);
+                                                setShowModes(false);
+                                            }}
+                                            className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-background/30 hover:backdrop-blur-sm transition-all duration-200 ${
+                                                mode === m.id
+                                                    ? 'bg-primary/20 text-primary font-semibold backdrop-blur-sm'
+                                                    : 'text-muted-foreground hover:text-foreground'
+                                                }`}
+                                        >
+                                            <m.icon size={16} className={m.color} />
+                                            {m.label}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+
+                {/* Chat Body */}
+                {!isMinimized && (
+                    <>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-background/50 backdrop-blur-sm">
+                            {messages.map((msg, i) => (
+                                <div
+                                    key={i}
+                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div
+                                        className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm backdrop-blur-sm ${msg.role === 'user'
+                                            ? 'bg-primary/90 text-primary-foreground rounded-tr-sm border border-primary/20'
+                                            : 'bg-card/80 text-card-foreground rounded-tl-sm border border-border/50'
+                                            }`}
+                                    >
+                                        <div className="prose prose-sm max-w-none">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                {msg.content}
+                                            </ReactMarkdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {loading && (
+                                <div className="flex justify-start">
+                                    <div className="bg-card p-3 rounded-2xl rounded-tl-sm border border-border flex gap-1">
+                                        <span className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                                        <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                                        <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-4 border-t border-border/50 bg-background/30 backdrop-blur-sm">
+                            <div className="relative flex items-center">
+                                <input
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                                    placeholder={`Ask in ${currentModeInfo?.label.toLowerCase()}...`}
+                                    className="w-full bg-background border border-border rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+                                />
+                                <button
+                                    onClick={handleSend}
+                                    disabled={!input.trim() || loading}
+                                    className="absolute right-1.5 p-2 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-lg transition-colors shadow-lg disabled:shadow-none"
+                                >
+                                    {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+        );
+    }
+
+    // Original standalone widget (for backward compatibility)
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div className="fixed top-20 right-6 z-[60] flex flex-col items-end">
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsOpen(!isOpen)}
+                className={`p-3 rounded-xl shadow-lg flex items-center justify-center transition-all border-2 mb-4 ${
+                    isOpen
+                        ? 'bg-muted text-foreground border-border'
+                        : 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground border-transparent hover:shadow-xl'
+                    }`}
+            >
+                {isOpen ? <X size={26} /> : (
+                    <div className="relative">
+                        <Bot size={26} />
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-background"></span>
+                        </span>
+                    </div>
+                )}
+            </motion.button>
+
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.9, y: -20 }}
                         animate={{
                             opacity: 1,
                             scale: 1,
                             y: 0,
                             height: isMinimized ? 'auto' : '550px'
                         }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="w-80 md:w-[400px] bg-card rounded-2xl shadow-xl border border-border overflow-hidden mb-4 flex flex-col"
+                        exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                        className="w-80 md:w-[400px] glassmorphism rounded-2xl shadow-xl border border-border/50 overflow-hidden flex flex-col"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-pink-500 to-pink-600 p-4 text-white">
+                        <div className="bg-gradient-to-r from-primary to-primary/90 p-4 text-primary-foreground">
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
-                                    <div className="p-1.5 bg-white/20 rounded-lg">
+                                    <div className="p-1.5 bg-primary-foreground/20 rounded-lg">
                                         <Bot size={20} />
                                     </div>
                                     <div>
@@ -126,10 +289,10 @@ export const AIAssistant: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => setIsMinimized(!isMinimized)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                                    <button onClick={() => setIsMinimized(!isMinimized)} className="p-1.5 hover:bg-primary-foreground/20 rounded-lg transition-colors">
                                         {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
                                     </button>
-                                    <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                                    <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-primary-foreground/20 rounded-lg transition-colors">
                                         <X size={16} />
                                     </button>
                                 </div>
@@ -139,10 +302,10 @@ export const AIAssistant: React.FC = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setShowModes(!showModes)}
-                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-medium transition-all w-full justify-between"
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg text-xs font-medium transition-all w-full justify-between"
                                 >
                                     <div className="flex items-center gap-2">
-                                        {currentModeInfo && <currentModeInfo.icon size={14} className="text-white" />}
+                                        {currentModeInfo && <currentModeInfo.icon size={14} className="text-primary-foreground" />}
                                         <span>{currentModeInfo?.label}</span>
                                     </div>
                                     <ChevronDown size={14} className={`transition-transform ${showModes ? 'rotate-180' : ''}`} />
@@ -154,7 +317,7 @@ export const AIAssistant: React.FC = () => {
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -10 }}
-                                            className="absolute top-full left-0 right-0 mt-2 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-10"
+                                            className="absolute top-full left-0 right-0 mt-2 glassmorphism rounded-xl shadow-xl border border-border/30 overflow-hidden z-10 bg-background/20 backdrop-blur-md"
                                         >
                                             {modes.map((m) => (
                                                 <button
@@ -163,9 +326,9 @@ export const AIAssistant: React.FC = () => {
                                                         setMode(m.id as AIMode);
                                                         setShowModes(false);
                                                     }}
-                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-muted transition-colors ${
+                                                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-xs hover:bg-background/30 hover:backdrop-blur-sm transition-all duration-200 ${
                                                         mode === m.id
-                                                            ? 'bg-primary/10 text-primary font-semibold'
+                                                            ? 'bg-primary/20 text-primary font-semibold backdrop-blur-sm'
                                                             : 'text-muted-foreground hover:text-foreground'
                                                         }`}
                                                 >
@@ -182,7 +345,7 @@ export const AIAssistant: React.FC = () => {
                         {/* Chat Body */}
                         {!isMinimized && (
                             <>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-muted/30">
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px] custom-scrollbar bg-background">
                                     {messages.map((msg, i) => (
                                         <div
                                             key={i}
@@ -190,7 +353,7 @@ export const AIAssistant: React.FC = () => {
                                         >
                                             <div
                                                 className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm ${msg.role === 'user'
-                                                    ? 'bg-pink-500 text-white rounded-tr-sm'
+                                                    ? 'bg-primary text-primary-foreground rounded-tr-sm'
                                                     : 'bg-card text-card-foreground rounded-tl-sm border border-border'
                                                     }`}
                                             >
@@ -204,10 +367,10 @@ export const AIAssistant: React.FC = () => {
                                     ))}
                                     {loading && (
                                         <div className="flex justify-start">
-                                            <div className="bg-card p-3 rounded-2xl rounded-tl-sm border border-border flex gap-1">
-                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" />
-                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                                                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                                            <div className="bg-card/80 backdrop-blur-sm p-3 rounded-2xl rounded-tl-sm border border-border/50 flex gap-1">
+                                                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                                                <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
                                             </div>
                                         </div>
                                     )}
@@ -228,7 +391,7 @@ export const AIAssistant: React.FC = () => {
                                         <button
                                             onClick={handleSend}
                                             disabled={!input.trim() || loading}
-                                            className="absolute right-1.5 p-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 text-white rounded-lg transition-colors shadow-lg disabled:shadow-none"
+                                            className="absolute right-1.5 p-2 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-lg transition-colors shadow-lg disabled:shadow-none"
                                         >
                                             {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                                         </button>
@@ -239,27 +402,6 @@ export const AIAssistant: React.FC = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsOpen(!isOpen)}
-                className={`p-3 rounded-xl shadow-lg flex items-center justify-center transition-all border-2 ${
-                    isOpen
-                        ? 'bg-muted text-foreground border-border'
-                        : 'bg-gradient-to-r from-pink-500 to-pink-600 text-white border-transparent hover:shadow-xl'
-                    }`}
-            >
-                {isOpen ? <X size={26} /> : (
-                    <div className="relative">
-                        <Bot size={26} />
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-background"></span>
-                        </span>
-                    </div>
-                )}
-            </motion.button>
         </div>
     );
 };

@@ -9,7 +9,7 @@ namespace Domain.Entities.Community.Maps
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public int Rating { get; set; } // 1-5 stars
-        public ReviewStatus Status { get; set; } = ReviewStatus.Published;
+        public Domain.Enums.Community.Maps.ReviewStatus Status { get; set; } = Domain.Enums.Community.Maps.ReviewStatus.Published;
         public string? ImageUrl { get; set; }
         public bool IsVerified { get; set; } = false;
         public int HelpfulCount { get; set; } = 0;

@@ -64,3 +64,6 @@ export const useProducts = () => {
     products
   };
 };
+
+// Export the hook
+export { useProducts as default };

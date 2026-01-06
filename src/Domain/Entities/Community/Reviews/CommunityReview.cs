@@ -10,7 +10,7 @@ namespace Domain.Entities.Community.Reviews
         public string Content { get; set; } = string.Empty;
         public int Rating { get; set; } // 1-5 stars
         public CommunityReviewType Type { get; set; }
-        public ReviewStatus Status { get; set; } = ReviewStatus.Published;
+        public Domain.Enums.Community.Reviews.ReviewStatus Status { get; set; } = Domain.Enums.Community.Reviews.ReviewStatus.Published;
         public string? ImageUrl { get; set; }
         public bool IsVerified { get; set; } = false;
         public int HelpfulCount { get; set; } = 0;

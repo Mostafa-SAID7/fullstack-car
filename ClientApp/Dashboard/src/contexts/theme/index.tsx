@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { ThemeConfig } from '../../pages/themes';
-import { defaultTheme, availableThemes, getThemeById } from '../../pages/themes';
+import type { ThemeConfig } from '../../pages/content/themes';
+import { defaultTheme, availableThemes, getThemeById } from '../../pages/content/themes';
 import type { ThemeContextType, ThemeProviderProps, ThemeMode, LayoutConfig } from './types';
 import { DEFAULT_LAYOUT, THEME_STORAGE_KEYS, THEME_UPDATE_DEBOUNCE } from './constants';
 import {

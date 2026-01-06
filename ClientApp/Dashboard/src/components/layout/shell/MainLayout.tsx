@@ -8,7 +8,6 @@ import { useAuth } from '../../../hooks';
 import { Sidebar } from './Sidebar';
 import { AppHeader } from './AppHeader';
 import { SearchPalette } from './SearchPalette';
-import { AIAssistant } from '../../../pages/dashboard/components/AIAssistant';
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();
@@ -110,7 +109,6 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                     </main>
                 </div>
             </div>
-            <AIAssistant />
         </div>
     );
 };

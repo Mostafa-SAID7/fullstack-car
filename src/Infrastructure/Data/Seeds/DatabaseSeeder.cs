@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Infrastructure.Data.Seeds.Management;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace Infrastructure.Data.Seeds
         private readonly AdminSeeder _adminSeeder;
         private readonly NotificationSeeder _notificationSeeder;
         private readonly MediaSeeder _mediaSeeder;
+        private readonly ManagementSeeder _managementSeeder;
 
         public DatabaseSeeder(
             ILogger<DatabaseSeeder> logger,
@@ -30,7 +32,8 @@ namespace Infrastructure.Data.Seeds
             MarketplaceSeeder marketplaceSeeder,
             AdminSeeder adminSeeder,
             NotificationSeeder notificationSeeder,
-            MediaSeeder mediaSeeder)
+            MediaSeeder mediaSeeder,
+            ManagementSeeder managementSeeder)
         {
             _logger = logger;
             _context = context;
@@ -43,6 +46,7 @@ namespace Infrastructure.Data.Seeds
             _adminSeeder = adminSeeder;
             _notificationSeeder = notificationSeeder;
             _mediaSeeder = mediaSeeder;
+            _managementSeeder = managementSeeder;
         }
 
         public async Task InitializeAsync()
@@ -106,6 +110,9 @@ namespace Infrastructure.Data.Seeds
                 await _adminSeeder.SeedAdminDashboardAsync();
                 
                 await _notificationSeeder.SeedNotificationsAsync();
+
+                // Seed comprehensive management data (advanced roles, permissions, users)
+                await _managementSeeder.SeedAllManagementDataAsync();
 
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Database seeding completed successfully.");

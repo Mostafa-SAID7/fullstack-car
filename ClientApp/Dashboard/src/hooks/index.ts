@@ -6,5 +6,6 @@ export { useProducts } from './products';
 export { useSettings } from './settings';
 export { useAIAgent } from './ai-agent';
 export { useToast } from '../components/feedback/toasts/ToastProvider';
+export { useModal } from './useModal';
 
 // Management Hooks

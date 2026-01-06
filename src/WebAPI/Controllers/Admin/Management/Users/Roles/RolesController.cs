@@ -2,6 +2,7 @@ using Application.Features.Admin.Management.Users.Roles.DTOs.Requests;
 using Application.Features.Admin.Management.Users.Roles.DTOs.Responses;
 using Application.Features.Admin.Management.Users.Roles.Commands;
 using Application.Features.Admin.Management.Users.Roles.Queries;
+using Application.Features.Admin.Management.Users.Permissions.Queries;
 using Application.Features.Identity.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -4,6 +4,7 @@ import { Search, Menu } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { NotificationDropdown } from './NotificationDropdown';
 import { ThemeToggle } from './ThemeToggle';
+import { AIChatToggle } from './AIChatToggle';
 
 interface HeaderProps {
     onSearchClick?: () => void;
@@ -58,6 +59,9 @@ export const AppHeader: React.FC<HeaderProps> = ({ onSearchClick, onToggleMobile
 
                     {/* Language Switcher */}
                     <LanguageSwitcher />
+
+                    {/* AI Chat */}
+                    <AIChatToggle />
 
                     {/* Notifications */}
                     <NotificationDropdown />

@@ -26,6 +26,8 @@ using Application.Features.Identity.Security.Services;
 using Domain.Entities.Identity;
 using Infrastructure.Data;
 using Infrastructure.Data.Seeds;
+using Infrastructure.Data.Seeds.Management;
+using Infrastructure.Data.Seeds.Management.Users;
 using Infrastructure.Repositories;
 using Infrastructure.Common;
 using Application.Features.Shared.Logging.Interfaces;
@@ -217,6 +219,13 @@ namespace Infrastructure.Extensions
             services.AddScoped<AdminSeeder>();
             services.AddScoped<NotificationSeeder>();
             services.AddScoped<MediaSeeder>();
+            
+            // Management Seeders
+            services.AddScoped<UserManagementSeeder>();
+            services.AddScoped<UserRolesSeeder>();
+            services.AddScoped<UserPermissionsSeeder>();
+            services.AddScoped<ManagementSeeder>();
+            
             services.AddScoped<DatabaseSeeder>();
 
             return services;

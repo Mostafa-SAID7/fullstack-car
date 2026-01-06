@@ -6,14 +6,17 @@ export * from './forms/checkboxes/Checkbox';
 export * from './forms/selects/Select';
 export * from './forms/switches/Switch';
 export * from './forms/textareas/Textarea';
-export * from './layout';
+export * from './layout/cards/Card';
+export * from './layout/modals/Modal';
+export * from './layout/containers/Container';
+export * from './layout/headers/Header';
+export * from './layout/shell';
 export * from './data-display/tables/Table';
 export * from './data-display/badges/Badge';
 export * from './data-display/avatars/Avatar';
-export * from './data-display/empty-states/EmptyState';
 export * from './data-display/stats/Stat';
 export * from './feedback/loading/Loading';
-export * from './feedback/skeletons/Skeleton';
+export { default as FeedbackSkeleton, type SkeletonProps as FeedbackSkeletonProps } from './feedback/skeletons/Skeleton';
 export * from './feedback/toasts/Toast';
 export * from './feedback/toasts/ToastProvider';
 export * from './feedback/progress/Progress';
@@ -25,10 +28,43 @@ export * from './charts/area/AreaChart';
 export * from './navigation/breadcrumbs/Breadcrumbs';
 export * from './navigation/sidenav/SideNav';
 export * from './navigation/mobile-nav/MobileNav';
-export * from './special/error-boundary/ErrorBoundary';
 export * from './special/protected-route/ProtectedRoute';
 export * from './special/theme-provider/ThemeProvider';
 export * from './auth';
+
+// Shared Components (using shared versions to avoid conflicts)
+export { 
+  SearchAndFilters, 
+  EmptyState, 
+  Pagination,
+  DataTable,
+  StatsCards,
+  SharedCard,
+  ViewToggle,
+  UserCards,
+  PageHeader,
+  EnhancedPageHeader,
+  SimplePageHeader,
+  ErrorCard,
+  ErrorBoundary,
+  useErrorBoundary,
+  TabNavigation,
+  TabContent,
+  DynamicModal,
+  Skeleton,
+  TableSkeleton,
+  CardSkeleton,
+  PageHeaderSkeleton,
+  SearchFiltersSkeleton,
+  FormSkeleton,
+  ListSkeleton,
+  type TabItem,
+  type TabNavigationProps,
+  type TabContentProps,
+  type FilterField,
+  type StatusIndicator,
+  type FeatureBadge
+} from './shared';
 
 // Re-export with default names for convenience
 export { default as Button } from './forms/buttons/Button';
@@ -39,19 +75,14 @@ export { default as Switch } from './forms/switches/Switch';
 export { default as Textarea } from './forms/textareas/Textarea';
 export { Card, MetricCard } from './layout/cards';
 export { default as Modal } from './layout/modals/Modal';
-export { default as TabNavigation } from './layout/tabs/TabNavigation';
-export { TabContent } from './layout/tabs/TabNavigation';
-export { default as Pagination } from './layout/pagination/Pagination';
 export { default as Container } from './layout/containers/Container';
 export { default as Header } from './layout/headers/Header';
 export { MainLayout, AppHeader, Sidebar } from './layout/shell';
 export { default as Table } from './data-display/tables/Table';
 export { default as Badge } from './data-display/badges/Badge';
 export { default as Avatar, AvatarGroup } from './data-display/avatars/Avatar';
-export { default as EmptyState } from './data-display/empty-states/EmptyState';
 export { default as Stat } from './data-display/stats/Stat';
 export { default as Loading } from './feedback/loading/Loading';
-export { default as Skeleton } from './feedback/skeletons/Skeleton';
 export { default as Toast } from './feedback/toasts/Toast';
 export { default as ToastProvider } from './feedback/toasts/ToastProvider';
 export { default as Progress } from './feedback/progress/Progress';
@@ -63,7 +94,6 @@ export { default as AreaChart } from './charts/area/AreaChart';
 export { default as Breadcrumbs, useBreadcrumbs } from './navigation/breadcrumbs/Breadcrumbs';
 export { default as SideNav } from './navigation/sidenav/SideNav';
 export { default as MobileNav, useMobileNav } from './navigation/mobile-nav/MobileNav';
-export { default as ErrorBoundary } from './special/error-boundary/ErrorBoundary';
 export { default as ProtectedRoute } from './special/protected-route/ProtectedRoute';
 export { default as ThemeProvider, ThemeToggle } from './special/theme-provider/ThemeProvider';
 
