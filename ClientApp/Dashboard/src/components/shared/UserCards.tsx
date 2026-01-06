@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, Calendar, Shield, MoreVertical, Edit, Trash2 } from 'lucide-react';
-import type { User } from '../../pages/management/users/types/user';
+import type { User } from '../../pages/administration/users/types/user';
 
 export interface UserCardsProps {
   users: User[];

@@ -10,7 +10,7 @@ export interface UserInfo {
   avatar?: string;
   profileImageUrl?: string;
   roles: string[];
-  status?: 'active' | 'inactive' | 'pending';
+  status?: 'active' | 'inactive' | 'suspended' | 'pending';
   isActive: boolean;
   isEmailConfirmed: boolean;
   createdAt: string;

@@ -12,7 +12,6 @@ import {
   Bot,
   Server,
   Car,
-  Sparkles,
   UserCheck,
   Package,
   Wrench,
@@ -21,7 +20,13 @@ import {
   X,
   Languages,
   FileImage,
-  Palette
+  Palette,
+  Shield,
+  Activity,
+  Share2,
+  Target,
+  TrendingUp,
+  Calendar
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -101,43 +106,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('dashboard', 'Dashboard'),
           color: 'text-blue-600',
           description: 'Main dashboard overview'
-        },
-        {
-          path: '/analytics',
-          icon: BarChart3,
-          label: t('analytics', 'Analytics'),
-          color: 'text-green-600',
-          description: 'Data insights and reports'
         }
       ]
     },
     {
-      title: 'Management',
+      title: 'Marketplace',
       icon: Users,
       items: [
         {
-          path: '/users',
-          icon: Users,
-          label: t('users', 'Users'),
-          color: 'text-purple-600',
-          description: 'User management'
-        },
-        {
-          path: '/customers',
+          path: '/marketplace/customers',
           icon: UserCheck,
           label: t('customers', 'Customers'),
           color: 'text-cyan-600',
           description: 'Customer relationships'
         },
         {
-          path: '/products',
+          path: '/marketplace/products',
           icon: Package,
           label: t('products', 'Products'),
           color: 'text-emerald-600',
           description: 'Product catalog'
         },
         {
-          path: '/services',
+          path: '/marketplace/services',
           icon: Wrench,
           label: t('services', 'Services'),
           color: 'text-blue-600',
@@ -146,15 +137,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     {
-      title: 'Pages',
+      title: 'Content',
       icon: FileText,
       items: [
         {
           path: '/content',
           icon: FileText,
-          label: t('content', 'Content'),
+          label: t('pages', 'Pages'),
           color: 'text-orange-600',
-          description: 'Content management'
+          description: 'Pages management'
         },
         {
           path: '/content/media',
@@ -180,7 +171,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     {
-      title: 'AI & System',
+      title: 'AI Agent',
       icon: Bot,
       items: [
         {
@@ -188,21 +179,89 @@ export const Sidebar: React.FC<SidebarProps> = ({
           icon: Bot,
           label: t('ai_agent', 'AI Agent'),
           color: 'text-pink-600',
-          description: 'AI assistant'
+          description: 'AI assistant and automation'
+        }
+      ]
+    },
+    {
+      title: 'Marketing',
+      icon: TrendingUp,
+      items: [
+        {
+          path: '/marketing',
+          icon: BarChart3,
+          label: t('marketing_overview', 'Marketing Overview'),
+          color: 'text-indigo-600',
+          description: 'Marketing dashboard and overview'
         },
         {
-          path: '/system',
+          path: '/marketing/social-media',
+          icon: Share2,
+          label: t('social_media', 'Social Media'),
+          color: 'text-blue-600',
+          description: 'Social media management'
+        },
+        {
+          path: '/marketing/campaigns',
+          icon: Target,
+          label: t('campaigns', 'Campaigns'),
+          color: 'text-green-600',
+          description: 'Marketing campaigns'
+        },
+        {
+          path: '/marketing/analytics',
+          icon: TrendingUp,
+          label: t('marketing_analytics', 'Analytics'),
+          color: 'text-purple-600',
+          description: 'Marketing analytics and insights'
+        },
+        {
+          path: '/marketing/content-planning',
+          icon: Calendar,
+          label: t('content_planning', 'Content Planning'),
+          color: 'text-orange-600',
+          description: 'Content planning and scheduling'
+        }
+      ]
+    },
+    {
+      title: 'Administration',
+      icon: Server,
+      items: [
+        {
+          path: '/administration/users',
+          icon: Users,
+          label: t('users', 'Users'),
+          color: 'text-purple-600',
+          description: 'User management'
+        },
+        {
+          path: '/administration/analytics',
+          icon: BarChart3,
+          label: t('analytics', 'Analytics'),
+          color: 'text-green-600',
+          description: 'Advanced analytics and insights'
+        },
+        {
+          path: '/administration/system',
           icon: Server,
           label: t('system', 'System'),
           color: 'text-red-600',
           description: 'System administration'
         },
         {
-          path: '/settings',
-          icon: Settings,
-          label: t('settings', 'Settings'),
-          color: 'text-gray-600',
-          description: 'Application settings'
+          path: '/administration/audit-logs',
+          icon: Shield,
+          label: t('audit', 'Audit Logs'),
+          color: 'text-orange-600',
+          description: 'System audit and security logs'
+        },
+        {
+          path: '/administration/health-monitor',
+          icon: Activity,
+          label: t('health', 'Health Monitor'),
+          color: 'text-blue-600',
+          description: 'System health and monitoring'
         }
       ]
     }
@@ -330,7 +389,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onMouseEnter={() => setHoveredItem(item.path)}
                         onMouseLeave={() => setHoveredItem(null)}
                         onClick={onMobileClose}
-                        className={({ isActive: navActive }) =>
+                        className={() =>
                           cn(
                             "group relative flex items-center rounded-xl transition-all duration-200",
                             "focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-1",
@@ -338,31 +397,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             (isMobileOpen || !collapsed)
                               ? "px-3 py-3 gap-3"
                               : "justify-center px-2 py-3",
-                            navActive
-                              ? "bg-gradient-to-r from-pink-50 to-pink-100/50  text-pink-700  shadow-lg shadow-pink-500/10"
-                              : "text-gray-600  hover:text-gray-900  hover:bg-gray-100/50 /50"
+                            // Remove active state styling - all links look the same
+                            "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
                           )
                         }
                       >
-                        {({ isActive: navActive }) => (
+                        {() => (
                           <>
 
                             {/* Icon Container */}
                             <div className={cn(
                               "relative flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0",
                               (isMobileOpen || !collapsed) ? "w-10 h-10" : "w-8 h-8",
-                              navActive
-                                ? "bg-pink-500/20  shadow-md"
-                                : hoveredItem === item.path
-                                  ? "bg-gray-200/50 "
-                                  : "group-hover:bg-gray-200/30 "
+                              // Remove active state styling for icon container
+                              hoveredItem === item.path
+                                ? "bg-gray-200/50"
+                                : "group-hover:bg-gray-200/30"
                             )}>
                               {(Icon as any) && <Icon className={cn(
                                 "transition-all duration-200",
                                 collapsed ? "w-5 h-5" : "w-5 h-5",
-                                navActive
-                                  ? "text-pink-600"
-                                  : item.color
+                                // Always use the item's original color, no active state override
+                                item.color
                               )} />}
 
                               {/* Badge */}
@@ -386,8 +442,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             >
                               <div className="flex flex-col gap-0.5">
                                 <span className={cn(
-                                  "font-medium text-sm truncate block",
-                                  navActive && "text-pink-700 "
+                                  "font-medium text-sm truncate block"
+                                  // Remove active state text color override
                                 )}>
                                   {item.label}
                                 </span>
@@ -427,37 +483,89 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </nav>
         </div>
 
-        {/* Bottom Section */}
-        <div className="p-4 border-t border-gray-200/50  flex-shrink-0">
-          <div className={cn(
-            "bg-gradient-to-br from-pink-50/50 to-pink-100/30  rounded-xl border border-pink-200/50  transition-all duration-200",
-            (isMobileOpen || !collapsed) ? "p-4" : "p-3 flex items-center justify-center"
-          )}>
-            <div className={cn(
-              "flex items-center transition-all duration-200",
-              (isMobileOpen || !collapsed) ? "gap-3" : "justify-center"
-            )}>
-              <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-pink-200  rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-pink-600" />
-              </div>
-              {(isMobileOpen || !collapsed) && (
+        {/* Fixed Settings Button at Bottom */}
+        <div className="flex-shrink-0 p-3 border-t border-border">
+          <NavLink
+            to="/settings"
+            onMouseEnter={() => setHoveredItem('/settings')}
+            onMouseLeave={() => setHoveredItem(null)}
+            onClick={onMobileClose}
+            className={() =>
+              cn(
+                "group relative flex items-center rounded-xl transition-all duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-1",
+                "min-h-[44px] touch-manipulation w-full",
+                (isMobileOpen || !collapsed)
+                  ? "px-3 py-3 gap-3"
+                  : "justify-center px-2 py-3",
+                // Always show focused/active background for Settings
+                "bg-gradient-to-r from-pink-50 to-pink-100/50 text-pink-700 shadow-lg shadow-pink-500/10",
+                "hover:from-pink-100 hover:to-pink-150/60 hover:shadow-pink-500/20"
+              )
+            }
+          >
+            {() => (
+              <>
+                {/* Icon Container */}
+                <div className={cn(
+                  "relative flex items-center justify-center rounded-lg transition-all duration-200 flex-shrink-0",
+                  (isMobileOpen || !collapsed) ? "w-10 h-10" : "w-8 h-8",
+                  // Always show focused/active background for Settings icon
+                  "bg-pink-500/20 shadow-md"
+                )}>
+                  <Settings className={cn(
+                    "transition-all duration-200",
+                    collapsed ? "w-5 h-5" : "w-5 h-5",
+                    // Always show focused/active color for Settings icon
+                    "text-pink-600"
+                  )} />
+                </div>
+
+                {/* Text Content */}
                 <motion.div
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
+                  initial={false}
+                  animate={{
+                    opacity: (isMobileOpen || !collapsed) ? 1 : 0,
+                    x: (isMobileOpen || !collapsed) ? 0 : -20,
+                    width: (isMobileOpen || !collapsed) ? 'auto' : 0
+                  }}
                   transition={{ duration: 0.2 }}
-                  className="min-w-0 flex-1 overflow-hidden"
+                  className="overflow-hidden flex-1 min-w-0"
                 >
-                  <p className="text-sm font-semibold text-pink-700  whitespace-nowrap">
-                    AI Powered
-                  </p>
-                  <p className="text-xs text-gray-600 whitespace-nowrap">
-                    Smart Analytics
-                  </p>
+                  <div className="flex flex-col gap-0.5">
+                    <span className={cn(
+                      "font-medium text-sm truncate block",
+                      // Always show focused/active text color for Settings
+                      "text-pink-700"
+                    )}>
+                      {t('settings', 'Settings')}
+                    </span>
+                    {(isMobileOpen || !collapsed) && (
+                      <span className="text-xs text-gray-500 truncate">
+                        Application settings
+                      </span>
+                    )}
+                  </div>
                 </motion.div>
-              )}
-            </div>
-          </div>
+
+                {/* Hover Tooltip for Collapsed State */}
+                {collapsed && hoveredItem === '/settings' && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                    className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50"
+                  >
+                    <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+                      <div className="font-medium text-sm">Settings</div>
+                      <div className="text-xs text-gray-300 mt-1">Application settings</div>
+                    </div>
+                    <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
+                  </motion.div>
+                )}
+              </>
+            )}
+          </NavLink>
         </div>
       </motion.aside>
     </>

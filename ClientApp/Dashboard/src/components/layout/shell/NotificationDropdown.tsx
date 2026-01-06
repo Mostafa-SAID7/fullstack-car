@@ -27,7 +27,7 @@ export const NotificationDropdown: React.FC = () => {
                 const res = await notificationService.getNotifications();
                 if (res.succeeded && res.data) {
                     setNotifications(res.data);
-                    setUnreadCount(res.data.filter((n: any) => !n.isRead).length);
+                    setUnreadCount(res.data.filter((n: any) => !n.read).length);
                 }
             } catch (err) {
                 console.error('Failed to fetch notifications:', err);
@@ -56,7 +56,7 @@ export const NotificationDropdown: React.FC = () => {
     const handleMarkAsRead = async (id: string) => {
         try {
             await notificationService.markAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+            setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
             setUnreadCount(prev => Math.max(0, prev - 1));
         } catch (err) {
             console.error('Failed to mark notification as read:', err);
@@ -107,10 +107,10 @@ export const NotificationDropdown: React.FC = () => {
                                 notifications.map((n) => (
                                     <div
                                         key={n.id}
-                                        onClick={() => !n.isRead && handleMarkAsRead(n.id)}
+                                        onClick={() => !n.read && handleMarkAsRead(n.id)}
                                         className={cn(
                                             "p-4 border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/30 flex gap-4",
-                                            !n.isRead && "bg-primary/5"
+                                            !n.read && "bg-primary/5"
                                         )}
                                     >
                                         <div className="mt-1">{getNotificationIcon(n.type)}</div>
@@ -123,7 +123,7 @@ export const NotificationDropdown: React.FC = () => {
                                                 {new Date(n.createdAt).toLocaleString()}
                                             </p>
                                         </div>
-                                        {!n.isRead && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />}
+                                        {!n.read && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />}
                                     </div>
                                 ))
                             ) : (

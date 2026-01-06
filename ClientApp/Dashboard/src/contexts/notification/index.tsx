@@ -23,6 +23,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     return `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }, []);
 
+  const removeNotification = useCallback((id: string) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  }, []);
+
   const addNotification = useCallback((notification: Omit<ToastMessage, 'id'>): string => {
     const id = generateId();
     const newNotification: ToastMessage = {
@@ -45,11 +49,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     }
 
     return id;
-  }, [generateId, defaultDuration, maxNotifications]);
-
-  const removeNotification = useCallback((id: string) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
-  }, []);
+  }, [generateId, defaultDuration, maxNotifications, removeNotification]);
 
   const clearAllNotifications = useCallback(() => {
     setNotifications([]);

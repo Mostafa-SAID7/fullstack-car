@@ -1,13 +1,16 @@
 export { DashboardOverview } from './dashboard';
-export { Analytics } from './analytics';
-export { Users } from './management/users';
 export { Content, LocalizationManagement, Media, ThemesManagement } from './content';
-export { System } from './system';
 export { Settings } from './settings';
 export { AIAgentManagement } from './ai-agent';
-export { Customers } from './management/customers';
-export { Products } from './management/products';
-export { Services } from './management/services';
+export { Customers } from './marketplace/customers';
+export { Products } from './marketplace/products';
+export { Services } from './marketplace/services';
 
-// Management Pages
-export * from './management';
+// Marketplace Pages
+export * from './marketplace';
+
+// Administration Pages
+export { Users, Analytics, System, AuditLogs, HealthMonitor } from './administration';
+
+// Marketing Pages
+export { MarketingOverview, SocialMedia, Campaigns, Analytics as MarketingAnalytics, ContentPlanning } from './marketing';

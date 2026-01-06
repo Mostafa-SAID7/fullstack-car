@@ -13,11 +13,20 @@ const Products = React.lazy(() => import('./pages').then(module => ({ default: m
 const Services = React.lazy(() => import('./pages').then(module => ({ default: module.Services })));
 const Content = React.lazy(() => import('./pages').then(module => ({ default: module.Content })));
 const System = React.lazy(() => import('./pages').then(module => ({ default: module.System })));
+const AuditLogs = React.lazy(() => import('./pages').then(module => ({ default: module.AuditLogs })));
+const HealthMonitor = React.lazy(() => import('./pages').then(module => ({ default: module.HealthMonitor })));
 const LocalizationManagement = React.lazy(() => import('./pages').then(module => ({ default: module.LocalizationManagement })));
 const Settings = React.lazy(() => import('./pages').then(module => ({ default: module.Settings })));
 const AIAgentManagement = React.lazy(() => import('./pages').then(module => ({ default: module.AIAgentManagement })));
 const Media = React.lazy(() => import('./pages').then(module => ({ default: module.Media })));
 const ThemesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ThemesManagement })));
+
+// Marketing Pages
+const MarketingOverview = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingOverview })));
+const SocialMedia = React.lazy(() => import('./pages').then(module => ({ default: module.SocialMedia })));
+const Campaigns = React.lazy(() => import('./pages').then(module => ({ default: module.Campaigns })));
+const MarketingAnalytics = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingAnalytics })));
+const ContentPlanning = React.lazy(() => import('./pages').then(module => ({ default: module.ContentPlanning })));
 
 import { Skeleton } from './components';
 
@@ -72,7 +81,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/analytics"
+          path="/administration/analytics"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -84,7 +93,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/users"
+          path="/administration/users"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -96,7 +105,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/customers"
+          path="/marketplace/customers"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -108,7 +117,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/products"
+          path="/marketplace/products"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -120,7 +129,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/services"
+          path="/marketplace/services"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -180,12 +189,36 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/system"
+          path="/administration/system"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
                   <System />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/administration/audit-logs"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <AuditLogs />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/administration/health-monitor"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <HealthMonitor />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -210,6 +243,66 @@ const AppRoutes = () => {
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
                   <AIAgentManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketing"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <MarketingOverview />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketing/social-media"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <SocialMedia />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketing/campaigns"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <Campaigns />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketing/analytics"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <MarketingAnalytics />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketing/content-planning"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <ContentPlanning />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>

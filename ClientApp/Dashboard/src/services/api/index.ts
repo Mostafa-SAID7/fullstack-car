@@ -137,10 +137,12 @@ class ApiClient {
         }
 
         if (!processedResponse.ok) {
+          const errorText = await processedResponse.text().catch(() => '');
           throw new ApiError(
             `HTTP ${processedResponse.status}: ${processedResponse.statusText}`,
             processedResponse.status,
-            await processedResponse.text().catch(() => null)
+            undefined,
+            errorText || undefined
           );
         }
 
@@ -179,7 +181,7 @@ class ApiClient {
 
         // Wait before retrying
         if (attempt < maxRetries) {
-          const delay = (config?.retryDelay ?? RETRY_CONFIG.RETRY_DELAY) * Math.pow(RETRY_CONFIG.BACKOFF_MULTIPLIER, attempt);
+          const delay = (config?.retryDelay ?? RETRY_CONFIG.RETRY_DELAY) * Math.pow(RETRY_CONFIG.BACKOFF_FACTOR, attempt);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }

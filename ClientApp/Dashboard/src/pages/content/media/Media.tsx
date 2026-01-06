@@ -4,7 +4,7 @@ import { BarChart3, Upload, Filter, FolderOpen } from 'lucide-react';
 import { MediaHeader } from './components/MediaHeader';
 import { MediaGrid } from './components/MediaGrid';
 import { MediaList } from './components/MediaList';
-import { TabNavigation, TabContent } from '../../../components/layout/tabs/TabNavigation';
+import { TabNavigation, TabContent } from '../../../components/shared/TabNavigation';
 
 // Mock data - replace with real data from API
 const mockMediaFiles = [

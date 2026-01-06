@@ -9,7 +9,7 @@ import {
   Network,
   Users
 } from 'lucide-react';
-import type { ModelMetrics } from '../../../types/monitoring';
+import type { ModelMetrics } from '../../../types/models';
 import { generateMockChartData } from '../utils/helpers';
 
 interface AIAgentOverviewProps {

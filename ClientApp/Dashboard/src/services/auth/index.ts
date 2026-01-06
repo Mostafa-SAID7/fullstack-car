@@ -122,7 +122,7 @@ export class AuthService {
               name: `${profileResult.data.firstName} ${profileResult.data.lastName}`,
               roles: ['User', 'Admin'], // fallback roles - DANGEROUS but solves loop for now if backend fails
               isActive: true,
-              isEmailConfirmed: true,
+              isEmailConfirmed: profileResult.data.isEmailConfirmed || true,
               createdAt: profileResult.data.createdAt || new Date().toISOString()
             };
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { AIAgentConfig } from '../../types/config';
-import type { ModelMetrics } from '../../types/monitoring';
+import type { ModelMetrics } from '../../types/models';
 import type { TrainingSession } from '../../types/training';
 
 export const useAIAgentState = () => {
@@ -33,7 +33,8 @@ export const useAIAgentState = () => {
     errorRate: 2.1,
     memoryUsage: 68,
     cpuUsage: 45,
-    networkIO: 12.5
+    uptime: 99.8,
+    requestsPerMinute: 150
   });
 
   const [trainingSessions] = useState<TrainingSession[]>([

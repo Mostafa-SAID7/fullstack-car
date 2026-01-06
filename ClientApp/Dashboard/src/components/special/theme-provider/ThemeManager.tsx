@@ -11,13 +11,6 @@ interface ThemeManagerProps {
 export const ThemeManager: React.FC<ThemeManagerProps> = ({ className }) => {
   const [theme, setTheme] = useState<Theme>('system');
 
-  useEffect(() => {
-    // Load theme from localStorage or default to system
-    const savedTheme = localStorage.getItem('theme') as Theme || 'system';
-    setTheme(savedTheme);
-    applyTheme(savedTheme);
-  }, []);
-
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
 
@@ -30,6 +23,13 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({ className }) => {
 
     localStorage.setItem('theme', newTheme);
   };
+
+  useEffect(() => {
+    // Load theme from localStorage or default to system
+    const savedTheme = localStorage.getItem('theme') as Theme || 'system';
+    setTheme(savedTheme);
+    applyTheme(savedTheme);
+  }, [applyTheme]);
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);

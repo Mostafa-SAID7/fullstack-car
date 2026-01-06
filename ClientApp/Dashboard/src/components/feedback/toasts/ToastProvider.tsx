@@ -40,6 +40,10 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 }) => {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
 
+  const removeToast = useCallback((id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  }, []);
+
   const addToast = useCallback((toast: ToastMessage) => {
     const id = toast.id || `toast-${Date.now()}-${Math.random()}`;
     const newToast: ToastProps = {
@@ -56,11 +60,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
       const filtered = prev.filter(t => t.id !== id);
       return [newToast, ...filtered].slice(0, maxToasts);
     });
-  }, [maxToasts]);
-
-  const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  }, []);
+  }, [maxToasts, removeToast]);
 
   const clearToasts = useCallback(() => {
     setToasts([]);

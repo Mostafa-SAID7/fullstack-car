@@ -7,3 +7,4 @@ export { NotificationDropdown } from './NotificationDropdown';
 export { UserMenu } from './UserMenu';
 export { ThemeToggle } from './ThemeToggle';
 export { LanguageSwitcher } from './LanguageSwitcher';
+export { ProfileAvatar } from './ProfileAvatar';

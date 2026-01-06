@@ -5,6 +5,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { NotificationDropdown } from './NotificationDropdown';
 import { ThemeToggle } from './ThemeToggle';
 import { AIChatToggle } from './AIChatToggle';
+import { ProfileAvatar } from './ProfileAvatar';
 
 interface HeaderProps {
     onSearchClick?: () => void;
@@ -68,6 +69,9 @@ export const AppHeader: React.FC<HeaderProps> = ({ onSearchClick, onToggleMobile
 
                     {/* Theme Toggle */}
                     <ThemeToggle />
+
+                    {/* Profile Avatar */}
+                    <ProfileAvatar />
                 </div>
             </div>
         </header>

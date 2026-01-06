@@ -4,14 +4,25 @@ export * from './api';
 export * from './auth';
 export * from './common';
 export * from './config';
-export * from './datasets';
-export * from './models';
 export * from './notification';
 export * from './products';
-export * from './training';
 
-// Dashboard types (core)
-export * from './dashboard';
+// Dashboard types (core) - with explicit re-export to avoid DateRange conflict
+export * from './dashboard/widget';
+export * from './dashboard/metric-card';
+export * from './dashboard/chart';
+export * from './dashboard/quick-stats';
+export * from './dashboard/database-metrics';
+export * from './dashboard/metrics';
+export * from './dashboard/system';
+export * from './dashboard/stats';
+export * from './dashboard/analytics';
+// Export dashboard filters with aliased DateRange
+export type {
+  FilterOption as DashboardFilterOption,
+  DateRange as DashboardDateRange,
+  DashboardFilters
+} from './dashboard/filters';
 
 // Admin types (with aliasing for conflicts)
 export type { AdminUser } from './admin/user';
@@ -34,9 +45,3 @@ export * from './admin/engagement-analytics';
 export * from './admin/security-analytics';
 export * from './admin/performance-analytics';
 export * from './admin/analytics-metadata';
-
-// Page-specific types
-// export * from './pages'; // If this conflicts, be explicit as well
-
-// Monitoring Aliases
-export type { ChartData as MonitoringChartData } from './monitoring';

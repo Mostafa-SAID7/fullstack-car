@@ -1,6 +1,6 @@
 import { apiClient } from '../api';
 import { API_ENDPOINTS } from '../../config/api';
-import type { Notification, NotificationResponse } from '../../types/notification';
+import type { Notification, NotificationResponse, NotificationPriority } from '../../types/notification';
 
 // Re-export types for backward compatibility
 export type { Notification, NotificationResponse };
@@ -156,7 +156,7 @@ export class NotificationService {
         const notifications = await this.getNotifications(userId, 1, 10);
         if (notifications.succeeded && notifications.data) {
           notifications.data.forEach((notification: Notification) => {
-            if (!notification.isRead) {
+            if (!notification.read) {
               callback(notification);
             }
           });
@@ -198,7 +198,7 @@ export class NotificationService {
     }
   }
 
-  async sendNotification(notification: Omit<Notification, 'id' | 'isRead' | 'createdAt'>): Promise<any> {
+  async sendNotification(notification: Omit<Notification, 'id' | 'read' | 'createdAt' | 'updatedAt'>): Promise<any> {
     try {
       const response = await apiClient.post(API_ENDPOINTS.NOTIFICATIONS.BASE, notification);
       return response;
@@ -214,7 +214,7 @@ export class NotificationService {
 
   // Utility Methods
   generateMockNotifications(count: number = 5): Notification[] {
-    const types: Notification['type'][] = ['Success', 'Warning', 'Error', 'Info'];
+    const types: Notification['type'][] = ['success', 'warning', 'error', 'info'];
     const messages = [
       'Your profile has been updated successfully',
       'New user registration requires approval',
@@ -228,14 +228,16 @@ export class NotificationService {
       title: `Notification ${index + 1}`,
       message: messages[Math.floor(Math.random() * messages.length)],
       type: types[Math.floor(Math.random() * types.length)],
-      isRead: Math.random() > 0.5,
+      priority: 'medium' as NotificationPriority,
+      read: Math.random() > 0.5,
       createdAt: new Date(Date.now() - Math.random() * 86400000).toISOString(),
+      updatedAt: new Date().toISOString(),
       userId: 'current-user'
     }));
   }
 
   getUnreadCount(notifications: Notification[]): number {
-    return notifications.filter(notification => !notification.isRead).length;
+    return notifications.filter(notification => !notification.read).length;
   }
 
   groupNotificationsByType(notifications: Notification[]): Record<Notification['type'], Notification[]> {

@@ -1,6 +1,6 @@
 // Theme Context Utilities
 
-import type { ThemeConfig } from '../../pages/themes';
+import type { ThemeConfig } from '../../pages/content/themes';
 import type { ThemeMode } from './types';
 
 export const getSystemTheme = (): 'light' | 'dark' => {

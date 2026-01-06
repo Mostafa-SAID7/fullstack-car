@@ -43,3 +43,14 @@ export interface ModelPerformance {
   errorRate: number;
 }
 
+export interface ModelMetrics {
+  accuracy: number;
+  responseTime: number;
+  throughput: number;
+  cpuUsage: number;
+  memoryUsage: number;
+  errorRate: number;
+  uptime: number;
+  requestsPerMinute: number;
+}
+

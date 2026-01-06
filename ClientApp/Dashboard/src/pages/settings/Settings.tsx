@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Shield, Palette, AlertTriangle } from 'lucide-react';
+import { User, Shield, Palette, AlertTriangle, Sparkles } from 'lucide-react';
 import { useSettings } from '../../hooks';
 import { SettingsHeader } from './components/SettingsHeader';
 import { ProfileSettings } from './components/ProfileSettings';
 import { SecuritySettings } from './components/SecuritySettings';
 import { AppearanceSettings } from './components/AppearanceSettings';
+import { AIAnalyticsSettings } from './components/AIAnalyticsSettings';
 import { DangerZone } from './components/DangerZone';
 import { SettingsModals } from './components/SettingsModals';
 import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
-import { ThemeManager } from '../../components/special/theme-provider/ThemeManager';
 
 export const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -47,7 +47,7 @@ export const Settings = () => {
     { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
     { id: 'security', label: 'Security', icon: <Shield className="w-4 h-4" /> },
     { id: 'appearance', label: 'Appearance', icon: <Palette className="w-4 h-4" /> },
-    { id: 'theme', label: 'Theme Manager', icon: <Palette className="w-4 h-4" /> },
+    { id: 'ai-analytics', label: 'AI Analytics', icon: <Sparkles className="w-4 h-4" /> },
     { id: 'danger', label: 'Danger Zone', icon: <AlertTriangle className="w-4 h-4" /> }
   ];
 
@@ -89,8 +89,12 @@ export const Settings = () => {
             <AppearanceSettings />
           </div>
         );
-      case 'theme':
-        return <ThemeManager />;
+      case 'ai-analytics':
+        return (
+          <div className="space-y-6">
+            <AIAnalyticsSettings />
+          </div>
+        );
       case 'danger':
         return (
           <div className="space-y-6">

@@ -120,6 +120,12 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
     setSelectedIndex(0);
   }, [query]);
 
+  const handleSelect = (result: SearchResult) => {
+    navigate(result.path);
+    onClose();
+    setQuery('');
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
@@ -147,13 +153,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, selectedIndex, filteredResults, onClose]);
-
-  const handleSelect = (result: SearchResult) => {
-    navigate(result.path);
-    onClose();
-    setQuery('');
-  };
+  }, [isOpen, selectedIndex, filteredResults, onClose, handleSelect]);
 
   if (!isOpen) return null;
 

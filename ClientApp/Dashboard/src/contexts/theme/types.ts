@@ -1,6 +1,6 @@
 // Theme Context Types
 
-import type { ThemeConfig } from '../../pages/themes';
+import type { ThemeConfig } from '../../pages/content/themes';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 

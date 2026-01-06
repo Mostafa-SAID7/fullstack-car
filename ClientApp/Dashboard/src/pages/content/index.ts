@@ -1,8 +1,8 @@
-export { Content } from './Content';
-export * from './components/ContentHeader';
-export * from './components/ContentStats';
-export * from './components/ContentSections';
-export * from './components/ContentAnalytics';
+export { Pages as Content } from './pages/Pages';
+export * from './pages/components/ContentHeader';
+export * from './pages/components/ContentStats';
+export * from './pages/components/ContentSections';
+export * from './pages/components/ContentAnalytics';
 
 // Content sub-modules
 export { LocalizationManagement } from './localization';

@@ -51,10 +51,23 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     });
   }, [themeMode]);
 
+  const loadSavedTheme = () => {
+    const savedTheme = loadThemeFromStorage();
+    if (savedTheme) {
+      const theme = getThemeById(savedTheme.themeId!);
+      if (theme) {
+        setCurrentTheme(theme);
+      }
+      if (savedTheme.layout) {
+        setLayout({ ...DEFAULT_LAYOUT, ...savedTheme.layout });
+      }
+    }
+  };
+
   // Load saved theme on mount
   useEffect(() => {
     loadSavedTheme();
-  }, []);
+  }, [loadSavedTheme]);
 
   // Apply theme to CSS variables
   useEffect(() => {
@@ -108,19 +121,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   const saveTheme = () => {
     saveThemeToStorage(currentTheme.id, layout);
-  };
-
-  const loadSavedTheme = () => {
-    const savedTheme = loadThemeFromStorage();
-    if (savedTheme) {
-      const theme = getThemeById(savedTheme.themeId!);
-      if (theme) {
-        setCurrentTheme(theme);
-      }
-      if (savedTheme.layout) {
-        setLayout({ ...DEFAULT_LAYOUT, ...savedTheme.layout });
-      }
-    }
   };
 
   const setThemeMode = (mode: ThemeMode) => {
