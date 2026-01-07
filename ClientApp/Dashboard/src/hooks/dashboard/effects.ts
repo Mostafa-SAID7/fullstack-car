@@ -7,8 +7,11 @@ export const useDashboardEffects = (
   setLoading: (loading: boolean) => void
 ) => {
   useEffect(() => {
+    console.log('Dashboard Effect Running');
     const loadData = async () => {
+      console.log('Fetching dashboard data...');
       await fetchDashboardData();
+      console.log('Data fetched, setting loading false');
       setLoading(false);
     };
 

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, Loader2, AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { Button, Input } from '../index';
+import Button from '../forms/buttons/Button';
+import Input from '../forms/inputs/Input';
 import { authService } from '../../services/auth';
 
 export const ForgotPasswordForm: React.FC = () => {
@@ -18,8 +19,12 @@ export const ForgotPasswordForm: React.FC = () => {
         setError(null);
 
         try {
-            await authService.forgotPassword({ email });
-            setIsSubmitted(true);
+            const result = await authService.forgotPassword({ email });
+            if (result.succeeded) {
+                setIsSubmitted(true);
+            } else {
+                setError(result.errors?.[0] || result.message || t('reset_failed', 'Failed to process request. Please try again.'));
+            }
         } catch (err: any) {
             setError(err.message || t('reset_failed', 'Failed to process request. Please try again.'));
         } finally {

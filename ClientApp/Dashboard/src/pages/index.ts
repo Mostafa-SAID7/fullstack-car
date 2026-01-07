@@ -13,4 +13,5 @@ export * from './marketplace';
 export { Users, Analytics, System, AuditLogs, HealthMonitor } from './administration';
 
 // Marketing Pages
-export { MarketingOverview, SocialMedia, Campaigns, Analytics as MarketingAnalytics, ContentPlanning } from './marketing';
+export { MarketingOverview, SocialMedia, Campaigns, ContentPlanning } from './marketing';
+export { Analytics as MarketingAnalytics } from './marketing';

@@ -42,7 +42,8 @@ export class AuthService {
         this.currentUser = JSON.parse(stored);
         apiClient.setAuthToken(token);
       } else {
-        // BYPASS: Auto-login as Admin for development
+        // BYPASS: Auto-login removed to prevent infinite loop with real backend verification
+        /*
         console.warn('[AuthService] DEV MODE: Auto-logging in as Mock Admin');
         const mockUser: UserInfo = {
           id: 'mock-admin-id',
@@ -64,6 +65,7 @@ export class AuthService {
           localStorage.setItem('auth_token', mockToken);
           apiClient.setAuthToken(mockToken);
         }
+        */
       }
     } catch (error) {
       console.error('Failed to load stored auth:', error);

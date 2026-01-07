@@ -9,7 +9,7 @@ import { DashboardAnalytics } from './components/DashboardAnalytics';
 import { DashboardActions } from './components/DashboardActions';
 import { ModelTraining } from './components/ModelTraining';
 import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavigation';
-import { ChartSkeleton as DashboardSkeleton } from '../../components/feedback/skeletons/ChartSkeleton';
+import { DashboardSkeleton } from '../../components/feedback/skeletons/DashboardSkeleton';
 
 export const DashboardOverview = () => {
   const { user } = useAuth();

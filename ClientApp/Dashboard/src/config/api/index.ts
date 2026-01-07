@@ -8,13 +8,39 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    RESET_PASSWORD: '/auth/reset-password',
-    VERIFY_EMAIL: '/auth/verify-email',
-    RESEND_VERIFICATION: '/auth/resend-verification'
+    REFRESH: '/auth/refresh-token',
+    CONFIRM_EMAIL: '/auth/confirm-email',
+    RESEND_CONFIRMATION: '/auth/resend-email-confirmation',
+    REVOKE_TOKEN: '/auth/revoke-token'
   },
-  
+
+  // OAuth
+  OAUTH: {
+    GOOGLE: '/oauth/google',
+    GITHUB: '/oauth/github',
+    FACEBOOK: '/oauth/facebook',
+    CALLBACK: '/oauth/callback',
+    EXTERNAL_LOGINS: '/oauth/external-logins'
+  },
+
+  // Password Management
+  PASSWORD: {
+    CHANGE: '/password/change',
+    FORGOT: '/password/forgot',
+    RESET: '/password/reset',
+    VALIDATE: '/password/validate',
+    STRENGTH: '/password/strength'
+  },
+
+  // User Profile
+  PROFILE: {
+    BASE: '/profile',
+    AVATAR: '/profile/avatar',
+    PRIVACY: '/profile/privacy',
+    DEACTIVATE: '/profile/deactivate',
+    DELETE: '/profile/delete'
+  },
+
   // User Management
   USERS: {
     BASE: '/users',
@@ -25,14 +51,14 @@ export const API_ENDPOINTS = {
     SECURITY_LOGS: '/users/security-logs',
     SESSIONS: '/users/sessions'
   },
-  
+
   // Dashboard
   DASHBOARD: {
-    STATS: '/dashboard/stats',
-    RECENT_ACTIVITY: '/dashboard/recent-activity',
-    NOTIFICATIONS: '/dashboard/notifications'
+    STATS: '/v3/admin/dashboard',
+    RECENT_ACTIVITY: '/v3/admin/dashboard/recent-activity',
+    NOTIFICATIONS: '/v3/admin/dashboard/alerts'
   },
-  
+
   // Analytics
   ANALYTICS: {
     BASE: '/analytics',
@@ -45,7 +71,7 @@ export const API_ENDPOINTS = {
     EXPORT: '/analytics/export',
     SETTINGS: '/analytics/settings'
   },
-  
+
   // Services
   SERVICES: {
     BASE: '/services',
@@ -54,7 +80,7 @@ export const API_ENDPOINTS = {
     CATEGORIES: '/services/categories',
     REVIEWS: '/services/reviews'
   },
-  
+
   // Products
   PRODUCTS: {
     BASE: '/products',
@@ -62,14 +88,14 @@ export const API_ENDPOINTS = {
     INVENTORY: '/products/inventory',
     REVIEWS: '/products/reviews'
   },
-  
+
   // Customers
   CUSTOMERS: {
     BASE: '/customers',
     ORDERS: '/customers/orders',
     PREFERENCES: '/customers/preferences'
   },
-  
+
   // Content Management
   CONTENT: {
     MEDIA: '/content/media',
@@ -77,7 +103,7 @@ export const API_ENDPOINTS = {
     THEMES: '/content/themes',
     PAGES: '/content/pages'
   },
-  
+
   // AI Agent
   AI_AGENT: {
     CHAT: '/ai-agent/chat',
@@ -86,7 +112,7 @@ export const API_ENDPOINTS = {
     KNOWLEDGE: '/ai-agent/knowledge',
     SETTINGS: '/ai-agent/settings'
   },
-  
+
   // System
   SYSTEM: {
     HEALTH: '/system/health',
@@ -95,13 +121,13 @@ export const API_ENDPOINTS = {
     BACKUP: '/system/backup',
     SETTINGS: '/system/settings'
   },
-  
+
   // Notifications
   NOTIFICATIONS: {
-    BASE: '/notifications',
-    MARK_READ: '/notifications/mark-read',
-    MARK_ALL_READ: '/notifications/mark-all-read',
-    SETTINGS: '/notifications/settings'
+    BASE: '/v4/shared/notifications',
+    MARK_READ: '/v4/shared/notifications/mark-read',
+    MARK_ALL_READ: '/v4/shared/notifications/mark-all-read',
+    SETTINGS: '/v4/shared/notifications/settings'
   }
 } as const;
 

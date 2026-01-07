@@ -1,299 +1,141 @@
 @import "tailwindcss";
 
-/* Global scrollbar styles - using Tailwind color variables */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
+@theme {
+  /* Color system */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Custom Semantic Colors */
+  --color-heading: hsl(var(--heading));
+  --color-text: hsl(var(--text));
+  --color-paragraph: hsl(var(--paragraph));
+
+  /* Border Radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Typography */
+  --font-sans: 'Inter', 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* CSS Variables for Design System */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+
+  /* Additional semantic colors */
+  --heading: var(--foreground);
+  --text: var(--foreground);
+  --paragraph: var(--muted-foreground);
 }
 
-*::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  border-radius: 4px;
-}
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
 
-*::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 4px;
-  border: 1px solid hsl(var(--background));
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
-}
-
-#root {
-  min-height: 100vh;
+  /* Additional semantic colors for dark mode */
+  --heading: var(--foreground);
+  --text: var(--foreground);
+  --paragraph: var(--muted-foreground);
 }
 
 @layer base {
-  :root {
-    --background: 220 15% 92%;
-    --foreground: 220 13% 9%;
-    --card: 220 20% 88%;
-    --card-foreground: 220 15% 12%;
-    --popover: 220 20% 88%;
-    --popover-foreground: 220 15% 12%;
-    /* Microsoft Blue (Light Mode) */
-    --primary: 206 100% 42%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 15% 80%;
-    --secondary-foreground: 220 10% 25%;
-    --muted: 220 12% 82%;
-    --muted-foreground: 220 8% 45%;
-    --accent: 220 15% 80%;
-    --accent-foreground: 220 10% 25%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 75%;
-    --input: 220 15% 78%;
-    --ring: 206 100% 42%;
-    --radius: 1rem;
-    /* Typography colors - Light mode */
-    --heading: 220 13% 9%;
-    --text: 220 13% 9%;
-    --paragraph: 220 10% 20%;
-  }
-
-  [data-theme='dark'],
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    /* Microsoft Blue (Dark Mode - slightly brighter) */
-    --primary: 206 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    /* Ensure border provides contrast against dark background */
-    --border: 217.2 32.6% 25%;
-    /* Inputs now match body background as requested */
-    --input: 222.2 84% 4.9%;
-    --ring: 346.8 85% 55%;
-    /* Typography colors - Dark mode */
-    --heading: 210 40% 98%;
-    --text: 210 40% 98%;
-    --paragraph: 215 20.2% 75%;
-  }
-
   * {
     border-color: hsl(var(--border));
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background-color: hsl(var(--muted));
+    border-radius: 0.25rem;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 0.25rem;
+    border: 2px solid hsl(var(--muted));
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground));
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-  }
-
-  /* Heading styles */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: hsl(var(--foreground));
-    font-weight: 600;
-  }
-
-  /* Text and paragraph styles */
-  p {
-    color: hsl(var(--muted-foreground));
-    line-height: 1.625;
-  }
-
-  /* Default text color for all text elements */
-  span,
-  div,
-  label,
-  small,
-  strong,
-  em,
-  b,
-  i,
-  u,
-  mark,
-  del,
-  ins,
-  sub,
-  sup {
-    color: hsl(var(--text));
-  }
-
-  /* Links inherit text color but can be overridden */
-  a {
-    color: hsl(var(--primary));
-  }
-
-  a:hover {
-    color: hsl(var(--primary));
-    opacity: 0.8;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-sans);
   }
 }
 
-/* Glassmorphism Effect */
-/* Glassmorphism Effect */
-.glassmorphism {
-  background: hsl(var(--popover) / 0.7);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid hsl(var(--border) / 0.3);
-}
-
-[data-theme='dark'] .glassmorphism,
-.dark .glassmorphism {
-  background: hsl(var(--popover) / 0.6);
-  border: 1px solid hsl(var(--border) / 0.2);
-}
-
-/* Main Content Background */
-.main-content-bg {
-  background-color: hsl(var(--background));
-}
-
-
-/* Animations */
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.font-arabic {
-  font-family: 'Cairo', 'Inter', sans-serif !important;
-}
-
-/* Enhanced Loading states - using Tailwind color variables */
-.loading-skeleton {
-  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted)) 50%, hsl(var(--muted)) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-}
-
-/* Skeleton pulse animation */
-@keyframes skeleton-pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Enhanced skeleton with subtle gradient - using Tailwind color variables */
-.skeleton-enhanced {
-  background: linear-gradient(110deg,
-      hsl(var(--muted)) 8%,
-      hsl(var(--muted)) 18%,
-      hsl(var(--muted)) 33%,
-      hsl(var(--muted)) 100%);
-  background-size: 200% 100%;
-  animation: skeleton-wave 1.4s ease-in-out infinite;
-}
-
-@keyframes skeleton-wave {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-
-
-
-/* Responsive improvements */
-
-/* Scrollbar hide utility */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari and Opera */
-}
-
-@layer utilities {
-  .animate-gradient {
-    background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #312e81);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-  }
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.shadow-glow {
-  box-shadow: 0 0 25px hsl(var(--primary) / 0.6);
-}
-
-/* Autofill Fix for Dark Mode/Glassmorphism */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: hsl(var(--foreground));
-  transition: background-color 5000s ease-in-out 0s;
-  box-shadow: inset 0 0 20px 20px rgba(0, 0, 0, 0);
-}
-
-[data-theme='dark'] input:-webkit-autofill {
-  -webkit-text-fill-color: white;
+/* Layout */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }

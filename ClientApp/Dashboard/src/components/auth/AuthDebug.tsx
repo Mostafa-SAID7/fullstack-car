@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../hooks';
-import { Card, CardHeader, CardTitle, CardContent, Button } from '../index';
+import { Card, CardHeader, CardTitle, CardContent } from '../layout/cards';
+import Button from '../forms/buttons/Button';
 import { authService } from '../../services/auth';
 
 export const AuthDebug: React.FC = () => {

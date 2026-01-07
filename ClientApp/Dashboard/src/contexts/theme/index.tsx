@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ThemeConfig } from '../../pages/content/themes';
 import { defaultTheme, availableThemes, getThemeById } from '../../pages/content/themes';
 import type { ThemeContextType, ThemeProviderProps, ThemeMode, LayoutConfig } from './types';
@@ -51,7 +51,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     });
   }, [themeMode]);
 
-  const loadSavedTheme = () => {
+  const loadSavedTheme = useCallback(() => {
     const savedTheme = loadThemeFromStorage();
     if (savedTheme) {
       const theme = getThemeById(savedTheme.themeId!);
@@ -62,7 +62,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         setLayout({ ...DEFAULT_LAYOUT, ...savedTheme.layout });
       }
     }
-  };
+  }, []);
 
   // Load saved theme on mount
   useEffect(() => {

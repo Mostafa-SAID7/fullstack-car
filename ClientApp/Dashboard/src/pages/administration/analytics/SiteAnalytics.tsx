@@ -476,7 +476,7 @@ export const SiteAnalytics: React.FC = () => {
     );
   };
 
-  const renderRealtimeTab = () => {
+  const RealtimeTab: React.FC = () => {
     const [realtimeData, setRealtimeData] = useState<SiteAnalyticsType['realtime'] | null>(null);
     const [realtimeLoading, setRealtimeLoading] = useState(true);
 
@@ -583,7 +583,7 @@ export const SiteAnalytics: React.FC = () => {
       case 'behavior':
         return renderBehaviorTab();
       case 'realtime':
-        return renderRealtimeTab();
+        return <RealtimeTab />;
       default:
         return renderOverviewTab();
     }

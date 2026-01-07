@@ -21,10 +21,7 @@ export const ChartCard: React.FC<ChartCardProps> = React.memo(({
   className = ''
 }) => {
   const { info } = useToast();
-  if (loading) {
-    return <ChartSkeleton className={className} showTitle showLegend />;
-  }
-
+  
   const handleAIInsight = useCallback(() => {
     info(`Requesting AI analysis for "${title}" chart...`);
     window.dispatchEvent(new CustomEvent('ai-insight', {
@@ -33,6 +30,10 @@ export const ChartCard: React.FC<ChartCardProps> = React.memo(({
       }
     }));
   }, [title, description, info]);
+
+  if (loading) {
+    return <ChartSkeleton className={className} showTitle showLegend />;
+  }
 
   return (
     <motion.div

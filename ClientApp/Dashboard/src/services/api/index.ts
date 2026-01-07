@@ -14,7 +14,7 @@ export interface ApiResult<T = any> {
   statusCode?: number;
 }
 
-const API_BASE_URL = 'http://localhost:5100/api';
+const API_BASE_URL = 'http://localhost:5100/api/v1';
 
 class ApiClient {
   private baseUrl: string;
@@ -138,11 +138,18 @@ class ApiClient {
 
         if (!processedResponse.ok) {
           const errorText = await processedResponse.text().catch(() => '');
+          let details: any = errorText;
+          try {
+            details = JSON.parse(errorText);
+          } catch (e) {
+            // Keep as text if not JSON
+          }
+
           throw new ApiError(
             `HTTP ${processedResponse.status}: ${processedResponse.statusText}`,
             processedResponse.status,
             undefined,
-            errorText || undefined
+            details
           );
         }
 
@@ -189,10 +196,27 @@ class ApiClient {
 
     // All retries failed
     const apiError = lastError instanceof ApiError ? lastError : new ApiError(lastError.message);
+
+    // Extract errors from details if available
+    let errors: string[] = [apiError.message];
+    if (apiError.details) {
+      if (Array.isArray(apiError.details)) {
+        errors = apiError.details.map(e => String(e));
+      } else if (typeof apiError.details === 'object' && apiError.details.errors) {
+        // Handle ASP.NET Core Validation errors (ValidationProblemDetails)
+        const valErrors = apiError.details.errors;
+        errors = Object.values(valErrors).flat().map(e => String(e));
+      } else if (typeof apiError.details === 'string' && apiError.details) {
+        errors = [apiError.details];
+      } else if (apiError.details.message) {
+        errors = [apiError.details.message];
+      }
+    }
+
     return {
       succeeded: false,
-      errors: [apiError.message],
-      message: 'Request failed after retries',
+      errors: errors,
+      message: errors[0] || 'Request failed after retries',
       statusCode: apiError.statusCode
     };
   }

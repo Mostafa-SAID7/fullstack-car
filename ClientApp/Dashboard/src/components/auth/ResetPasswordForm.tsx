@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Lock, Loader2, AlertCircle, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
-import { Button, Input } from '../index';
+import Button from '../forms/buttons/Button';
+import Input from '../forms/inputs/Input';
 import { authService } from '../../services/auth';
 
 export const ResetPasswordForm: React.FC = () => {
@@ -35,8 +36,17 @@ export const ResetPasswordForm: React.FC = () => {
         setError(null);
 
         try {
-            await authService.resetPassword({ token, email, newPassword: password });
-            setIsSuccess(true);
+            const result = await authService.resetPassword({
+                token,
+                email,
+                newPassword: password,
+                confirmPassword: password
+            });
+            if (result.succeeded) {
+                setIsSuccess(true);
+            } else {
+                setError(result.errors?.[0] || result.message || t('reset_failed', 'Failed to reset password. Please try again.'));
+            }
         } catch (err: any) {
             setError(err.message || t('reset_failed', 'Failed to reset password. Please try again.'));
         } finally {

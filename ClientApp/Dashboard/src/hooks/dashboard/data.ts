@@ -1,5 +1,4 @@
-// Dashboard Hook - Data Fetching Functions
-
+import { useCallback } from 'react';
 import { dashboardService } from '../../services/dashboard';
 
 export const useDashboardData = (
@@ -9,7 +8,7 @@ export const useDashboardData = (
   setSystemAnalytics: (data: any) => void,
   setRevenueAnalytics: (data: any) => void
 ) => {
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const [
         statsResult,
@@ -33,7 +32,7 @@ export const useDashboardData = (
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
     }
-  };
+  }, [setStats, setUserAnalytics, setContentAnalytics, setSystemAnalytics, setRevenueAnalytics]);
 
   return {
     fetchDashboardData

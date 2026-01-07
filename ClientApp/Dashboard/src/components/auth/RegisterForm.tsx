@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, Lock, User, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { Button, Input, Checkbox } from '../index';
+import Button from '../forms/buttons/Button';
+import Input from '../forms/inputs/Input';
+import Checkbox from '../forms/checkboxes/Checkbox';
 import { authService } from '../../services/auth';
 
 export const RegisterForm: React.FC = () => {
@@ -35,14 +37,18 @@ export const RegisterForm: React.FC = () => {
         setError(null);
 
         try {
-            await authService.register({
+            const result = await authService.register({
                 email,
                 password,
                 fullName,
                 userName,
                 confirmPassword
             });
-            navigate('/login?registered=true');
+            if (result.succeeded) {
+                navigate('/login?registered=true');
+            } else {
+                setError(result.errors?.[0] || result.message || t('registration_failed', 'Failed to create account. Please try again.'));
+            }
         } catch (err: any) {
             setError(err.message || t('registration_failed', 'Failed to create account. Please try again.'));
         } finally {

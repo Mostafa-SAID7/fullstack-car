@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { Button, Input, Checkbox } from '../index';
+import Button from '../forms/buttons/Button';
+import Input from '../forms/inputs/Input';
+import Checkbox from '../forms/checkboxes/Checkbox';
 import { authService } from '../../services/auth';
 
 export const LoginForm: React.FC = () => {
@@ -21,8 +23,12 @@ export const LoginForm: React.FC = () => {
         setError(null);
 
         try {
-            await authService.login({ email, password, rememberMe });
-            navigate('/dashboard');
+            const result = await authService.login({ email, password, rememberMe });
+            if (result.succeeded) {
+                navigate('/dashboard');
+            } else {
+                setError(result.errors?.[0] || result.message || t('login_failed', 'Failed to sign in. Please check your credentials.'));
+            }
         } catch (err: any) {
             setError(err.message || t('login_failed', 'Failed to sign in. Please check your credentials.'));
         } finally {
