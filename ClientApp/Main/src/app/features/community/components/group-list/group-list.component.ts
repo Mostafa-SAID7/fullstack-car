@@ -12,15 +12,15 @@ import { GroupCardComponent } from '../group-card/group-card.component';
     template: `
         <div class="space-y-4">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-sm font-black uppercase tracking-widest text-primary">{{ 'main.community.groups.suggested' | translate }}</h2>
-                <button class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary">{{ 'main.community.common.seeAll' | translate }}</button>
+                <h2 class="text-sm font-black uppercase tracking-widest text-primary">Suggested Groups</h2>
+                <button class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary">See All</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <app-group-card *ngFor="let group of groups" [group]="group"></app-group-card>
             </div>
             <div *ngIf="groups.length === 0" class="fb-card p-10 text-center animate-pulse">
                 <i class="fa-solid fa-users text-4xl text-muted-foreground/20 mb-3"></i>
-                <p class="text-sm text-muted-foreground/60 font-black uppercase tracking-widest">{{ 'main.community.groups.noGroups' | translate }}</p>
+                <p class="text-sm text-muted-foreground/60 font-black uppercase tracking-widest">No groups available</p>
             </div>
         </div>
     `,

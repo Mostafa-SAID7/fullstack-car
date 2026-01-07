@@ -169,7 +169,7 @@ export class NotificationService {
     }
 
     getNotifications(pageNumber: number = 1, pageSize: number = 20): Observable<Result<PaginatedResult<Notification>>> {
-        return this.http.get<Result<PaginatedResult<any>>>(`${this.baseUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`).pipe(
+        return this.http.get<Result<PaginatedResult<Notification>>>(`${this.baseUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`).pipe(
             tap(response => {
                 if (response.succeeded && response.data) {
                     const notifications = response.data.items.map((item: any) => ({
@@ -191,7 +191,20 @@ export class NotificationService {
             }),
             catchError(err => {
                 console.error('Failed to fetch notifications', err);
-                return of({ succeeded: false, data: null, errors: ['Failed to fetch notifications'] });
+                const emptyResult: Result<PaginatedResult<Notification>> = { 
+                    succeeded: false, 
+                    data: { 
+                        items: [], 
+                        pageNumber: pageNumber, 
+                        pageSize: pageSize, 
+                        totalCount: 0, 
+                        totalPages: 0, 
+                        hasPreviousPage: false, 
+                        hasNextPage: false 
+                    }, 
+                    errors: ['Failed to fetch notifications'] 
+                };
+                return of(emptyResult);
             })
         );
     }

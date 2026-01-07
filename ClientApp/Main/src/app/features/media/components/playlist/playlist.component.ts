@@ -79,7 +79,7 @@ export class PlaylistComponent implements OnInit {
   }
 
   viewPlaylist(playlist: VideoPlaylist): void {
-    this.router.navigate(['/media/playlists', playlist.id]);
+    this.router.navigate(['/app/media/playlists', playlist.id]);
   }
 
   getTotalDuration(playlist: VideoPlaylist): string {

@@ -2,6 +2,7 @@ using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Shared.Localization.Interfaces;
 using Application.Features.Identity.Auth.DTOs.Requests;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
@@ -33,36 +34,60 @@ namespace WebAPI.Controllers.Identity.Auth
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            // Manual model validation to return consistent Result format
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage)
+                    .ToList();
+                
+                var validationResult = Result<AuthResponse>.Failure(errors);
+                return Ok(validationResult);
+            }
+
             var result = await _authenticationService.LoginAsync(request);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            // Manual model validation to return consistent Result format
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage)
+                    .ToList();
+                
+                var validationResult = Result<AuthResponse>.Failure(errors);
+                return Ok(validationResult);
+            }
+
             var result = await _authenticationService.RegisterAsync(request);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var result = await _authenticationService.RefreshTokenAsync(request);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
         {
             var result = await _authenticationService.ConfirmEmailAsync(request);
-            return result.Succeeded ? Ok(new { Message = "Email confirmed successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("resend-email-confirmation")]
         public async Task<IActionResult> ResendEmailConfirmation([FromBody] string email)
         {
             var result = await _authenticationService.ResendEmailConfirmationAsync(email);
-            return result.Succeeded ? Ok(new { Message = "Confirmation email sent" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [Authorize]
@@ -70,7 +95,7 @@ namespace WebAPI.Controllers.Identity.Auth
         public async Task<IActionResult> Logout()
         {
             var result = await _authenticationService.LogoutAsync(_currentUserService.UserId!);
-            return result.Succeeded ? Ok(new { Message = "Logged out successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [Authorize]
@@ -78,7 +103,7 @@ namespace WebAPI.Controllers.Identity.Auth
         public async Task<IActionResult> RevokeToken([FromBody] string token)
         {
             var result = await _authenticationService.RevokeTokenAsync(token);
-            return result.Succeeded ? Ok(new { Message = "Token revoked successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
     }
 }

@@ -15,7 +15,7 @@ export interface ApiResult<T = any> {
   statusCode?: number;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5100/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5101/api';
 
 class ApiClient {
   private baseUrl: string;

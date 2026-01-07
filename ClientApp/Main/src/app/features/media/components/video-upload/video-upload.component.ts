@@ -87,9 +87,9 @@ export class VideoUploadComponent implements OnInit {
           
           // Navigate to the uploaded video
           if (response.data && response.data.videoId) {
-            this.router.navigate(['/media/videos', response.data.videoId]);
+            this.router.navigate(['/app/media/videos', response.data.videoId]);
           } else {
-            this.router.navigate(['/media/videos']);
+            this.router.navigate(['/app/media/videos']);
           }
         },
         error: (error) => {
@@ -117,7 +117,7 @@ export class VideoUploadComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/media/videos']);
+    this.router.navigate(['/app/media/videos']);
   }
 
   getFileSize(): string {

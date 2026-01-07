@@ -58,14 +58,38 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
+    const loginData = this.loginForm.value;
+    console.log('[Angular LoginComponent] Form data:', loginData);
+    console.log('[Angular LoginComponent] Form valid:', this.loginForm.valid);
+    console.log('[Angular LoginComponent] Form errors:', this.loginForm.errors);
+    
+    // Log individual field values and validation
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const control = this.loginForm.get(key);
+      console.log(`[Angular LoginComponent] Field ${key}:`, {
+        value: control?.value,
+        valid: control?.valid,
+        errors: control?.errors
+      });
+    });
+
     try {
-      const result = await firstValueFrom(this.authService.login(this.loginForm.value));
+      const result = await firstValueFrom(this.authService.login(loginData));
+      console.log('[Angular LoginComponent] Login result:', result);
+      
       if (result.succeeded) {
-        this.router.navigate(['/dashboard']);
+        console.log('[Angular LoginComponent] Login successful, navigating to app dashboard');
+        this.router.navigate(['/app/dashboard']);
       } else {
-        this.error = result.errors.join(', ') || 'Login failed. Please try again.';
+        const errorMessage = (result.errors && result.errors.length > 0) 
+          ? result.errors.join(', ') 
+          : 'Login failed. Please try again.';
+        console.error('[Angular LoginComponent] Login failed:', errorMessage);
+        console.error('[Angular LoginComponent] Full result:', result);
+        this.error = errorMessage;
       }
     } catch (error: any) {
+      console.error('[Angular LoginComponent] Login exception:', error);
       this.error = error.message || 'Login failed. Please try again.';
     } finally {
       this.loading = false;

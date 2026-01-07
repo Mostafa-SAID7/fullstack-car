@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarLeftComponent } from '../../components/sidebar-left/sidebar-left.component';
 import { SidebarRightComponent } from '../../components/sidebar-right/sidebar-right.component';
@@ -14,7 +13,6 @@ import { LayoutService } from '../../../core/services/layout.service';
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
         HeaderComponent,
         SidebarLeftComponent,
         SidebarRightComponent,
@@ -41,7 +39,7 @@ import { LayoutService } from '../../../core/services/layout.service';
             <div class="w-full max-w-[800px] pt-6 animate-slide-up">
                 <router-outlet></router-outlet>
                 <!-- Localization Test -->
-                <div style="display:none" id="localization-test">{{ 'shared.common.common.welcome' | translate }}</div>
+                <div style="display:none" id="localization-test">Welcome</div>
             </div>
         </main>
 

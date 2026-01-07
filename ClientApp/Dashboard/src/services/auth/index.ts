@@ -91,22 +91,44 @@ export class AuthService {
 
   // Authentication Methods
   async login(credentials: any): Promise<any> {
+    console.log('[AuthService] Login attempt with credentials:', { email: credentials.email, rememberMe: credentials.rememberMe });
+    
     const response = await this.coreService.login(credentials);
     console.log('[AuthService] Login response raw:', response);
 
     if (response.succeeded && response.data) {
+      // The backend returns Result<AuthResponse>, so the actual auth data is in response.data
+      const authData = response.data;
+      
       // 1. Handle Token
-      if (response.data.token) {
-        console.log('[AuthService] Saving token:', response.data.token);
-        localStorage.setItem('auth_token', response.data.token);
-        apiClient.setAuthToken(response.data.token);
+      if (authData.token) {
+        console.log('[AuthService] Saving token:', authData.token);
+        localStorage.setItem('auth_token', authData.token);
+        apiClient.setAuthToken(authData.token);
       }
 
       // 2. Handle User
-      if (response.data.user) {
-        console.log('[AuthService] Saving user from response:', response.data.user);
-        this._saveAuth(response.data.user);
-      } else if (response.data.token) {
+      if (authData.user) {
+        console.log('[AuthService] Saving user from response:', authData.user);
+        
+        // Map backend UserDto to frontend UserInfo
+        const userInfo: UserInfo = {
+          id: authData.user.id,
+          firstName: authData.user.firstName,
+          lastName: authData.user.lastName,
+          email: authData.user.email,
+          name: `${authData.user.firstName} ${authData.user.lastName}`,
+          roles: authData.user.roles || ['User'],
+          isActive: authData.user.isActive,
+          isEmailConfirmed: authData.user.isEmailConfirmed,
+          createdAt: authData.user.createdAt
+        };
+        
+        this._saveAuth(userInfo);
+        
+        // Update response structure for consistency
+        response.data.user = userInfo;
+      } else if (authData.token) {
         // Fallback: If we have a token but no user, try to fetch the profile
         console.warn('[AuthService] Token received but user missing. Attempting to fetch profile...');
         try {
@@ -115,14 +137,13 @@ export class AuthService {
             console.log('[AuthService] Profile fetched successfully:', profileResult.data);
 
             // Map ProfileResponse to UserInfo
-            // Note: Profile might not have roles, so we default to ['User'] or empty
             const profileUser: UserInfo = {
               id: profileResult.data.id,
               firstName: profileResult.data.firstName,
               lastName: profileResult.data.lastName,
               email: profileResult.data.email,
               name: `${profileResult.data.firstName} ${profileResult.data.lastName}`,
-              roles: ['User', 'Admin'], // fallback roles - DANGEROUS but solves loop for now if backend fails
+              roles: ['User'], // fallback roles
               isActive: true,
               isEmailConfirmed: profileResult.data.isEmailConfirmed || true,
               createdAt: profileResult.data.createdAt || new Date().toISOString()
@@ -139,6 +160,8 @@ export class AuthService {
           console.error('[AuthService] Error fetching profile fallback:', err);
         }
       }
+    } else {
+      console.error('[AuthService] Login failed:', response);
     }
     return response;
   }

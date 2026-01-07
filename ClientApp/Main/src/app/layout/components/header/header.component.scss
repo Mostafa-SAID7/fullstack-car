@@ -88,10 +88,45 @@
     &.is-dark {
         @apply text-yellow-400 scale-110;
         filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.4));
+        transform: rotate(0deg) scale(1.1);
     }
 
     &.is-light {
         @apply text-slate-400 scale-100;
+        transform: rotate(0deg) scale(1);
+    }
+
+    &.fa-desktop {
+        @apply text-blue-400 scale-105;
+        filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.3));
+        transform: rotate(0deg) scale(1.05);
+    }
+
+    /* Smooth transitions between states */
+    &.fa-sun {
+        animation: sun-glow 2s ease-in-out infinite alternate;
+    }
+
+    &.fa-moon {
+        animation: moon-pulse 3s ease-in-out infinite;
+    }
+}
+
+@keyframes sun-glow {
+    0% {
+        filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.4));
+    }
+    100% {
+        filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.6));
+    }
+}
+
+@keyframes moon-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
     }
 }
 

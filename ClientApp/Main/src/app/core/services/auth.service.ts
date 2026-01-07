@@ -43,11 +43,23 @@ export class AuthService {
   }
 
   login(request: LoginRequest): Observable<Result<LoginResponse>> {
-    return this.http.post<Result<LoginResponse>>(`${this.apiUrl}/login`, request)
+    console.log('[Angular AuthService] Making login request to:', `${this.apiUrl}/login`);
+    console.log('[Angular AuthService] Request payload:', request);
+    
+    return this.http.post<Result<any>>(`${this.apiUrl}/login`, request)
       .pipe(
         tap(response => {
+          console.log('[Angular AuthService] Login response:', response);
           if (response.succeeded && response.data) {
-            this.setAuthData(response.data);
+            // Backend returns AuthResponse, map it to LoginResponse
+            const authResponse = response.data;
+            const loginResponse: LoginResponse = {
+              token: authResponse.token,
+              refreshToken: authResponse.refreshToken,
+              user: authResponse.user,
+              expiresAt: authResponse.expiresAt
+            };
+            this.setAuthData(loginResponse);
           }
         })
       );

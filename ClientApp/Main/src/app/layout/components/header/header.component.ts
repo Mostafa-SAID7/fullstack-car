@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ThemeService } from '../../../core/services/theme.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -20,7 +20,6 @@ export class HeaderComponent implements OnInit {
     themeService = inject(ThemeService);
     layoutService = inject(LayoutService);
     notificationService = inject(NotificationService);
-    translate = inject(TranslateService);
 
     isSearchOpen = false;
     currentLang = 'en-US';
@@ -29,10 +28,7 @@ export class HeaderComponent implements OnInit {
     unreadCount$ = this.notificationService.unreadCount$;
 
     ngOnInit() {
-        this.currentLang = this.translate.currentLang || 'en-US';
-        this.translate.onLangChange.subscribe(event => {
-            this.currentLang = event.lang;
-        });
+        // Language functionality removed - using static English text
     }
 
     toggleSearch() {
@@ -40,7 +36,7 @@ export class HeaderComponent implements OnInit {
     }
 
     switchLanguage(lang: string) {
-        this.translate.use(lang);
+        // Language switching removed - using static English text
         localStorage.setItem('language', lang); // Persist if not already handled
 
         // Optional: Direction change logic
@@ -59,6 +55,36 @@ export class HeaderComponent implements OnInit {
 
     getThemeMode(): 'light' | 'dark' | 'system' {
         return this.themeService.getThemeMode();
+    }
+
+    getThemeIcon(): string {
+        const mode = this.getThemeMode();
+        switch (mode) {
+            case 'light':
+                return 'fa-sun';
+            case 'dark':
+                return 'fa-moon';
+            case 'system':
+                return 'fa-desktop';
+            default:
+                return 'fa-moon';
+        }
+    }
+
+    getThemeTooltip(): string {
+        const mode = this.getThemeMode();
+        const resolvedTheme = this.themeService.isDark() ? 'dark' : 'light';
+        
+        switch (mode) {
+            case 'light':
+                return 'Theme: Light';
+            case 'dark':
+                return 'Theme: Dark';
+            case 'system':
+                return `Theme: System (${resolvedTheme})`;
+            default:
+                return 'Theme';
+        }
     }
 
     handleNotificationClick(note: Notification) {

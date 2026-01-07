@@ -187,14 +187,14 @@ export class ServiceDetailComponent implements OnInit {
 
   bookService(): void {
     if (this.service) {
-      this.router.navigate(['/marketplace/bookings/create'], {
+      this.router.navigate(['/app/marketplace/bookings/create'], {
         queryParams: { serviceId: this.service.id }
       });
     }
   }
 
   goBack(): void {
-    this.router.navigate(['/marketplace/services']);
+    this.router.navigate(['/app/marketplace/services']);
   }
 
   formatPrice(price: number): string {

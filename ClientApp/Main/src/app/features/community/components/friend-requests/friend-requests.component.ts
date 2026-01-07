@@ -11,7 +11,7 @@ import { FriendService } from '../../services/friend.service';
     template: `
         <div class="fb-card p-5">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-sm font-black uppercase tracking-widest text-primary">{{ 'main.community.social.requests' | translate }}</h2>
+                <h2 class="text-sm font-black uppercase tracking-widest text-primary">Friend Requests</h2>
                 <span class="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded-full">{{ requests.length }}</span>
             </div>
             
@@ -29,17 +29,17 @@ import { FriendService } from '../../services/friend.service';
                         
                         <div class="flex gap-2">
                             <button (click)="accept(request.id)" class="flex-1 bg-primary text-white text-[9px] font-black py-1.5 rounded-lg hover:bg-primary/90 transition-all uppercase tracking-widest">
-                                {{ 'main.community.social.accept' | translate }}
+                                Accept
                             </button>
                             <button (click)="decline(request.id)" class="flex-1 bg-secondary text-foreground text-[9px] font-black py-1.5 rounded-lg hover:bg-secondary/80 transition-all uppercase tracking-widest">
-                                {{ 'main.community.social.decline' | translate }}
+                                Decline
                             </button>
                         </div>
                     </div>
                 </div>
                 
                 <div *ngIf="requests.length === 0" class="py-4 text-center">
-                    <p class="text-[10px] text-muted-foreground/60 font-black uppercase tracking-widest">{{ 'main.community.social.noRequests' | translate }}</p>
+                    <p class="text-[10px] text-muted-foreground/60 font-black uppercase tracking-widest">No friend requests</p>
                 </div>
             </div>
         </div>

@@ -44,7 +44,7 @@ export class GuestGuard implements CanActivate {
       return true;
     }
 
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/app/dashboard']);
     return false;
   }
 }

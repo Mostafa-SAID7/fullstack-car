@@ -143,7 +143,7 @@ export class VideoListComponent implements OnInit {
   }
 
   playVideo(video: VideoList): void {
-    this.router.navigate(['/media/videos', video.id]);
+    this.router.navigate(['/app/media/videos', video.id]);
   }
 
   likeVideo(video: VideoList): void {
@@ -179,7 +179,7 @@ export class VideoListComponent implements OnInit {
   }
 
   navigateToUpload(): void {
-    this.router.navigate(['/media/videos/upload']);
+    this.router.navigate(['/app/media/videos/upload']);
   }
 
   clearFilters(): void {

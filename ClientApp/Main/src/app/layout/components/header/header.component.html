@@ -17,7 +17,7 @@
             class="absolute top-0 left-0 w-full h-14 bg-card flex items-center px-4 z-50 md:hidden animate-fade-in shadow-md">
             <i class="fa-solid fa-arrow-left text-xl text-muted-foreground mr-4 cursor-pointer"
                 (click)="toggleSearch()"></i>
-            <input type="text" [placeholder]="'shared.common.common.search' | translate" class="fb-input w-full"
+            <input type="text" placeholder="Search Community Car" class="fb-input w-full"
                 autoFocus>
         </div>
 
@@ -25,7 +25,7 @@
         <div class="relative hidden md:block group">
             <i
                 class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10 group-focus-within:text-primary transition-colors"></i>
-            <input type="text" [placeholder]="'shared.common.common.search' | translate"
+            <input type="text" placeholder="Search Community Car"
                 class="fb-input pl-10 w-[240px] lg:w-[280px] xl:w-[320px] transition-all focus:w-[360px] focus:pl-4 focus:ring-primary/20 focus:border-primary/50">
         </div>
     </div>
@@ -36,7 +36,7 @@
             <i class="fa-solid fa-house text-2xl group-active:scale-95 transition-transform"></i>
         </div>
         <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
-            [matTooltip]="'main.community.social.friends.title' | translate">
+            matTooltip="Friends">
             <i class="fa-solid fa-user-group text-2xl group-active:scale-95 transition-transform"></i>
         </div>
         <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
@@ -51,7 +51,7 @@
             <i class="fa-solid fa-store text-2xl group-active:scale-95 transition-transform"></i>
         </div>
         <div class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group nav-glow"
-            [matTooltip]="'main.community.groups.groups.title' | translate">
+            matTooltip="Groups">
             <i class="fa-solid fa-users text-2xl group-active:scale-95 transition-transform"></i>
         </div>
     </nav>
@@ -73,14 +73,18 @@
 
         <!-- Theme Switcher -->
         <button class="fb-icon-btn active:scale-95 touch-manipulation group" [matMenuTriggerFor]="themeMenu"
-            matTooltip="Theme">
-            <i class="fa-solid text-xl theme-toggle-icon"
-                [ngClass]="themeService.isDark() ? 'fa-sun rotate-180 is-dark' : 'fa-moon rotate-0 is-light'">
+            [matTooltip]="getThemeTooltip()">
+            <i class="fa-solid text-xl theme-toggle-icon transition-all duration-500"
+                [ngClass]="{
+                    'fa-sun is-dark': getThemeMode() === 'light',
+                    'fa-moon is-light': getThemeMode() === 'dark',
+                    'fa-desktop': getThemeMode() === 'system'
+                }">
             </i>
         </button>
         <mat-menu #themeMenu="matMenu" class="custom-mat-menu">
-            <button mat-menu-item (click)="setThemeMode('light')" [class.bg-secondary]="getThemeMode() === 'light'">
-                <i class="fa-solid fa-sun mr-2"></i> Light
+            <button mat-menu-item (click)="setThemeMode('light')" 
+                [class.bg-secondary]="getThemeMode() === '
             </button>
             <button mat-menu-item (click)="setThemeMode('dark')" [class.bg-secondary]="getThemeMode() === 'dark'">
                 <i class="fa-solid fa-moon mr-2"></i> Dark
@@ -103,7 +107,7 @@
         <!-- Notifications -->
         <button class="fb-icon-btn relative active:scale-95 touch-manipulation group"
             [matMenuTriggerFor]="notificationMenu"
-            [matTooltip]="'main.community.social.notifications.title' | translate">
+            matTooltip="Notifications">
             <i class="fa-solid fa-bell text-xl group-hover:rotate-12 transition-transform"
                 [class.text-primary]="(unreadCount$ | async)! > 0"></i>
             <span *ngIf="(unreadCount$ | async)! > 0" class="notification-badge">

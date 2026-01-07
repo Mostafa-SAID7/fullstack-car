@@ -84,11 +84,11 @@ export class ServiceListComponent implements OnInit {
   }
 
   viewService(service: CarService): void {
-    this.router.navigate(['/marketplace/services', service.id]);
+    this.router.navigate(['/app/marketplace/services', service.id]);
   }
 
   bookService(service: CarService): void {
-    this.router.navigate(['/marketplace/bookings/create'], { 
+    this.router.navigate(['/app/marketplace/bookings/create'], { 
       queryParams: { serviceId: service.id } 
     });
   }

@@ -40,10 +40,10 @@ export class PodcastListComponent implements OnInit {
   }
 
   playPodcast(podcast: PodcastList): void {
-    this.router.navigate(['/media/podcasts', podcast.id]);
+    this.router.navigate(['/app/media/podcasts', podcast.id]);
   }
 
   navigateToUpload(): void {
-    this.router.navigate(['/media/podcasts/upload']);
+    this.router.navigate(['/app/media/podcasts/upload']);
   }
 }

@@ -12,15 +12,15 @@ import { ReviewItemComponent } from '../review-item/review-item.component';
     template: `
         <div class="space-y-4">
             <div class="flex items-center justify-between mb-2">
-                <h2 class="text-sm font-black uppercase tracking-widest text-primary">{{ 'main.community.reviews.recent' | translate }}</h2>
-                <button class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary">{{ 'main.community.common.seeAll' | translate }}</button>
+                <h2 class="text-sm font-black uppercase tracking-widest text-primary">Recent Reviews</h2>
+                <button class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary">See All</button>
             </div>
             <div class="space-y-4">
                 <app-review-item *ngFor="let review of reviews" [review]="review"></app-review-item>
             </div>
             <div *ngIf="reviews.length === 0" class="fb-card p-10 text-center border-dashed border-2 border-border/10">
                 <i class="fa-solid fa-star-half-stroke text-4xl text-muted-foreground/20 mb-3"></i>
-                <p class="text-sm text-muted-foreground/60 font-black uppercase tracking-widest">{{ 'main.community.reviews.noReviews' | translate }}</p>
+                <p class="text-sm text-muted-foreground/60 font-black uppercase tracking-widest">No reviews available</p>
             </div>
         </div>
     `,

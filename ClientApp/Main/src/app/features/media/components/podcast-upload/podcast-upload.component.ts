@@ -142,7 +142,7 @@ export class PodcastUploadComponent implements OnInit {
       next: (response) => {
         console.log('Podcast uploaded successfully:', response);
         this.uploading = false;
-        this.router.navigate(['/media/podcasts', response.id]);
+        this.router.navigate(['/app/media/podcasts', response.id]);
       },
       error: (error) => {
         console.error('Error uploading podcast:', error);
@@ -175,7 +175,7 @@ export class PodcastUploadComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/media/podcasts']);
+    this.router.navigate(['/app/media/podcasts']);
   }
 
   formatFileSize(bytes: number): string {

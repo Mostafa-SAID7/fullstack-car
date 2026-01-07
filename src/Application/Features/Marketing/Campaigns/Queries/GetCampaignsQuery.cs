@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Marketing.Campaigns.Queries;
 
-public class GetCampaignsQuery : IRequest<Result<PaginatedResult<CampaignDto>>>
+public class GetCampaignsQuery : IRequest<Result<PaginatedList<CampaignDto>>>
 {
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
@@ -27,7 +27,7 @@ public class GetCampaignByIdQuery : IRequest<Result<CampaignDto>>
     }
 }
 
-public class GetCampaignContentsQuery : IRequest<Result<PaginatedResult<CampaignContentDto>>>
+public class GetCampaignContentsQuery : IRequest<Result<PaginatedList<CampaignContentDto>>>
 {
     public Guid CampaignId { get; set; }
     public int PageNumber { get; set; } = 1;

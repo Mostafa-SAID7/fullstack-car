@@ -22,14 +22,23 @@ export const LoginForm: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
+        console.log('[LoginForm] Attempting login with:', { email, rememberMe });
+
         try {
             const result = await authService.login({ email, password, rememberMe });
+            console.log('[LoginForm] Login result:', result);
+            
             if (result.succeeded) {
+                console.log('[LoginForm] Login successful, navigating to dashboard');
                 navigate('/dashboard');
             } else {
-                setError(result.errors?.[0] || result.message || t('login_failed', 'Failed to sign in. Please check your credentials.'));
+                const errorMessage = result.errors?.[0] || result.message || t('login_failed', 'Failed to sign in. Please check your credentials.');
+                console.error('[LoginForm] Login failed with error:', errorMessage);
+                console.error('[LoginForm] Full result object:', result);
+                setError(errorMessage);
             }
         } catch (err: any) {
+            console.error('[LoginForm] Login exception:', err);
             setError(err.message || t('login_failed', 'Failed to sign in. Please check your credentials.'));
         } finally {
             setIsLoading(false);

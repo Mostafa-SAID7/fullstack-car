@@ -74,11 +74,11 @@ export class MediaDashboardComponent implements OnInit {
   }
 
   navigateToVideos(): void {
-    this.router.navigate(['/media/videos']);
+    this.router.navigate(['/app/media/videos']);
   }
 
   navigateToPodcasts(): void {
-    this.router.navigate(['/media/podcasts']);
+    this.router.navigate(['/app/media/podcasts']);
   }
 
   navigateToUpload(type: 'video' | 'podcast'): void {
@@ -86,11 +86,11 @@ export class MediaDashboardComponent implements OnInit {
   }
 
   playVideo(video: VideoList): void {
-    this.router.navigate(['/media/videos', video.id]);
+    this.router.navigate(['/app/media/videos', video.id]);
   }
 
   playPodcast(podcast: PodcastList): void {
-    this.router.navigate(['/media/podcasts', podcast.id]);
+    this.router.navigate(['/app/media/podcasts', podcast.id]);
   }
 
   formatDuration(duration: string): string {

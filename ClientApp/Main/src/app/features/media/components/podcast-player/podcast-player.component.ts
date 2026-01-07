@@ -56,7 +56,7 @@ export class PodcastPlayerComponent implements OnInit {
       error: (error) => {
         console.error('Error loading podcast:', error);
         this.loading = false;
-        this.router.navigate(['/media/podcasts']);
+        this.router.navigate(['/app/media/podcasts']);
       }
     });
   }
@@ -174,6 +174,6 @@ export class PodcastPlayerComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/media/podcasts']);
+    this.router.navigate(['/app/media/podcasts']);
   }
 }

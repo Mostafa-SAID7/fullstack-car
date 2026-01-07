@@ -16,14 +16,14 @@ export class MarketplaceDashboardComponent implements OnInit {
   ngOnInit(): void {}
 
   navigateToServices(): void {
-    this.router.navigate(['/marketplace/services']);
+    this.router.navigate(['/app/marketplace/services']);
   }
 
   navigateToProviders(): void {
-    this.router.navigate(['/marketplace/providers']);
+    this.router.navigate(['/app/marketplace/providers']);
   }
 
   navigateToBookings(): void {
-    this.router.navigate(['/marketplace/bookings']);
+    this.router.navigate(['/app/marketplace/bookings']);
   }
 }

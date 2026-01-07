@@ -29,7 +29,7 @@ export class VideoPlayerComponent implements OnInit {
     if (videoId) {
       this.loadVideo(videoId);
     } else {
-      this.router.navigate(['/media/videos']);
+      this.router.navigate(['/app/media/videos']);
     }
   }
 
@@ -82,6 +82,6 @@ export class VideoPlayerComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/media/videos']);
+    this.router.navigate(['/app/media/videos']);
   }
 }

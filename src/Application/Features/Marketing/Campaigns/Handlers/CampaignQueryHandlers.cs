@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Application.Features.Marketing.Campaigns.Handlers;
 
-public class GetCampaignsQueryHandler : IRequestHandler<GetCampaignsQuery, Result<PaginatedResult<CampaignDto>>>
+public class GetCampaignsQueryHandler : IRequestHandler<GetCampaignsQuery, Result<PaginatedList<CampaignDto>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -18,7 +18,7 @@ public class GetCampaignsQueryHandler : IRequestHandler<GetCampaignsQuery, Resul
         _context = context;
     }
 
-    public async Task<Result<PaginatedResult<CampaignDto>>> Handle(GetCampaignsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<CampaignDto>>> Handle(GetCampaignsQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -80,22 +80,17 @@ public class GetCampaignsQueryHandler : IRequestHandler<GetCampaignsQuery, Resul
 
             var campaignDtos = campaigns.Select(MapToCampaignDto).ToList();
 
-            var paginatedResult = new PaginatedResult<CampaignDto>
-            {
-                Items = campaignDtos,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                TotalCount = totalCount,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize),
-                HasPreviousPage = request.PageNumber > 1,
-                HasNextPage = request.PageNumber < (int)Math.Ceiling(totalCount / (double)request.PageSize)
-            };
+            var paginatedResult = new PaginatedList<CampaignDto>(
+                campaignDtos,
+                totalCount,
+                request.PageNumber,
+                request.PageSize);
 
-            return Result<PaginatedResult<CampaignDto>>.Success(paginatedResult);
+            return Result<PaginatedList<CampaignDto>>.Success(paginatedResult);
         }
         catch (Exception ex)
         {
-            return Result<PaginatedResult<CampaignDto>>.Failure($"Error retrieving campaigns: {ex.Message}");
+            return Result<PaginatedList<CampaignDto>>.Failure($"Error retrieving campaigns: {ex.Message}");
         }
     }
 

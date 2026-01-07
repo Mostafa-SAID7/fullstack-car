@@ -243,7 +243,7 @@ public class DeleteCampaignContentCommandHandler : IRequestHandler<DeleteCampaig
     }
 }
 
-public class GetCampaignContentsQueryHandler : IRequestHandler<GetCampaignContentsQuery, Result<PaginatedResult<CampaignContentDto>>>
+public class GetCampaignContentsQueryHandler : IRequestHandler<GetCampaignContentsQuery, Result<PaginatedList<CampaignContentDto>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -252,7 +252,7 @@ public class GetCampaignContentsQueryHandler : IRequestHandler<GetCampaignConten
         _context = context;
     }
 
-    public async Task<Result<PaginatedResult<CampaignContentDto>>> Handle(GetCampaignContentsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<CampaignContentDto>>> Handle(GetCampaignContentsQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -284,22 +284,17 @@ public class GetCampaignContentsQueryHandler : IRequestHandler<GetCampaignConten
 
             var contentDtos = contents.Select(CreateCampaignContentCommandHandler.MapToCampaignContentDto).ToList();
 
-            var paginatedResult = new PaginatedResult<CampaignContentDto>
-            {
-                Items = contentDtos,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                TotalCount = totalCount,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize),
-                HasPreviousPage = request.PageNumber > 1,
-                HasNextPage = request.PageNumber < (int)Math.Ceiling(totalCount / (double)request.PageSize)
-            };
+            var paginatedResult = new PaginatedList<CampaignContentDto>(
+                contentDtos,
+                totalCount,
+                request.PageNumber,
+                request.PageSize);
 
-            return Result<PaginatedResult<CampaignContentDto>>.Success(paginatedResult);
+            return Result<PaginatedList<CampaignContentDto>>.Success(paginatedResult);
         }
         catch (Exception ex)
         {
-            return Result<PaginatedResult<CampaignContentDto>>.Failure($"Error retrieving campaign contents: {ex.Message}");
+            return Result<PaginatedList<CampaignContentDto>>.Failure($"Error retrieving campaign contents: {ex.Message}");
         }
     }
 }
