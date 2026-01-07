@@ -20,38 +20,41 @@ export const routes: Routes = [
       },
       // Protected App Routes
       {
-        path: 'app',
-        canActivate: [AuthGuard],
-        children: [
-          {
-            path: 'dashboard',
-            loadComponent: () => import('./features/community/components/community-feed/community-feed.component').then(m => m.CommunityFeedComponent)
-          },
-          {
-            path: 'community',
-            loadChildren: () => import('./features/community/community.module').then(m => m.CommunityModule)
-          },
-          {
-            path: 'media',
-            loadChildren: () => import('./features/media/media.module').then(m => m.MediaModule)
-          },
-          {
-            path: 'marketplace',
-            loadChildren: () => import('./features/marketplace/marketplace.module').then(m => m.MarketplaceModule)
-          },
-          {
-            path: '',
-            redirectTo: 'dashboard',
-            pathMatch: 'full'
-          }
-        ]
+        path: 'community',
+        loadChildren: () => import('./features/community/community.module').then(m => m.CommunityModule)
+      },
+      {
+        path: 'media',
+        loadChildren: () => import('./features/media/media.module').then(m => m.MediaModule)
+      },
+      {
+        path: 'marketplace',
+        loadChildren: () => import('./features/marketplace/marketplace.module').then(m => m.MarketplaceModule)
+      },
+      {
+        path: '404',
+        loadComponent: () => import('@shared/components/errors/not-found/not-found.component').then(m => m.NotFoundComponent)
+      },
+      {
+        path: '500',
+        loadComponent: () => import('@shared/components/errors/server-error/server-error.component').then(m => m.ServerErrorComponent)
+      },
+      {
+        path: 'dashboard',
+        redirectTo: 'community',
+        pathMatch: 'full'
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'community'
       }
     ]
   },
-  // Redirect unknown routes to main page
+  // Redirect unknown routes to 404
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: '404'
   }
 ];
 

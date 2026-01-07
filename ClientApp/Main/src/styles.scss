@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-    /* Light Mode - Microsoft Fluent Blue & Clean */
+    /* Unified Red Theme - High-Performance Automotive Brilliance */
     --color-background: 210 20% 98%;
     --color-foreground: 210 40% 10%;
 
@@ -13,8 +13,8 @@
     --color-popover: 0 0% 100%;
     --color-popover-foreground: 210 40% 10%;
 
-    --color-primary: 212 100% 48%;
-    /* Microsoft Modern Blue */
+    /* Crimson Red Primary - Consistent for both modes */
+    --color-primary: 0 84% 50%;
     --color-primary-foreground: 0 0% 100%;
 
     --color-secondary: 210 15% 94%;
@@ -23,102 +23,33 @@
     --color-muted: 210 15% 94%;
     --color-muted-foreground: 215 16% 47%;
 
-    --color-accent: 212 100% 96%;
-    --color-accent-foreground: 212 100% 48%;
+    --color-accent: 0 84% 96%;
+    --color-accent-foreground: 0 84% 50%;
 
     --color-destructive: 0 84% 60%;
     --color-destructive-foreground: 0 0% 100%;
 
     --color-border: 210 15% 90%;
     --color-input: 210 15% 90%;
-    --color-ring: 212 100% 48%;
+    --color-ring: 0 84% 50%;
 
     --radius-lg: 12px;
     --radius-md: 8px;
     --radius-sm: 4px;
-
-    --animate-fade-in: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    --animate-slide-up: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    --animate-float: float 3s ease-in-out infinite;
-    --animate-nitro-pulse: nitroPulse 2s infinite;
-    --animate-shine: shine 3s infinite;
 }
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-@keyframes nitroPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
-    }
-}
-
-@keyframes shine {
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 100%;
-    }
-}
-
 
 @layer base {
     .dark {
-        /* Dark Mode - High-Performance Automotive (Crimson & Carbon) */
         --color-background: 220 15% 8%;
-        /* Deep Charcoal */
         --color-foreground: 210 20% 98%;
 
         --color-card: 220 15% 12%;
-        /* Carbon Fiber shade */
         --color-card-foreground: 210 20% 98%;
 
         --color-popover: 220 15% 12%;
         --color-popover-foreground: 210 20% 98%;
 
         --color-primary: 0 84% 50%;
-        /* High-Performance Crimson Red */
         --color-primary-foreground: 0 0% 100%;
 
         --color-secondary: 220 15% 18%;
@@ -138,126 +69,49 @@
         --color-ring: 0 84% 50%;
     }
 
+    html,
+    body {
+        @apply h-full overflow-hidden;
+    }
+
     html {
-        scroll-behavior: smooth;
-        overflow: hidden;
-        height: 100%;
+        @apply scroll-smooth antialiased;
+        text-rendering: optimizeLegibility;
     }
 
     body {
-        @apply font-sans bg-background text-foreground transition-colors duration-300 antialiased;
-        font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
-        overflow: hidden;
-        height: 100%;
+        @apply font-sans bg-background text-foreground transition-colors duration-300;
+        /* Primary font is handled in tailwind.config.js */
+    }
+
+    /* Accessibility focus styles */
+    :focus-visible {
+        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
     }
 }
 
-/* Animations */
-/* fadeIn and slideUp are already defined above within the :root section's accompanying keyframes */
-
-/* Mica and Acrylic effects */
-@layer utilities {
-    .mica-effect {
-        @apply backdrop-blur-3xl bg-background/60 border-b border-white/10 shadow-sm transition-all duration-500 relative overflow-hidden;
-
-        &::after {
-            content: '';
-            @apply absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none;
-        }
-    }
-
-    .acrylic-effect {
-        @apply backdrop-blur-xl bg-card/40 border border-white/5 shadow-xl transition-all duration-500;
-    }
-
-    .metallic-border {
-        position: relative;
-
-        &::after {
-            content: '';
-            @apply absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-30;
-        }
-    }
-
-
-    .fb-card {
-        @apply bg-card text-card-foreground rounded-xl shadow-sm border border-border/40 overflow-hidden transition-all duration-300 hover:shadow-md;
-    }
-
-    .fb-input {
-        @apply bg-secondary/60 text-foreground rounded-lg px-4 py-2 outline-none border border-transparent focus:border-primary/40 focus:bg-card focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60;
-    }
-
-    .fb-btn {
-        @apply px-4 py-2 rounded-lg font-bold transition-all duration-200 cursor-pointer active:scale-95 select-none text-sm;
-    }
-
-    .fb-sidebar-item {
-        @apply flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/5 text-foreground/80 font-semibold text-sm hover:text-primary relative overflow-hidden;
-
-        &::before {
-            content: '';
-            @apply absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary rounded-full transition-all duration-300;
-        }
-
-        &:hover::before,
-        &.active::before {
-            @apply h-6;
-        }
-
-        &:hover {
-            @apply shadow-lg shadow-black/5 -translate-y-0.5;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
-        }
-    }
-
-    .fb-icon-btn {
-        @apply w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5;
-    }
-
-
-    .custom-scroll {
-        scrollbar-width: thin;
-        scrollbar-color: hsl(var(--color-primary) / 0.2) transparent;
-
-        &::-webkit-scrollbar {
-            @apply w-1.5;
-        }
-
-        &::-webkit-scrollbar-track {
-            @apply bg-transparent;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            @apply bg-primary/20 rounded-full transition-colors hover:bg-primary/40;
-        }
-    }
-
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-    }
-
+/* Material Menu Customizations - Strict Tailwind Inheritance */
+.mat-mdc-menu-panel {
+    @apply bg-popover text-popover-foreground border border-border/50 shadow-xl rounded-xl backdrop-blur-md !important;
 }
 
-@keyframes shine {
-    from {
-        left: -100%;
-    }
-
-    to {
-        left: 200%;
-    }
+.custom-mat-menu {
+    @apply max-w-[100vw] overflow-hidden rounded-xl !important;
 }
 
-@layer base {
-    html {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
+.notification-menu {
+    @apply max-w-[100vw] overflow-hidden rounded-xl shadow-2xl border border-border/50 !important;
+}
+
+/* Ensure menu items inherit correct theme colors */
+.mat-mdc-menu-item {
+    @apply text-popover-foreground/80 hover:bg-secondary/50 transition-colors duration-200 !important;
+
+    &:hover {
+        @apply text-popover-foreground !important;
+    }
+
+    .mat-mdc-menu-item-text {
+        @apply text-inherit !important;
     }
 }

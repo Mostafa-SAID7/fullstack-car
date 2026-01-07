@@ -17,13 +17,13 @@ export class ServiceListComponent implements OnInit {
   services: CarService[] = [];
   loading = false;
   error: string | null = null;
-  
+
   // Pagination
   currentPage = 1;
   pageSize = 12;
   totalItems = 0;
   totalPages = 0;
-  
+
   // Filters
   filters: MarketplaceFilters = {
     searchTerm: '',
@@ -36,14 +36,14 @@ export class ServiceListComponent implements OnInit {
     sortBy: 'CreatedAt',
     sortDescending: true
   };
-  
+
   serviceTypes = Object.values(ServiceType);
   Math = Math;
 
   constructor(
     private marketplaceService: MarketplaceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadServices();
@@ -84,12 +84,12 @@ export class ServiceListComponent implements OnInit {
   }
 
   viewService(service: CarService): void {
-    this.router.navigate(['/app/marketplace/services', service.id]);
+    this.router.navigate(['/marketplace/services', service.id]);
   }
 
   bookService(service: CarService): void {
-    this.router.navigate(['/app/marketplace/bookings/create'], { 
-      queryParams: { serviceId: service.id } 
+    this.router.navigate(['/marketplace/bookings/create'], {
+      queryParams: { serviceId: service.id }
     });
   }
 
@@ -122,7 +122,7 @@ export class ServiceListComponent implements OnInit {
   formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours > 0 && mins > 0) {
       return `${hours}h ${mins}m`;
     } else if (hours > 0) {

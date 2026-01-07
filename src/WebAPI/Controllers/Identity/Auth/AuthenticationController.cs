@@ -2,6 +2,7 @@ using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Shared.Localization.Interfaces;
 using Application.Features.Identity.Auth.DTOs.Requests;
+using Application.Features.Identity.Auth.DTOs.Responses;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

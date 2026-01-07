@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     return this.checkAuth();
@@ -37,14 +37,14 @@ export class GuestGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(): boolean {
     if (!this.authService.isAuthenticated) {
       return true;
     }
 
-    this.router.navigate(['/app/dashboard']);
+    this.router.navigate(['/community']);
     return false;
   }
 }
@@ -56,11 +56,11 @@ export class RoleGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(): boolean {
     const user = this.authService.currentUser;
-    
+
     if (!user) {
       this.router.navigate(['/auth/login']);
       return false;

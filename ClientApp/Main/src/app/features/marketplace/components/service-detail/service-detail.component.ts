@@ -153,7 +153,7 @@ export class ServiceDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private marketplaceService: MarketplaceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.serviceId = this.route.snapshot.paramMap.get('id');
@@ -187,14 +187,14 @@ export class ServiceDetailComponent implements OnInit {
 
   bookService(): void {
     if (this.service) {
-      this.router.navigate(['/app/marketplace/bookings/create'], {
+      this.router.navigate(['/marketplace/bookings/create'], {
         queryParams: { serviceId: this.service.id }
       });
     }
   }
 
   goBack(): void {
-    this.router.navigate(['/app/marketplace/services']);
+    this.router.navigate(['/marketplace/services']);
   }
 
   formatPrice(price: number): string {
@@ -207,7 +207,7 @@ export class ServiceDetailComponent implements OnInit {
   formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours > 0 && mins > 0) {
       return `${hours}h ${mins}m`;
     } else if (hours > 0) {

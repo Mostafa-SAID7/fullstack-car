@@ -8,11 +8,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MediaService } from '../../services/media.service';
 import { VideoList, MediaFilters, MediaStatus } from '../../models/media.model';
 import { PaginatedResult } from '../../../../core/models/pagination.model';
+import { MediaCardComponent } from '../media-card/media-card.component';
 
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent],
   templateUrl: './video-list.component.html',
   styleUrls: ['./video-list.component.scss']
 })
@@ -109,7 +110,7 @@ export class VideoListComponent implements OnInit {
 
   onSearch(): void {
     const formValue = this.searchForm.value;
-    
+
     this.filters = {
       ...this.filters,
       searchTerm: formValue.searchTerm || undefined,
@@ -123,8 +124,8 @@ export class VideoListComponent implements OnInit {
   }
 
   onSortChange(event: any): void {
-    const selectedOption = this.sortOptions.find(option => 
-      option.value === event.target.value.split('|')[0] && 
+    const selectedOption = this.sortOptions.find(option =>
+      option.value === event.target.value.split('|')[0] &&
       option.descending.toString() === event.target.value.split('|')[1]
     );
 
@@ -143,7 +144,7 @@ export class VideoListComponent implements OnInit {
   }
 
   playVideo(video: VideoList): void {
-    this.router.navigate(['/app/media/videos', video.id]);
+    this.router.navigate(['/media/videos', video.id]);
   }
 
   likeVideo(video: VideoList): void {
@@ -160,7 +161,7 @@ export class VideoListComponent implements OnInit {
 
   shareVideo(video: VideoList): void {
     const url = `${window.location.origin}/media/videos/${video.id}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: video.title,
@@ -179,7 +180,7 @@ export class VideoListComponent implements OnInit {
   }
 
   navigateToUpload(): void {
-    this.router.navigate(['/app/media/videos/upload']);
+    this.router.navigate(['/media/videos/upload']);
   }
 
   clearFilters(): void {
@@ -195,11 +196,11 @@ export class VideoListComponent implements OnInit {
     const pages = [];
     const start = Math.max(1, this.currentPage - 2);
     const end = Math.min(this.totalPages, this.currentPage + 2);
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 }

@@ -42,12 +42,12 @@ export class PodcastUploadComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
-    
+
     if (file) {
       // Validate file type
       if (!file.type.startsWith('audio/')) {
@@ -62,7 +62,7 @@ export class PodcastUploadComponent implements OnInit {
       }
 
       this.selectedFile = file;
-      
+
       // Create audio preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -75,7 +75,7 @@ export class PodcastUploadComponent implements OnInit {
   onThumbnailSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
-    
+
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
@@ -90,7 +90,7 @@ export class PodcastUploadComponent implements OnInit {
       }
 
       this.selectedThumbnail = file;
-      
+
       // Create thumbnail preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -142,7 +142,7 @@ export class PodcastUploadComponent implements OnInit {
       next: (response) => {
         console.log('Podcast uploaded successfully:', response);
         this.uploading = false;
-        this.router.navigate(['/app/media/podcasts', response.id]);
+        this.router.navigate(['/media/podcasts', response.id]);
       },
       error: (error) => {
         console.error('Error uploading podcast:', error);
@@ -175,7 +175,7 @@ export class PodcastUploadComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/app/media/podcasts']);
+    this.router.navigate(['/media/podcasts']);
   }
 
   formatFileSize(bytes: number): string {

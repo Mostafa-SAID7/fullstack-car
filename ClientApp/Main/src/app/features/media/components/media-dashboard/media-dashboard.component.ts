@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { MediaService } from '../../services/media.service';
 import { VideoList, PodcastList } from '../../models/media.model';
 
+import { MediaCardComponent } from '../media-card/media-card.component';
+
 @Component({
   selector: 'app-media-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MediaCardComponent],
   templateUrl: './media-dashboard.component.html',
   styleUrls: ['./media-dashboard.component.scss']
 })
@@ -21,7 +23,7 @@ export class MediaDashboardComponent implements OnInit {
   constructor(
     private mediaService: MediaService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -74,11 +76,11 @@ export class MediaDashboardComponent implements OnInit {
   }
 
   navigateToVideos(): void {
-    this.router.navigate(['/app/media/videos']);
+    this.router.navigate(['/media/videos']);
   }
 
   navigateToPodcasts(): void {
-    this.router.navigate(['/app/media/podcasts']);
+    this.router.navigate(['/media/podcasts']);
   }
 
   navigateToUpload(type: 'video' | 'podcast'): void {
@@ -86,11 +88,11 @@ export class MediaDashboardComponent implements OnInit {
   }
 
   playVideo(video: VideoList): void {
-    this.router.navigate(['/app/media/videos', video.id]);
+    this.router.navigate(['/media/videos', video.id]);
   }
 
   playPodcast(podcast: PodcastList): void {
-    this.router.navigate(['/app/media/podcasts', podcast.id]);
+    this.router.navigate(['/media/podcasts', podcast.id]);
   }
 
   formatDuration(duration: string): string {
@@ -100,7 +102,7 @@ export class MediaDashboardComponent implements OnInit {
       const hours = parseInt(parts[0]);
       const minutes = parseInt(parts[1]);
       const seconds = parseInt(parts[2]);
-      
+
       if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       } else {

@@ -41,10 +41,10 @@ export class RegisterComponent implements OnInit {
     try {
       const result = await firstValueFrom(this.authService.register(this.registerForm.value));
       if (result.succeeded) {
-        this.router.navigate(['/app/dashboard']);
+        this.router.navigate(['/community']);
       } else {
-        this.error = (result.errors && result.errors.length > 0) 
-          ? result.errors.join(', ') 
+        this.error = (result.errors && result.errors.length > 0)
+          ? result.errors.join(', ')
           : 'Registration failed. Please try again.';
       }
     } catch (error: any) {

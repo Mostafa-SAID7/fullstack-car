@@ -11,19 +11,19 @@ import { CommonModule } from '@angular/common';
 })
 export class MarketplaceDashboardComponent implements OnInit {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   navigateToServices(): void {
-    this.router.navigate(['/app/marketplace/services']);
+    this.router.navigate(['/marketplace/services']);
   }
 
   navigateToProviders(): void {
-    this.router.navigate(['/app/marketplace/providers']);
+    this.router.navigate(['/marketplace/providers']);
   }
 
   navigateToBookings(): void {
-    this.router.navigate(['/app/marketplace/bookings']);
+    this.router.navigate(['/marketplace/bookings']);
   }
 }

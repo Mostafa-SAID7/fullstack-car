@@ -19,7 +19,7 @@ export class VideoUploadComponent implements OnInit {
   selectedFile: File | null = null;
   uploading = false;
   uploadProgress = 0;
-  
+
   videoQualities = [
     { value: VideoQuality.SD_480p, label: '480p (SD)' },
     { value: VideoQuality.HD_720p, label: '720p (HD)' },
@@ -42,7 +42,7 @@ export class VideoUploadComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onFileSelected(event: any): void {
     const file = event.target.files[0];
@@ -84,19 +84,19 @@ export class VideoUploadComponent implements OnInit {
         next: (response) => {
           this.uploading = false;
           this.uploadProgress = 100;
-          
+
           // Navigate to the uploaded video
           if (response.data && response.data.videoId) {
-            this.router.navigate(['/app/media/videos', response.data.videoId]);
+            this.router.navigate(['/media/videos', response.data.videoId]);
           } else {
-            this.router.navigate(['/app/media/videos']);
+            this.router.navigate(['/media/videos']);
           }
         },
         error: (error) => {
           console.error('Upload error:', error);
           this.uploading = false;
           this.uploadProgress = 0;
-          
+
           let errorMessage = 'Failed to upload video. Please try again.';
           if (error.error && error.error.message) {
             errorMessage = error.error.message;
@@ -117,12 +117,12 @@ export class VideoUploadComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/app/media/videos']);
+    this.router.navigate(['/media/videos']);
   }
 
   getFileSize(): string {
     if (!this.selectedFile) return '';
-    
+
     const size = this.selectedFile.size;
     if (size < 1024 * 1024) {
       return `${(size / 1024).toFixed(1)} KB`;

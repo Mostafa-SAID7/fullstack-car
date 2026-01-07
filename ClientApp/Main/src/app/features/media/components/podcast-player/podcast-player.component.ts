@@ -22,14 +22,14 @@ export class PodcastPlayerComponent implements OnInit {
   volume = 1;
   showComments = false;
   newComment = '';
-  
+
   private audioElement: HTMLAudioElement | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private mediaService: MediaService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const podcastId = this.route.snapshot.paramMap.get('id');
@@ -56,7 +56,7 @@ export class PodcastPlayerComponent implements OnInit {
       error: (error) => {
         console.error('Error loading podcast:', error);
         this.loading = false;
-        this.router.navigate(['/app/media/podcasts']);
+        this.router.navigate(['/media/podcasts']);
       }
     });
   }
@@ -65,7 +65,7 @@ export class PodcastPlayerComponent implements OnInit {
     if (!this.podcast?.audioUrl) return;
 
     this.audioElement = new Audio(this.podcast.audioUrl);
-    
+
     this.audioElement.addEventListener('loadedmetadata', () => {
       this.duration = this.audioElement!.duration;
     });
@@ -174,6 +174,6 @@ export class PodcastPlayerComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/app/media/podcasts']);
+    this.router.navigate(['/media/podcasts']);
   }
 }

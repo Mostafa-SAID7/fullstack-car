@@ -9,9 +9,11 @@ import { GuidesListComponent } from './components/guides-list/guides-list.compon
 import { NewsListComponent } from './components/news-list/news-list.component';
 import { QAListComponent } from './components/qa-list/qa-list.component';
 import { MapsExplorerComponent } from './components/maps-explorer/maps-explorer.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 const routes: Routes = [
   { path: '', component: CommunityFeedComponent },
+  { path: 'profile', component: UserProfileComponent },
   { path: 'guides', component: GuidesListComponent },
   { path: 'news', component: NewsListComponent },
   { path: 'qa', component: QAListComponent },
@@ -29,7 +31,8 @@ const routes: Routes = [
     NewsListComponent,
     QAListComponent,
     MapsExplorerComponent,
-    GuidesListComponent
+    GuidesListComponent,
+    UserProfileComponent
   ],
   exports: [RouterModule]
 })

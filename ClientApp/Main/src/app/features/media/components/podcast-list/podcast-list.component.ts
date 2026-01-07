@@ -19,7 +19,7 @@ export class PodcastListComponent implements OnInit {
   constructor(
     private mediaService: MediaService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPodcasts();
@@ -40,10 +40,10 @@ export class PodcastListComponent implements OnInit {
   }
 
   playPodcast(podcast: PodcastList): void {
-    this.router.navigate(['/app/media/podcasts', podcast.id]);
+    this.router.navigate(['/media/podcasts', podcast.id]);
   }
 
   navigateToUpload(): void {
-    this.router.navigate(['/app/media/podcasts/upload']);
+    this.router.navigate(['/media/podcasts/upload']);
   }
 }

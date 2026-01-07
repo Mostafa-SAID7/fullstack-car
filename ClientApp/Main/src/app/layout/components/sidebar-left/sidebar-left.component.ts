@@ -17,7 +17,10 @@ export class SidebarLeftComponent implements OnInit {
 
     ngOnInit(): void {
         this.authService.currentUser$.subscribe((user: any) => {
-            this.currentUser = user;
         });
+    }
+
+    get currentYear(): number {
+        return new Date().getFullYear();
     }
 }

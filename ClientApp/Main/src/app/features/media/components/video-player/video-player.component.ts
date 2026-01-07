@@ -22,14 +22,14 @@ export class VideoPlayerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private mediaService: MediaService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const videoId = this.route.snapshot.paramMap.get('id');
     if (videoId) {
       this.loadVideo(videoId);
     } else {
-      this.router.navigate(['/app/media/videos']);
+      this.router.navigate(['/media/videos']);
     }
   }
 
@@ -82,6 +82,6 @@ export class VideoPlayerComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/app/media/videos']);
+    this.router.navigate(['/media/videos']);
   }
 }

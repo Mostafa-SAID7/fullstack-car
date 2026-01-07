@@ -15,8 +15,7 @@ import { LayoutService } from '../../../core/services/layout.service';
         RouterModule,
         HeaderComponent,
         SidebarLeftComponent,
-        SidebarRightComponent,
-        AIChatWidgetComponent
+        SidebarRightComponent
     ],
     template: `
 <div class="min-h-screen bg-background text-foreground flex flex-col">
@@ -25,18 +24,18 @@ import { LayoutService } from '../../../core/services/layout.service';
 
     <!-- Main Layout Container: Exactly fills viewport minus header -->
     <div
-        class="flex-1 grid grid-cols-1 xl:grid-cols-[240px_1fr_240px] gap-6 w-full h-[calc(100vh-3.5rem)] mt-14 overflow-hidden bg-background/50">
+        class="flex-1 grid grid-cols-1 md:grid-cols-[80px_1fr] lg:grid-cols-[240px_1fr] xl:grid-cols-[240px_1fr_240px] gap-4 xl:gap-6 w-full h-[calc(100vh-3.5rem)] mt-14 overflow-hidden bg-background/50">
 
         <!-- Left Sidebar -->
         <aside
-            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 pl-4 custom-scroll border-r border-border/10">
-            <app-sidebar-left class="block animate-fade-in"></app-sidebar-left>
+            class="hidden md:block h-[calc(100vh-3.5rem)] pb-4 md:pl-2 lg:pl-4 border-r border-border/10 transition-all duration-500">
+            <app-sidebar-left class="block h-full animate-fade-in"></app-sidebar-left>
         </aside>
 
         <!-- Main Content Area -->
         <main
-            class="w-full h-[calc(100vh-3.5rem)] pb-8 px-0 flex justify-center overflow-y-auto custom-scroll scroll-smooth">
-            <div class="w-full max-w-[800px] pt-6 animate-slide-up">
+            class="w-full h-[calc(100vh-3.5rem)] pb-8 px-2 sm:px-4 md:px-6 lg:px-8 xl:px-4 2xl:px-6 flex justify-center overflow-y-auto custom-scroll scroll-smooth">
+            <div class="w-full pt-6 animate-slide-up max-w-[1400px]">
                 <router-outlet></router-outlet>
                 <!-- Localization Test -->
                 <div style="display:none" id="localization-test">Welcome</div>
@@ -45,8 +44,8 @@ import { LayoutService } from '../../../core/services/layout.service';
 
         <!-- Right Sidebar -->
         <aside
-            class="hidden xl:block h-[calc(100vh-3.5rem)] overflow-y-auto pb-4 pr-4 custom-scroll border-l border-border/10">
-            <app-sidebar-right class="block animate-fade-in"></app-sidebar-right>
+            class="hidden xl:block h-[calc(100vh-3.5rem)] pb-4 pr-4 border-l border-border/10">
+            <app-sidebar-right class="block h-full animate-fade-in"></app-sidebar-right>
         </aside>
     </div>
 
@@ -58,16 +57,13 @@ import { LayoutService } from '../../../core/services/layout.service';
 
         <!-- Menu Content -->
         <div
-            class="absolute right-0 top-0 h-full w-[240px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 overflow-y-auto">
-            <div class="mb-4">
-                <app-sidebar-left></app-sidebar-left>
+            class="absolute right-0 top-0 h-full w-[240px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 flex flex-col">
+            <div class="flex-1 min-h-0 mb-4">
+                <app-sidebar-left class="h-full block"></app-sidebar-left>
             </div>
             <!-- Mobile Config/Profile Links could go here if separate from sidebar -->
         </div>
     </div>
-
-    <!-- AI Chat Widget -->
-    <app-ai-chat-widget></app-ai-chat-widget>
 </div>
   `
 })
