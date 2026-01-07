@@ -20,6 +20,7 @@ const HealthMonitor = React.lazy(() => import('./pages').then(module => ({ defau
 const LocalizationManagement = React.lazy(() => import('./pages').then(module => ({ default: module.LocalizationManagement })));
 const Settings = React.lazy(() => import('./pages').then(module => ({ default: module.Settings })));
 const AIAgentManagement = React.lazy(() => import('./pages').then(module => ({ default: module.AIAgentManagement })));
+const ModelTraining = React.lazy(() => import('./pages').then(module => ({ default: module.ModelTraining })));
 const Media = React.lazy(() => import('./pages').then(module => ({ default: module.Media })));
 const ThemesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ThemesManagement })));
 
@@ -281,6 +282,18 @@ const AppRoutes = () => {
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
                   <AIAgentManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-agent/model-training"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <ModelTraining />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>

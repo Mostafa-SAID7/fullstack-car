@@ -1,5 +1,6 @@
 // AI Agent Management exports
 export { AIAgentManagement } from './AIAgentManagement';
+export { ModelTraining } from './model-training/ModelTraining';
 export { AIAgentOverview } from './components/AIAgentOverview';
 export { AIAgentTraining } from './components/AIAgentTraining';
 export { AIAgentModels } from './components/AIAgentModels';

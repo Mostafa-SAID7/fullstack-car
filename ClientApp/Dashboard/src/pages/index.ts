@@ -1,7 +1,7 @@
 export { DashboardOverview } from './dashboard';
 export { Content, LocalizationManagement, Media, ThemesManagement } from './content';
 export { Settings } from './settings';
-export { AIAgentManagement } from './ai-agent';
+export { AIAgentManagement, ModelTraining } from './ai-agent';
 export { Customers } from './marketplace/customers';
 export { Products } from './marketplace/products';
 export { Services } from './marketplace/services';

@@ -181,6 +181,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('ai_agent', 'AI Agent'),
           color: 'text-pink-600',
           description: 'AI assistant and automation'
+        },
+        {
+          path: '/ai-agent/model-training',
+          icon: Activity,
+          label: t('model_training', 'Model Training'),
+          color: 'text-purple-600',
+          description: 'Train and fine-tune AI models'
         }
       ]
     },

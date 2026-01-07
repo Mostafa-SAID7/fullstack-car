@@ -79,7 +79,7 @@ public class CreateCampaignContentCommandHandler : IRequestHandler<CreateCampaig
         }
     }
 
-    private static CampaignContentDto MapToCampaignContentDto(CampaignContent content)
+    public static CampaignContentDto MapToCampaignContentDto(CampaignContent content)
     {
         return new CampaignContentDto
         {

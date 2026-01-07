@@ -1,5 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Marketing.Analytics.DTOs;
+using Application.Features.Marketing.Campaigns.DTOs;
 using MediatR;
 
 namespace Application.Features.Marketing.Analytics.Queries;
