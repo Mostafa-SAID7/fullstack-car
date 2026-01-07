@@ -1,0 +1,12 @@
+using Application.Common.Models;
+using MediatR;
+
+namespace Application.Features.Marketplace.Integration.Queries;
+
+public class GetMarketplaceAnalyticsQuery : IRequest<Result<object>>
+{
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
+    public string? Segment { get; set; }
+    public Guid AdminId { get; set; }
+}

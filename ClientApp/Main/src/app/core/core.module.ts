@@ -10,6 +10,8 @@ import { ProfileService } from './services/profile.service';
 import { SecurityService } from './services/security.service';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/theme.service';
+import { NotificationService } from './services/notification.service';
+import { SignalRService } from './services/signalr.service';
 
 // Guards
 import { AuthGuard, GuestGuard, RoleGuard } from './guards/auth.guard';
@@ -32,6 +34,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     SecurityService,
     LayoutService,
     ThemeService,
+    NotificationService,
+    SignalRService,
     
     // Guards
     AuthGuard,

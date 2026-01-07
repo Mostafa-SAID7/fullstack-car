@@ -229,6 +229,16 @@ namespace Infrastructure.Data
         public DbSet<PushNotificationLog> PushNotificationLogs { get; set; }
         public DbSet<NotificationPreference> NotificationPreferences { get; set; }
 
+        // Marketing Tables
+        public DbSet<Domain.Entities.Marketing.Campaign> Campaigns { get; set; }
+        public DbSet<Domain.Entities.Marketing.CampaignContent> CampaignContents { get; set; }
+        public DbSet<Domain.Entities.Marketing.SocialPlatform> SocialPlatforms { get; set; }
+        public DbSet<Domain.Entities.Marketing.CampaignPlatform> CampaignPlatforms { get; set; }
+        public DbSet<Domain.Entities.Marketing.ContentPlatform> ContentPlatforms { get; set; }
+        public DbSet<Domain.Entities.Marketing.CampaignAnalytics> CampaignAnalytics { get; set; }
+        public DbSet<Domain.Entities.Marketing.PlatformAnalytics> PlatformAnalytics { get; set; }
+        public DbSet<Domain.Entities.Marketing.MarketingOverview> MarketingOverviews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -9,8 +9,8 @@ export const useAuthFunctions = (setLoading: (loading: boolean) => void, setErro
     setError(null);
     try {
       const response = await authService.login(request);
-      if (!response.success) {
-        throw new Error(response.message);
+      if (!response.succeeded) {
+        throw new Error(response.message || response.errors?.[0] || 'Login failed');
       }
       return response;
     } catch (err) {

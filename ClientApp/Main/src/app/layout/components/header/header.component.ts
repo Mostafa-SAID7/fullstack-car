@@ -63,7 +63,16 @@ export class HeaderComponent implements OnInit {
 
     handleNotificationClick(note: Notification) {
         if (!note.isRead) {
-            this.notificationService.markAsRead(note.id);
+            this.notificationService.markAsRead(note.id).subscribe({
+                next: (result) => {
+                    if (!result.succeeded) {
+                        console.error('Failed to mark notification as read:', result.errors);
+                    }
+                },
+                error: (error) => {
+                    console.error('Error marking notification as read:', error);
+                }
+            });
         }
         if (note.targetUrl) {
             // Navigate if targetUrl exists
@@ -72,7 +81,16 @@ export class HeaderComponent implements OnInit {
     }
 
     markAllRead() {
-        this.notificationService.markAllAsRead();
+        this.notificationService.markAllAsRead().subscribe({
+            next: (result) => {
+                if (!result.succeeded) {
+                    console.error('Failed to mark all notifications as read:', result.errors);
+                }
+            },
+            error: (error) => {
+                console.error('Error marking all notifications as read:', error);
+            }
+        });
     }
 }
 

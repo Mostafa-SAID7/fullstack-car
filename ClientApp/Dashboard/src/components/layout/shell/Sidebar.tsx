@@ -26,7 +26,8 @@ import {
   Share2,
   Target,
   TrendingUp,
-  Calendar
+  Calendar,
+  Bell
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -262,6 +263,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('health', 'Health Monitor'),
           color: 'text-blue-600',
           description: 'System health and monitoring'
+        },
+        {
+          path: '/administration/notifications',
+          icon: Bell,
+          label: t('notifications', 'Notifications'),
+          color: 'text-yellow-600',
+          description: 'Notification management and settings'
         }
       ]
     }

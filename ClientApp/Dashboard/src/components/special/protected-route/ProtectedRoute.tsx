@@ -63,8 +63,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Redirect to unauthorized page (or dashboard root) if user doesn't have required roles
   if (requiredRoles.length > 0 && !hasRequiredRoles) {
     console.warn('User missing required roles:', requiredRoles);
-    // If we're already at dashboard root and don't have access, maybe go to a generic error page
-    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+    // Redirect to 403 Forbidden page
+    return <Navigate to="/error/403" state={{ from: location }} replace />;
   }
 
   // Render protected content

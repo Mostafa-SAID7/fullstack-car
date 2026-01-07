@@ -9,6 +9,7 @@ using Domain.Entities.Marketplace.Providers;
 using Domain.Entities.Marketplace.Bookings;
 using Domain.Entities.Marketplace.Reviews;
 using Domain.Entities.Marketplace.Payments;
+using Domain.Entities.Marketing;
 using Domain.Entities.Shared.Chat;
 using Domain.Entities.Shared.Notifications;
 using Domain.Entities.Shared.System;
@@ -103,6 +104,16 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Media.PodcastPlay> PodcastPlays { get; }
         DbSet<Domain.Entities.Media.VideoPlaylist> VideoPlaylists { get; }
         DbSet<Domain.Entities.Media.VideoPlaylistItem> VideoPlaylistItems { get; }
+
+        // Marketing Tables
+        DbSet<Campaign> Campaigns { get; }
+        DbSet<CampaignContent> CampaignContents { get; }
+        DbSet<SocialPlatform> SocialPlatforms { get; }
+        DbSet<CampaignPlatform> CampaignPlatforms { get; }
+        DbSet<ContentPlatform> ContentPlatforms { get; }
+        DbSet<CampaignAnalytics> CampaignAnalytics { get; }
+        DbSet<PlatformAnalytics> PlatformAnalytics { get; }
+        DbSet<MarketingOverview> MarketingOverviews { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

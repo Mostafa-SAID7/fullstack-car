@@ -3,14 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Notification } from '../models/notification.model';
+import { Result, PaginatedResult } from '../models/result.model';
+import { SignalRService } from './signalr.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class NotificationService {
     private http = inject(HttpClient);
-    // Default API URL fallback if environment not fully configured for v4 yet
-    private baseUrl = environment.apiUrl ? `${environment.apiUrl}/shared/notifications` : '/api/v4/shared/notifications';
+    private signalRService = inject(SignalRService);
+    private baseUrl = `${environment.apiUrl}/v1/shared/notifications`;
 
     private notificationsSubject = new BehaviorSubject<Notification[]>([]);
     public notifications$ = this.notificationsSubject.asObservable();
@@ -20,31 +22,78 @@ export class NotificationService {
 
     constructor() {
         this.refreshNotifications();
-        // Optional: Set up polling here if SignalR is not ready
-        // setInterval(() => this.refreshNotifications(), 30000); 
+        this.setupSignalRListeners();
+    }
+
+    private setupSignalRListeners(): void {
+        // Listen for real-time notifications
+        this.signalRService.notificationReceived$.subscribe(notification => {
+            if (notification) {
+                this.handleNewNotification(notification);
+            }
+        });
+    }
+
+    private handleNewNotification(notificationData: any): void {
+        const notification: Notification = {
+            id: notificationData.id,
+            title: notificationData.title,
+            message: notificationData.message,
+            targetUrl: notificationData.targetUrl,
+            isRead: false, // New notifications are unread
+            createdAt: new Date(notificationData.createdAt || new Date()),
+            sourceUserId: notificationData.sourceUserId
+        };
+
+        // Add to the beginning of the list
+        const current = this.notificationsSubject.value;
+        const updated = [notification, ...current];
+        this.notificationsSubject.next(updated);
+        this.updateUnreadCount(updated);
+
+        // Show browser notification if supported
+        this.showBrowserNotification(notification);
+    }
+
+    private showBrowserNotification(notification: Notification): void {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(notification.title, {
+                body: notification.message,
+                icon: '/assets/icons/notification-icon.png',
+                tag: notification.id
+            });
+        }
+    }
+
+    public requestNotificationPermission(): void {
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
     }
 
     refreshNotifications(): void {
-        this.http.get<any[]>(this.baseUrl).pipe(
-            tap(data => this.processNotifications(data)),
+        this.http.get<Result<PaginatedResult<any>>>(`${this.baseUrl}?pageNumber=1&pageSize=50`).pipe(
+            tap(response => {
+                if (response.succeeded && response.data) {
+                    this.processNotifications(response.data.items);
+                }
+            }),
             catchError(err => {
                 console.error('Failed to fetch notifications', err);
-                return of([]);
+                return of({ succeeded: false, data: null, errors: [] });
             })
         ).subscribe();
     }
 
     private processNotifications(data: any[]): void {
-        // Map backend response to our model
-        // Assuming backend returns object compatible or we need to map
         const notifications: Notification[] = data.map(item => ({
-            id: item.id || item.Id,
-            title: item.title || item.Title,
-            message: item.message || item.Message,
-            targetUrl: item.targetUrl || item.TargetUrl,
-            isRead: item.isRead || item.IsRead,
-            createdAt: new Date(item.createdAt || item.CreatedAt),
-            sourceUserId: item.sourceUserId || item.SourceUserId
+            id: item.id,
+            title: item.title,
+            message: item.message,
+            targetUrl: item.targetUrl,
+            isRead: item.isRead,
+            createdAt: new Date(item.createdAt),
+            sourceUserId: item.sourceUserId
         }));
 
         // Sort by date desc
@@ -59,35 +108,91 @@ export class NotificationService {
         this.unreadCountSubject.next(count);
     }
 
-    markAsRead(id: string): void {
+    markAsRead(id: string): Observable<Result<void>> {
         // Optimistic update
         const current = this.notificationsSubject.value;
         const updated = current.map(n => n.id === id ? { ...n, isRead: true } : n);
         this.notificationsSubject.next(updated);
         this.updateUnreadCount(updated);
 
-        this.http.patch(`${this.baseUrl}/${id}/read`, {}).subscribe({
-            error: err => {
+        return this.http.patch<Result<void>>(`${this.baseUrl}/${id}/read`, {}).pipe(
+            catchError(err => {
                 console.error('Failed to mark read', err);
-                // Revert on failure if needed, or just let next refresh handle it
-            }
-        });
+                // Revert on failure
+                this.notificationsSubject.next(current);
+                this.updateUnreadCount(current);
+                return of({ succeeded: false, data: undefined, errors: ['Failed to mark notification as read'] });
+            })
+        );
     }
 
-    markAllAsRead(): void {
+    markAllAsRead(): Observable<Result<void>> {
         const current = this.notificationsSubject.value;
+        const unreadIds = current.filter(n => !n.isRead).map(n => n.id);
+        
+        if (unreadIds.length === 0) {
+            return of({ succeeded: true, data: undefined, errors: [] });
+        }
+
+        // Optimistic update
         const updated = current.map(n => ({ ...n, isRead: true }));
         this.notificationsSubject.next(updated);
         this.updateUnreadCount(updated);
 
-        // If backend has a bulk read endpoint, use it. 
-        // Otherwise we might need to loop or just accept the state is local until we build that endpoint.
-        // For now, let's assume we read the visible ones or relying on user interaction.
-        // Actually, based on previous analysis, we only saw MarkAsRead(id). 
-        // So we might need to loop calls or add a backend endpoint. 
-        // For this iteration, we'll iterate locally or just implement single read for now.
-        current.filter(n => !n.isRead).forEach(n => {
-            this.markAsRead(n.id);
+        // Mark each unread notification as read
+        const markAllRequests = unreadIds.map(id => 
+            this.http.patch<Result<void>>(`${this.baseUrl}/${id}/read`, {})
+        );
+
+        // Execute all requests and handle results
+        return new Observable<Result<void>>(observer => {
+            Promise.all(markAllRequests.map(req => req.toPromise()))
+                .then(results => {
+                    const allSucceeded = results.every(result => result?.succeeded);
+                    if (allSucceeded) {
+                        observer.next({ succeeded: true, data: undefined, errors: [] });
+                    } else {
+                        // Revert on failure
+                        this.notificationsSubject.next(current);
+                        this.updateUnreadCount(current);
+                        observer.next({ succeeded: false, data: undefined, errors: ['Failed to mark all notifications as read'] });
+                    }
+                    observer.complete();
+                })
+                .catch(error => {
+                    // Revert on failure
+                    this.notificationsSubject.next(current);
+                    this.updateUnreadCount(current);
+                    observer.error(error);
+                });
         });
+    }
+
+    getNotifications(pageNumber: number = 1, pageSize: number = 20): Observable<Result<PaginatedResult<Notification>>> {
+        return this.http.get<Result<PaginatedResult<any>>>(`${this.baseUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`).pipe(
+            tap(response => {
+                if (response.succeeded && response.data) {
+                    const notifications = response.data.items.map((item: any) => ({
+                        id: item.id,
+                        title: item.title,
+                        message: item.message,
+                        targetUrl: item.targetUrl,
+                        isRead: item.isRead,
+                        createdAt: new Date(item.createdAt),
+                        sourceUserId: item.sourceUserId
+                    }));
+                    
+                    // Update local state if this is the first page
+                    if (pageNumber === 1) {
+                        this.notificationsSubject.next(notifications);
+                        this.updateUnreadCount(notifications);
+                    }
+                }
+            }),
+            catchError(err => {
+                console.error('Failed to fetch notifications', err);
+                return of({ succeeded: false, data: null, errors: ['Failed to fetch notifications'] });
+            })
+        );
     }
 }

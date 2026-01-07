@@ -11,7 +11,11 @@ export * from './marketplace';
 
 // Administration Pages
 export { Users, Analytics, System, AuditLogs, HealthMonitor } from './administration';
+export { NotificationManagement } from './administration/notifications';
 
 // Marketing Pages
 export { MarketingOverview, SocialMedia, Campaigns, ContentPlanning } from './marketing';
 export { Analytics as MarketingAnalytics } from './marketing';
+
+// Error Pages
+export { NotFound, Forbidden, ServerError } from './errors';

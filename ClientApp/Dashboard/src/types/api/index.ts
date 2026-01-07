@@ -1,5 +1,46 @@
 // API Types
 
+export interface Result<T = any> {
+  succeeded: boolean;
+  data?: T;
+  errors: string[];
+  message?: string;
+}
+
+export interface PaginatedResult<T = any> {
+  items: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+// Result utility class
+export class Result<T = any> {
+  public succeeded: boolean;
+  public data?: T;
+  public errors: string[];
+  public message?: string;
+
+  constructor(succeeded: boolean, data?: T, errors: string[] = [], message?: string) {
+    this.succeeded = succeeded;
+    this.data = data;
+    this.errors = errors;
+    this.message = message;
+  }
+
+  static success<T>(data: T, message?: string): Result<T> {
+    return new Result<T>(true, data, [], message);
+  }
+
+  static failure<T>(errors: string | string[], message?: string): Result<T> {
+    const errorArray = Array.isArray(errors) ? errors : [errors];
+    return new Result<T>(false, undefined, errorArray, message);
+  }
+}
+
 export interface RequestConfig {
   timeout?: number;
   retries?: number;
@@ -8,6 +49,7 @@ export interface RequestConfig {
   params?: Record<string, any>;
   data?: any;
   signal?: AbortSignal;
+  redirectOnError?: boolean; // Whether to redirect to error pages on HTTP errors (default: true)
 }
 
 export interface RequestInterceptor {

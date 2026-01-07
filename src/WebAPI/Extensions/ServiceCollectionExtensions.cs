@@ -123,6 +123,7 @@ namespace WebAPI.Extensions
 
             // Add Communication Services
             services.AddScoped<Application.Features.Shared.Notifications.Interfaces.INotificationService, Application.Features.Shared.Notifications.Services.NotificationService>();
+            services.AddScoped<Application.Features.Shared.Notifications.Interfaces.INotificationHubService, Infrastructure.Services.Notifications.NotificationHubService>();
             services.AddScoped<Application.Features.Shared.Chat.Interfaces.IChatNotificationService, Application.Features.Shared.Chat.Services.ChatNotificationService>();
 
             // Add API Versioning

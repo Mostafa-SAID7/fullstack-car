@@ -59,8 +59,12 @@ export class LoginComponent implements OnInit {
     this.error = null;
 
     try {
-      await firstValueFrom(this.authService.login(this.loginForm.value));
-      this.router.navigate(['/dashboard']);
+      const result = await firstValueFrom(this.authService.login(this.loginForm.value));
+      if (result.succeeded) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.error = result.errors.join(', ') || 'Login failed. Please try again.';
+      }
     } catch (error: any) {
       this.error = error.message || 'Login failed. Please try again.';
     } finally {

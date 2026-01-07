@@ -2,14 +2,14 @@ namespace Domain.Enums.Marketplace;
 
 public enum PaymentMethod
 {
-    Cash = 1,
-    CreditCard = 2,
-    DebitCard = 3,
-    BankTransfer = 4,
-    DigitalWallet = 5,
-    Cryptocurrency = 6,
-    Check = 7,
-    PayPal = 8,
-    ApplePay = 9,
-    GooglePay = 10
+    CreditCard = 0,
+    DebitCard = 1,
+    PayPal = 2,
+    BankTransfer = 3,
+    Cash = 4,
+    Check = 5,
+    DigitalWallet = 6,
+    Cryptocurrency = 7,
+    StoreCredit = 8,
+    GiftCard = 9
 }

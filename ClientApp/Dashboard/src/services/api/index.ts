@@ -1,5 +1,6 @@
 import { REQUEST_TIMEOUTS, RETRY_CONFIG } from '../../config/api';
 import { ApiError } from '../../types/api';
+import { navigateToError } from '../../utils/errorNavigation';
 import type { RequestConfig, RequestInterceptor } from '../../types/api';
 
 // Export types and class from centralized definitions
@@ -14,7 +15,7 @@ export interface ApiResult<T = any> {
   statusCode?: number;
 }
 
-const API_BASE_URL = 'http://localhost:5100/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5100/api';
 
 class ApiClient {
   private baseUrl: string;
@@ -79,6 +80,8 @@ class ApiClient {
   ): Promise<ApiResult<T>> {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
 
+    console.log(`[ApiClient] ${method} ${url}`, data); // Debug log
+
     let requestConfig: RequestInit = {
       method,
       headers: {
@@ -138,6 +141,7 @@ class ApiClient {
 
         if (!processedResponse.ok) {
           const errorText = await processedResponse.text().catch(() => '');
+          console.log(`[ApiClient] Error response:`, errorText); // Debug log
           let details: any = errorText;
           try {
             details = JSON.parse(errorText);
@@ -145,12 +149,29 @@ class ApiClient {
             // Keep as text if not JSON
           }
 
-          throw new ApiError(
+          const apiError = new ApiError(
             `HTTP ${processedResponse.status}: ${processedResponse.statusText}`,
             processedResponse.status,
             undefined,
             details
           );
+
+          // Handle critical HTTP errors by redirecting to error pages
+          if (processedResponse.status >= 500) {
+            // Server errors - redirect to 500 page for critical issues
+            if (config?.redirectOnError !== false) {
+              navigateToError.serverError();
+              return { succeeded: false, errors: ['Server error occurred'], statusCode: processedResponse.status };
+            }
+          } else if (processedResponse.status === 403) {
+            // Forbidden - redirect to 403 page
+            if (config?.redirectOnError !== false) {
+              navigateToError.forbidden();
+              return { succeeded: false, errors: ['Access forbidden'], statusCode: processedResponse.status };
+            }
+          }
+
+          throw apiError;
         }
 
         const contentType = processedResponse.headers.get('content-type');

@@ -30,6 +30,17 @@ const Campaigns = React.lazy(() => import('./pages').then(module => ({ default: 
 const MarketingAnalytics = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingAnalytics })));
 const ContentPlanning = React.lazy(() => import('./pages').then(module => ({ default: module.ContentPlanning })));
 
+// Marketplace Pages
+const MarketplaceOverview = React.lazy(() => import('./pages').then(module => ({ default: module.MarketplaceOverview })));
+
+// Notification Management
+const NotificationManagement = React.lazy(() => import('./pages').then(module => ({ default: module.NotificationManagement })));
+
+// Error Pages
+const NotFound = React.lazy(() => import('./pages').then(module => ({ default: module.NotFound })));
+const Forbidden = React.lazy(() => import('./pages').then(module => ({ default: module.Forbidden })));
+const ServerError = React.lazy(() => import('./pages').then(module => ({ default: module.ServerError })));
+
 import { Skeleton } from './components';
 
 // Loading component for Suspense fallback
@@ -102,6 +113,18 @@ const AppRoutes = () => {
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
                   <Users />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketplace"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <MarketplaceOverview />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -228,6 +251,18 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/administration/notifications"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <NotificationManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/settings"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
@@ -309,6 +344,34 @@ const AppRoutes = () => {
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
+          }
+        />
+        
+        {/* Error Pages */}
+        <Route
+          path="/error/403"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <Forbidden />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/error/500"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ServerError />
+            </Suspense>
+          }
+        />
+        
+        {/* Catch-all route for 404 - Must be last */}
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NotFound />
+            </Suspense>
           }
         />
       </Routes>

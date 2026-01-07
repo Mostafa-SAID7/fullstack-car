@@ -114,6 +114,9 @@ namespace Infrastructure.Data.Seeds
                 // Seed comprehensive management data (advanced roles, permissions, users)
                 await _managementSeeder.SeedAllManagementDataAsync();
 
+                // Seed marketing data
+                await MarketingSeed.SeedAsync(_context);
+
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Database seeding completed successfully.");
 
@@ -235,6 +238,8 @@ namespace Infrastructure.Data.Seeds
             var serviceReviewCount = await _context.ServiceReviews.CountAsync();
             var widgetCount = await _context.DashboardWidgets.CountAsync();
             var layoutCount = await _context.DashboardLayouts.CountAsync();
+            var campaignCount = await _context.Campaigns.CountAsync();
+            var platformCount = await _context.SocialPlatforms.CountAsync();
 
             _logger.LogInformation("📊 Database Seeding Statistics:");
             _logger.LogInformation("================================");
@@ -258,6 +263,8 @@ namespace Infrastructure.Data.Seeds
             _logger.LogInformation("  Service Reviews: {ServiceReviewCount:N0}", serviceReviewCount);
             _logger.LogInformation("  Dashboard Widgets: {WidgetCount:N0}", widgetCount);
             _logger.LogInformation("  Dashboard Layouts: {LayoutCount:N0}", layoutCount);
+            _logger.LogInformation("  Marketing Campaigns: {CampaignCount:N0}", campaignCount);
+            _logger.LogInformation("  Social Platforms: {PlatformCount:N0}", platformCount);
             _logger.LogInformation("================================");
         }
     }

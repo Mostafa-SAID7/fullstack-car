@@ -5,51 +5,51 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh-token',
-    CONFIRM_EMAIL: '/auth/confirm-email',
-    RESEND_CONFIRMATION: '/auth/resend-email-confirmation',
-    REVOKE_TOKEN: '/auth/revoke-token'
+    LOGIN: '/v1/auth/login',
+    REGISTER: '/v1/auth/register',
+    LOGOUT: '/v1/auth/logout',
+    REFRESH: '/v1/auth/refresh-token',
+    CONFIRM_EMAIL: '/v1/auth/confirm-email',
+    RESEND_CONFIRMATION: '/v1/auth/resend-email-confirmation',
+    REVOKE_TOKEN: '/v1/auth/revoke-token'
   },
 
   // OAuth
   OAUTH: {
-    GOOGLE: '/oauth/google',
-    GITHUB: '/oauth/github',
-    FACEBOOK: '/oauth/facebook',
-    CALLBACK: '/oauth/callback',
-    EXTERNAL_LOGINS: '/oauth/external-logins'
+    GOOGLE: '/v1/oauth/google',
+    GITHUB: '/v1/oauth/github',
+    FACEBOOK: '/v1/oauth/facebook',
+    CALLBACK: '/v1/oauth/callback',
+    EXTERNAL_LOGINS: '/v1/oauth/external-logins'
   },
 
   // Password Management
   PASSWORD: {
-    CHANGE: '/password/change',
-    FORGOT: '/password/forgot',
-    RESET: '/password/reset',
-    VALIDATE: '/password/validate',
-    STRENGTH: '/password/strength'
+    CHANGE: '/v1/password/change',
+    FORGOT: '/v1/password/forgot',
+    RESET: '/v1/password/reset',
+    VALIDATE: '/v1/password/validate',
+    STRENGTH: '/v1/password/strength'
   },
 
   // User Profile
   PROFILE: {
-    BASE: '/profile',
-    AVATAR: '/profile/avatar',
-    PRIVACY: '/profile/privacy',
-    DEACTIVATE: '/profile/deactivate',
-    DELETE: '/profile/delete'
+    BASE: '/v1/profile',
+    AVATAR: '/v1/profile/avatar',
+    PRIVACY: '/v1/profile/privacy',
+    DEACTIVATE: '/v1/profile/deactivate',
+    DELETE: '/v1/profile/delete'
   },
 
   // User Management
   USERS: {
-    BASE: '/users',
-    PROFILE: '/users/profile',
-    UPDATE_PROFILE: '/users/profile',
-    CHANGE_PASSWORD: '/users/change-password',
-    UPLOAD_AVATAR: '/users/avatar',
-    SECURITY_LOGS: '/users/security-logs',
-    SESSIONS: '/users/sessions'
+    BASE: '/v1/users',
+    PROFILE: '/v1/users/profile',
+    UPDATE_PROFILE: '/v1/users/profile',
+    CHANGE_PASSWORD: '/v1/users/change-password',
+    UPLOAD_AVATAR: '/v1/users/avatar',
+    SECURITY_LOGS: '/v1/users/security-logs',
+    SESSIONS: '/v1/users/sessions'
   },
 
   // Dashboard
@@ -74,52 +74,70 @@ export const API_ENDPOINTS = {
 
   // Services
   SERVICES: {
-    BASE: '/services',
-    PROVIDERS: '/services/providers',
-    BOOKINGS: '/services/bookings',
-    CATEGORIES: '/services/categories',
-    REVIEWS: '/services/reviews'
+    BASE: '/v6/marketplace/services',
+    PROVIDERS: '/v6/marketplace/service-providers',
+    BOOKINGS: '/v6/marketplace/services/bookings',
+    CATEGORIES: '/v6/marketplace/services/categories',
+    REVIEWS: '/v6/marketplace/services/reviews',
+    SEARCH: '/v6/marketplace/services/search',
+    LOCATION: '/v6/marketplace/services/search/location'
   },
 
   // Products
   PRODUCTS: {
-    BASE: '/products',
-    CATEGORIES: '/products/categories',
-    INVENTORY: '/products/inventory',
-    REVIEWS: '/products/reviews'
+    BASE: '/v6/marketplace/products',
+    CATEGORIES: '/v6/marketplace/products/categories',
+    INVENTORY: '/v6/marketplace/products/inventory',
+    REVIEWS: '/v6/marketplace/products/reviews',
+    SEARCH: '/v6/marketplace/products/search',
+    ANALYTICS: '/v6/marketplace/products/analytics'
   },
 
   // Customers
   CUSTOMERS: {
-    BASE: '/customers',
-    ORDERS: '/customers/orders',
-    PREFERENCES: '/customers/preferences'
+    BASE: '/v3/marketplace/customers',
+    ORDERS: '/v3/marketplace/customers/orders',
+    PREFERENCES: '/v3/marketplace/customers/preferences',
+    ANALYTICS: '/v3/marketplace/customers/analytics',
+    LOYALTY: '/v3/marketplace/customers/loyalty',
+    SEGMENTS: '/v3/marketplace/customers/segments'
+  },
+
+  // Marketplace Integration
+  MARKETPLACE: {
+    BASE: '/v6/marketplace',
+    DASHBOARD: '/v6/marketplace/dashboard',
+    ORDERS: '/v6/marketplace/orders',
+    TRANSACTIONS: '/v6/marketplace/transactions',
+    ANALYTICS: '/v6/marketplace/analytics',
+    REPORTS: '/v6/marketplace/reports',
+    INTEGRATION: '/v6/marketplace/integration'
   },
 
   // Content Management
   CONTENT: {
-    MEDIA: '/content/media',
-    LOCALIZATION: '/content/localization',
-    THEMES: '/content/themes',
-    PAGES: '/content/pages'
+    MEDIA: '/v7/content/media',
+    LOCALIZATION: '/v4/shared/localization',
+    THEMES: '/v4/content/themes',
+    PAGES: '/v4/content/pages'
   },
 
   // AI Agent
   AI_AGENT: {
-    CHAT: '/ai-agent/chat',
-    MODELS: '/ai-agent/models',
-    TRAINING: '/ai-agent/training',
-    KNOWLEDGE: '/ai-agent/knowledge',
-    SETTINGS: '/ai-agent/settings'
+    CHAT: '/v4/ai-agent/chat',
+    MODELS: '/v4/ai-agent/models',
+    TRAINING: '/v4/ai-agent/training',
+    KNOWLEDGE: '/v4/ai-agent/knowledge',
+    SETTINGS: '/v4/ai-agent/settings'
   },
 
   // System
   SYSTEM: {
-    HEALTH: '/system/health',
-    METRICS: '/system/metrics',
-    LOGS: '/system/logs',
-    BACKUP: '/system/backup',
-    SETTINGS: '/system/settings'
+    HEALTH: '/v4/health',
+    METRICS: '/v4/system/metrics',
+    LOGS: '/v4/system/logs',
+    BACKUP: '/v4/system/backup',
+    SETTINGS: '/v4/system/settings'
   },
 
   // Notifications

@@ -1,4 +1,4 @@
-using WebAPI.Hubs;
+using Infrastructure.Hubs;
 using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;

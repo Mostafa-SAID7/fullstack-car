@@ -52,6 +52,16 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      // For critical errors, redirect to the full ServerError page
+      if (this.state.error && (
+        this.state.error.message.includes('ChunkLoadError') ||
+        this.state.error.message.includes('Loading chunk') ||
+        this.state.error.name === 'ChunkLoadError'
+      )) {
+        window.location.href = '/error/500';
+        return null;
+      }
+
       return (
         <div className="min-h-[400px] flex items-center justify-center p-8">
           <div className="text-center max-w-md mx-auto">
@@ -81,6 +91,13 @@ export class ErrorBoundary extends Component<Props, State> {
               >
                 <Home className="w-4 h-4" />
                 Go Home
+              </button>
+              <button
+                onClick={() => window.location.href = '/error/500'}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                Error Details
               </button>
             </div>
 

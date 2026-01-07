@@ -42,25 +42,29 @@ export class AuthService {
     return !!this.token && !!this.currentUser;
   }
 
-  login(request: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request)
+  login(request: LoginRequest): Observable<Result<LoginResponse>> {
+    return this.http.post<Result<LoginResponse>>(`${this.apiUrl}/login`, request)
       .pipe(
         tap(response => {
-          this.setAuthData(response);
+          if (response.succeeded && response.data) {
+            this.setAuthData(response.data);
+          }
         })
       );
   }
 
-  register(request: RegisterRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/register`, request)
+  register(request: RegisterRequest): Observable<Result<LoginResponse>> {
+    return this.http.post<Result<LoginResponse>>(`${this.apiUrl}/register`, request)
       .pipe(
         tap(response => {
-          this.setAuthData(response);
+          if (response.succeeded && response.data) {
+            this.setAuthData(response.data);
+          }
         })
       );
   }
 
-  refreshToken(): Observable<LoginResponse> {
+  refreshToken(): Observable<Result<LoginResponse>> {
     const refreshToken = localStorage.getItem('refreshToken');
     const token = this.token;
     
@@ -70,10 +74,12 @@ export class AuthService {
 
     const request: RefreshTokenRequest = { token, refreshToken };
     
-    return this.http.post<LoginResponse>(`${this.apiUrl}/refresh-token`, request)
+    return this.http.post<Result<LoginResponse>>(`${this.apiUrl}/refresh-token`, request)
       .pipe(
         tap(response => {
-          this.setAuthData(response);
+          if (response.succeeded && response.data) {
+            this.setAuthData(response.data);
+          }
         })
       );
   }
