@@ -11,19 +11,6 @@ public class CreatePodcastCommand : IRequest<Result<PodcastDto>>
     public CreatePodcastRequest Request { get; set; } = null!;
 }
 
-public class UpdatePodcastCommand : IRequest<Result<PodcastDto>>
-{
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public UpdatePodcastRequest Request { get; set; } = null!;
-}
-
-public class DeletePodcastCommand : IRequest<Result<bool>>
-{
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-}
-
 public class PublishPodcastCommand : IRequest<Result<PodcastDto>>
 {
     public Guid Id { get; set; }

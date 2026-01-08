@@ -1,0 +1,40 @@
+namespace Application.Features.Media.Videos.DTOs.Requests;
+
+public class BulkDeleteVideosRequest
+{
+    public List<Guid> VideoIds { get; set; } = new();
+}
+
+public class BulkPublishVideosRequest
+{
+    public List<Guid> VideoIds { get; set; } = new();
+}
+
+public class BulkUnpublishVideosRequest
+{
+    public List<Guid> VideoIds { get; set; } = new();
+}
+
+public class BulkUpdateVideoMetadataRequest
+{
+    public List<Guid> VideoIds { get; set; } = new();
+    public BulkUpdateVideoMetadataData Metadata { get; set; } = new();
+}
+
+public class BulkUpdateVideoMetadataData
+{
+    public List<string>? Tags { get; set; }
+    public bool? IsPublic { get; set; }
+    public bool? AllowComments { get; set; }
+    public string? Category { get; set; }
+}
+
+public class UploadVideoRequest
+{
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Quality { get; set; } = "HD";
+    public List<string> Tags { get; set; } = new();
+    public bool IsPublic { get; set; } = true;
+    public bool AllowComments { get; set; } = true;
+}

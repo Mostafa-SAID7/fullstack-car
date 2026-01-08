@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5100/api',
-  hubUrl: 'http://localhost:5100/hubs'
+  apiUrl: 'https://localhost:7001',
+  signalRUrl: 'https://localhost:7001/hubs'
 };

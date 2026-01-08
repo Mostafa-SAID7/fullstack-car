@@ -20,12 +20,6 @@ public class GetPodcastsQuery : IRequest<Result<PaginatedList<PodcastListDto>>>
     public bool SortDescending { get; set; } = true;
 }
 
-public class GetPodcastByIdQuery : IRequest<Result<PodcastDetailsDto>>
-{
-    public Guid Id { get; set; }
-    public Guid? UserId { get; set; }
-}
-
 public class GetMyPodcastsQuery : IRequest<Result<PaginatedList<PodcastListDto>>>
 {
     public Guid UserId { get; set; }
@@ -41,10 +35,4 @@ public class GetPodcastSeriesQuery : IRequest<Result<PaginatedList<PodcastSeries
     public string? SearchTerm { get; set; }
     public Guid? CreatorId { get; set; }
     public string? Category { get; set; }
-}
-
-public class GetTrendingPodcastsQuery : IRequest<Result<List<PodcastListDto>>>
-{
-    public int Count { get; set; } = 10;
-    public int Days { get; set; } = 7;
 }

@@ -5,5 +5,6 @@ namespace Application.Features.Media.Podcasts.Commands;
 
 public class DeletePodcastCommand : IRequest<Result<bool>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
 }

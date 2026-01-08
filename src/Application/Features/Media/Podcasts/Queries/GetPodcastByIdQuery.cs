@@ -4,7 +4,8 @@ using Application.Features.Media.Podcasts.DTOs.Responses;
 
 namespace Application.Features.Media.Podcasts.Queries;
 
-public class GetPodcastByIdQuery : IRequest<Result<PodcastDetailResponse>>
+public class GetPodcastByIdQuery : IRequest<Result<PodcastDetailsDto>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    public Guid? UserId { get; set; }
 }

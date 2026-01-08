@@ -4,7 +4,7 @@ using Application.Features.Media.Podcasts.DTOs.Responses;
 
 namespace Application.Features.Media.Podcasts.Queries;
 
-public class SearchPodcastsQuery : IRequest<Result<PaginatedResult<PodcastResponse>>>
+public class SearchPodcastsQuery : IRequest<Result<PaginatedList<PodcastResponse>>>
 {
     public string SearchTerm { get; set; } = string.Empty;
     public int? CategoryId { get; set; }

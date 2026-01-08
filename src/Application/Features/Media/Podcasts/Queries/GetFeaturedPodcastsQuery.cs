@@ -9,11 +9,6 @@ public class GetFeaturedPodcastsQuery : IRequest<Result<List<PodcastResponse>>>
     public int Count { get; set; } = 10;
 }
 
-public class GetTrendingPodcastsQuery : IRequest<Result<List<PodcastResponse>>>
-{
-    public int Count { get; set; } = 10;
-}
-
 public class GetUserPodcastSubscriptionsQuery : IRequest<Result<List<PodcastResponse>>>
 {
 }
