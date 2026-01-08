@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Features.Media.Podcasts.Commands;
 using Application.Features.Media.Podcasts.DTOs.Requests;
 using Application.Features.Media.Shared.DTOs.Requests;
@@ -18,19 +19,28 @@ public class PodcastUploadController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
+    private readonly IFileValidationService _fileValidationService;
+    private readonly IMediaFileStorageService _fileStorageService;
 
-    public PodcastUploadController(IMediator mediator, IWebHostEnvironment environment, IConfiguration configuration)
+    public PodcastUploadController(
+        IMediator mediator, 
+        IWebHostEnvironment environment, 
+        IConfiguration configuration,
+        IFileValidationService fileValidationService,
+        IMediaFileStorageService fileStorageService)
     {
         _mediator = mediator;
         _environment = environment;
         _configuration = configuration;
+        _fileValidationService = fileValidationService;
+        _fileStorageService = fileStorageService;
     }
 
     /// <summary>
     /// Upload a podcast audio file
     /// </summary>
     [HttpPost]
-    [RequestSizeLimit(200_000_000)] // 200MB limit
+    [RequestSizeLimit(500_000_000)] // 500MB limit as per requirements
     public async Task<IActionResult> UploadPodcast(IFormFile file, [FromForm] UploadPodcastRequest request)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -52,30 +62,48 @@ public class PodcastUploadController : ControllerBase
             });
         }
 
-        // Validate file type
-        var allowedAudioTypes = new[] { "audio/mp3", "audio/wav", "audio/aac", "audio/ogg", "audio/m4a", "audio/mpeg" };
-        if (!allowedAudioTypes.Contains(file.ContentType.ToLower()))
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "Invalid file type. Only audio files are allowed."
-            });
-        }
-
-        // Validate file size (200MB max)
-        if (file.Length > 200_000_000)
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "File size exceeds 200MB limit"
-            });
-        }
-
         try
         {
-            // Create podcast record first
+            // Validate the uploaded file using the comprehensive validation service
+            using var fileStream = file.OpenReadStream();
+            var validationResult = await _fileValidationService.ValidateAudioFileAsync(
+                fileStream, 
+                file.FileName, 
+                file.ContentType, 
+                file.Length);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    Message = "File validation failed",
+                    Errors = validationResult.Errors
+                });
+            }
+
+            // Upload file using the file storage service
+            fileStream.Position = 0; // Reset stream position after validation
+            var uploadResult = await _fileStorageService.UploadAudioAsync(
+                fileStream, 
+                file.FileName, 
+                file.ContentType);
+
+            if (!uploadResult.IsSuccess)
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    Message = "File upload failed",
+                    Error = uploadResult.ErrorMessage
+                });
+            }
+
+            // Extract metadata from the audio file
+            fileStream.Position = 0; // Reset stream position for metadata extraction
+            var metadata = await _fileValidationService.ExtractAudioMetadataAsync(fileStream, file.FileName);
+
+            // Create podcast record
             var createCommand = new CreatePodcastCommand
             {
                 CreatorId = userGuid,
@@ -97,6 +125,9 @@ public class PodcastUploadController : ControllerBase
             var createResult = await _mediator.Send(createCommand);
             if (!createResult.IsSuccess)
             {
+                // Clean up uploaded file if database creation fails
+                await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
+                
                 return BadRequest(new
                 {
                     Success = false,
@@ -105,41 +136,20 @@ public class PodcastUploadController : ControllerBase
                 });
             }
 
-            // Generate unique filename
-            var podcastId = createResult.Data.Id;
-            var fileExtension = Path.GetExtension(file.FileName);
-            var fileName = $"{podcastId}_{DateTime.UtcNow:yyyyMMddHHmmss}{fileExtension}";
-            
-            // Create upload directory
-            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "podcasts");
-            Directory.CreateDirectory(uploadPath);
-            
-            var filePath = Path.Combine(uploadPath, fileName);
-
-            // Save file
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            // Update podcast with file information
-            var audioUrl = $"/uploads/podcasts/{fileName}";
+            // Update podcast with file information and metadata
             var updateCommand = new UpdatePodcastFileCommand
             {
-                PodcastId = podcastId,
-                AudioUrl = audioUrl,
-                FileSize = file.Length,
-                Duration = TimeSpan.Zero // TODO: Extract from audio metadata
+                PodcastId = createResult.Data.Id,
+                AudioUrl = uploadResult.FileUrl!,
+                FileSize = uploadResult.FileSize,
+                Duration = metadata.Duration
             };
 
             var updateResult = await _mediator.Send(updateCommand);
             if (!updateResult.IsSuccess)
             {
                 // Clean up uploaded file if database update fails
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
+                await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
 
                 return BadRequest(new
                 {
@@ -154,12 +164,23 @@ public class PodcastUploadController : ControllerBase
                 Success = true,
                 Data = new
                 {
-                    PodcastId = podcastId,
-                    AudioUrl = audioUrl,
-                    FileSize = file.Length,
-                    FileName = fileName
+                    PodcastId = createResult.Data.Id,
+                    AudioUrl = uploadResult.FileUrl,
+                    FileSize = uploadResult.FileSize,
+                    FileName = uploadResult.FileName,
+                    Duration = metadata.Duration,
+                    Format = metadata.Format,
+                    Bitrate = metadata.Bitrate,
+                    SampleRate = metadata.SampleRate,
+                    Channels = metadata.Channels,
+                    Title = metadata.Title,
+                    Artist = metadata.Artist,
+                    Album = metadata.Album,
+                    Year = metadata.Year,
+                    UploadedAt = uploadResult.UploadedAt,
+                    ValidationPassed = true
                 },
-                Message = "Podcast uploaded successfully"
+                Message = "Podcast uploaded and validated successfully"
             });
         }
         catch (Exception ex)

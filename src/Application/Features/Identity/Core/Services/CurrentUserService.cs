@@ -27,5 +27,33 @@ namespace Application.Features.Identity.Core.Services
         {
             return _httpContextAccessor.HttpContext?.User?.IsInRole(role) ?? false;
         }
+
+        public bool IsActive
+        {
+            get
+            {
+                var isActiveClaim = GetClaim("isActive");
+                return bool.TryParse(isActiveClaim, out var isActive) && isActive;
+            }
+        }
+
+        public bool IsEmailConfirmed
+        {
+            get
+            {
+                var emailVerifiedClaim = GetClaim("email_verified");
+                return bool.TryParse(emailVerifiedClaim, out var isVerified) && isVerified;
+            }
+        }
+
+        public string? GetClaim(string claimType)
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirstValue(claimType);
+        }
+
+        public IEnumerable<string> GetClaims(string claimType)
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindAll(claimType)?.Select(c => c.Value) ?? Enumerable.Empty<string>();
+        }
     }
 }

@@ -1,4 +1,7 @@
 using Application.Common.Behaviors;
+using Application.Features.Media.Shared.Interfaces;
+using Application.Features.Media.Shared.Services;
+using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using System.Reflection;
@@ -17,6 +20,12 @@ namespace Application.Common
                 cfg.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
                 // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
+
+            // Register domain services
+            services.AddScoped<IMediaDomainService, MediaDomainService>();
+            
+            // Register media services
+            services.AddScoped<IMediaService, MediaService>();
 
             return services;
         }

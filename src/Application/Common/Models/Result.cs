@@ -1,16 +1,26 @@
+using System.Text.Json.Serialization;
+
 namespace Application.Common.Models
 {
     public class Result
     {
+        [JsonConstructor]
         internal Result(bool succeeded, IEnumerable<string> errors)
         {
             Succeeded = succeeded;
             Errors = errors.ToArray();
         }
 
+        // Parameterless constructor for JSON deserialization
+        public Result()
+        {
+            Succeeded = false;
+            Errors = Array.Empty<string>();
+        }
+
         public bool Succeeded { get; set; }
         public bool IsSuccess => Succeeded;
-        public string[] Errors { get; set; }
+        public string[] Errors { get; set; } = Array.Empty<string>();
         public string? ErrorMessage => Errors?.FirstOrDefault();
 
         public static Result Success()
@@ -31,12 +41,19 @@ namespace Application.Common.Models
 
     public class Result<T> : Result
     {
+        [JsonConstructor]
         internal Result(bool succeeded, T data, IEnumerable<string> errors) : base(succeeded, errors)
         {
             Data = data;
         }
 
-        public T Data { get; set; }
+        // Parameterless constructor for JSON deserialization
+        public Result() : base()
+        {
+            Data = default!;
+        }
+
+        public T Data { get; set; } = default!;
 
         public static Result<T> Success(T data)
         {

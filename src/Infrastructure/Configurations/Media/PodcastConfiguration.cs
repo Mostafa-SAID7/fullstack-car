@@ -44,6 +44,19 @@ public class PodcastConfiguration : IEntityTypeConfiguration<Podcast>
         builder.HasIndex(p => p.PublishedAt);
         builder.HasIndex(p => p.EpisodeNumber);
         
+        // Additional performance indexes
+        builder.HasIndex(p => new { p.IsPublic, p.Status, p.PublishedAt })
+            .HasDatabaseName("IX_Podcasts_IsPublic_Status_PublishedAt");
+        
+        builder.HasIndex(p => new { p.PlayCount, p.PublishedAt })
+            .HasDatabaseName("IX_Podcasts_PlayCount_PublishedAt");
+        
+        builder.HasIndex(p => p.LikeCount)
+            .HasDatabaseName("IX_Podcasts_LikeCount");
+        
+        builder.HasIndex(p => new { p.SeriesId, p.EpisodeNumber })
+            .HasDatabaseName("IX_Podcasts_SeriesId_EpisodeNumber");
+        
         // Relationships
         builder.HasOne(p => p.Series)
             .WithMany(s => s.Episodes)

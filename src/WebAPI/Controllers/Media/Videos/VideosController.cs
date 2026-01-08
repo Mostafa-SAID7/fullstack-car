@@ -13,13 +13,13 @@ namespace WebAPI.Controllers.Media.Videos;
 [ApiVersion("7.0")]
 [Route("api/v{version:apiVersion}/media/videos")]
 [Authorize]
-public class VideosController : ControllerBase
+public class VideosController : BaseController
 {
-    private readonly IMediator _mediator;
+    private readonly ILogger<VideosController> _logger;
 
-    public VideosController(IMediator mediator)
+    public VideosController(ILogger<VideosController> logger)
     {
-        _mediator = mediator;
+        _logger = logger;
     }
 
     /// <summary>
@@ -29,24 +29,17 @@ public class VideosController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetVideos([FromQuery] GetVideosQuery query)
     {
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
+        try
         {
-            return Ok(new
-            {
-                Success = true,
-                Data = result.Data,
-                Message = "Videos retrieved successfully"
-            });
+            var result = await Mediator.Send(query);
+            
+            return FromResult(result, "Videos retrieved successfully");
         }
-
-        return BadRequest(new
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to retrieve videos"
-        });
+            _logger.LogError(ex, "Error retrieving videos");
+            return InternalServerError("Failed to retrieve videos", ex.Message);
+        }
     }
 
     /// <summary>
@@ -56,38 +49,31 @@ public class VideosController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetVideo(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Guid? userGuid = null;
-        
-        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
+        try
         {
-            userGuid = parsedUserId;
-        }
-
-        var query = new GetVideoByIdQuery 
-        { 
-            Id = id,
-            UserId = userGuid
-        };
-        
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Guid? userGuid = null;
+            
+            if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Video retrieved successfully"
-            });
-        }
+                userGuid = parsedUserId;
+            }
 
-        return NotFound(new
+            var query = new GetVideoByIdQuery 
+            { 
+                Id = id,
+                UserId = userGuid
+            };
+            
+            var result = await Mediator.Send(query);
+            
+            return FromResultNotFound(result);
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Video not found"
-        });
+            _logger.LogError(ex, "Error retrieving video with ID: {VideoId}", id);
+            return InternalServerError("Failed to retrieve video", ex.Message);
+        }
     }
 
     /// <summary>
@@ -96,43 +82,35 @@ public class VideosController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateVideo([FromBody] CreateVideoRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
+                return Unauthorized("User not authenticated");
+            }
+
+            var command = new CreateVideoCommand
+            {
+                CreatorId = userGuid,
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+            
+            if (result.IsSuccess)
+            {
+                var location = Url.Action(nameof(GetVideo), new { id = result.Data.Id });
+                return FromResultCreated(result, location ?? string.Empty, "Video created successfully");
+            }
+
+            return FromResult(result);
         }
-
-        var command = new CreateVideoCommand
+        catch (Exception ex)
         {
-            CreatorId = userGuid,
-            Request = request
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return CreatedAtAction(
-                nameof(GetVideo),
-                new { id = result.Data.Id },
-                new
-                {
-                    Success = true,
-                    Data = result.Data,
-                    Message = "Video created successfully"
-                });
+            _logger.LogError(ex, "Error creating video");
+            return InternalServerError("Failed to create video", ex.Message);
         }
-
-        return BadRequest(new
-        {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to create video"
-        });
     }
 
     /// <summary>
@@ -141,41 +119,30 @@ public class VideosController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateVideo(Guid id, [FromBody] UpdateVideoRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new UpdateVideoCommand
-        {
-            Id = id,
-            UserId = userGuid,
-            Request = request
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new UpdateVideoCommand
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Video updated successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid,
+                Request = request
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Video updated successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to update video"
-        });
+            _logger.LogError(ex, "Error updating video with ID: {VideoId}", id);
+            return InternalServerError("Failed to update video", ex.Message);
+        }
     }
 
     /// <summary>
@@ -184,39 +151,29 @@ public class VideosController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteVideo(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new DeleteVideoCommand
-        {
-            Id = id,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new DeleteVideoCommand
             {
-                Success = true,
-                Message = "Video deleted successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Video deleted successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to delete video"
-        });
+            _logger.LogError(ex, "Error deleting video with ID: {VideoId}", id);
+            return InternalServerError("Failed to delete video", ex.Message);
+        }
     }
 
     /// <summary>
@@ -225,40 +182,29 @@ public class VideosController : ControllerBase
     [HttpPost("{id:guid}/publish")]
     public async Task<IActionResult> PublishVideo(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new PublishVideoCommand
-        {
-            Id = id,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new PublishVideoCommand
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Video published successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Video published successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to publish video"
-        });
+            _logger.LogError(ex, "Error publishing video with ID: {VideoId}", id);
+            return InternalServerError("Failed to publish video", ex.Message);
+        }
     }
 
     /// <summary>
@@ -267,41 +213,40 @@ public class VideosController : ControllerBase
     [HttpGet("my-videos")]
     public async Task<IActionResult> GetMyVideos([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var query = new GetMyVideosQuery
-        {
-            UserId = userGuid,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (pageNumber < 1)
             {
-                Success = true,
-                Data = result.Data,
-                Message = "My videos retrieved successfully"
-            });
-        }
+                return BadRequest("Page number must be greater than 0");
+            }
 
-        return BadRequest(new
+            if (pageSize < 1 || pageSize > 100)
+            {
+                return BadRequest("Page size must be between 1 and 100");
+            }
+
+            var query = new GetMyVideosQuery
+            {
+                UserId = userGuid,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await Mediator.Send(query);
+            
+            return FromResult(result, "My videos retrieved successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to retrieve videos"
-        });
+            _logger.LogError(ex, "Error retrieving user's videos");
+            return InternalServerError("Failed to retrieve videos", ex.Message);
+        }
     }
 
     /// <summary>
@@ -310,49 +255,39 @@ public class VideosController : ControllerBase
     [HttpPost("bulk-delete")]
     public async Task<IActionResult> BulkDeleteVideos([FromBody] BulkDeleteVideosRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        if (request.VideoIds == null || !request.VideoIds.Any())
-        {
-            return BadRequest(new
+            if (request.VideoIds == null || !request.VideoIds.Any())
             {
-                Success = false,
-                Message = "No video IDs provided"
-            });
-        }
+                return BadRequest("No video IDs provided");
+            }
 
-        var command = new BulkDeleteVideosCommand
-        {
-            VideoIds = request.VideoIds,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (request.VideoIds.Count() > 100)
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Bulk delete operation completed"
-            });
-        }
+                return BadRequest("Cannot delete more than 100 videos at once");
+            }
 
-        return BadRequest(new
+            var command = new BulkDeleteVideosCommand
+            {
+                VideoIds = request.VideoIds,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Bulk delete operation completed");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to complete bulk delete operation"
-        });
+            _logger.LogError(ex, "Error performing bulk delete operation");
+            return InternalServerError("Failed to complete bulk delete operation", ex.Message);
+        }
     }
 
     /// <summary>
@@ -361,49 +296,39 @@ public class VideosController : ControllerBase
     [HttpPost("bulk-publish")]
     public async Task<IActionResult> BulkPublishVideos([FromBody] BulkPublishVideosRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        if (request.VideoIds == null || !request.VideoIds.Any())
-        {
-            return BadRequest(new
+            if (request.VideoIds == null || !request.VideoIds.Any())
             {
-                Success = false,
-                Message = "No video IDs provided"
-            });
-        }
+                return BadRequest("No video IDs provided");
+            }
 
-        var command = new BulkPublishVideosCommand
-        {
-            VideoIds = request.VideoIds,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (request.VideoIds.Count() > 100)
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Bulk publish operation completed"
-            });
-        }
+                return BadRequest("Cannot publish more than 100 videos at once");
+            }
 
-        return BadRequest(new
+            var command = new BulkPublishVideosCommand
+            {
+                VideoIds = request.VideoIds,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Bulk publish operation completed");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to complete bulk publish operation"
-        });
+            _logger.LogError(ex, "Error performing bulk publish operation");
+            return InternalServerError("Failed to complete bulk publish operation", ex.Message);
+        }
     }
 
     /// <summary>
@@ -412,49 +337,39 @@ public class VideosController : ControllerBase
     [HttpPost("bulk-unpublish")]
     public async Task<IActionResult> BulkUnpublishVideos([FromBody] BulkUnpublishVideosRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        if (request.VideoIds == null || !request.VideoIds.Any())
-        {
-            return BadRequest(new
+            if (request.VideoIds == null || !request.VideoIds.Any())
             {
-                Success = false,
-                Message = "No video IDs provided"
-            });
-        }
+                return BadRequest("No video IDs provided");
+            }
 
-        var command = new BulkUnpublishVideosCommand
-        {
-            VideoIds = request.VideoIds,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (request.VideoIds.Count() > 100)
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Bulk unpublish operation completed"
-            });
-        }
+                return BadRequest("Cannot unpublish more than 100 videos at once");
+            }
 
-        return BadRequest(new
+            var command = new BulkUnpublishVideosCommand
+            {
+                VideoIds = request.VideoIds,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Bulk unpublish operation completed");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to complete bulk unpublish operation"
-        });
+            _logger.LogError(ex, "Error performing bulk unpublish operation");
+            return InternalServerError("Failed to complete bulk unpublish operation", ex.Message);
+        }
     }
 
     /// <summary>
@@ -463,55 +378,45 @@ public class VideosController : ControllerBase
     [HttpPost("bulk-update-metadata")]
     public async Task<IActionResult> BulkUpdateVideoMetadata([FromBody] BulkUpdateVideoMetadataRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
-
-        if (request.VideoIds == null || !request.VideoIds.Any())
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "No video IDs provided"
-            });
-        }
-
-        var command = new BulkUpdateVideoMetadataCommand
-        {
-            VideoIds = request.VideoIds,
-            UserId = userGuid,
-            Metadata = new BulkUpdateVideoMetadata
-            {
-                Tags = request.Metadata.Tags,
-                IsPublic = request.Metadata.IsPublic,
-                AllowComments = request.Metadata.AllowComments,
-                Category = request.Metadata.Category
+                return Unauthorized("User not authenticated");
             }
-        };
 
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (request.VideoIds == null || !request.VideoIds.Any())
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Bulk update metadata operation completed"
-            });
-        }
+                return BadRequest("No video IDs provided");
+            }
 
-        return BadRequest(new
+            if (request.VideoIds.Count() > 100)
+            {
+                return BadRequest("Cannot update more than 100 videos at once");
+            }
+
+            var command = new BulkUpdateVideoMetadataCommand
+            {
+                VideoIds = request.VideoIds,
+                UserId = userGuid,
+                Metadata = new BulkUpdateVideoMetadata
+                {
+                    Tags = request.Metadata.Tags,
+                    IsPublic = request.Metadata.IsPublic,
+                    AllowComments = request.Metadata.AllowComments,
+                    Category = request.Metadata.Category
+                }
+            };
+
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Bulk update metadata operation completed");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to complete bulk update metadata operation"
-        });
+            _logger.LogError(ex, "Error performing bulk update metadata operation");
+            return InternalServerError("Failed to complete bulk update metadata operation", ex.Message);
+        }
     }
 }

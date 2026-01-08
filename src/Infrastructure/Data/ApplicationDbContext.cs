@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Infrastructure.Data.Seeds;
 
 using Application.Common.Interfaces.Data;
 
@@ -153,10 +154,12 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Media.Video> Videos { get; set; }
         public DbSet<Domain.Entities.Media.Podcast> Podcasts { get; set; }
         public DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; set; }
+        public DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; set; }
         public DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; set; }
         public DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; set; }
         public DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; set; }
         public DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; set; }
         public DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; set; }
         public DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; set; }
         public DbSet<Domain.Entities.Media.VideoView> VideoViews { get; set; }
@@ -239,6 +242,18 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Marketing.PlatformAnalytics> PlatformAnalytics { get; set; }
         public DbSet<Domain.Entities.Marketing.MarketingOverview> MarketingOverviews { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // This will be overridden by DI configuration
+            }
+            
+            // Suppress the pending model changes warning for now
+            optionsBuilder.ConfigureWarnings(warnings => 
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -258,6 +273,9 @@ namespace Infrastructure.Data
 
             // Apply all configurations first
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // Seed development data
+            MediaSeedData.SeedMediaData(builder);
 
             // Configure cascade delete behavior to avoid cycles
             // Set all foreign key relationships to NoAction to prevent cascade cycles

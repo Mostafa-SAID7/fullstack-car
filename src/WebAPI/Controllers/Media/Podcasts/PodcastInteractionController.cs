@@ -1,5 +1,6 @@
 using Application.Features.Media.Podcasts.Commands;
 using Application.Features.Media.Podcasts.DTOs.Requests;
+using Application.Features.Media.Podcasts.Queries;
 using Application.Features.Media.Shared.DTOs.Requests;
 using Asp.Versioning;
 using MediatR;
@@ -123,11 +124,28 @@ public class PodcastInteractionController : ControllerBase
             });
         }
 
-        // TODO: Implement podcast subscription
-        return Ok(new
+        var command = new SubscribeToPodcastCommand
         {
-            Success = true,
-            Message = "Subscribed to podcast successfully"
+            PodcastId = id,
+            UserId = userGuid
+        };
+
+        var result = await _mediator.Send(command);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Message = "Subscribed to podcast successfully"
+            });
+        }
+
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Failed to subscribe to podcast"
         });
     }
 
@@ -147,11 +165,28 @@ public class PodcastInteractionController : ControllerBase
             });
         }
 
-        // TODO: Implement podcast unsubscription
-        return Ok(new
+        var command = new UnsubscribeFromPodcastCommand
         {
-            Success = true,
-            Message = "Unsubscribed from podcast successfully"
+            PodcastId = id,
+            UserId = userGuid
+        };
+
+        var result = await _mediator.Send(command);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Message = "Unsubscribed from podcast successfully"
+            });
+        }
+
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Failed to unsubscribe from podcast"
         });
     }
 
@@ -159,7 +194,7 @@ public class PodcastInteractionController : ControllerBase
     /// Get user's podcast subscriptions
     /// </summary>
     [HttpGet("subscriptions")]
-    public async Task<IActionResult> GetUserSubscriptions()
+    public async Task<IActionResult> GetUserSubscriptions([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
@@ -171,12 +206,30 @@ public class PodcastInteractionController : ControllerBase
             });
         }
 
-        // TODO: Implement user subscriptions query
-        return Ok(new
+        var query = new GetUserPodcastSubscriptionsQuery
         {
-            Success = true,
-            Data = new object[0],
-            Message = "User subscriptions retrieved successfully"
+            UserId = userGuid,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var result = await _mediator.Send(query);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Data = result.Data,
+                Message = "User subscriptions retrieved successfully"
+            });
+        }
+
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Failed to retrieve subscriptions"
         });
     }
 }

@@ -50,6 +50,47 @@ public class PodcastSeriesController : ControllerBase
     }
 
     /// <summary>
+    /// Get a specific podcast series by ID
+    /// </summary>
+    [HttpGet("{id:guid}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPodcastSeriesById(Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Guid? userGuid = null;
+        
+        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
+        {
+            userGuid = parsedUserId;
+        }
+
+        var query = new GetPodcastSeriesByIdQuery 
+        { 
+            Id = id,
+            UserId = userGuid
+        };
+        
+        var result = await _mediator.Send(query);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Data = result.Data,
+                Message = "Podcast series retrieved successfully"
+            });
+        }
+
+        return NotFound(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Podcast series not found"
+        });
+    }
+
+    /// <summary>
     /// Create a new podcast series
     /// </summary>
     [HttpPost]
@@ -91,6 +132,90 @@ public class PodcastSeriesController : ControllerBase
             Success = false,
             Errors = result.Errors,
             Message = "Failed to create podcast series"
+        });
+    }
+
+    /// <summary>
+    /// Update an existing podcast series
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdatePodcastSeries(Guid id, [FromBody] UpdatePodcastSeriesRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized(new
+            {
+                Success = false,
+                Message = "User not authenticated"
+            });
+        }
+
+        var command = new UpdatePodcastSeriesCommand
+        {
+            Id = id,
+            UserId = userGuid,
+            Request = request
+        };
+
+        var result = await _mediator.Send(command);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Data = result.Data,
+                Message = "Podcast series updated successfully"
+            });
+        }
+
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Failed to update podcast series"
+        });
+    }
+
+    /// <summary>
+    /// Delete a podcast series
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeletePodcastSeries(Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized(new
+            {
+                Success = false,
+                Message = "User not authenticated"
+            });
+        }
+
+        var command = new DeletePodcastSeriesCommand
+        {
+            Id = id,
+            UserId = userGuid
+        };
+
+        var result = await _mediator.Send(command);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Message = "Podcast series deleted successfully"
+            });
+        }
+
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = result.Errors,
+            Message = "Failed to delete podcast series"
         });
     }
 }

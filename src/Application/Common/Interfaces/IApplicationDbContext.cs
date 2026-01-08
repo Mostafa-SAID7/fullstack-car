@@ -98,6 +98,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; }
         DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; }
         DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; }
+        DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; }
         DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; }
         DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; }
         DbSet<Domain.Entities.Media.VideoView> VideoViews { get; }

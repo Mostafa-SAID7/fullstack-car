@@ -7,6 +7,7 @@ using Application.Features.Identity.Profile.DTOs.Responses;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Features.Identity.Auth.Services
 {
@@ -15,18 +16,26 @@ namespace Application.Features.Identity.Auth.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationService> _logger;
+        private readonly int _refreshTokenExpirationDays;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IJwtTokenService jwtTokenService,
+            IRefreshTokenRepository refreshTokenRepository,
+            IConfiguration configuration,
             ILogger<AuthenticationService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
+            _refreshTokenRepository = refreshTokenRepository;
+            _configuration = configuration;
             _logger = logger;
+            _refreshTokenExpirationDays = _configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays", 7);
         }
 
         public async Task<Result<AuthResponse>> LoginAsync(LoginRequest request)
@@ -63,45 +72,11 @@ namespace Application.Features.Identity.Auth.Services
                 user.LastLoginAt = DateTime.UtcNow;
                 await _userManager.UpdateAsync(user);
 
-                // Get user roles
-                var roles = await _userManager.GetRolesAsync(user);
-
                 // Generate tokens
-                var accessToken = _jwtTokenService.GenerateAccessToken(
-                    user.Id, 
-                    user.Email!, 
-                    $"{user.FirstName} {user.LastName}".Trim(), 
-                    roles);
-                
-                var refreshToken = _jwtTokenService.GenerateRefreshToken();
-                var expiresAt = DateTime.UtcNow.AddMinutes(60); // Default 60 minutes
-
-                // TODO: Store refresh token in database
-                // For now, we'll just return it
-
-                var response = new AuthResponse
-                {
-                    Success = true,
-                    Message = "Login successful",
-                    Token = accessToken,
-                    RefreshToken = refreshToken,
-                    ExpiresAt = expiresAt,
-                    User = new UserDto
-                    {
-                        Id = user.Id.ToString(),
-                        Email = user.Email!,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        IsEmailConfirmed = user.EmailConfirmed,
-                        IsActive = user.IsActive,
-                        ProfileImageUrl = user.ProfileImageUrl,
-                        Roles = roles.ToList(),
-                        CreatedAt = user.CreatedAt
-                    }
-                };
+                var authResponse = await GenerateTokensAsync(user);
 
                 _logger.LogInformation("User {Email} logged in successfully", request.Email);
-                return Result<AuthResponse>.Success(response);
+                return Result<AuthResponse>.Success(authResponse);
             }
             catch (Exception ex)
             {
@@ -146,39 +121,10 @@ namespace Application.Features.Identity.Auth.Services
                 await _userManager.AddToRoleAsync(user, "User");
 
                 // Generate tokens
-                var roles = await _userManager.GetRolesAsync(user);
-                var accessToken = _jwtTokenService.GenerateAccessToken(
-                    user.Id, 
-                    user.Email!, 
-                    $"{user.FirstName} {user.LastName}".Trim(), 
-                    roles);
-                
-                var refreshToken = _jwtTokenService.GenerateRefreshToken();
-                var expiresAt = DateTime.UtcNow.AddMinutes(60);
-
-                var response = new AuthResponse
-                {
-                    Success = true,
-                    Message = "Registration successful",
-                    Token = accessToken,
-                    RefreshToken = refreshToken,
-                    ExpiresAt = expiresAt,
-                    User = new UserDto
-                    {
-                        Id = user.Id.ToString(),
-                        Email = user.Email!,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        IsEmailConfirmed = user.EmailConfirmed,
-                        IsActive = user.IsActive,
-                        ProfileImageUrl = user.ProfileImageUrl,
-                        Roles = roles.ToList(),
-                        CreatedAt = user.CreatedAt
-                    }
-                };
+                var authResponse = await GenerateTokensAsync(user);
 
                 _logger.LogInformation("User {Email} registered successfully", request.Email);
-                return Result<AuthResponse>.Success(response);
+                return Result<AuthResponse>.Success(authResponse);
             }
             catch (Exception ex)
             {
@@ -191,20 +137,52 @@ namespace Application.Features.Identity.Auth.Services
         {
             try
             {
-                // TODO: In a real implementation, you would:
-                // 1. Validate the refresh token from database
-                // 2. Check if it's not expired or revoked
-                // 3. Get the user associated with the token
-                
-                // For now, we'll implement a basic version
-                if (string.IsNullOrEmpty(request.RefreshToken))
+                // Validate the access token (even if expired)
+                var principal = _jwtTokenService.ValidateExpiredToken(request.AccessToken);
+                if (principal == null)
+                {
+                    return Result<AuthResponse>.Failure("Invalid access token.");
+                }
+
+                var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+                {
+                    return Result<AuthResponse>.Failure("Invalid token claims.");
+                }
+
+                // Get the refresh token from database
+                var refreshToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
+                if (refreshToken == null || !refreshToken.IsActive || refreshToken.UserId != userId)
                 {
                     return Result<AuthResponse>.Failure("Invalid refresh token.");
                 }
 
-                // In a real scenario, you'd decode the refresh token to get user info
-                // For now, we'll return an error since we don't have token storage implemented
-                return Result<AuthResponse>.Failure("Refresh token functionality not fully implemented. Please login again.");
+                // Get the user
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user == null || !user.IsActive)
+                {
+                    return Result<AuthResponse>.Failure("User not found or inactive.");
+                }
+
+                // Revoke the old refresh token
+                refreshToken.IsRevoked = true;
+                refreshToken.RevokedAt = DateTime.UtcNow;
+                refreshToken.RevokedReason = "Replaced by new token";
+                await _refreshTokenRepository.UpdateAsync(refreshToken);
+
+                // Generate new tokens
+                var authResponse = await GenerateTokensAsync(user);
+                
+                // Set the replaced token reference
+                var newRefreshToken = await _refreshTokenRepository.GetByTokenAsync(authResponse.RefreshToken);
+                if (newRefreshToken != null)
+                {
+                    refreshToken.ReplacedByToken = newRefreshToken.Token;
+                    await _refreshTokenRepository.UpdateAsync(refreshToken);
+                }
+
+                _logger.LogInformation("Tokens refreshed for user {UserId}", userId);
+                return Result<AuthResponse>.Success(authResponse);
             }
             catch (Exception ex)
             {
@@ -231,10 +209,8 @@ namespace Application.Features.Identity.Auth.Services
                 // Sign out the user
                 await _signInManager.SignOutAsync();
 
-                // TODO: In a real implementation, you would:
-                // 1. Revoke all refresh tokens for this user
-                // 2. Add the current JWT to a blacklist
-                // 3. Clear any cached user sessions
+                // Revoke all refresh tokens for this user
+                await _refreshTokenRepository.RevokeAllUserTokensAsync(Guid.Parse(userId));
 
                 _logger.LogInformation("User {UserId} logged out successfully", userId);
                 return Result.Success();
@@ -255,10 +231,7 @@ namespace Application.Features.Identity.Auth.Services
                     return Result.Failure("Token is required.");
                 }
 
-                // TODO: In a real implementation, you would:
-                // 1. Add the token to a blacklist/revoked tokens table
-                // 2. Validate the token format and signature
-                // 3. Update the database to mark the token as revoked
+                await _refreshTokenRepository.RevokeTokenAsync(token);
 
                 _logger.LogInformation("Token revoked successfully");
                 return Result.Success();
@@ -285,10 +258,8 @@ namespace Application.Features.Identity.Auth.Services
                     return Result.Failure("User not found.");
                 }
 
-                // TODO: In a real implementation, you would:
-                // 1. Revoke all refresh tokens for this user from database
-                // 2. Add all active JWTs for this user to blacklist
-                // 3. Update user's security stamp to invalidate existing tokens
+                // Revoke all refresh tokens for this user
+                await _refreshTokenRepository.RevokeAllUserTokensAsync(Guid.Parse(userId));
 
                 // Update security stamp to invalidate existing tokens
                 await _userManager.UpdateSecurityStampAsync(user);
@@ -321,39 +292,10 @@ namespace Application.Features.Identity.Auth.Services
                 }
 
                 // Generate tokens after email confirmation
-                var roles = await _userManager.GetRolesAsync(user);
-                var accessToken = _jwtTokenService.GenerateAccessToken(
-                    user.Id, 
-                    user.Email!, 
-                    $"{user.FirstName} {user.LastName}".Trim(), 
-                    roles);
-                
-                var refreshToken = _jwtTokenService.GenerateRefreshToken();
-                var expiresAt = DateTime.UtcNow.AddMinutes(60);
-
-                var response = new AuthResponse
-                {
-                    Success = true,
-                    Message = "Email confirmed successfully",
-                    Token = accessToken,
-                    RefreshToken = refreshToken,
-                    ExpiresAt = expiresAt,
-                    User = new UserDto
-                    {
-                        Id = user.Id.ToString(),
-                        Email = user.Email!,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        IsEmailConfirmed = user.EmailConfirmed,
-                        IsActive = user.IsActive,
-                        ProfileImageUrl = user.ProfileImageUrl,
-                        Roles = roles.ToList(),
-                        CreatedAt = user.CreatedAt
-                    }
-                };
+                var authResponse = await GenerateTokensAsync(user);
 
                 _logger.LogInformation("Email confirmed for user {Email}", user.Email);
-                return Result<AuthResponse>.Success(response);
+                return Result<AuthResponse>.Success(authResponse);
             }
             catch (Exception ex)
             {
@@ -378,11 +320,6 @@ namespace Application.Features.Identity.Auth.Services
                     return Result.Failure("Email is already confirmed.");
                 }
 
-                // TODO: In a real implementation, you would:
-                // 1. Generate email confirmation token
-                // 2. Send confirmation email with the token
-                // 3. Use an email service to send the email
-
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 
                 // For now, just log the token (in production, you'd send an email)
@@ -395,6 +332,55 @@ namespace Application.Features.Identity.Auth.Services
                 _logger.LogError(ex, "Error during email confirmation resend for {Email}", email);
                 return Result.Failure("An error occurred while sending confirmation email.");
             }
+        }
+
+        private async Task<AuthResponse> GenerateTokensAsync(ApplicationUser user)
+        {
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // Generate access token
+            var accessToken = _jwtTokenService.GenerateAccessToken(
+                user.Id, 
+                user.Email!, 
+                $"{user.FirstName} {user.LastName}".Trim(), 
+                roles);
+
+            // Generate and store refresh token
+            var refreshTokenValue = _jwtTokenService.GenerateRefreshToken();
+            var refreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                Token = refreshTokenValue,
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(_refreshTokenExpirationDays),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _refreshTokenRepository.AddAsync(refreshToken);
+
+            var expiresAt = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("JwtSettings:AccessTokenExpirationMinutes", 60));
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Authentication successful",
+                Token = accessToken,
+                RefreshToken = refreshTokenValue,
+                ExpiresAt = expiresAt,
+                User = new UserDto
+                {
+                    Id = user.Id.ToString(),
+                    Email = user.Email!,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    IsEmailConfirmed = user.EmailConfirmed,
+                    IsActive = user.IsActive,
+                    ProfileImageUrl = user.ProfileImageUrl,
+                    Roles = roles.ToList(),
+                    CreatedAt = user.CreatedAt
+                }
+            };
         }
     }
 }

@@ -46,6 +46,16 @@ public class VideoConfiguration : IEntityTypeConfiguration<Video>
         builder.HasIndex(v => v.PublishedAt);
         builder.HasIndex(v => v.CreatedAt);
         
+        // Additional performance indexes
+        builder.HasIndex(v => new { v.IsPublic, v.Status, v.PublishedAt })
+            .HasDatabaseName("IX_Videos_IsPublic_Status_PublishedAt");
+        
+        builder.HasIndex(v => new { v.ViewCount, v.PublishedAt })
+            .HasDatabaseName("IX_Videos_ViewCount_PublishedAt");
+        
+        builder.HasIndex(v => v.LikeCount)
+            .HasDatabaseName("IX_Videos_LikeCount");
+        
         // Relationships
         builder.HasMany(v => v.Comments)
             .WithOne(c => c.Video)

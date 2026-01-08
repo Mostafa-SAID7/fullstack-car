@@ -37,7 +37,9 @@ namespace Application.Features.Identity.Core.Services
                 new(ClaimTypes.Email, email),
                 new(ClaimTypes.Name, fullName),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+                new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+                new("isActive", "True"), // Add user active status
+                new("email_verified", "True") // Add email verification status
             };
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -74,7 +76,35 @@ namespace Application.Features.Identity.Core.Services
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = false, // We want to validate expired tokens for refresh
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _issuer,
+                    ValidAudience = _audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public ClaimsPrincipal? ValidateExpiredToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_secret);
+
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = false, // Don't validate lifetime for expired tokens
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = _issuer,
                     ValidAudience = _audience,
@@ -93,7 +123,7 @@ namespace Application.Features.Identity.Core.Services
 
         public Guid? GetUserIdFromToken(string token)
         {
-            var principal = ValidateToken(token);
+            var principal = ValidateExpiredToken(token); // Use expired token validation to get user ID even from expired tokens
             var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
             
             if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
@@ -102,6 +132,26 @@ namespace Application.Features.Identity.Core.Services
             }
 
             return null;
+        }
+
+        public DateTime GetTokenExpiration(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jsonToken = tokenHandler.ReadJwtToken(token);
+                return jsonToken.ValidTo;
+            }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        public bool IsTokenExpired(string token)
+        {
+            var expiration = GetTokenExpiration(token);
+            return expiration <= DateTime.UtcNow;
         }
     }
 }

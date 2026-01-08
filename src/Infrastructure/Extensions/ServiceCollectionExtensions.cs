@@ -23,13 +23,17 @@ using Application.Features.Identity.Profile.Services;
 using Application.Features.Identity.Password.Interfaces;
 using Application.Features.Identity.Password.Services;
 using Application.Features.Identity.Security.Services;
+using Application.Features.Media.Shared.Interfaces;
 using Domain.Entities.Identity;
 using Infrastructure.Data;
 using Infrastructure.Data.Seeds;
 using Infrastructure.Data.Seeds.Management;
 using Infrastructure.Data.Seeds.Management.Users;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Media;
 using Infrastructure.Common;
+using Infrastructure.Services.FileStorage;
+using Infrastructure.Services;
 using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Shared.Logging.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -45,6 +49,8 @@ using AspNet.Security.OAuth.GitHub;
 using StackExchange.Redis;
 using System.Text;
 using System.Security.Claims;
+using Amazon.S3;
+using Amazon;
 
 namespace Infrastructure.Extensions
 {
@@ -65,6 +71,12 @@ namespace Infrastructure.Extensions
             // Add Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            // Add Media Repositories
+            services.AddScoped<IVideoRepository, VideoRepository>();
+            services.AddScoped<IPodcastRepository, PodcastRepository>();
+            services.AddScoped<IMediaAnalyticsRepository, MediaAnalyticsRepository>();
 
             // Add Identity with custom entities
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -209,6 +221,50 @@ namespace Infrastructure.Extensions
             // Media Services
             services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
 
+            // File Storage Configuration
+            services.Configure<FileStorageSettings>(configuration.GetSection(FileStorageSettings.SectionName));
+            
+            // File Storage Services
+            services.AddScoped<LocalFileStorageService>();
+            services.AddScoped<AzureBlobStorageService>();
+            services.AddScoped<AmazonS3StorageService>();
+            services.AddScoped<FileStorageFactory>();
+            services.AddScoped<IMediaFileStorageService, MediaFileStorageServiceWrapper>();
+            services.AddScoped<IFileValidationService, FileValidationService>();
+            services.AddScoped<IThumbnailService, ThumbnailService>();
+            services.AddScoped<ICdnService, CdnService>();
+
+            // Amazon S3 Client (if using S3)
+            var fileStorageSettings = configuration.GetSection(FileStorageSettings.SectionName).Get<FileStorageSettings>();
+            if (fileStorageSettings?.Provider?.ToLowerInvariant() == "amazons3" && fileStorageSettings.AmazonS3 != null)
+            {
+                services.AddScoped<IAmazonS3>(provider =>
+                {
+                    var config = new AmazonS3Config
+                    {
+                        RegionEndpoint = RegionEndpoint.GetBySystemName(fileStorageSettings.AmazonS3.Region ?? "us-east-1")
+                    };
+
+                    if (!string.IsNullOrEmpty(fileStorageSettings.AmazonS3.AccessKey) && 
+                        !string.IsNullOrEmpty(fileStorageSettings.AmazonS3.SecretKey))
+                    {
+                        return new AmazonS3Client(fileStorageSettings.AmazonS3.AccessKey, fileStorageSettings.AmazonS3.SecretKey, config);
+                    }
+                    else
+                    {
+                        return new AmazonS3Client(config); // Use default credentials
+                    }
+                });
+            }
+            else
+            {
+                // Register a dummy S3 client for dependency injection when not using S3
+                services.AddScoped<IAmazonS3>(provider => null!);
+            }
+
+            // HTTP Client for CDN operations
+            services.AddHttpClient<CdnService>();
+
             // Add Database Seeding Services
             services.AddScoped<IdentitySeeder>();
             services.AddScoped<CommunitySocialSeeder>();
@@ -227,6 +283,9 @@ namespace Infrastructure.Extensions
             services.AddScoped<ManagementSeeder>();
             
             services.AddScoped<DatabaseSeeder>();
+
+            // Register background services
+            services.AddHostedService<RefreshTokenCleanupService>();
 
             return services;
         }

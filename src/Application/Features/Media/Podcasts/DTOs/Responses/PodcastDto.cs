@@ -47,6 +47,7 @@ public class PodcastDetailsDto : PodcastDto
     public PodcastSeriesDto? Series { get; set; }
     public List<PodcastCommentDto> Comments { get; set; } = new();
     public bool IsLikedByUser { get; set; }
+    public bool IsSubscribed { get; set; }
 }
 
 public class PodcastSeriesDto

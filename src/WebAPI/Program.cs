@@ -81,10 +81,15 @@ try
     app.UseCors("AllowAngularApp");
 
     // Add custom middleware
+    app.UseGlobalExceptionHandler(); // Add global exception handler first
+    
     if (app.Environment.IsDevelopment())
     {
         app.UseMiddleware<RequestLoggingMiddleware>();
     }
+
+    // Add JWT validation middleware
+    app.UseMiddleware<JwtValidationMiddleware>();
 
     // Localization Middleware
     var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
@@ -155,3 +160,6 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+// Make Program class accessible for testing
+public partial class Program { }

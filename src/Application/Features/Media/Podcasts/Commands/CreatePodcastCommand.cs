@@ -36,3 +36,16 @@ public class CreatePodcastSeriesCommand : IRequest<Result<PodcastSeriesDto>>
     public Guid CreatorId { get; set; }
     public CreatePodcastSeriesRequest Request { get; set; } = null!;
 }
+
+public class UpdatePodcastSeriesCommand : IRequest<Result<PodcastSeriesDto>>
+{
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public UpdatePodcastSeriesRequest Request { get; set; } = null!;
+}
+
+public class DeletePodcastSeriesCommand : IRequest<Result<bool>>
+{
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+}

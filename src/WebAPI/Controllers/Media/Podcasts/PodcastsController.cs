@@ -13,13 +13,13 @@ namespace WebAPI.Controllers.Media.Podcasts;
 [ApiVersion("7.0")]
 [Route("api/v{version:apiVersion}/media/podcasts")]
 [Authorize]
-public class PodcastsController : ControllerBase
+public class PodcastsController : BaseController
 {
-    private readonly IMediator _mediator;
+    private readonly ILogger<PodcastsController> _logger;
 
-    public PodcastsController(IMediator mediator)
+    public PodcastsController(ILogger<PodcastsController> logger)
     {
-        _mediator = mediator;
+        _logger = logger;
     }
 
     /// <summary>
@@ -29,24 +29,17 @@ public class PodcastsController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcasts([FromQuery] GetPodcastsQuery query)
     {
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
+        try
         {
-            return Ok(new
-            {
-                Success = true,
-                Data = result.Data,
-                Message = "Podcasts retrieved successfully"
-            });
+            var result = await Mediator.Send(query);
+            
+            return FromResult(result, "Podcasts retrieved successfully");
         }
-
-        return BadRequest(new
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to retrieve podcasts"
-        });
+            _logger.LogError(ex, "Error retrieving podcasts");
+            return InternalServerError("Failed to retrieve podcasts", ex.Message);
+        }
     }
 
     /// <summary>
@@ -56,38 +49,31 @@ public class PodcastsController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcast(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Guid? userGuid = null;
-        
-        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
+        try
         {
-            userGuid = parsedUserId;
-        }
-
-        var query = new GetPodcastByIdQuery 
-        { 
-            Id = id,
-            UserId = userGuid
-        };
-        
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Guid? userGuid = null;
+            
+            if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var parsedUserId))
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Podcast retrieved successfully"
-            });
-        }
+                userGuid = parsedUserId;
+            }
 
-        return NotFound(new
+            var query = new GetPodcastByIdQuery 
+            { 
+                Id = id,
+                UserId = userGuid
+            };
+            
+            var result = await Mediator.Send(query);
+            
+            return FromResultNotFound(result);
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Podcast not found"
-        });
+            _logger.LogError(ex, "Error retrieving podcast with ID: {PodcastId}", id);
+            return InternalServerError("Failed to retrieve podcast", ex.Message);
+        }
     }
 
     /// <summary>
@@ -96,43 +82,35 @@ public class PodcastsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreatePodcast([FromBody] CreatePodcastRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
+                return Unauthorized("User not authenticated");
+            }
+
+            var command = new CreatePodcastCommand
+            {
+                CreatorId = userGuid,
+                Request = request
+            };
+
+            var result = await Mediator.Send(command);
+            
+            if (result.IsSuccess)
+            {
+                var location = Url.Action(nameof(GetPodcast), new { id = result.Data.Id });
+                return FromResultCreated(result, location ?? string.Empty, "Podcast created successfully");
+            }
+
+            return FromResult(result);
         }
-
-        var command = new CreatePodcastCommand
+        catch (Exception ex)
         {
-            CreatorId = userGuid,
-            Request = request
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return CreatedAtAction(
-                nameof(GetPodcast),
-                new { id = result.Data.Id },
-                new
-                {
-                    Success = true,
-                    Data = result.Data,
-                    Message = "Podcast created successfully"
-                });
+            _logger.LogError(ex, "Error creating podcast");
+            return InternalServerError("Failed to create podcast", ex.Message);
         }
-
-        return BadRequest(new
-        {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to create podcast"
-        });
     }
 
     /// <summary>
@@ -141,41 +119,30 @@ public class PodcastsController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdatePodcast(Guid id, [FromBody] UpdatePodcastRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new UpdatePodcastCommand
-        {
-            Id = id,
-            UserId = userGuid,
-            Request = request
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new UpdatePodcastCommand
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Podcast updated successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid,
+                Request = request
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Podcast updated successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to update podcast"
-        });
+            _logger.LogError(ex, "Error updating podcast with ID: {PodcastId}", id);
+            return InternalServerError("Failed to update podcast", ex.Message);
+        }
     }
 
     /// <summary>
@@ -184,39 +151,29 @@ public class PodcastsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletePodcast(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new DeletePodcastCommand
-        {
-            Id = id,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new DeletePodcastCommand
             {
-                Success = true,
-                Message = "Podcast deleted successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Podcast deleted successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to delete podcast"
-        });
+            _logger.LogError(ex, "Error deleting podcast with ID: {PodcastId}", id);
+            return InternalServerError("Failed to delete podcast", ex.Message);
+        }
     }
 
     /// <summary>
@@ -225,40 +182,29 @@ public class PodcastsController : ControllerBase
     [HttpPost("{id:guid}/publish")]
     public async Task<IActionResult> PublishPodcast(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new PublishPodcastCommand
-        {
-            Id = id,
-            UserId = userGuid
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new PublishPodcastCommand
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Podcast published successfully"
-            });
-        }
+                Id = id,
+                UserId = userGuid
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Podcast published successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to publish podcast"
-        });
+            _logger.LogError(ex, "Error publishing podcast with ID: {PodcastId}", id);
+            return InternalServerError("Failed to publish podcast", ex.Message);
+        }
     }
 
     /// <summary>
@@ -267,40 +213,39 @@ public class PodcastsController : ControllerBase
     [HttpGet("my-podcasts")]
     public async Task<IActionResult> GetMyPodcasts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var query = new GetMyPodcastsQuery
-        {
-            UserId = userGuid,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-
-        var result = await _mediator.Send(query);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (pageNumber < 1)
             {
-                Success = true,
-                Data = result.Data,
-                Message = "My podcasts retrieved successfully"
-            });
-        }
+                return BadRequest("Page number must be greater than 0");
+            }
 
-        return BadRequest(new
+            if (pageSize < 1 || pageSize > 100)
+            {
+                return BadRequest("Page size must be between 1 and 100");
+            }
+
+            var query = new GetMyPodcastsQuery
+            {
+                UserId = userGuid,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await Mediator.Send(query);
+            
+            return FromResult(result, "My podcasts retrieved successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to retrieve podcasts"
-        });
+            _logger.LogError(ex, "Error retrieving user's podcasts");
+            return InternalServerError("Failed to retrieve podcasts", ex.Message);
+        }
     }
 }

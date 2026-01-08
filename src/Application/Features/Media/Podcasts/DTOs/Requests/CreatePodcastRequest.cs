@@ -25,9 +25,21 @@ public class UpdatePodcastRequest
     public bool AllowComments { get; set; } = true;
     public bool AllowDownload { get; set; } = false;
     public string? Transcript { get; set; }
+    public int EpisodeNumber { get; set; }
+    public int SeasonNumber { get; set; } = 1;
+    public Guid? SeriesId { get; set; }
 }
 
 public class CreatePodcastSeriesRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string? CoverImage { get; set; }
+    public string? Category { get; set; }
+    public string Language { get; set; } = "en";
+}
+
+public class UpdatePodcastSeriesRequest
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

@@ -36,3 +36,9 @@ public class GetPodcastSeriesQuery : IRequest<Result<PaginatedList<PodcastSeries
     public Guid? CreatorId { get; set; }
     public string? Category { get; set; }
 }
+
+public class GetPodcastSeriesByIdQuery : IRequest<Result<PodcastSeriesDto>>
+{
+    public Guid Id { get; set; }
+    public Guid? UserId { get; set; }
+}

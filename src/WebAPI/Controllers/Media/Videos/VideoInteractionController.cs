@@ -13,13 +13,13 @@ namespace WebAPI.Controllers.Media.Videos;
 [ApiVersion("7.0")]
 [Route("api/v{version:apiVersion}/media/videos/interactions")]
 [Authorize]
-public class VideoInteractionController : ControllerBase
+public class VideoInteractionController : BaseController
 {
-    private readonly IMediator _mediator;
+    private readonly ILogger<VideoInteractionController> _logger;
 
-    public VideoInteractionController(IMediator mediator)
+    public VideoInteractionController(ILogger<VideoInteractionController> logger)
     {
-        _mediator = mediator;
+        _logger = logger;
     }
 
     /// <summary>
@@ -28,40 +28,31 @@ public class VideoInteractionController : ControllerBase
     [HttpPost("{id:guid}/like")]
     public async Task<IActionResult> LikeVideo(Guid id, [FromBody] LikeVideoRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new LikeVideoCommand
-        {
-            VideoId = id,
-            UserId = userGuid,
-            IsLike = request.IsLike
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            var command = new LikeVideoCommand
             {
-                Success = true,
-                Message = request.IsLike ? "Video liked successfully" : "Video disliked successfully"
-            });
-        }
+                VideoId = id,
+                UserId = userGuid,
+                IsLike = request.IsLike
+            };
 
-        return BadRequest(new
+            var result = await Mediator.Send(command);
+            
+            var message = request.IsLike ? "Video liked successfully" : "Video disliked successfully";
+            return FromResult(result, message);
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to process like/dislike"
-        });
+            _logger.LogError(ex, "Error processing like/dislike for video {VideoId}", id);
+            return InternalServerError("Failed to process like/dislike", ex.Message);
+        }
     }
 
     /// <summary>
@@ -70,41 +61,40 @@ public class VideoInteractionController : ControllerBase
     [HttpPost("{id:guid}/comments")]
     public async Task<IActionResult> AddComment(Guid id, [FromBody] AddVideoCommentRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        try
         {
-            return Unauthorized(new
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
             {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
+                return Unauthorized("User not authenticated");
+            }
 
-        var command = new AddVideoCommentCommand
-        {
-            VideoId = id,
-            UserId = userGuid,
-            Content = request.Content,
-            ParentCommentId = request.ParentCommentId
-        };
-
-        var result = await _mediator.Send(command);
-        
-        if (result.IsSuccess)
-        {
-            return Ok(new
+            if (string.IsNullOrWhiteSpace(request.Content))
             {
-                Success = true,
-                Data = result.Data,
-                Message = "Comment added successfully"
-            });
-        }
+                return BadRequest("Comment content is required");
+            }
 
-        return BadRequest(new
+            if (request.Content.Length > 1000)
+            {
+                return BadRequest("Comment content cannot exceed 1000 characters");
+            }
+
+            var command = new AddVideoCommentCommand
+            {
+                VideoId = id,
+                UserId = userGuid,
+                Content = request.Content,
+                ParentCommentId = request.ParentCommentId
+            };
+
+            var result = await Mediator.Send(command);
+            
+            return FromResult(result, "Comment added successfully");
+        }
+        catch (Exception ex)
         {
-            Success = false,
-            Errors = result.Errors,
-            Message = "Failed to add comment"
-        });
+            _logger.LogError(ex, "Error adding comment to video {VideoId}", id);
+            return InternalServerError("Failed to add comment", ex.Message);
+        }
     }
 }

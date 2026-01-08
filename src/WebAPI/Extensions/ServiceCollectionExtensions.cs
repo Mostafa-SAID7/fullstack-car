@@ -95,24 +95,69 @@ namespace WebAPI.Extensions
                 options.Filters.Add<SanitizeInputFilter>();
             });
 
-            // Add Authorization
+            // Add Authorization with comprehensive policies
             services.AddAuthorization(options =>
             {
+                // Basic role-based policies
                 options.AddPolicy("AdminOnly", policy =>
                     policy.RequireRole("Admin"));
 
-                options.AddPolicy(
-                    "ModeratorOrAdmin",
-                    policy => policy.RequireRole("Admin", "Moderator"));
+                options.AddPolicy("ModeratorOrAdmin", policy =>
+                    policy.RequireRole("Admin", "Moderator"));
 
-                // Policy-based authorization example
+                options.AddPolicy("ContentCreator", policy =>
+                    policy.RequireRole("Admin", "Moderator", "ContentCreator"));
+
+                // Media-specific policies
+                options.AddPolicy("MediaUpload", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Admin", "Moderator", "ContentCreator"));
+
+                options.AddPolicy("MediaManagement", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Admin", "Moderator", "ContentCreator"));
+
+                options.AddPolicy("MediaAnalytics", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Admin", "Moderator", "ContentCreator"));
+
+                options.AddPolicy("MediaModeration", policy =>
+                    policy.RequireRole("Admin", "Moderator"));
+
+                // User management policies
+                options.AddPolicy("UserManagement", policy =>
+                    policy.RequireRole("Admin"));
+
+                options.AddPolicy("UserModeration", policy =>
+                    policy.RequireRole("Admin", "Moderator"));
+
+                // System administration policies
+                options.AddPolicy("SystemAdmin", policy =>
+                    policy.RequireRole("Admin"));
+
+                options.AddPolicy("SystemMonitoring", policy =>
+                    policy.RequireRole("Admin", "Moderator"));
+
+                // Active user requirement
                 options.AddPolicy("MustBeActiveUser", policy =>
                     policy.RequireAuthenticatedUser()
                           .RequireClaim("isActive", "True"));
 
-                // Advanced policy with custom requirement (placeholder)
-                options.AddPolicy("AtLeast18", policy =>
-                    policy.RequireClaim("Age", "18", "19", "20", "21")); // Simplified for demo
+                // Email confirmed requirement
+                options.AddPolicy("EmailConfirmed", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireClaim("email_verified", "True"));
+
+                // Combined policies
+                options.AddPolicy("ActiveContentCreator", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Admin", "Moderator", "ContentCreator")
+                          .RequireClaim("isActive", "True"));
+
+                options.AddPolicy("VerifiedUser", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .RequireClaim("email_verified", "True")
+                          .RequireClaim("isActive", "True"));
             });
 
             // Add HttpClient for external services

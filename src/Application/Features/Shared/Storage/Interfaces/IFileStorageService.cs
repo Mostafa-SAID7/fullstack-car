@@ -5,8 +5,8 @@ namespace Application.Features.Shared.Storage.Interfaces
 {
     public interface IFileStorageService
     {
-        Task<FileUploadResult> UploadFileAsync(IFormFile file, string folder = "uploads", CancellationToken cancellationToken = default);
-        Task<List<FileUploadResult>> UploadFilesAsync(IFormFileCollection files, string folder = "uploads", CancellationToken cancellationToken = default);
+        Task<Application.Features.Shared.Storage.Models.FileUploadResult> UploadFileAsync(IFormFile file, string folder = "uploads", CancellationToken cancellationToken = default);
+        Task<List<Application.Features.Shared.Storage.Models.FileUploadResult>> UploadFilesAsync(IFormFileCollection files, string folder = "uploads", CancellationToken cancellationToken = default);
         Task<FileDownloadResult> DownloadFileAsync(string filePath, CancellationToken cancellationToken = default);
         Task<Stream> GetFileStreamAsync(string filePath, CancellationToken cancellationToken = default);
         Task<bool> DeleteFileAsync(string filePath, CancellationToken cancellationToken = default);

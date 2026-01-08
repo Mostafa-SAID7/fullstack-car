@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Features.Media.Videos.Commands;
 using Application.Features.Media.Videos.DTOs.Requests;
 using Application.Features.Media.Shared.DTOs.Requests;
@@ -13,17 +14,26 @@ namespace WebAPI.Controllers.Media.Videos;
 [ApiVersion("7.0")]
 [Route("api/v{version:apiVersion}/media/videos/upload")]
 [Authorize]
-public class VideoUploadController : ControllerBase
+public class VideoUploadController : BaseController
 {
-    private readonly IMediator _mediator;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
+    private readonly IFileValidationService _fileValidationService;
+    private readonly IMediaFileStorageService _fileStorageService;
+    private readonly ILogger<VideoUploadController> _logger;
 
-    public VideoUploadController(IMediator mediator, IWebHostEnvironment environment, IConfiguration configuration)
+    public VideoUploadController(
+        IWebHostEnvironment environment, 
+        IConfiguration configuration,
+        IFileValidationService fileValidationService,
+        IMediaFileStorageService fileStorageService,
+        ILogger<VideoUploadController> logger)
     {
-        _mediator = mediator;
         _environment = environment;
         _configuration = configuration;
+        _fileValidationService = fileValidationService;
+        _fileStorageService = fileStorageService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -33,85 +43,49 @@ public class VideoUploadController : ControllerBase
     [RequestSizeLimit(2_000_000_000)] // 2GB limit as per requirements
     public async Task<IActionResult> UploadVideo(IFormFile file, [FromForm] Application.Features.Media.Shared.DTOs.Requests.UploadVideoRequest request)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
-        {
-            return Unauthorized(new
-            {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
-
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "No file uploaded"
-            });
-        }
-
-        // Validate file type
-        var allowedVideoTypes = new[] { 
-            "video/mp4", 
-            "video/avi", 
-            "video/mov", 
-            "video/wmv", 
-            "video/webm", 
-            "video/quicktime",
-            "video/x-msvideo", // AVI alternative MIME type
-            "video/3gpp",      // 3GP
-            "video/x-ms-wmv"   // WMV alternative MIME type
-        };
-        
-        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        var allowedExtensions = new[] { ".mp4", ".avi", ".mov", ".wmv", ".webm", ".3gp" };
-        
-        if (!allowedVideoTypes.Contains(file.ContentType.ToLower()) && !allowedExtensions.Contains(fileExtension))
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = $"Invalid file type. Allowed types: {string.Join(", ", allowedExtensions)}. Received: {file.ContentType}"
-            });
-        }
-
-        // Validate file size (2GB max as per requirements)
-        const long maxFileSize = 2_000_000_000; // 2GB
-        if (file.Length > maxFileSize)
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = $"File size exceeds 2GB limit. File size: {file.Length / (1024 * 1024)} MB"
-            });
-        }
-
-        // Validate file name
-        if (string.IsNullOrWhiteSpace(file.FileName) || file.FileName.Length > 255)
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "Invalid file name"
-            });
-        }
-
-        // Additional security validation - check for executable extensions
-        var dangerousExtensions = new[] { ".exe", ".bat", ".cmd", ".scr", ".pif", ".com" };
-        if (dangerousExtensions.Contains(fileExtension))
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "File type not allowed for security reasons"
-            });
-        }
-
         try
         {
-            // Create video record first
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            // Validate the uploaded file using the comprehensive validation service
+            using var fileStream = file.OpenReadStream();
+            var validationResult = await _fileValidationService.ValidateVideoFileAsync(
+                fileStream, 
+                file.FileName, 
+                file.ContentType, 
+                file.Length);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest("File validation failed", validationResult.Errors);
+            }
+
+            // Upload file using the file storage service
+            fileStream.Position = 0; // Reset stream position after validation
+            var uploadResult = await _fileStorageService.UploadVideoAsync(
+                fileStream, 
+                file.FileName, 
+                file.ContentType);
+
+            if (!uploadResult.IsSuccess)
+            {
+                return BadRequest("File upload failed", new[] { uploadResult.ErrorMessage ?? "Unknown error" });
+            }
+
+            // Extract metadata from the video file
+            fileStream.Position = 0; // Reset stream position for metadata extraction
+            var metadata = await _fileValidationService.ExtractVideoMetadataAsync(fileStream, file.FileName);
+
+            // Create video record
             var createCommand = new CreateVideoCommand
             {
                 CreatorId = userGuid,
@@ -126,82 +100,54 @@ public class VideoUploadController : ControllerBase
                 }
             };
 
-            var createResult = await _mediator.Send(createCommand);
+            var createResult = await Mediator.Send(createCommand);
             if (!createResult.IsSuccess)
             {
-                return BadRequest(new
-                {
-                    Success = false,
-                    Errors = createResult.Errors,
-                    Message = "Failed to create video record"
-                });
+                // Clean up uploaded file if database creation fails
+                await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
+                
+                return BadRequest("Failed to create video record", createResult.Errors);
             }
 
-            // Generate unique filename
-            var videoId = createResult.Data.Id;
-            var fileName = $"{videoId}_{DateTime.UtcNow:yyyyMMddHHmmss}{fileExtension}";
-            
-            // Create upload directory
-            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "videos");
-            Directory.CreateDirectory(uploadPath);
-            
-            var filePath = Path.Combine(uploadPath, fileName);
-
-            // Save file
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            // Update video with file information
-            var videoUrl = $"/uploads/videos/{fileName}";
+            // Update video with file information and metadata
             var updateCommand = new UpdateVideoFileCommand
             {
-                VideoId = videoId,
-                VideoUrl = videoUrl,
-                FileSize = file.Length,
-                Duration = TimeSpan.Zero // TODO: Extract from video metadata
+                VideoId = createResult.Data.Id,
+                VideoUrl = uploadResult.FileUrl!,
+                FileSize = uploadResult.FileSize,
+                Duration = metadata.Duration
             };
 
-            var updateResult = await _mediator.Send(updateCommand);
+            var updateResult = await Mediator.Send(updateCommand);
             if (!updateResult.IsSuccess)
             {
                 // Clean up uploaded file if database update fails
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
+                await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
 
-                return BadRequest(new
-                {
-                    Success = false,
-                    Errors = updateResult.Errors,
-                    Message = "Failed to update video file information"
-                });
+                return BadRequest("Failed to update video file information", updateResult.Errors);
             }
 
-            return Ok(new
+            var responseData = new
             {
-                Success = true,
-                Data = new
-                {
-                    VideoId = videoId,
-                    VideoUrl = videoUrl,
-                    FileSize = file.Length,
-                    FileName = fileName,
-                    UploadedAt = DateTime.UtcNow
-                },
-                Message = "Video uploaded successfully"
-            });
+                VideoId = createResult.Data.Id,
+                VideoUrl = uploadResult.FileUrl,
+                FileSize = uploadResult.FileSize,
+                FileName = uploadResult.FileName,
+                Duration = metadata.Duration,
+                Format = metadata.Format,
+                Resolution = metadata.Width.HasValue && metadata.Height.HasValue 
+                    ? $"{metadata.Width}x{metadata.Height}" 
+                    : null,
+                UploadedAt = uploadResult.UploadedAt,
+                ValidationPassed = true
+            };
+
+            return Success(responseData, "Video uploaded and validated successfully");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new
-            {
-                Success = false,
-                Message = "An error occurred while uploading the video",
-                Error = ex.Message
-            });
+            _logger.LogError(ex, "Error uploading video");
+            return InternalServerError("An error occurred while uploading the video", ex.Message);
         }
     }
 
@@ -217,27 +163,34 @@ public class VideoUploadController : ControllerBase
         [FromForm] string fileName,
         [FromForm] Application.Features.Media.Shared.DTOs.Requests.UploadVideoRequest? metadata = null)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
-        {
-            return Unauthorized(new
-            {
-                Success = false,
-                Message = "User not authenticated"
-            });
-        }
-
-        if (chunk == null || chunk.Length == 0)
-        {
-            return BadRequest(new
-            {
-                Success = false,
-                Message = "No chunk uploaded"
-            });
-        }
-
         try
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            if (chunk == null || chunk.Length == 0)
+            {
+                return BadRequest("No chunk uploaded");
+            }
+
+            if (string.IsNullOrWhiteSpace(uploadId))
+            {
+                return BadRequest("Upload ID is required");
+            }
+
+            if (chunkNumber < 1 || chunkNumber > totalChunks)
+            {
+                return BadRequest("Invalid chunk number");
+            }
+
+            if (totalChunks < 1)
+            {
+                return BadRequest("Total chunks must be greater than 0");
+            }
+
             // Create upload directory
             var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "temp", uploadId);
             Directory.CreateDirectory(uploadPath);
@@ -255,13 +208,9 @@ public class VideoUploadController : ControllerBase
             if (uploadedChunks == totalChunks)
             {
                 // Combine chunks into final file
-                var fileExtension = Path.GetExtension(fileName);
-                var finalFileName = $"{uploadId}_{DateTime.UtcNow:yyyyMMddHHmmss}{fileExtension}";
-                var finalPath = Path.Combine(_environment.WebRootPath, "uploads", "videos", finalFileName);
+                var tempFilePath = Path.Combine(uploadPath, "combined_temp");
                 
-                Directory.CreateDirectory(Path.GetDirectoryName(finalPath)!);
-
-                using (var finalStream = new FileStream(finalPath, FileMode.Create))
+                using (var finalStream = new FileStream(tempFilePath, FileMode.Create))
                 {
                     for (int i = 1; i <= totalChunks; i++)
                     {
@@ -274,7 +223,45 @@ public class VideoUploadController : ControllerBase
                     }
                 }
 
-                // Clean up temp chunks
+                // Validate the combined file
+                using var validationStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
+                var fileInfo = new FileInfo(tempFilePath);
+                var contentType = GetContentTypeFromFileName(fileName);
+                
+                var validationResult = await _fileValidationService.ValidateVideoFileAsync(
+                    validationStream, 
+                    fileName, 
+                    contentType, 
+                    fileInfo.Length);
+
+                if (!validationResult.IsValid)
+                {
+                    // Clean up temp files
+                    Directory.Delete(uploadPath, true);
+                    
+                    return BadRequest("File validation failed", validationResult.Errors);
+                }
+
+                // Upload validated file using storage service
+                validationStream.Position = 0;
+                var uploadResult = await _fileStorageService.UploadVideoAsync(
+                    validationStream, 
+                    fileName, 
+                    contentType);
+
+                if (!uploadResult.IsSuccess)
+                {
+                    // Clean up temp files
+                    Directory.Delete(uploadPath, true);
+                    
+                    return BadRequest("File upload failed", new[] { uploadResult.ErrorMessage ?? "Unknown error" });
+                }
+
+                // Extract metadata
+                validationStream.Position = 0;
+                var extractedMetadata = await _fileValidationService.ExtractVideoMetadataAsync(validationStream, fileName);
+
+                // Clean up temp files
                 Directory.Delete(uploadPath, true);
 
                 // Create video record if metadata provided
@@ -294,85 +281,83 @@ public class VideoUploadController : ControllerBase
                         }
                     };
 
-                    var createResult = await _mediator.Send(createCommand);
+                    var createResult = await Mediator.Send(createCommand);
                     if (createResult.IsSuccess)
                     {
-                        var videoUrl = $"/uploads/videos/{finalFileName}";
-                        var fileInfo = new FileInfo(finalPath);
-                        
                         var updateCommand = new UpdateVideoFileCommand
                         {
                             VideoId = createResult.Data.Id,
-                            VideoUrl = videoUrl,
-                            FileSize = fileInfo.Length,
-                            Duration = TimeSpan.Zero // TODO: Extract from video metadata
+                            VideoUrl = uploadResult.FileUrl!,
+                            FileSize = uploadResult.FileSize,
+                            Duration = extractedMetadata.Duration
                         };
 
-                        var updateResult = await _mediator.Send(updateCommand);
+                        var updateResult = await Mediator.Send(updateCommand);
                         if (updateResult.IsSuccess)
                         {
-                            return Ok(new
+                            var completeResponseData = new
                             {
-                                Success = true,
-                                Data = new
-                                {
-                                    VideoId = createResult.Data.Id,
-                                    VideoUrl = videoUrl,
-                                    FileSize = fileInfo.Length,
-                                    FileName = finalFileName,
-                                    UploadedAt = DateTime.UtcNow,
-                                    IsComplete = true
-                                },
-                                Message = "Video upload completed successfully"
-                            });
+                                VideoId = createResult.Data.Id,
+                                VideoUrl = uploadResult.FileUrl,
+                                FileSize = uploadResult.FileSize,
+                                FileName = uploadResult.FileName,
+                                Duration = extractedMetadata.Duration,
+                                Format = extractedMetadata.Format,
+                                Resolution = extractedMetadata.Width.HasValue && extractedMetadata.Height.HasValue 
+                                    ? $"{extractedMetadata.Width}x{extractedMetadata.Height}" 
+                                    : null,
+                                UploadedAt = uploadResult.UploadedAt,
+                                IsComplete = true,
+                                ValidationPassed = true
+                            };
+
+                            return Success(completeResponseData, "Video upload completed and validated successfully");
                         }
                         else
                         {
-                            return BadRequest(new
-                            {
-                                Success = false,
-                                Errors = updateResult.Errors,
-                                Message = "Failed to update video file information"
-                            });
+                            // Clean up uploaded file if database update fails
+                            await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
+                            
+                            return BadRequest("Failed to update video file information", updateResult.Errors);
                         }
+                    }
+                    else
+                    {
+                        // Clean up uploaded file if database creation fails
+                        await _fileStorageService.DeleteFileAsync(uploadResult.FileUrl!);
+                        
+                        return BadRequest("Failed to create video record", createResult.Errors);
                     }
                 }
 
-                return Ok(new
+                var fileCompleteResponseData = new
                 {
-                    Success = true,
-                    Data = new
-                    {
-                        FileName = finalFileName,
-                        FileSize = new FileInfo(finalPath).Length,
-                        IsComplete = true
-                    },
-                    Message = "File upload completed successfully"
-                });
+                    FileName = uploadResult.FileName,
+                    FileSize = uploadResult.FileSize,
+                    Duration = extractedMetadata.Duration,
+                    Format = extractedMetadata.Format,
+                    IsComplete = true,
+                    ValidationPassed = true
+                };
+
+                return Success(fileCompleteResponseData, "File upload completed and validated successfully");
             }
 
-            return Ok(new
+            var progressResponseData = new
             {
-                Success = true,
-                Data = new
-                {
-                    ChunkNumber = chunkNumber,
-                    TotalChunks = totalChunks,
-                    UploadedChunks = uploadedChunks,
-                    Progress = (double)uploadedChunks / totalChunks * 100,
-                    IsComplete = false
-                },
-                Message = $"Chunk {chunkNumber} of {totalChunks} uploaded successfully"
-            });
+                ChunkNumber = chunkNumber,
+                TotalChunks = totalChunks,
+                UploadedChunks = uploadedChunks,
+                Progress = (double)uploadedChunks / totalChunks * 100,
+                IsComplete = false
+            };
+
+            return Success(progressResponseData, $"Chunk {chunkNumber} of {totalChunks} uploaded successfully");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new
-            {
-                Success = false,
-                Message = "An error occurred while uploading the chunk",
-                Error = ex.Message
-            });
+            _logger.LogError(ex, "Error uploading chunk {ChunkNumber} for upload {UploadId}", chunkNumber, uploadId);
+            return InternalServerError("An error occurred while uploading the chunk", ex.Message);
         }
     }
 
@@ -384,38 +369,47 @@ public class VideoUploadController : ControllerBase
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(uploadId))
+            {
+                return BadRequest("Upload ID is required");
+            }
+
             var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "temp", uploadId);
             
             if (!Directory.Exists(uploadPath))
             {
-                return NotFound(new
-                {
-                    Success = false,
-                    Message = "Upload session not found"
-                });
+                return NotFound("Upload session not found");
             }
 
             var uploadedChunks = Directory.GetFiles(uploadPath, "chunk_*").Length;
             
-            return Ok(new
+            var progressData = new
             {
-                Success = true,
-                Data = new
-                {
-                    UploadId = uploadId,
-                    UploadedChunks = uploadedChunks
-                },
-                Message = "Upload progress retrieved successfully"
-            });
+                UploadId = uploadId,
+                UploadedChunks = uploadedChunks
+            };
+
+            return Success(progressData, "Upload progress retrieved successfully");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new
-            {
-                Success = false,
-                Message = "An error occurred while retrieving upload progress",
-                Error = ex.Message
-            });
+            _logger.LogError(ex, "Error retrieving upload progress for upload {UploadId}", uploadId);
+            return InternalServerError("An error occurred while retrieving upload progress", ex.Message);
         }
+    }
+
+    private string GetContentTypeFromFileName(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".mp4" => "video/mp4",
+            ".avi" => "video/avi",
+            ".mov" => "video/mov",
+            ".webm" => "video/webm",
+            ".wmv" => "video/x-ms-wmv",
+            ".3gp" => "video/3gpp",
+            _ => "video/mp4" // Default fallback
+        };
     }
 }

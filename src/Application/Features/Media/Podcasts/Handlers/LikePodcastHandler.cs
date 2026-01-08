@@ -2,6 +2,8 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Media.Podcasts.Commands;
 using Application.Features.Media.Podcasts.DTOs.Responses;
+using Application.Features.Media.Podcasts.Queries;
+using AutoMapper;
 using Domain.Entities.Media;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
