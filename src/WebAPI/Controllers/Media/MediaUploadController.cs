@@ -50,7 +50,7 @@ public class MediaUploadController : ControllerBase
         }
 
         // Validate file type
-        var allowedVideoTypes = new[] { "video/mp4", "video/avi", "video/mov", "video/wmv", "video/webm" };
+        var allowedVideoTypes = new[] { "video/mp4", "video/avi", "video/mov", "video/wmv", "video/webm", "video/quicktime" };
         if (!allowedVideoTypes.Contains(file.ContentType.ToLower()))
         {
             return BadRequest(new
@@ -190,7 +190,7 @@ public class MediaUploadController : ControllerBase
         }
 
         // Validate file type
-        var allowedAudioTypes = new[] { "audio/mp3", "audio/wav", "audio/aac", "audio/ogg", "audio/m4a" };
+        var allowedAudioTypes = new[] { "audio/mp3", "audio/wav", "audio/aac", "audio/ogg", "audio/m4a", "audio/mpeg" };
         if (!allowedAudioTypes.Contains(file.ContentType.ToLower()))
         {
             return BadRequest(new

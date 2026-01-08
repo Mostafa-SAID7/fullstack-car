@@ -1,195 +1,158 @@
-<div class="upload-container">
-  <div class="upload-header">
-    <h1>Upload Podcast</h1>
-    <button (click)="cancel()" class="cancel-btn">Cancel</button>
+<div class="podcast-upload-container p-4 lg:p-8 max-w-4xl mx-auto">
+  <div class="header mb-8 flex items-center gap-4">
+    <div
+      class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+      <i class="fas fa-microphone-alt text-xl"></i>
+    </div>
+    <div>
+      <h1 class="text-3xl font-black text-slate-900 dark:text-white leading-none mb-1">Upload Podcast</h1>
+      <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Broadcast your voice to the automotive world
+      </p>
+    </div>
   </div>
 
-  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
-    <!-- File Upload Section -->
-    <div class="file-upload-section">
-      <div class="file-upload-area" *ngIf="!selectedFile">
-        <input type="file" 
-               id="audioFile" 
-               accept="audio/*" 
-               (change)="onFileSelected($event)"
-               class="file-input" />
-        <label for="audioFile" class="file-upload-label">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <span>Click to select audio file or drag and drop</span>
-          <small>Supported formats: MP3, WAV, AAC, OGG (Max: 500MB)</small>
-        </label>
-      </div>
+  <div
+    class="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-10 shadow-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
 
-      <div class="file-preview" *ngIf="selectedFile">
-        <div class="file-info">
-          <i class="fas fa-file-audio"></i>
-          <div class="file-details">
-            <span class="file-name">{{ selectedFile.name }}</span>
-            <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
+    <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="space-y-8">
+      <!-- Audio Drop Zone -->
+      <div
+        class="audio-drop-zone border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-10 transition-all hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-950 group cursor-pointer text-center"
+        (click)="audioInput.click()">
+        <input #audioInput type="file" (change)="onFileSelected($event)" accept="audio/*" class="hidden">
+
+        <div class="flex flex-col items-center">
+          <div
+            class="w-20 h-20 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-100 group-hover:text-blue-600 dark:group-hover:bg-blue-900/30 transition-all duration-300">
+            <i class="fas fa-music text-3xl"></i>
           </div>
-          <button type="button" (click)="removeFile()" class="remove-file-btn">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <audio *ngIf="previewUrl" [src]="previewUrl" controls class="audio-preview"></audio>
-      </div>
-    </div>
 
-    <!-- Thumbnail Upload -->
-    <div class="form-group">
-      <label>Thumbnail (Optional)</label>
-      <div class="thumbnail-upload" *ngIf="!selectedThumbnail">
-        <input type="file" 
-               id="thumbnailFile" 
-               accept="image/*" 
-               (change)="onThumbnailSelected($event)"
-               class="file-input" />
-        <label for="thumbnailFile" class="thumbnail-upload-label">
-          <i class="fas fa-image"></i>
-          <span>Upload Thumbnail</span>
-        </label>
+          <div *ngIf="!selectedFile">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Drop your audio file here</h3>
+            <p class="text-sm text-slate-500 font-medium">Or click to select from your device</p>
+            <div class="mt-6 flex gap-2 justify-center">
+              <span
+                class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-black text-slate-500 uppercase">MP3</span>
+              <span
+                class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-black text-slate-500 uppercase">WAV</span>
+              <span
+                class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-black text-slate-500 uppercase">M4A</span>
+            </div>
+          </div>
+
+          <div *ngIf="selectedFile" class="flex flex-col items-center gap-2">
+            <div
+              class="px-6 py-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900 rounded-2xl flex items-center gap-4">
+              <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+                <i class="fas fa-volume-up"></i>
+              </div>
+              <div class="text-left">
+                <p class="text-sm font-black text-slate-900 dark:text-white truncate max-w-[240px]">{{ selectedFile.name
+                  }}</p>
+                <p class="text-[10px] text-blue-600 font-bold uppercase">{{ (selectedFile.size / 1024 / 1024).toFixed(2)
+                  }} MB • Audio Track</p>
+              </div>
+              <button type="button" (click)="$event.stopPropagation(); selectedFile = null"
+                class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div class="thumbnail-preview" *ngIf="selectedThumbnail">
-        <img [src]="thumbnailPreview" alt="Thumbnail preview" />
-        <button type="button" (click)="removeThumbnail()" class="remove-thumbnail-btn">
-          <i class="fas fa-times"></i>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <!-- Details -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Episode Title</label>
+            <input formControlName="title" type="text" placeholder="Give your podcast a catchy title"
+              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 font-medium">
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Episode
+              Summary</label>
+            <textarea formControlName="description" rows="6" placeholder="What is this episode about?"
+              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 font-medium resize-none"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Season No.</label>
+              <input formControlName="seasonNumber" type="number"
+                class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white font-bold">
+            </div>
+            <div>
+              <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Episode No.</label>
+              <input formControlName="episodeNumber" type="number"
+                class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white font-bold">
+            </div>
+          </div>
+        </div>
+
+        <!-- Meta & Transcription -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Series
+              (Optional)</label>
+            <select formControlName="seriesId"
+              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white font-bold cursor-pointer appearance-none">
+              <option value="">No Series / Standalone</option>
+              <option *ngFor="let s of series" [value]="s.id">{{ s.name }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Transcript
+              (Optional)</label>
+            <textarea formControlName="transcript" rows="6" placeholder="Paste the episode transcript here..."
+              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 font-medium resize-none"></textarea>
+          </div>
+
+          <div
+            class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
+            <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Options</h4>
+            <label class="flex items-center justify-between group cursor-pointer">
+              <span
+                class="text-sm font-bold text-slate-600 dark:text-slate-400 group-hover:text-blue-500 transition-colors">Public
+                Episode</span>
+              <input type="checkbox" formControlName="isPublic"
+                class="w-5 h-5 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-transparent checked:bg-blue-600 transition-all cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between group cursor-pointer">
+              <span
+                class="text-sm font-bold text-slate-600 dark:text-slate-400 group-hover:text-blue-500 transition-colors">Enable
+                Comments</span>
+              <input type="checkbox" formControlName="allowComments"
+                class="w-5 h-5 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-transparent checked:bg-blue-600 transition-all cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between group cursor-pointer">
+              <span
+                class="text-sm font-bold text-slate-600 dark:text-slate-400 group-hover:text-blue-500 transition-colors">Allow
+                Downloads</span>
+              <input type="checkbox" formControlName="allowDownload"
+                class="w-5 h-5 rounded-lg border-2 border-slate-200 dark:border-slate-800 bg-transparent checked:bg-blue-600 transition-all cursor-pointer">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-10 flex flex-col items-center">
+        <div *ngIf="error"
+          class="mb-6 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-2xl flex items-center gap-3 text-red-600">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span class="text-sm font-bold">{{ error }}</span>
+        </div>
+
+        <button type="submit" [disabled]="uploadForm.invalid || !selectedFile || uploading"
+          class="w-full max-w-sm py-5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4">
+          <span *ngIf="uploading"
+            class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+          {{ uploading ? 'Broadcasting...' : 'Publish Episode' }}
         </button>
       </div>
-    </div>
-
-    <!-- Basic Information -->
-    <div class="form-section">
-      <h3>Basic Information</h3>
-      
-      <div class="form-group">
-        <label for="title">Title *</label>
-        <input type="text" 
-               id="title" 
-               formControlName="title" 
-               placeholder="Enter podcast title"
-               [class.error]="isFieldInvalid('title')" />
-        <div class="error-message" *ngIf="isFieldInvalid('title')">
-          {{ getFieldError('title') }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="description">Description *</label>
-        <textarea id="description" 
-                  formControlName="description" 
-                  placeholder="Describe your podcast episode..."
-                  rows="4"
-                  [class.error]="isFieldInvalid('description')"></textarea>
-        <div class="error-message" *ngIf="isFieldInvalid('description')">
-          {{ getFieldError('description') }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="tags">Tags (Optional)</label>
-        <input type="text" 
-               id="tags" 
-               formControlName="tags" 
-               placeholder="Enter tags separated by commas" />
-        <small>Help people discover your podcast with relevant tags</small>
-      </div>
-    </div>
-
-    <!-- Episode Information -->
-    <div class="form-section">
-      <h3>Episode Information</h3>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="episodeNumber">Episode Number *</label>
-          <input type="number" 
-                 id="episodeNumber" 
-                 formControlName="episodeNumber" 
-                 min="1"
-                 [class.error]="isFieldInvalid('episodeNumber')" />
-          <div class="error-message" *ngIf="isFieldInvalid('episodeNumber')">
-            {{ getFieldError('episodeNumber') }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="seasonNumber">Season Number *</label>
-          <input type="number" 
-                 id="seasonNumber" 
-                 formControlName="seasonNumber" 
-                 min="1"
-                 [class.error]="isFieldInvalid('seasonNumber')" />
-          <div class="error-message" *ngIf="isFieldInvalid('seasonNumber')">
-            {{ getFieldError('seasonNumber') }}
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="seriesId">Series (Optional)</label>
-        <input type="text" 
-               id="seriesId" 
-               formControlName="seriesId" 
-               placeholder="Enter series ID if part of a series" />
-      </div>
-
-      <div class="form-group">
-        <label for="transcript">Transcript (Optional)</label>
-        <textarea id="transcript" 
-                  formControlName="transcript" 
-                  placeholder="Paste the episode transcript here..."
-                  rows="6"></textarea>
-        <small>Adding a transcript improves accessibility and searchability</small>
-      </div>
-    </div>
-
-    <!-- Settings -->
-    <div class="form-section">
-      <h3>Settings</h3>
-      
-      <div class="checkbox-group">
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="isPublic" />
-          <span class="checkmark"></span>
-          Make this podcast public
-        </label>
-        
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="allowComments" />
-          <span class="checkmark"></span>
-          Allow comments
-        </label>
-        
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="allowDownload" />
-          <span class="checkmark"></span>
-          Allow downloads
-        </label>
-      </div>
-    </div>
-
-    <!-- Submit Section -->
-    <div class="submit-section">
-      <button type="button" (click)="cancel()" class="cancel-button">Cancel</button>
-      <button type="submit" 
-              [disabled]="!uploadForm.valid || !selectedFile || uploading"
-              class="submit-button">
-        <span *ngIf="!uploading">Upload Podcast</span>
-        <span *ngIf="uploading">
-          <i class="fas fa-spinner fa-spin"></i>
-          Uploading... {{ uploadProgress }}%
-        </span>
-      </button>
-    </div>
-  </form>
-
-  <!-- Upload Progress -->
-  <div class="upload-progress" *ngIf="uploading">
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="uploadProgress"></div>
-    </div>
-    <p>Uploading your podcast... Please don't close this page.</p>
+    </form>
   </div>
 </div>

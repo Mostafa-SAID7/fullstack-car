@@ -1,0 +1,235 @@
+<div class="podcast-detail-container p-4 lg:p-8 max-w-7xl mx-auto" *ngIf="podcast; else statusTpl">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Podcast Hero & Audio Player -->
+        <div class="lg:col-span-2 space-y-6">
+            <div
+                class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 lg:p-10 shadow-2xl relative overflow-hidden border border-slate-800">
+                <!-- Background Decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full -mr-20 -mt-20">
+                </div>
+
+                <div
+                    class="relative flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+                    <div
+                        class="w-48 h-48 lg:w-64 lg:h-64 rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 border-4 border-white/5 ring-1 ring-white/10">
+                        <img [src]="podcast.thumbnailUrl || podcast.coverImage" [alt]="podcast.title"
+                            class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 justify-center md:justify-start">
+                                <span
+                                    class="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded uppercase tracking-wider">Episode
+                                    {{ podcast.episodeNumber }}</span>
+                                <span class="text-slate-400 text-xs font-semibold" *ngIf="podcast.series">Part of {{
+                                    podcast.series.name }}</span>
+                            </div>
+                            <h1 class="text-3xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">{{
+                                podcast.title }}</h1>
+                            <div class="flex items-center gap-4 text-slate-300 text-sm justify-center md:justify-start">
+                                <span class="flex items-center gap-1"><i class="far fa-calendar"></i> {{
+                                    podcast.publishedAt | date:'mediumDate' }}</span>
+                                <span class="flex items-center gap-1"><i class="far fa-clock"></i> {{
+                                    formatDuration(podcast.duration) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <audio #audioPlayer [src]="podcast.audioUrl" controls
+                                class="w-full custom-audio-player"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
+                            {{ podcast.creatorName.charAt(0) }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 dark:text-white uppercase transition-colors">{{
+                                podcast.creatorName }}</h3>
+                            <p class="text-xs text-slate-500 font-medium">Podcaster • {{ podcast.playCount }} Plays</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button (click)="likePodcast()"
+                            class="flex items-center gap-2 px-6 py-2.5 rounded-full transition-all font-bold border"
+                            [class.bg-blue-50]="podcast.isLikedByUser" [class.border-blue-200]="podcast.isLikedByUser"
+                            [class.text-blue-600]="podcast.isLikedByUser"
+                            [class.bg-transparent]="!podcast.isLikedByUser"
+                            [class.border-slate-200]="!podcast.isLikedByUser"
+                            [class.dark:border-slate-800]="!podcast.isLikedByUser"
+                            [class.text-slate-600]="!podcast.isLikedByUser"
+                            [class.dark:text-slate-400]="!podcast.isLikedByUser">
+                            <i [class.fas]="podcast.isLikedByUser" [class.far]="!podcast.isLikedByUser"
+                                class="fa-heart text-sm"></i>
+                            {{ podcast.likesCount }}
+                        </button>
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors">
+                            <i class="fas fa-share"></i>
+                        </button>
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors"
+                            *ngIf="podcast.allowDownload">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="prose dark:prose-invert max-w-none">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4">About This Episode</h4>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">{{ podcast.description }}</p>
+                </div>
+
+                <div class="mt-8 flex flex-wrap gap-2" *ngIf="podcast.tags">
+                    <span *ngFor="let tag of podcast.tags.split(',')"
+                        class="px-4 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-500 rounded-lg hover:text-blue-600 transition-colors cursor-pointer capitalize">
+                        {{ tag.trim() }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Transcript Section (If available) -->
+            <div *ngIf="podcast.transcript"
+                class="bg-slate-50 dark:bg-slate-950 rounded-2xl p-6 lg:p-8 border border-slate-100 dark:border-slate-900">
+                <h3 class="text-lg font-bold mb-4 text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fas fa-quote-left text-blue-500"></i>
+                    Episode Transcript
+                </h3>
+                <div
+                    class="max-h-60 overflow-y-auto pr-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+                    {{ podcast.transcript }}
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-200 dark:border-slate-800">
+                <h2 class="text-xl font-bold mb-8 text-slate-900 dark:text-white">{{ podcast.commentsCount }}
+                    Conversations</h2>
+
+                <div class="flex gap-4 mb-10">
+                    <div
+                        class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex-shrink-0 flex items-center justify-center">
+                        <i class="fas fa-user text-slate-400"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <textarea [(ngModel)]="newComment" placeholder="What are your thoughts on this episode?"
+                            class="w-full bg-transparent border-b border-slate-200 dark:border-slate-800 focus:border-blue-500 outline-none py-2 resize-none h-20 transition-all text-sm"></textarea>
+                        <div class="flex justify-end mt-4">
+                            <button [disabled]="!newComment.trim() || submittingComment" (click)="addComment()"
+                                class="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-bold hover:shadow-lg hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center gap-2">
+                                <span *ngIf="submittingComment"
+                                    class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                Post Comment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div *ngFor="let comment of podcast.comments" class="flex gap-4 group">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center font-bold text-slate-400 border border-slate-200 dark:border-slate-800">
+                            {{ comment.authorName.charAt(0) }}
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span
+                                    class="font-bold text-sm text-slate-900 dark:text-white transition-colors group-hover:text-blue-600">{{
+                                    comment.authorName }}</span>
+                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">{{
+                                    comment.createdAt | date:'shortDate' }}</span>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{{ comment.content }}
+                            </p>
+                            <div class="flex items-center gap-4 mt-3">
+                                <button
+                                    class="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-blue-500 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                    {{ comment.likeCount }}
+                                </button>
+                                <button
+                                    class="text-xs font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Recommended -->
+        <div class="lg:col-span-1 space-y-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center justify-between">
+                    Recommended
+                    <a routerLink="/media/podcasts" class="text-xs font-bold text-blue-500 hover:underline">See All</a>
+                </h2>
+                <div class="space-y-4">
+                    <div *ngFor="let item of [1,2,3,4]"
+                        class="flex gap-4 p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-950 transition-colors cursor-pointer group">
+                        <div class="w-20 h-20 bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden flex-shrink-0">
+                            <div
+                                class="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center text-slate-500">
+                                <i class="fas fa-headphones text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h4
+                                class="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                                Next Great Car Conversation Ep #...</h4>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 mt-1">45 mins • Yesterday</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-600 rounded-3xl p-6 text-white overflow-hidden relative shadow-xl shadow-blue-500/20">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                <h3 class="font-black text-xl mb-2 relative">Join the Series</h3>
+                <p class="text-sm text-blue-100 mb-6 relative">Never miss an episode. Subscribe to get notified about
+                    new releases.</p>
+                <button
+                    class="w-full py-3 bg-white text-blue-600 rounded-xl font-black text-sm uppercase tracking-wider hover:bg-blue-50 transition-all flex items-center justify-center gap-2 relative">
+                    <i class="fas fa-bell"></i>
+                    Notify Me
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #statusTpl>
+    <div class="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center bg-slate-50 dark:bg-slate-950">
+        <div *ngIf="loading" class="flex flex-col items-center gap-6">
+            <div class="relative">
+                <div class="w-20 h-20 border-4 border-blue-600/20 rounded-full"></div>
+                <div
+                    class="w-20 h-20 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0">
+                </div>
+                <i
+                    class="fas fa-microphone absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 text-xl"></i>
+            </div>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Tuning in...</p>
+        </div>
+        <div *ngIf="error" class="flex flex-col items-center gap-4">
+            <div
+                class="w-16 h-16 bg-red-100 dark:bg-red-900/20 text-red-500 rounded-full flex items-center justify-center text-2xl mb-2">
+                <i class="fas fa-unlink"></i>
+            </div>
+            <p class="text-slate-900 dark:text-white font-black text-2xl">{{ error }}</p>
+            <p class="text-slate-500 text-sm max-w-xs mb-4">We couldn't connect to this broadcast. It might have been
+                taken off air.</p>
+            <button routerLink="/media/podcasts"
+                class="px-8 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all">Go
+                Home</button>
+        </div>
+    </div>
+</ng-template>

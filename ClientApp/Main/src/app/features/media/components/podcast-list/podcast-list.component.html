@@ -1,81 +1,78 @@
-<div class="podcast-list-container">
+<div class="podcast-list-container p-4 lg:p-8 max-w-7xl mx-auto">
   <!-- Header -->
-  <div class="podcast-header">
-    <h1>Podcasts</h1>
-    <button (click)="navigateToUpload()" class="upload-btn">
-      <i class="fas fa-plus"></i>
-      Upload Podcast
+  <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Podcasts</h1>
+      <p class="text-slate-500 font-medium italic">Discover conversations that drive the community.</p>
+    </div>
+    <button (click)="navigateToUpload()"
+      class="px-6 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/10 dark:shadow-white/10">
+      <i class="fas fa-plus mr-2"></i> Start Broadcast
     </button>
   </div>
 
-  <!-- Podcasts Grid -->
-  <div class="podcasts-grid" *ngIf="!loading">
-    <div class="podcast-card" 
-         *ngFor="let podcast of podcasts" 
-         (click)="playPodcast(podcast)">
-      
-      <div class="podcast-thumbnail">
-        <img [src]="podcast.thumbnailUrl || '/assets/images/podcast-placeholder.jpg'" 
-             [alt]="podcast.title" />
-        
-        <div class="play-overlay">
-          <button class="play-btn">
-            <i class="fas fa-play"></i>
-          </button>
-        </div>
-
-        <div class="episode-badge" *ngIf="podcast.episodeNumber">
-          Episode {{ podcast.episodeNumber }}
-        </div>
-
-        <div class="duration">{{ podcast.duration }}</div>
+  <!-- Search & Filters -->
+  <div
+    class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 mb-8 border-b-4 border-b-blue-600">
+    <form [formGroup]="searchForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="md:col-span-2 relative">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input formControlName="searchTerm" type="text" placeholder="Search for topics, episodes or creators..."
+          class="w-full bg-slate-50 dark:bg-slate-950 border-none rounded-2xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 font-bold">
       </div>
 
-      <div class="podcast-info">
-        <h3 class="podcast-title">{{ podcast.title }}</h3>
-        <p class="podcast-creator">by {{ podcast.creatorName }}</p>
-        <p class="podcast-description">{{ podcast.description }}</p>
-        
-        <div class="podcast-meta">
-          <div class="stats">
-            <span class="plays">
-              <i class="fas fa-play"></i>
-              {{ podcast.playsCount | number }}
-            </span>
-            <span class="likes">
-              <i class="fas fa-heart"></i>
-              {{ podcast.likesCount | number }}
-            </span>
-            <span class="comments">
-              <i class="fas fa-comment"></i>
-              {{ podcast.commentsCount | number }}
-            </span>
-          </div>
-          <span class="publish-date">{{ podcast.publishedAt | date:'shortDate' }}</span>
-        </div>
-
-        <div class="podcast-tags" *ngIf="podcast.tags">
-          <span class="tag" *ngFor="let tag of podcast.tags.split(',').slice(0, 3)">
-            {{ tag.trim() }}
-          </span>
-        </div>
+      <div class="relative">
+        <i class="fas fa-sort-amount-down absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"></i>
+        <select formControlName="sortBy"
+          class="w-full bg-slate-50 dark:bg-slate-950 border-none rounded-2xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900 dark:text-white font-bold cursor-pointer appearance-none relative">
+          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
       </div>
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="podcasts.length === 0">
-      <i class="fas fa-podcast"></i>
-      <h3>No Podcasts Yet</h3>
-      <p>Be the first to share your podcast with the community</p>
-      <button (click)="navigateToUpload()" class="upload-first-btn">
-        Upload Your First Podcast
-      </button>
-    </div>
+    </form>
   </div>
 
   <!-- Loading State -->
-  <div class="loading-container" *ngIf="loading">
-    <div class="loading-spinner"></div>
-    <p>Loading podcasts...</p>
+  <div *ngIf="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div *ngFor="let item of [1,2,3,4,5,6,7,8]" class="animate-pulse">
+      <div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-3xl mb-4"></div>
+      <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4 mb-2"></div>
+      <div class="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
+    </div>
+  </div>
+
+  <!-- Podcast Grid -->
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div *ngFor="let podcast of podcasts" class="transform transition-all active:scale-95">
+      <app-media-card [media]="podcast" type="podcast" (play)="playPodcast(podcast)"></app-media-card>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && podcasts.length === 0"
+    class="text-center py-20 bg-slate-50 dark:bg-slate-950 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+    <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+      <i class="fas fa-microphone-slash text-3xl text-slate-400"></i>
+    </div>
+    <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 uppercase italic">No broadcasts found</h3>
+    <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">Try adjusting your search or filters</p>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex justify-center mt-12 gap-2">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+      class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-50 transition-all font-bold">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <button *ngFor="let page of pages" (click)="onPageChange(page)" [class.bg-blue-600]="page === currentPage"
+      [class.text-white]="page === currentPage" [class.border-blue-600]="page === currentPage"
+      class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all font-black text-sm">
+      {{ page }}
+    </button>
+
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+      class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 disabled:opacity-30 hover:bg-slate-50 transition-all font-bold">
+      <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
 </div>

@@ -1,48 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../../core/guards/auth.guard';
+import { MediaDashboardComponent } from './components/media-dashboard/media-dashboard.component';
+import { VideoListComponent } from './components/video-list/video-list.component';
+import { VideoDetailComponent } from './components/video-detail/video-detail.component';
+import { VideoUploadComponent } from './components/video-upload/video-upload.component';
+import { PodcastListComponent } from './components/podcast-list/podcast-list.component';
+import { PodcastDetailComponent } from './components/podcast-detail/podcast-detail.component';
+import { PodcastUploadComponent } from './components/podcast-upload/podcast-upload.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('./components/media-dashboard/media-dashboard.component').then(m => m.MediaDashboardComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'videos',
-    loadComponent: () => import('./components/video-list/video-list.component').then(m => m.VideoListComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'videos/upload',
-    loadComponent: () => import('./components/video-upload/video-upload.component').then(m => m.VideoUploadComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'videos/:id',
-    loadComponent: () => import('./components/video-player/video-player.component').then(m => m.VideoPlayerComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'podcasts',
-    loadComponent: () => import('./components/podcast-list/podcast-list.component').then(m => m.PodcastListComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'podcasts/upload',
-    loadComponent: () => import('./components/podcast-upload/podcast-upload.component').then(m => m.PodcastUploadComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'podcasts/:id',
-    loadComponent: () => import('./components/podcast-player/podcast-player.component').then(m => m.PodcastPlayerComponent),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'playlists',
-    loadComponent: () => import('./components/playlist/playlist.component').then(m => m.PlaylistComponent),
-    canActivate: [AuthGuard]
-  }
+  { path: '', component: MediaDashboardComponent },
+  { path: 'videos', component: VideoListComponent },
+  { path: 'videos/upload', component: VideoUploadComponent },
+  { path: 'videos/:id', component: VideoDetailComponent },
+  { path: 'podcasts', component: PodcastListComponent },
+  { path: 'podcasts/upload', component: PodcastUploadComponent },
+  { path: 'podcasts/:id', component: PodcastDetailComponent }
 ];
 
 @NgModule({
