@@ -257,7 +257,12 @@ namespace Application.Features.Shared.Caching.Services
                                 // Populate memory cache
                                 if (_settings.EnableMemoryCache)
                                 {
-                                    _memoryCache.Set(key, deserializedValue, TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes / 2));
+                                    var memoryOptions = new MemoryCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes / 2),
+                                        Size = 1
+                                    };
+                                    _memoryCache.Set(key, deserializedValue, memoryOptions);
                                 }
                             }
                         }

@@ -8,6 +8,11 @@ export const routes: Routes = [
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   },
+  // Simple test login route
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/pages/login/login.component').then(m => m.LoginComponent)
+  },
   // All other routes use the main layout
   {
     path: '',
@@ -32,12 +37,20 @@ export const routes: Routes = [
         loadChildren: () => import('./features/marketplace/marketplace.module').then(m => m.MarketplaceModule)
       },
       {
+        path: 'debug-routing',
+        loadComponent: () => import('./debug-routing.component').then(m => m.DebugRoutingComponent)
+      },
+      {
+        path: 'debug-auth',
+        loadComponent: () => import('./debug-auth.component').then(m => m.DebugAuthComponent)
+      },
+      {
         path: '404',
-        loadComponent: () => import('@shared/components/errors/not-found/not-found.component').then(m => m.NotFoundComponent)
+        loadComponent: () => import('./shared/components/errors/not-found/not-found.component').then(m => m.NotFoundComponent)
       },
       {
         path: '500',
-        loadComponent: () => import('@shared/components/errors/server-error/server-error.component').then(m => m.ServerErrorComponent)
+        loadComponent: () => import('./shared/components/errors/server-error/server-error.component').then(m => m.ServerErrorComponent)
       },
       {
         path: 'dashboard',

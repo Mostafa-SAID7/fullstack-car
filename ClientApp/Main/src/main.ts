@@ -1,20 +1,36 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app-routing.module';
-import { AuthGuard } from './app/core/guards/auth.guard';
 
 import { importProvidersFrom } from '@angular/core';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { inject } from '@angular/core';
+import { AuthService } from './app/core/services/auth.service';
 
 import { environment } from './environments/environment';
+
+// Functional Auth Interceptor
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const token = authService.token;
+
+  if (token) {
+    const authReq = req.clone({
+      headers: req.headers.set('Authorization', `Bearer ${token}`)
+    });
+    console.log('Auth interceptor: Adding token to request', authReq.url);
+    return next(authReq);
+  }
+
+  console.log('Auth interceptor: No token found for request', req.url);
+  return next(req);
+};
 
 export class CustomTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) { }
@@ -31,7 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes),
     importProvidersFrom(
       TranslateModule.forRoot({

@@ -12,7 +12,7 @@ import { SignalRService } from './signalr.service';
 export class NotificationService {
     private http = inject(HttpClient);
     private signalRService = inject(SignalRService);
-    private baseUrl = `${environment.apiUrl}/v1/shared/notifications`;
+    private baseUrl = `${environment.apiUrl}/v4/shared/notifications`;
 
     private notificationsSubject = new BehaviorSubject<Notification[]>([]);
     public notifications$ = this.notificationsSubject.asObservable();

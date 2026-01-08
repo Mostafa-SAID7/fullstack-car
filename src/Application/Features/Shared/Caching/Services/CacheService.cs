@@ -44,7 +44,12 @@ namespace Application.Features.Shared.Caching.Services
                     if (deserializedValue != null)
                     {
                         // Pop into memory cache for faster subsequent access
-                        _memoryCache.Set(key, deserializedValue, TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes));
+                        var memoryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes),
+                            Size = 1
+                        };
+                        _memoryCache.Set(key, deserializedValue, memoryOptions);
                         return deserializedValue;
                     }
                 }
@@ -59,7 +64,8 @@ namespace Application.Features.Shared.Caching.Services
 
             var opts = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes)
+                AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(_settings.DefaultExpirationMinutes),
+                Size = 1
             };
 
             _memoryCache.Set(key, value, opts);

@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MediaService } from '../../services/media.service';
-import { VideoPlaylist } from '../../models/media.model';
+import { VideoPlaylist } from '../../models';
 
 @Component({
   selector: 'app-playlist',

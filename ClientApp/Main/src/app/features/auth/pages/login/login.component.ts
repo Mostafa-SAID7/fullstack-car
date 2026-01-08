@@ -7,10 +7,6 @@ import { OAuthService } from '../../../../core/services/oauth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
-import { FormButtonComponent } from '../../../../shared/components/form-button/form-button.component';
-import { OAuthButtonComponent } from '../../../../shared/components/oauth-button/oauth-button.component';
-import { AuthLayoutComponent } from '../../../../shared/components/auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-login',
@@ -18,19 +14,15 @@ import { AuthLayoutComponent } from '../../../../shared/components/auth-layout/a
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    FormInputComponent,
-    FormButtonComponent,
-    OAuthButtonComponent,
-    AuthLayoutComponent
+    RouterModule
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
   error: string | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,

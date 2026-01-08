@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MediaService } from '../../services/media.service';
-import { VideoList, PodcastList } from '../../models/media.model';
+import { VideoList, PodcastList } from '../../models';
 
 import { MediaCardComponent } from '../media-card/media-card.component';
 

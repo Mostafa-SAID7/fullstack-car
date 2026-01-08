@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { VideoList, PodcastList } from '../../models/media.model';
+import { VideoList, PodcastList } from '../../models';
 
 @Component({
   selector: 'app-media-card',

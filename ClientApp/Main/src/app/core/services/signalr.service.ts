@@ -34,14 +34,16 @@ export class SignalRService {
 
     try {
       const token = this.authService.token;
-      if (!token) {
-        console.warn('No auth token available for SignalR connection');
-        return;
-      }
+      
+      console.log('Starting SignalR connection...', {
+        hasToken: !!token,
+        tokenPreview: token?.substring(0, 20) + '...',
+        hubUrl: `${environment.hubUrl}/notificationHub`
+      });
 
       this.hubConnection = new HubConnectionBuilder()
         .withUrl(`${environment.hubUrl}/notificationHub`, {
-          accessTokenFactory: () => token
+          accessTokenFactory: () => token || ''
         })
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Information)
@@ -51,21 +53,28 @@ export class SignalRService {
       this.setupEventHandlers();
 
       await this.hubConnection.start();
-      console.log('SignalR connection established');
+      console.log('SignalR connection established successfully');
       this.connectionStateSubject.next(true);
 
-      // Join user group for notifications
+      // Join user group for notifications if authenticated
       const userId = this.authService.currentUser?.id;
-      if (userId) {
-        await this.hubConnection.invoke('JoinUserGroup', userId);
+      if (userId && token) {
+        try {
+          await this.hubConnection.invoke('JoinUserGroup', userId);
+          console.log('Joined user group:', userId);
+        } catch (error) {
+          console.error('Error joining user group:', error);
+        }
       }
 
     } catch (error) {
       console.error('Error starting SignalR connection:', error);
       this.connectionStateSubject.next(false);
       
-      // Retry connection after delay
-      setTimeout(() => this.startConnection(), 5000);
+      // Retry connection after delay only if we have a token
+      if (this.authService.token) {
+        setTimeout(() => this.startConnection(), 5000);
+      }
     }
   }
 

@@ -1,0 +1,32 @@
+using MediatR;
+using Application.Common.Models;
+using Application.Features.Media.Podcasts.DTOs.Responses;
+
+namespace Application.Features.Media.Podcasts.Queries;
+
+public class GetFeaturedPodcastsQuery : IRequest<Result<List<PodcastResponse>>>
+{
+    public int Count { get; set; } = 10;
+}
+
+public class GetTrendingPodcastsQuery : IRequest<Result<List<PodcastResponse>>>
+{
+    public int Count { get; set; } = 10;
+}
+
+public class GetUserPodcastSubscriptionsQuery : IRequest<Result<List<PodcastResponse>>>
+{
+}
+
+public class GetPodcastAnalyticsQuery : IRequest<Result<PodcastAnalyticsResponse>>
+{
+    public int PodcastId { get; set; }
+}
+
+public class GetPodcastCategoriesQuery : IRequest<Result<List<PodcastCategoryResponse>>>
+{
+}
+
+public class GetPodcastDashboardQuery : IRequest<Result<PodcastDashboardResponse>>
+{
+}

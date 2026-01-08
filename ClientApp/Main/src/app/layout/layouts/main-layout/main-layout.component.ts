@@ -6,6 +6,7 @@ import { SidebarLeftComponent } from '../../components/sidebar-left/sidebar-left
 import { SidebarRightComponent } from '../../components/sidebar-right/sidebar-right.component';
 import { AIChatWidgetComponent } from '../../../features/ai-agent/components/ai-chat-widget/ai-chat-widget.component';
 import { LayoutService } from '../../../core/services/layout.service';
+import { ToastContainerComponent } from '../../../shared/components/toast-container/toast-container.component';
 
 @Component({
     selector: 'app-main-layout',
@@ -15,7 +16,8 @@ import { LayoutService } from '../../../core/services/layout.service';
         RouterModule,
         HeaderComponent,
         SidebarLeftComponent,
-        SidebarRightComponent
+        SidebarRightComponent,
+        ToastContainerComponent
     ],
     template: `
 <div class="min-h-screen bg-background text-foreground flex flex-col">
@@ -64,6 +66,9 @@ import { LayoutService } from '../../../core/services/layout.service';
             <!-- Mobile Config/Profile Links could go here if separate from sidebar -->
         </div>
     </div>
+
+    <!-- Toast Notifications -->
+    <app-toast-container></app-toast-container>
 </div>
   `
 })

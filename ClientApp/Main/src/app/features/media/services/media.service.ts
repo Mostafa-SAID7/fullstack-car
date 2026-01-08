@@ -19,7 +19,7 @@ import {
   UploadVideoRequest,
   UploadPodcastRequest,
   MediaFilters
-} from '../models/media.model';
+} from '../models';
 
 @Injectable({
   providedIn: 'root'

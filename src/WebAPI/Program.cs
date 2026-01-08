@@ -99,7 +99,7 @@ try
     app.MapControllers();
 
     // Add SignalR hubs
-    app.MapHub<NotificationHub>("/hubs/notifications");
+    app.MapHub<NotificationHub>("/hubs/notificationHub");
     app.MapHub<ChatHub>("/hubs/chat");
 
     // Initialize and seed database
