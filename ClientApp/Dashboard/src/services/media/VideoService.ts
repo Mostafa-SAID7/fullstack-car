@@ -75,7 +75,30 @@ export class VideoService extends ApiService {
     throw new Error(result.message || 'Failed to fetch my videos');
   }
 
-  async uploadVideo(file: File, request: VideoUploadRequest): Promise<{
+  async uploadVideo(
+    file: File, 
+    request: VideoUploadRequest,
+    onProgress?: (progress: number) => void
+  ): Promise<{
+    videoId: string;
+    videoUrl: string;
+    fileSize: number;
+    fileName: string;
+  }> {
+    // For small files (< 50MB), use regular upload
+    if (file.size < 50 * 1024 * 1024) {
+      return this.uploadVideoRegular(file, request, onProgress);
+    }
+    
+    // For large files, use chunked upload
+    return this.uploadVideoChunked(file, request, onProgress);
+  }
+
+  private async uploadVideoRegular(
+    file: File, 
+    request: VideoUploadRequest,
+    onProgress?: (progress: number) => void
+  ): Promise<{
     videoId: string;
     videoUrl: string;
     fileSize: number;
@@ -90,12 +113,12 @@ export class VideoService extends ApiService {
     formData.append('isPublic', request.isPublic.toString());
     formData.append('allowComments', request.allowComments.toString());
 
-    const result = await this.post<{
+    const result = await this.postWithProgress<{
       videoId: string;
       videoUrl: string;
       fileSize: number;
       fileName: string;
-    }>('/api/v7.0/media/videos/upload', formData, {
+    }>('/api/v7.0/media/videos/upload', formData, onProgress, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -105,6 +128,92 @@ export class VideoService extends ApiService {
       return result.data;
     }
     throw new Error(result.message || 'Failed to upload video');
+  }
+
+  private async uploadVideoChunked(
+    file: File, 
+    request: VideoUploadRequest,
+    onProgress?: (progress: number) => void
+  ): Promise<{
+    videoId: string;
+    videoUrl: string;
+    fileSize: number;
+    fileName: string;
+  }> {
+    const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    const uploadId = this.generateUploadId();
+    
+    let uploadedBytes = 0;
+
+    // Upload chunks
+    for (let chunkNumber = 1; chunkNumber <= totalChunks; chunkNumber++) {
+      const start = (chunkNumber - 1) * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+
+      const formData = new FormData();
+      formData.append('chunk', chunk);
+      formData.append('uploadId', uploadId);
+      formData.append('chunkNumber', chunkNumber.toString());
+      formData.append('totalChunks', totalChunks.toString());
+      formData.append('fileName', file.name);
+      
+      // Include metadata only on the last chunk
+      if (chunkNumber === totalChunks) {
+        formData.append('title', request.title);
+        formData.append('description', request.description);
+        formData.append('quality', request.quality);
+        formData.append('tags', request.tags.join(','));
+        formData.append('isPublic', request.isPublic.toString());
+        formData.append('allowComments', request.allowComments.toString());
+      }
+
+      const result = await this.post<any>('/api/v7.0/media/videos/upload/chunked', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (!result.succeeded) {
+        throw new Error(result.message || `Failed to upload chunk ${chunkNumber}`);
+      }
+
+      uploadedBytes += chunk.size;
+      const progress = Math.round((uploadedBytes / file.size) * 100);
+      onProgress?.(progress);
+
+      // If this is the last chunk and upload is complete
+      if (chunkNumber === totalChunks && result.data?.isComplete) {
+        return {
+          videoId: result.data.videoId,
+          videoUrl: result.data.videoUrl,
+          fileSize: result.data.fileSize,
+          fileName: result.data.fileName
+        };
+      }
+    }
+
+    throw new Error('Upload completed but no final result received');
+  }
+
+  async getUploadProgress(uploadId: string): Promise<{
+    uploadedChunks: number;
+    progress?: number;
+  }> {
+    const result = await this.get<{
+      uploadedChunks: number;
+      progress?: number;
+    }>(`/api/v7.0/media/videos/upload/progress/${uploadId}`);
+    
+    if (result.succeeded && result.data) {
+      return result.data;
+    }
+    throw new Error(result.message || 'Failed to get upload progress');
+  }
+
+  private generateUploadId(): string {
+    return `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   async getTrendingVideos(count: number = 10, days: number = 7): Promise<Video[]> {

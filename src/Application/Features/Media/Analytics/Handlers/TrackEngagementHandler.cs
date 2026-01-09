@@ -288,28 +288,8 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
 
     private async Task UpdateEngagementAnalytics(Guid mediaId, EngagementType engagementType, CancellationToken cancellationToken)
     {
-        var analytics = await _context.MediaAnalytics
-            .FirstOrDefaultAsync(a => a.MediaId == mediaId, cancellationToken);
-
-        if (analytics != null)
-        {
-            switch (engagementType)
-            {
-                case EngagementType.Like:
-                    analytics.LikesCount++;
-                    break;
-                case EngagementType.Dislike:
-                    analytics.DislikesCount++;
-                    break;
-                case EngagementType.Comment:
-                    analytics.CommentsCount++;
-                    break;
-                case EngagementType.Share:
-                    analytics.SharesCount++;
-                    break;
-            }
-
-            analytics.LastUpdated = DateTime.UtcNow;
-        }
+        // Analytics are tracked through the actual engagement entities (likes, comments, etc.)
+        // No separate analytics table needed as counts are maintained on the media entities themselves
+        await Task.CompletedTask;
     }
 }

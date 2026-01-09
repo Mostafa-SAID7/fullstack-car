@@ -75,7 +75,11 @@ export class PodcastService extends ApiService {
     throw new Error(result.message || 'Failed to fetch my podcasts');
   }
 
-  async uploadPodcast(file: File, request: PodcastUploadRequest): Promise<{
+  async uploadPodcast(
+    file: File, 
+    request: PodcastUploadRequest,
+    onProgress?: (progress: number) => void
+  ): Promise<{
     podcastId: string;
     audioUrl: string;
     fileSize: number;
@@ -94,12 +98,12 @@ export class PodcastService extends ApiService {
     if (request.seriesId) formData.append('seriesId', request.seriesId);
     if (request.transcript) formData.append('transcript', request.transcript);
 
-    const result = await this.post<{
+    const result = await this.postWithProgress<{
       podcastId: string;
       audioUrl: string;
       fileSize: number;
       fileName: string;
-    }>('/api/v7.0/media/podcasts/upload', formData, {
+    }>('/api/v7.0/media/podcasts/upload', formData, onProgress, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

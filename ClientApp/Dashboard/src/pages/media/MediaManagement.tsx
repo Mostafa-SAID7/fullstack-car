@@ -72,7 +72,7 @@ export const MediaManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Content Management</h2>
-        <Select value={selectedMediaType} onValueChange={(value: 'video' | 'podcast') => setSelectedMediaType(value)}>
+        <Select value={selectedMediaType} onValueChange={(value: string) => setSelectedMediaType(value as 'video' | 'podcast')}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Select media type" />
           </SelectTrigger>

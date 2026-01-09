@@ -59,6 +59,15 @@ class ApiClient {
     return this.request<T>('POST', endpoint, data, config);
   }
 
+  async postWithProgress<T = any>(
+    endpoint: string, 
+    data?: any, 
+    onProgress?: (progress: number) => void,
+    config?: RequestConfig
+  ): Promise<ApiResult<T>> {
+    return this.requestWithProgress<T>('POST', endpoint, data, onProgress, config);
+  }
+
   async put<T = any>(endpoint: string, data?: any, config?: RequestConfig): Promise<ApiResult<T>> {
     return this.request<T>('PUT', endpoint, data, config);
   }
@@ -69,6 +78,141 @@ class ApiClient {
 
   async delete<T = any>(endpoint: string, config?: RequestConfig): Promise<ApiResult<T>> {
     return this.request<T>('DELETE', endpoint, undefined, config);
+  }
+
+  // Core Request Method with Progress Tracking
+  private async requestWithProgress<T>(
+    method: string,
+    endpoint: string,
+    data?: any,
+    onProgress?: (progress: number) => void,
+    config?: RequestConfig
+  ): Promise<ApiResult<T>> {
+    const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
+
+    console.log(`[ApiClient] ${method} ${url} (with progress)`, data); // Debug log
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      // Set up progress tracking
+      if (onProgress && xhr.upload) {
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            onProgress(progress);
+          }
+        });
+      }
+
+      // Set up response handling
+      xhr.addEventListener('load', async () => {
+        try {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const contentType = xhr.getResponseHeader('content-type');
+            let responseData: any;
+
+            if (contentType?.includes('application/json')) {
+              responseData = JSON.parse(xhr.responseText);
+            } else {
+              responseData = xhr.responseText;
+            }
+
+            resolve({
+              succeeded: true,
+              data: responseData,
+              statusCode: xhr.status
+            });
+          } else {
+            let details: any = xhr.responseText;
+            try {
+              details = JSON.parse(xhr.responseText);
+            } catch (e) {
+              // Keep as text if not JSON
+            }
+
+            const apiError = new ApiError(
+              `HTTP ${xhr.status}: ${xhr.statusText}`,
+              xhr.status,
+              undefined,
+              details
+            );
+
+            // Extract errors from details if available
+            let errors: string[] = [apiError.message];
+            if (apiError.details) {
+              if (Array.isArray(apiError.details)) {
+                errors = apiError.details.map(e => String(e));
+              } else if (typeof apiError.details === 'object' && apiError.details.errors) {
+                const valErrors = apiError.details.errors;
+                errors = Object.values(valErrors).flat().map(e => String(e));
+              } else if (typeof apiError.details === 'string' && apiError.details) {
+                errors = [apiError.details];
+              } else if (apiError.details.message) {
+                errors = [apiError.details.message];
+              }
+            }
+
+            resolve({
+              succeeded: false,
+              errors: errors,
+              message: errors[0] || 'Request failed',
+              statusCode: xhr.status
+            });
+          }
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        resolve({
+          succeeded: false,
+          errors: ['Network error occurred'],
+          message: 'Network error occurred'
+        });
+      });
+
+      xhr.addEventListener('timeout', () => {
+        resolve({
+          succeeded: false,
+          errors: ['Request timeout'],
+          message: 'Request timeout'
+        });
+      });
+
+      // Set up request
+      xhr.open(method, url);
+
+      // Add authentication header
+      if (this.authToken) {
+        xhr.setRequestHeader('Authorization', `Bearer ${this.authToken}`);
+      }
+
+      // Add custom headers
+      if (config?.headers) {
+        Object.entries(config.headers).forEach(([key, value]) => {
+          if (key !== 'Content-Type' || !(data instanceof FormData)) {
+            xhr.setRequestHeader(key, value);
+          }
+        });
+      }
+
+      // Set timeout
+      if (config?.timeout) {
+        xhr.timeout = config.timeout;
+      }
+
+      // Send request
+      if (data instanceof FormData) {
+        xhr.send(data);
+      } else if (data) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+      } else {
+        xhr.send();
+      }
+    });
   }
 
   // Core Request Method

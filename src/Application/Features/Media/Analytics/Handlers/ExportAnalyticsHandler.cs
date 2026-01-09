@@ -92,9 +92,9 @@ public class ExportAnalyticsHandler : IRequestHandler<ExportAnalyticsQuery, Resu
                 MediaId = vv.VideoId,
                 vv.UserId,
                 vv.Country,
-                vv.Device,
-                vv.WatchTimeSeconds,
-                vv.CompletionPercentage,
+                Device = vv.UserAgent, // Using UserAgent as device info
+                WatchTimeSeconds = vv.WatchDuration.TotalSeconds,
+                CompletionPercentage = vv.IsCompleted ? 100.0 : 0.0, // Simplified completion
                 vv.CreatedAt
             })
             .ToListAsync(cancellationToken);
@@ -107,9 +107,9 @@ public class ExportAnalyticsHandler : IRequestHandler<ExportAnalyticsQuery, Resu
                 MediaId = pp.PodcastId,
                 pp.UserId,
                 pp.Country,
-                pp.Device,
-                WatchTimeSeconds = pp.ListenTimeSeconds,
-                pp.CompletionPercentage,
+                Device = pp.UserAgent, // Using UserAgent as device info
+                WatchTimeSeconds = pp.PlayDuration.TotalSeconds,
+                CompletionPercentage = pp.IsCompleted ? 100.0 : 0.0, // Simplified completion
                 pp.CreatedAt
             })
             .ToListAsync(cancellationToken);

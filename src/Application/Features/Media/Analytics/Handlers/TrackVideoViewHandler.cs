@@ -45,23 +45,16 @@ public class TrackVideoViewHandler : IRequestHandler<TrackVideoViewCommand, Resu
                 isDuplicate = existingView;
             }
 
-            // Create video view record
+            // Create video view record using the actual entity properties
             var videoView = new VideoView
             {
                 VideoId = request.VideoId,
                 UserId = request.UserId,
                 IpAddress = request.IpAddress,
                 UserAgent = request.UserAgent,
-                Referrer = request.Referrer,
                 Country = request.Country,
-                City = request.City,
-                Device = request.Device,
-                Browser = request.Browser,
-                OperatingSystem = request.OperatingSystem,
-                WatchTimeSeconds = request.WatchTimeSeconds ?? 0,
-                CompletionPercentage = request.CompletionPercentage ?? 0,
-                Quality = request.Quality,
-                IsUnique = !isDuplicate,
+                WatchDuration = TimeSpan.FromSeconds(request.WatchTimeSeconds ?? 0),
+                IsCompleted = (request.CompletionPercentage ?? 0) >= 90,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -73,9 +66,6 @@ public class TrackVideoViewHandler : IRequestHandler<TrackVideoViewCommand, Resu
                 video.ViewCount++;
             }
 
-            // Update analytics
-            await UpdateVideoAnalytics(request.VideoId, !isDuplicate, request.WatchTimeSeconds ?? 0, cancellationToken);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             var result = new VideoViewDto
@@ -85,14 +75,13 @@ public class TrackVideoViewHandler : IRequestHandler<TrackVideoViewCommand, Resu
                 UserId = videoView.UserId,
                 IpAddress = videoView.IpAddress,
                 Country = videoView.Country,
-                City = videoView.City,
-                Device = videoView.Device,
-                Browser = videoView.Browser,
-                OperatingSystem = videoView.OperatingSystem,
-                WatchTimeSeconds = videoView.WatchTimeSeconds,
-                CompletionPercentage = videoView.CompletionPercentage,
-                Quality = videoView.Quality,
-                IsUnique = videoView.IsUnique,
+                Device = request.Device ?? "Unknown",
+                Browser = request.Browser ?? "Unknown",
+                OperatingSystem = request.OperatingSystem ?? "Unknown",
+                WatchTimeSeconds = request.WatchTimeSeconds ?? 0,
+                CompletionPercentage = request.CompletionPercentage ?? 0,
+                Quality = request.Quality ?? "Unknown",
+                IsUnique = !isDuplicate,
                 ViewedAt = videoView.CreatedAt
             };
 
@@ -102,63 +91,5 @@ public class TrackVideoViewHandler : IRequestHandler<TrackVideoViewCommand, Resu
         {
             return Result<VideoViewDto>.Failure(new[] { $"Error tracking video view: {ex.Message}" });
         }
-    }
-
-    private async Task UpdateVideoAnalytics(Guid videoId, bool isUnique, int watchTimeSeconds, CancellationToken cancellationToken)
-    {
-        var analytics = await _context.MediaAnalytics
-            .FirstOrDefaultAsync(a => a.MediaId == videoId, cancellationToken);
-
-        if (analytics == null)
-        {
-            analytics = new MediaAnalytics
-            {
-                MediaId = videoId,
-                MediaType = Domain.Enums.Media.MediaType.Video,
-                CreatedAt = DateTime.UtcNow
-            };
-            _context.MediaAnalytics.Add(analytics);
-        }
-
-        if (isUnique)
-        {
-            analytics.ViewsTotal++;
-            
-            var today = DateTime.UtcNow.Date;
-            if (analytics.LastUpdated.Date != today)
-            {
-                // Reset daily counters
-                analytics.ViewsToday = 1;
-            }
-            else
-            {
-                analytics.ViewsToday++;
-            }
-
-            // Update weekly and monthly counters
-            var weekStart = DateTime.UtcNow.AddDays(-7);
-            var monthStart = DateTime.UtcNow.AddDays(-30);
-            
-            analytics.ViewsWeek = await _context.VideoViews
-                .CountAsync(vv => vv.VideoId == videoId && vv.CreatedAt >= weekStart && vv.IsUnique, cancellationToken);
-            
-            analytics.ViewsMonth = await _context.VideoViews
-                .CountAsync(vv => vv.VideoId == videoId && vv.CreatedAt >= monthStart && vv.IsUnique, cancellationToken);
-        }
-
-        // Update average watch time
-        if (watchTimeSeconds > 0)
-        {
-            var totalWatchTime = await _context.VideoViews
-                .Where(vv => vv.VideoId == videoId)
-                .SumAsync(vv => vv.WatchTimeSeconds, cancellationToken);
-            
-            var totalViews = await _context.VideoViews
-                .CountAsync(vv => vv.VideoId == videoId, cancellationToken);
-
-            analytics.AverageWatchTime = totalViews > 0 ? (decimal)(totalWatchTime / totalViews) : 0;
-        }
-
-        analytics.LastUpdated = DateTime.UtcNow;
     }
 }

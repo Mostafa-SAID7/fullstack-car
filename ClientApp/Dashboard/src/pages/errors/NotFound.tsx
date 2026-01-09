@@ -25,7 +25,7 @@ export const NotFound: React.FC = () => {
             opacity: 1,
             transition: {
                 duration: 0.5,
-                ease: "easeOut"
+                ease: [0.25, 0.46, 0.45, 0.94] as const
             }
         }
     };
@@ -37,7 +37,7 @@ export const NotFound: React.FC = () => {
             transition: {
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: [0.42, 0, 0.58, 1] as const
             }
         }
     };
@@ -48,7 +48,7 @@ export const NotFound: React.FC = () => {
             transition: {
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: [0.42, 0, 0.58, 1] as const
             }
         }
     };

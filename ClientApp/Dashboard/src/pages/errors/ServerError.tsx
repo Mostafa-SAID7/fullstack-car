@@ -25,7 +25,7 @@ export const ServerError: React.FC = () => {
             opacity: 1,
             transition: {
                 duration: 0.5,
-                ease: "easeOut"
+                ease: [0.25, 0.46, 0.45, 0.94] as const
             }
         }
     };
@@ -50,7 +50,7 @@ export const ServerError: React.FC = () => {
             transition: {
                 duration: 1.5,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: [0.42, 0, 0.58, 1] as const
             }
         }
     };

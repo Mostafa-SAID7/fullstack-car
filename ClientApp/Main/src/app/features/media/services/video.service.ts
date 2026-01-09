@@ -64,7 +64,7 @@ export class VideoService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  uploadVideo(file: File, metadata: UploadVideoRequest): Observable<any> {
+  uploadVideo(file: File, metadata: UploadVideoRequest, onProgress?: (progress: number) => void): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     Object.entries(metadata).forEach(([key, value]) => {
@@ -72,7 +72,124 @@ export class VideoService {
         formData.append(key, value.toString());
       }
     });
-    return this.http.post(`${this.apiUrl}/upload`, formData);
+
+    // For small files (< 50MB), use regular upload with progress
+    if (file.size < 50 * 1024 * 1024) {
+      return this.uploadVideoRegular(formData, onProgress);
+    }
+    
+    // For large files, use chunked upload
+    return this.uploadVideoChunked(file, metadata, onProgress);
+  }
+
+  private uploadVideoRegular(formData: FormData, onProgress?: (progress: number) => void): Observable<any> {
+    return new Observable(observer => {
+      const xhr = new XMLHttpRequest();
+
+      // Set up progress tracking
+      if (onProgress && xhr.upload) {
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            onProgress(progress);
+          }
+        });
+      }
+
+      // Set up response handling
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            observer.next(response);
+            observer.complete();
+          } catch (e) {
+            observer.error(new Error('Invalid response format'));
+          }
+        } else {
+          observer.error(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        observer.error(new Error('Network error occurred'));
+      });
+
+      xhr.addEventListener('timeout', () => {
+        observer.error(new Error('Request timeout'));
+      });
+
+      // Send request
+      xhr.open('POST', `${this.apiUrl}/upload`);
+      
+      // Add auth header if available
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+
+      xhr.send(formData);
+    });
+  }
+
+  private uploadVideoChunked(file: File, metadata: UploadVideoRequest, onProgress?: (progress: number) => void): Observable<any> {
+    return new Observable(observer => {
+      const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+      const totalChunks = Math.ceil(file.size / chunkSize);
+      const uploadId = this.generateUploadId();
+      let uploadedBytes = 0;
+
+      const uploadChunk = async (chunkNumber: number) => {
+        const start = (chunkNumber - 1) * chunkSize;
+        const end = Math.min(start + chunkSize, file.size);
+        const chunk = file.slice(start, end);
+
+        const formData = new FormData();
+        formData.append('chunk', chunk);
+        formData.append('uploadId', uploadId);
+        formData.append('chunkNumber', chunkNumber.toString());
+        formData.append('totalChunks', totalChunks.toString());
+        formData.append('fileName', file.name);
+        
+        // Include metadata only on the last chunk
+        if (chunkNumber === totalChunks) {
+          Object.entries(metadata).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              formData.append(key, value.toString());
+            }
+          });
+        }
+
+        try {
+          const response = await this.http.post(`${this.apiUrl}/upload/chunked`, formData).toPromise();
+          
+          uploadedBytes += chunk.size;
+          const progress = Math.round((uploadedBytes / file.size) * 100);
+          onProgress?.(progress);
+
+          // If this is the last chunk and upload is complete
+          if (chunkNumber === totalChunks && (response as any)?.isComplete) {
+            observer.next(response);
+            observer.complete();
+            return;
+          }
+
+          // Upload next chunk
+          if (chunkNumber < totalChunks) {
+            await uploadChunk(chunkNumber + 1);
+          }
+        } catch (error) {
+          observer.error(error);
+        }
+      };
+
+      // Start uploading chunks
+      uploadChunk(1);
+    });
+  }
+
+  private generateUploadId(): string {
+    return `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   // Search and Discovery

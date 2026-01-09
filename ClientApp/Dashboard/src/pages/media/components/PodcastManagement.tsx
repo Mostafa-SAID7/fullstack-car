@@ -5,7 +5,6 @@ import {
   Play, 
   Edit, 
   Trash2, 
-  Eye, 
   Heart, 
   MessageCircle, 
   Calendar,
@@ -65,15 +64,6 @@ export const PodcastManagement = () => {
       } catch (error) {
         console.error('Failed to delete podcast:', error);
       }
-    }
-  };
-
-  const handlePublish = async (id: string) => {
-    try {
-      await podcastService.publishPodcast(id);
-      loadPodcasts();
-    } catch (error) {
-      console.error('Failed to publish podcast:', error);
     }
   };
 

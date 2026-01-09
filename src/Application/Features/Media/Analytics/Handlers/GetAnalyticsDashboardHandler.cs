@@ -79,8 +79,8 @@ public class GetAnalyticsDashboardHandler : IRequestHandler<GetAnalyticsDashboar
 
         var totalViews = await videoQuery.LongCountAsync(cancellationToken);
         var totalPlays = await podcastQuery.LongCountAsync(cancellationToken);
-        var uniqueViews = await videoQuery.Where(vv => vv.IsUnique).LongCountAsync(cancellationToken);
-        var uniquePlays = await podcastQuery.Where(pp => pp.IsUnique).LongCountAsync(cancellationToken);
+        var uniqueViews = await videoQuery.GroupBy(vv => vv.UserId).LongCountAsync(cancellationToken);
+        var uniquePlays = await podcastQuery.GroupBy(pp => pp.UserId).LongCountAsync(cancellationToken);
 
         // Get engagement metrics
         var videoLikes = await _context.VideoLikes
@@ -105,10 +105,10 @@ public class GetAnalyticsDashboardHandler : IRequestHandler<GetAnalyticsDashboar
 
         // Calculate average watch time
         var avgVideoWatchTime = await videoQuery
-            .AverageAsync(vv => (double?)vv.WatchTimeSeconds, cancellationToken) ?? 0;
+            .AverageAsync(vv => (double?)vv.WatchDuration.TotalSeconds, cancellationToken) ?? 0;
         
         var avgPodcastListenTime = await podcastQuery
-            .AverageAsync(pp => (double?)pp.ListenTimeSeconds, cancellationToken) ?? 0;
+            .AverageAsync(pp => (double?)pp.PlayDuration.TotalSeconds, cancellationToken) ?? 0;
 
         var avgWatchTime = (avgVideoWatchTime + avgPodcastListenTime) / 2;
 
@@ -143,11 +143,11 @@ public class GetAnalyticsDashboardHandler : IRequestHandler<GetAnalyticsDashboar
             var nextDate = date.AddDays(1);
 
             var videoViews = await _context.VideoViews
-                .Where(vv => vv.CreatedAt >= date && vv.CreatedAt < nextDate && vv.IsUnique)
+                .Where(vv => vv.CreatedAt >= date && vv.CreatedAt < nextDate)
                 .LongCountAsync(cancellationToken);
 
             var podcastPlays = await _context.PodcastPlays
-                .Where(pp => pp.CreatedAt >= date && pp.CreatedAt < nextDate && pp.IsUnique)
+                .Where(pp => pp.CreatedAt >= date && pp.CreatedAt < nextDate)
                 .LongCountAsync(cancellationToken);
 
             trendData.Add(new TrendDataPointDto

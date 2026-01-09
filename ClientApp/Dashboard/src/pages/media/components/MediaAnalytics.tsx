@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  BarChart3, 
   TrendingUp, 
   Eye, 
   Play, 
   Heart, 
   MessageCircle, 
   Users, 
-  Calendar,
   Video,
-  Mic,
-  Download
+  Mic
 } from 'lucide-react';
 import { ChartCard } from '../../dashboard/components/ChartCard';
 import { videoService } from '../../../services/media/VideoService';
@@ -243,26 +240,20 @@ export const MediaAnalytics = () => {
         <ChartCard
           title="Views & Plays Over Time"
           description="Track content consumption trends"
-          data={[
-            { name: 'Week 1', videos: 1200, podcasts: 800 },
-            { name: 'Week 2', videos: 1400, podcasts: 950 },
-            { name: 'Week 3', videos: 1100, podcasts: 1100 },
-            { name: 'Week 4', videos: 1600, podcasts: 1200 }
-          ]}
-          dataKeys={['videos', 'podcasts']}
-          colors={['#3b82f6', '#10b981']}
-        />
+        >
+          <div className="text-center text-muted-foreground">
+            Chart visualization would go here
+          </div>
+        </ChartCard>
 
         <ChartCard
           title="Engagement Metrics"
           description="Likes, comments, and interactions"
-          data={[
-            { name: 'Videos', likes: 2400, comments: 800 },
-            { name: 'Podcasts', likes: 1800, comments: 600 }
-          ]}
-          dataKeys={['likes', 'comments']}
-          colors={['#ef4444', '#f59e0b']}
-        />
+        >
+          <div className="text-center text-muted-foreground">
+            Chart visualization would go here
+          </div>
+        </ChartCard>
       </div>
 
       {/* Recent Activity */}

@@ -1,11 +1,51 @@
 // Application Types - Main Export
 export * from './ai-agent';
 export * from './api';
-export * from './auth';
 export * from './common';
 export * from './config';
-export * from './notification';
 export * from './products';
+
+// Auth types - explicit exports to avoid conflicts
+export type {
+  UserInfo,
+  UserRole,
+  UserPreferences,
+  DashboardPreferences,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  LoginResponse,
+  RefreshTokenRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  ChangePasswordRequest,
+  UpdateProfileRequest,
+  ProfileResponse,
+  SecurityLogResponse,
+  SecurityLog,
+  UserSessionResponse,
+  UserSession,
+  VerifyEmailRequest,
+  ResendVerificationRequest,
+  AuthState,
+  AuthContextType,
+  NotificationPreferences as AuthNotificationPreferences
+} from './auth';
+
+// Notification types - explicit exports to avoid conflicts
+export type {
+  NotificationType,
+  NotificationPriority,
+  NotificationCategory,
+  Notification,
+  NotificationResponse,
+  NotificationPreferences,
+  CreateNotificationRequest,
+  NotificationFilters,
+  NotificationStats,
+  NotificationEvent,
+  NotificationTemplate
+} from './notification';
 
 // Dashboard types (core) - with explicit re-export to avoid DateRange conflict
 export * from './dashboard/widget';

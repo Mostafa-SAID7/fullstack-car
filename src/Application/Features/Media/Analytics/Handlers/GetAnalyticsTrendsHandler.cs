@@ -85,10 +85,10 @@ public class GetAnalyticsTrendsHandler : IRequestHandler<GetAnalyticsTrendsQuery
         return metric.ToLower() switch
         {
             "views" => await _context.VideoViews
-                .Where(vv => vv.CreatedAt >= from && vv.CreatedAt < to && vv.IsUnique)
+                .Where(vv => vv.CreatedAt >= from && vv.CreatedAt < to)
                 .LongCountAsync(cancellationToken),
             "plays" => await _context.PodcastPlays
-                .Where(pp => pp.CreatedAt >= from && pp.CreatedAt < to && pp.IsUnique)
+                .Where(pp => pp.CreatedAt >= from && pp.CreatedAt < to)
                 .LongCountAsync(cancellationToken),
             "engagement" => await _context.VideoLikes
                 .Where(vl => vl.CreatedAt >= from && vl.CreatedAt < to)

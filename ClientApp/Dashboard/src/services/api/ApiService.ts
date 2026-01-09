@@ -11,6 +11,15 @@ export abstract class ApiService {
     return apiClient.post<T>(endpoint, data, config);
   }
 
+  protected async postWithProgress<T>(
+    endpoint: string, 
+    data?: any, 
+    onProgress?: (progress: number) => void,
+    config?: RequestConfig
+  ): Promise<ApiResult<T>> {
+    return apiClient.postWithProgress<T>(endpoint, data, onProgress, config);
+  }
+
   protected async put<T>(endpoint: string, data?: any, config?: RequestConfig): Promise<ApiResult<T>> {
     return apiClient.put<T>(endpoint, data, config);
   }

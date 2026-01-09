@@ -41,12 +41,7 @@ public class GlobalExceptionHandlerMiddleware
     {
         context.Response.ContentType = "application/json";
 
-        var response = new
-        {
-            Success = false,
-            Message = GetUserFriendlyMessage(exception),
-            Timestamp = DateTime.UtcNow
-        };
+        object response;
 
         switch (exception)
         {
@@ -60,7 +55,7 @@ public class GlobalExceptionHandlerMiddleware
                 };
                 break;
 
-            case UnauthorizedAccessException:
+            case Domain.Exceptions.UnauthorizedAccessException:
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 response = new
                 {
@@ -76,7 +71,7 @@ public class GlobalExceptionHandlerMiddleware
                 {
                     Success = false,
                     Message = businessEx.Message,
-                    Errors = new[] { businessEx.Details },
+                    Errors = new[] { businessEx.Message }, // Use Message instead of Details
                     Timestamp = DateTime.UtcNow
                 };
                 break;
@@ -91,7 +86,7 @@ public class GlobalExceptionHandlerMiddleware
                 };
                 break;
 
-            case ValidationException validationEx:
+            case Application.Common.Exceptions.ValidationException validationEx:
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 response = new
                 {
@@ -154,7 +149,7 @@ public class GlobalExceptionHandlerMiddleware
                 // Include exception details in development environment
                 if (_environment.IsDevelopment())
                 {
-                    response = new
+                    var devResponse = new
                     {
                         Success = false,
                         Message = "An internal server error occurred",
@@ -162,6 +157,14 @@ public class GlobalExceptionHandlerMiddleware
                         StackTrace = exception.StackTrace,
                         Timestamp = DateTime.UtcNow
                     };
+                    
+                    var devJsonResponse = JsonSerializer.Serialize(devResponse, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    });
+
+                    await context.Response.WriteAsync(devJsonResponse);
+                    return;
                 }
                 break;
         }
@@ -179,10 +182,10 @@ public class GlobalExceptionHandlerMiddleware
         return exception switch
         {
             EntityNotFoundException => exception.Message,
-            UnauthorizedAccessException => "Access denied",
+            Domain.Exceptions.UnauthorizedAccessException => "Access denied",
             BusinessRuleValidationException => exception.Message,
             DomainException => exception.Message,
-            ValidationException => "Validation failed",
+            Application.Common.Exceptions.ValidationException => "Validation failed",
             ArgumentException => exception.Message,
             InvalidOperationException => exception.Message,
             NotSupportedException => "Operation not supported",

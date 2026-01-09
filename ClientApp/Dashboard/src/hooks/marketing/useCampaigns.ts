@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MarketingService } from '../../services/marketing/MarketingService';
 import type { Campaign, CampaignQueryParams, CreateCampaignRequest, UpdateCampaignRequest } from '../../services/marketing/types';
-import type { PaginatedResult } from '../../types/api';
 
 interface UseCampaignsReturn {
   campaigns: Campaign[];

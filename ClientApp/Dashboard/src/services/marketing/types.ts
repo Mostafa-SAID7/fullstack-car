@@ -270,40 +270,48 @@ export interface AnalyticsQueryParams {
 }
 
 // Enums
-export enum CampaignType {
-  Social = 1,
-  Email = 2,
-  Display = 3,
-  Search = 4,
-  Video = 5,
-  Influencer = 6,
-  Content = 7
-}
+export const CampaignType = {
+  Social: 1,
+  Email: 2,
+  Display: 3,
+  Search: 4,
+  Video: 5,
+  Influencer: 6,
+  Content: 7
+} as const;
 
-export enum CampaignStatus {
-  Draft = 1,
-  Scheduled = 2,
-  Active = 3,
-  Paused = 4,
-  Completed = 5,
-  Cancelled = 6
-}
+export type CampaignType = typeof CampaignType[keyof typeof CampaignType];
 
-export enum ContentType {
-  Text = 1,
-  Image = 2,
-  Video = 3,
-  Blog = 4,
-  Story = 5,
-  Infographic = 6,
-  Carousel = 7
-}
+export const CampaignStatus = {
+  Draft: 1,
+  Scheduled: 2,
+  Active: 3,
+  Paused: 4,
+  Completed: 5,
+  Cancelled: 6
+} as const;
 
-export enum ContentStatus {
-  Draft = 1,
-  InReview = 2,
-  Approved = 3,
-  Scheduled = 4,
-  Published = 5,
-  Archived = 6
-}
+export type CampaignStatus = typeof CampaignStatus[keyof typeof CampaignStatus];
+
+export const ContentType = {
+  Text: 1,
+  Image: 2,
+  Video: 3,
+  Blog: 4,
+  Story: 5,
+  Infographic: 6,
+  Carousel: 7
+} as const;
+
+export type ContentType = typeof ContentType[keyof typeof ContentType];
+
+export const ContentStatus = {
+  Draft: 1,
+  InReview: 2,
+  Approved: 3,
+  Scheduled: 4,
+  Published: 5,
+  Archived: 6
+} as const;
+
+export type ContentStatus = typeof ContentStatus[keyof typeof ContentStatus];

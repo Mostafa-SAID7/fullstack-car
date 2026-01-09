@@ -76,7 +76,7 @@ public class GetVideoAnalyticsHandler : IRequestHandler<GetVideoAnalyticsQuery, 
             var nextDate = date.AddDays(1);
 
             var views = await _context.VideoViews
-                .Where(vv => vv.VideoId == videoId && vv.CreatedAt >= date && vv.CreatedAt < nextDate && vv.IsUnique)
+                .Where(vv => vv.VideoId == videoId && vv.CreatedAt >= date && vv.CreatedAt < nextDate)
                 .LongCountAsync(cancellationToken);
 
             trendData.Add(new TrendDataPointDto

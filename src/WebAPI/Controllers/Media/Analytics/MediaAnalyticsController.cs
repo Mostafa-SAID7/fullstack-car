@@ -38,8 +38,8 @@ public class MediaAnalyticsController : ControllerBase
             VideoId = videoId,
             UserId = userGuid,
             IpAddress = GetClientIpAddress(),
-            WatchDuration = request.WatchDuration,
-            IsCompleted = request.IsCompleted,
+            WatchTimeSeconds = (int)request.WatchDuration.TotalSeconds,
+            CompletionPercentage = request.IsCompleted ? 100.0 : 0.0,
             UserAgent = Request.Headers["User-Agent"].ToString(),
             Country = request.Country
         };
@@ -82,8 +82,8 @@ public class MediaAnalyticsController : ControllerBase
             PodcastId = podcastId,
             UserId = userGuid,
             IpAddress = GetClientIpAddress(),
-            PlayDuration = request.PlayDuration,
-            IsCompleted = request.IsCompleted,
+            ListenTimeSeconds = (int)request.PlayDuration.TotalSeconds,
+            CompletionPercentage = request.IsCompleted ? 100.0 : 0.0,
             UserAgent = Request.Headers["User-Agent"].ToString(),
             Country = request.Country
         };

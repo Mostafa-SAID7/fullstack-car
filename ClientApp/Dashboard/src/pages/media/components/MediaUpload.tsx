@@ -23,6 +23,10 @@ interface UploadProgress {
   progress: number;
   status: 'idle' | 'uploading' | 'success' | 'error';
   message?: string;
+  uploadSpeed?: string;
+  timeRemaining?: string;
+  bytesUploaded?: number;
+  totalBytes?: number;
 }
 
 export const MediaUpload = () => {
@@ -33,6 +37,9 @@ export const MediaUpload = () => {
     progress: 0,
     status: 'idle'
   });
+
+  // Upload tracking state
+  const [uploadStartTime, setUploadStartTime] = useState<number>(0);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -81,6 +88,61 @@ export const MediaUpload = () => {
     }
   };
 
+  const calculateUploadStats = (progress: number, fileSize: number) => {
+    const now = Date.now();
+    const elapsed = (now - uploadStartTime) / 1000; // seconds
+    const bytesUploaded = (progress / 100) * fileSize;
+    
+    if (elapsed > 0 && progress > 0) {
+      const uploadSpeed = bytesUploaded / elapsed; // bytes per second
+      const remainingBytes = fileSize - bytesUploaded;
+      const timeRemaining = remainingBytes / uploadSpeed; // seconds
+      
+      return {
+        uploadSpeed: formatSpeed(uploadSpeed),
+        timeRemaining: formatTime(timeRemaining),
+        bytesUploaded,
+        totalBytes: fileSize
+      };
+    }
+    
+    return {
+      uploadSpeed: '0 B/s',
+      timeRemaining: 'Calculating...',
+      bytesUploaded,
+      totalBytes: fileSize
+    };
+  };
+
+  const formatSpeed = (bytesPerSecond: number): string => {
+    const units = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+    let size = bytesPerSecond;
+    let unitIndex = 0;
+    
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex++;
+    }
+    
+    return `${size.toFixed(1)} ${units[unitIndex]}`;
+  };
+
+  const formatTime = (seconds: number): string => {
+    if (!isFinite(seconds) || seconds < 0) return 'Calculating...';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${secs}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    } else {
+      return `${secs}s`;
+    }
+  };
+
   const addTag = () => {
     if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
       setFormData(prev => ({
@@ -112,17 +174,43 @@ export const MediaUpload = () => {
     }
 
     try {
-      setUploadProgress({ progress: 0, status: 'uploading' });
+      setUploadStartTime(Date.now());
+      setUploadProgress({ 
+        progress: 0, 
+        status: 'uploading',
+        message: 'Preparing upload...',
+        bytesUploaded: 0,
+        totalBytes: selectedFile.size
+      });
 
       // Upload thumbnail first if provided
-      let thumbnailUrl = '';
       if (thumbnailFile) {
-        setUploadProgress({ progress: 10, status: 'uploading', message: 'Uploading thumbnail...' });
-        const thumbnailResult = await mediaService.uploadThumbnail(thumbnailFile);
-        thumbnailUrl = thumbnailResult.thumbnailUrl;
+        setUploadProgress(prev => ({ 
+          ...prev, 
+          progress: 5, 
+          message: 'Uploading thumbnail...' 
+        }));
+        await mediaService.uploadThumbnail(thumbnailFile);
       }
 
-      setUploadProgress({ progress: 30, status: 'uploading', message: 'Uploading media file...' });
+      setUploadProgress(prev => ({ 
+        ...prev, 
+        progress: thumbnailFile ? 10 : 5, 
+        message: 'Uploading media file...' 
+      }));
+
+      const onProgress = (progress: number) => {
+        const stats = calculateUploadStats(progress, selectedFile.size);
+        setUploadProgress(prev => ({
+          ...prev,
+          progress: Math.max(prev.progress, progress),
+          message: `Uploading... ${progress}%`,
+          uploadSpeed: stats.uploadSpeed,
+          timeRemaining: stats.timeRemaining,
+          bytesUploaded: stats.bytesUploaded,
+          totalBytes: stats.totalBytes
+        }));
+      };
 
       if (uploadType === 'video') {
         const videoRequest: VideoUploadRequest = {
@@ -134,7 +222,7 @@ export const MediaUpload = () => {
           allowComments: formData.allowComments
         };
 
-        await videoService.uploadVideo(selectedFile, videoRequest);
+        await videoService.uploadVideo(selectedFile, videoRequest, onProgress);
       } else {
         const podcastRequest: PodcastUploadRequest = {
           title: formData.title,
@@ -149,13 +237,15 @@ export const MediaUpload = () => {
           transcript: formData.transcript || undefined
         };
 
-        await podcastService.uploadPodcast(selectedFile, podcastRequest);
+        await podcastService.uploadPodcast(selectedFile, podcastRequest, onProgress);
       }
 
       setUploadProgress({ 
         progress: 100, 
         status: 'success', 
-        message: `${uploadType === 'video' ? 'Video' : 'Podcast'} uploaded successfully!` 
+        message: `${uploadType === 'video' ? 'Video' : 'Podcast'} uploaded successfully!`,
+        bytesUploaded: selectedFile.size,
+        totalBytes: selectedFile.size
       });
 
       // Reset form
@@ -336,16 +426,17 @@ export const MediaUpload = () => {
 
             {/* Upload Progress */}
             {uploadProgress.status !== 'idle' && (
-              <div className="space-y-2">
+              <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Upload Progress</span>
                   <span className="text-sm text-muted-foreground">
                     {uploadProgress.progress}%
                   </span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-2">
+                
+                <div className="w-full bg-muted rounded-full h-3">
                   <div
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`h-3 rounded-full transition-all duration-300 ${
                       uploadProgress.status === 'success' 
                         ? 'bg-green-500' 
                         : uploadProgress.status === 'error'
@@ -355,6 +446,22 @@ export const MediaUpload = () => {
                     style={{ width: `${uploadProgress.progress}%` }}
                   />
                 </div>
+
+                {/* Upload Statistics */}
+                {uploadProgress.status === 'uploading' && uploadProgress.uploadSpeed && (
+                  <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
+                    <div>
+                      <span className="font-medium">Speed:</span> {uploadProgress.uploadSpeed}
+                    </div>
+                    <div>
+                      <span className="font-medium">Time remaining:</span> {uploadProgress.timeRemaining}
+                    </div>
+                    <div className="col-span-2">
+                      <span className="font-medium">Uploaded:</span> {formatFileSize(uploadProgress.bytesUploaded || 0)} of {formatFileSize(uploadProgress.totalBytes || 0)}
+                    </div>
+                  </div>
+                )}
+
                 {uploadProgress.message && (
                   <div className={`flex items-center gap-2 text-sm ${
                     uploadProgress.status === 'success' 
@@ -365,6 +472,9 @@ export const MediaUpload = () => {
                   }`}>
                     {uploadProgress.status === 'success' && <Check className="w-4 h-4" />}
                     {uploadProgress.status === 'error' && <AlertCircle className="w-4 h-4" />}
+                    {uploadProgress.status === 'uploading' && (
+                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    )}
                     {uploadProgress.message}
                   </div>
                 )}

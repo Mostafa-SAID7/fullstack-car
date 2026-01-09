@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { 
   Video, 
   Play, 
-  Pause, 
   Edit, 
   Trash2, 
   Eye, 
@@ -64,15 +63,6 @@ export const VideoManagement = () => {
       } catch (error) {
         console.error('Failed to delete video:', error);
       }
-    }
-  };
-
-  const handlePublish = async (id: string) => {
-    try {
-      await videoService.publishVideo(id);
-      loadVideos();
-    } catch (error) {
-      console.error('Failed to publish video:', error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Video, 
@@ -7,17 +7,11 @@ import {
   Upload, 
   Settings, 
   TrendingUp,
-  Users,
   Eye,
-  Heart,
-  MessageCircle,
-  Play,
-  ChevronDown
+  Heart
 } from 'lucide-react';
 import { VideoManagement } from './components/VideoManagement';
 import { PodcastManagement } from './components/PodcastManagement';
-import { MediaAnalytics } from './components/MediaAnalytics';
-import { MediaUpload } from './components/MediaUpload';
 import { mediaService } from '../../services/media/MediaService';
 import type { MediaDashboardStats, MediaType } from '../../services/media/types';
 

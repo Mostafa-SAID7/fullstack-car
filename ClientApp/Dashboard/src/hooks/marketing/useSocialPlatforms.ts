@@ -26,7 +26,7 @@ export const useSocialPlatforms = (isActive?: boolean): UseSocialPlatformsReturn
       if (result.succeeded && result.data) {
         setPlatforms(result.data);
       } else {
-        setError(result.errors.join(', ') || 'Failed to fetch social platforms');
+        setError(result.errors?.join(', ') || 'Failed to fetch social platforms');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
