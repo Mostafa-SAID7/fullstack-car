@@ -26,7 +26,7 @@ export class SiteAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/site?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/site`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Site analytics error:', error);
       return {
@@ -40,7 +40,7 @@ export class SiteAnalyticsService {
   async getRealtimeAnalytics(): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/realtime`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Realtime analytics error:', error);
       return {

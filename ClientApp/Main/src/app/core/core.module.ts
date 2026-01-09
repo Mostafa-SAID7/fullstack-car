@@ -1,10 +1,11 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 
 // Services
 import { AuthService } from './services/auth.service';
+import { MediaService } from './services/media.service';
 import { OAuthService } from './services/oauth.service';
 import { ProfileService } from './services/profile.service';
 import { SecurityService } from './services/security.service';
@@ -14,10 +15,7 @@ import { NotificationService } from './services/notification.service';
 import { SignalRService } from './services/signalr.service';
 
 // Guards
-import { AuthGuard, GuestGuard, RoleGuard } from './guards/auth.guard';
-
-// Interceptors
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuthGuard, GuestGuard, RoleGuard, ContentCreatorGuard, AdminGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [],
@@ -29,6 +27,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
   providers: [
     // Services
     AuthService,
+    MediaService,
     OAuthService,
     ProfileService,
     SecurityService,
@@ -41,13 +40,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AuthGuard,
     GuestGuard,
     RoleGuard,
-    
-    // Interceptors
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
+    ContentCreatorGuard,
+    AdminGuard
   ],
   exports: [
     SharedModule

@@ -50,7 +50,7 @@ export class DashboardService {
   async getDashboardStats(): Promise<ApiResult<DashboardStats>> {
     try {
       const response = await apiClient.get(API_ENDPOINTS.DASHBOARD.STATS);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get dashboard stats error:', error);
       return {
@@ -64,7 +64,7 @@ export class DashboardService {
   async getQuickStats(): Promise<ApiResult<QuickStats>> {
     try {
       const response = await apiClient.get('/dashboard/quick-stats');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get quick stats error:', error);
       return {
@@ -79,7 +79,7 @@ export class DashboardService {
   async getSystemInfo(): Promise<ApiResult<SystemInfo>> {
     try {
       const response = await apiClient.get('/dashboard/system-info');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system info error:', error);
       return {
@@ -93,7 +93,7 @@ export class DashboardService {
   async getSystemMetrics(): Promise<ApiResult<SystemMetrics>> {
     try {
       const response = await apiClient.get('/dashboard/system-metrics');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system metrics error:', error);
       return {
@@ -108,7 +108,7 @@ export class DashboardService {
   async getDatabaseMetrics(): Promise<ApiResult<DatabaseMetrics>> {
     try {
       const response = await apiClient.get('/dashboard/database-metrics');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get database metrics error:', error);
       return {
@@ -124,7 +124,7 @@ export class DashboardService {
     try {
       const params = limit ? `?limit=${limit}` : '';
       const response = await apiClient.get(`/dashboard/activity${params}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get activity logs error:', error);
       return {
@@ -139,7 +139,7 @@ export class DashboardService {
   async getSystemAlerts(): Promise<ApiResult<SystemAlert[]>> {
     try {
       const response = await apiClient.get('/dashboard/alerts');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system alerts error:', error);
       return {
@@ -154,7 +154,7 @@ export class DashboardService {
   async getPerformanceMetrics(): Promise<ApiResult<SystemPerformanceMetrics>> {
     try {
       const response = await apiClient.get('/dashboard/performance');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get performance metrics error:', error);
       return {
@@ -169,7 +169,7 @@ export class DashboardService {
   async getMemoryUsage(): Promise<ApiResult<MemoryUsage>> {
     try {
       const response = await apiClient.get('/dashboard/memory');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get memory usage error:', error);
       return {
@@ -183,7 +183,7 @@ export class DashboardService {
   async getDiskUsage(): Promise<ApiResult<DiskUsage>> {
     try {
       const response = await apiClient.get('/dashboard/disk');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get disk usage error:', error);
       return {
@@ -197,7 +197,7 @@ export class DashboardService {
   async getNetworkTraffic(): Promise<ApiResult<NetworkTraffic>> {
     try {
       const response = await apiClient.get('/dashboard/network');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get network traffic error:', error);
       return {
@@ -211,7 +211,7 @@ export class DashboardService {
   async getResponseTimes(): Promise<ApiResult<ResponseTimes>> {
     try {
       const response = await apiClient.get('/dashboard/response-times');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get response times error:', error);
       return {
@@ -225,7 +225,7 @@ export class DashboardService {
   async getCacheMetrics(): Promise<ApiResult<CacheMetrics>> {
     try {
       const response = await apiClient.get('/dashboard/cache');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get cache metrics error:', error);
       return {
@@ -240,7 +240,7 @@ export class DashboardService {
   async getDashboardWidgets(): Promise<ApiResult<any[]>> {
     try {
       const response = await apiClient.get('/dashboard/widgets');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get dashboard widgets error:', error);
       return {
@@ -254,7 +254,7 @@ export class DashboardService {
   async updateDashboardLayout(widgets: any[]): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.put('/dashboard/widgets/layout', { widgets });
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Update dashboard layout error:', error);
       return {

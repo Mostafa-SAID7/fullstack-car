@@ -9,35 +9,35 @@
 
     <nav class="flex items-center h-full hidden lg:flex gap-1 lg:gap-4 xl:gap-8 flex-1 justify-center max-w-2xl px-4">
         <div routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground transition-all duration-300 hover:bg-secondary/50 rounded-lg my-1 group active:text-primary [&.active]:text-primary [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
+            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground transition-all duration-300 hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
             matTooltip="Home">
-            <i class="fa-solid fa-house text-2xl group-active:scale-95 transition-transform"></i>
+            <i class="fa-solid fa-house text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
         </div>
         <div routerLink="/community" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group active:text-primary [&.active]:text-primary [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
+            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
             matTooltip="Friends">
-            <i class="fa-solid fa-user-group text-2xl group-active:scale-95 transition-transform"></i>
+            <i class="fa-solid fa-user-group text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
         </div>
         <div routerLink="/media" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group active:text-primary [&.active]:text-primary [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
+            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
             matTooltip="Video">
-            <div class="relative group-active:scale-95 transition-transform">
-                <i class="fa-solid fa-tv text-2xl group-hover:scale-110 transition-transform"></i>
+            <div class="relative group-active:scale-95 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-tv text-2xl transition-transform"></i>
                 <span
                     class="absolute -top-1.5 -right-2 bg-primary text-[10px] font-black text-white px-1.5 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[18px] h-[18px] flex items-center justify-center animate-badge-pulse animate-badge-bounce z-10 after:absolute after:inset-0 after:rounded-full after:bg-primary after:opacity-40 after:animate-ping">9+</span>
             </div>
         </div>
         <div routerLink="/marketplace" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-secondary rounded-lg my-1 transition-all duration-200 group active:text-primary [&.active]:text-primary [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
+            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
             matTooltip="Marketplace">
-            <i class="fa-solid fa-store text-2xl group-active:scale-95 transition-transform"></i>
+            <i class="fa-solid fa-store text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
         </div>
     </nav>
 
     <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         <!-- AI Chat Toggle -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 active:scale-95 touch-manipulation group"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
             [matMenuTriggerFor]="aiMenu" matTooltip="AI Assistant">
             <i class="fa-solid fa-robot text-lg group-hover:scale-110 transition-transform"></i>
         </button>
@@ -124,9 +124,9 @@
 
         <!-- Search Toggle -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 active:scale-95 transition-all"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
             (click)="toggleSearch()" matTooltip="Search">
-            <i class="fa-solid fa-search text-lg"></i>
+            <i class="fa-solid fa-search text-lg group-hover:scale-110 transition-transform"></i>
         </button>
 
         <!-- Search Overlay -->
@@ -149,9 +149,9 @@
 
         <!-- Language Switcher -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 active:scale-95 touch-manipulation"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
             [matMenuTriggerFor]="langMenu" matTooltip="Language">
-            <i class="fa-solid fa-globe text-xl"></i>
+            <i class="fa-solid fa-globe text-xl group-hover:scale-110 transition-transform"></i>
         </button>
         <mat-menu #langMenu="matMenu" class="custom-mat-menu">
             <button mat-menu-item (click)="switchLanguage('en-US')" [class.bg-secondary]="currentLang === 'en-US'">
@@ -164,9 +164,9 @@
 
         <!-- Theme Toggle -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 active:scale-95 touch-manipulation group"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
             (click)="toggleTheme()" [matTooltip]="getThemeTooltip()">
-            <i class="fa-solid text-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]" [ngClass]="{
+            <i class="fa-solid text-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110" [ngClass]="{
                     'fa-sun text-primary scale-110 drop-shadow-[0_0_8px_hsl(var(--color-primary)/0.4)] rotate-0 animate-sun-glow': !themeService.isDark(),
                     'fa-moon text-primary scale-100 rotate-0 animate-moon-pulse': themeService.isDark()
                 }">
@@ -175,14 +175,14 @@
 
         <!-- Menu Button (Mobile Only) -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 active:scale-95 touch-manipulation lg:hidden"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation lg:hidden group"
             matTooltip="Menu" (click)="layoutService.toggleMobileMenu()">
-            <i class="fa-solid fa-bars text-xl"></i>
+            <i class="fa-solid fa-bars text-xl group-hover:scale-110 transition-transform"></i>
         </button>
 
         <!-- Messenger Dropdown -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 relative active:scale-95 touch-manipulation group"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 relative touch-manipulation group"
             [matMenuTriggerFor]="messengerMenu" matTooltip="Messenger">
             <i class="fa-brands fa-facebook-messenger text-xl group-hover:scale-110 transition-transform"></i>
             <span
@@ -225,9 +225,9 @@
 
         <!-- Notifications -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer active:scale-90 border border-transparent hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 relative active:scale-95 touch-manipulation group"
+            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 relative touch-manipulation group"
             [matMenuTriggerFor]="notificationMenu" matTooltip="Notifications">
-            <i class="fa-solid fa-bell text-xl group-hover:rotate-12 transition-transform"
+            <i class="fa-solid fa-bell text-xl group-hover:rotate-12 group-hover:scale-110 transition-transform"
                 [class.text-primary]="(unreadCount$ | async)! > 0"></i>
             <span *ngIf="(unreadCount$ | async)! > 0"
                 class="absolute -top-1 -right-1 bg-primary text-[10px] font-black text-white px-1.5 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[18px] h-[18px] flex items-center justify-center animate-badge-pulse animate-badge-bounce z-10 after:absolute after:inset-0 after:rounded-full after:bg-primary after:opacity-40 after:animate-ping">
@@ -284,10 +284,10 @@
 
         <!-- Account Dropdown -->
         <button [matMenuTriggerFor]="accountMenu"
-            class="w-10 h-10 rounded-xl bg-secondary/80 backdrop-blur-3xl bg-background/60 border border-white/5 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all active:scale-90 ml-1"
+            class="w-10 h-10 rounded-xl bg-secondary/80 backdrop-blur-3xl bg-background/60 border border-white/5 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-90 ml-1 group"
             matTooltip="Account">
             <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
-            <div class="w-full h-full flex items-center justify-center text-primary font-black italic text-sm">
+            <div class="w-full h-full flex items-center justify-center text-primary font-black italic text-sm group-hover:scale-110 transition-transform">
                 {{ (currentUser$ | async)?.firstName?.[0] || 'U' }}{{ (currentUser$ | async)?.lastName?.[0] || 'P' }}
             </div>
         </button>

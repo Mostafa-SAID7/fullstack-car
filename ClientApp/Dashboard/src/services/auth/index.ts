@@ -73,16 +73,23 @@ export class AuthService {
   }
 
   private _saveAuth(user: UserInfo): void {
+    console.log('[AuthService] _saveAuth called with user:', user.name);
     this.currentUser = user;
     localStorage.setItem('auth_user', JSON.stringify(user));
+    console.log('[AuthService] User saved to localStorage and currentUser updated');
     this.notifyListeners();
+    console.log('[AuthService] Listeners notified');
   }
 
   private _clearAuth(): void {
+    console.log('[AuthService] _clearAuth called');
     this.currentUser = null;
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('refreshToken');
+    apiClient.clearAuthToken();
     this.notifyListeners();
+    console.log('[AuthService] Auth state cleared completely');
   }
 
   private notifyListeners(): void {
@@ -96,23 +103,28 @@ export class AuthService {
     const response = await this.coreService.login(credentials);
     console.log('[AuthService] Login response raw:', response);
 
-    if (response.succeeded && response.data) {
-      // The backend returns Result<AuthResponse>, so the actual auth data is in response.data
-      const authData = response.data;
+    // HttpClient wraps backend response: { succeeded: true, data: backendResponse }
+    // Backend returns: { succeeded: true, data: AuthResponse, errors: [] }
+    if (response.succeeded && response.data && response.data.succeeded) {
+      const authData = response.data.data; // The actual AuthResponse object
       
-      // 1. Handle Token
+      let token = null;
+      let userInfo = null;
+
+      // 1. Handle Token (lowercase property name from backend)
       if (authData.token) {
-        console.log('[AuthService] Saving token:', authData.token);
-        localStorage.setItem('auth_token', authData.token);
-        apiClient.setAuthToken(authData.token);
+        token = authData.token;
+        console.log('[AuthService] Token received:', token.substring(0, 50) + '...');
+        localStorage.setItem('auth_token', token);
+        apiClient.setAuthToken(token);
       }
 
-      // 2. Handle User
+      // 2. Handle User (lowercase property name from backend)
       if (authData.user) {
-        console.log('[AuthService] Saving user from response:', authData.user);
+        console.log('[AuthService] User data received:', authData.user);
         
-        // Map backend UserDto to frontend UserInfo
-        const userInfo: UserInfo = {
+        // Map backend UserDto to frontend UserInfo (handle lowercase property names)
+        userInfo = {
           id: authData.user.id,
           firstName: authData.user.firstName,
           lastName: authData.user.lastName,
@@ -124,11 +136,8 @@ export class AuthService {
           createdAt: authData.user.createdAt
         };
         
-        this._saveAuth(userInfo);
-        
-        // Update response structure for consistency
-        response.data.user = userInfo;
-      } else if (authData.token) {
+        console.log('[AuthService] Mapped user info:', userInfo);
+      } else if (token) {
         // Fallback: If we have a token but no user, try to fetch the profile
         console.warn('[AuthService] Token received but user missing. Attempting to fetch profile...');
         try {
@@ -137,7 +146,7 @@ export class AuthService {
             console.log('[AuthService] Profile fetched successfully:', profileResult.data);
 
             // Map ProfileResponse to UserInfo
-            const profileUser: UserInfo = {
+            userInfo = {
               id: profileResult.data.id,
               firstName: profileResult.data.firstName,
               lastName: profileResult.data.lastName,
@@ -148,11 +157,6 @@ export class AuthService {
               isEmailConfirmed: profileResult.data.isEmailConfirmed || true,
               createdAt: profileResult.data.createdAt || new Date().toISOString()
             };
-
-            this._saveAuth(profileUser);
-            // Patch the response to include the user so the UI has it immediately
-            response.data.user = profileUser;
-
           } else {
             console.error('[AuthService] Failed to fetch profile after login.');
           }
@@ -160,10 +164,73 @@ export class AuthService {
           console.error('[AuthService] Error fetching profile fallback:', err);
         }
       }
+
+      // 3. Only save auth state if we have both token and user
+      if (token && userInfo) {
+        console.log('[AuthService] Saving complete auth state:', { 
+          hasToken: !!token, 
+          hasUser: !!userInfo,
+          userName: userInfo.name 
+        });
+        
+        // Save auth state
+        this._saveAuth(userInfo);
+        
+        // Small delay to ensure localStorage is written
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Verify the state was saved correctly
+        const isAuthAfterSave = this.isAuthenticated();
+        const currentUserAfterSave = this.getCurrentUser();
+        
+        console.log('[AuthService] Authentication state after save:', {
+          isAuthenticated: isAuthAfterSave,
+          hasCurrentUser: !!currentUserAfterSave,
+          currentUserName: currentUserAfterSave?.name
+        });
+        
+        if (!isAuthAfterSave || !currentUserAfterSave) {
+          console.error('[AuthService] Authentication state verification failed!');
+          console.error('[AuthService] Debug info:', {
+            currentUser: this.currentUser,
+            tokenInStorage: !!localStorage.getItem('auth_token'),
+            userInStorage: !!localStorage.getItem('auth_user')
+          });
+          
+          // Clear potentially corrupted state
+          this._clearAuth();
+          return {
+            succeeded: false,
+            message: 'Authentication state error. Please try again.',
+            errors: ['Failed to establish authentication state']
+          };
+        }
+
+        // Return success response in expected format
+        return {
+          succeeded: true,
+          message: authData.message || 'Login successful',
+          data: {
+            token: token,
+            user: userInfo
+          }
+        };
+      } else {
+        console.error('[AuthService] Incomplete authentication data:', { hasToken: !!token, hasUser: !!userInfo });
+        return {
+          succeeded: false,
+          message: 'Incomplete authentication data received.',
+          errors: ['Missing token or user data']
+        };
+      }
     } else {
       console.error('[AuthService] Login failed:', response);
+      return {
+        succeeded: false,
+        message: response.message || response.data?.message || 'Login failed',
+        errors: response.errors || response.data?.errors || ['Login failed']
+      };
     }
-    return response;
   }
 
   async register(userData: any): Promise<any> {
@@ -237,7 +304,18 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.currentUser && !!localStorage.getItem('auth_token');
+    const hasUser = !!this.currentUser;
+    const hasToken = !!localStorage.getItem('auth_token');
+    const result = hasUser && hasToken;
+    
+    console.log('[AuthService] isAuthenticated check:', {
+      hasUser,
+      hasToken,
+      result,
+      currentUser: this.currentUser?.name
+    });
+    
+    return result;
   }
 
   onAuthStateChange(listener: (user: UserInfo | null) => void): () => void {

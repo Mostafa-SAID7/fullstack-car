@@ -29,8 +29,40 @@ export const LoginForm: React.FC = () => {
             console.log('[LoginForm] Login result:', result);
             
             if (result.succeeded) {
-                console.log('[LoginForm] Login successful, navigating to dashboard');
-                navigate('/dashboard');
+                console.log('[LoginForm] Login successful, checking auth state...');
+                
+                // Check authentication state immediately
+                const isAuth = authService.isAuthenticated();
+                const currentUser = authService.getCurrentUser();
+                
+                console.log('[LoginForm] Auth state after login:', { 
+                    isAuth, 
+                    currentUser: currentUser?.name,
+                    hasToken: !!localStorage.getItem('auth_token'),
+                    hasUser: !!localStorage.getItem('auth_user')
+                });
+                
+                if (isAuth && currentUser) {
+                    console.log('[LoginForm] Authentication verified, navigating...');
+                    
+                    // Check for redirect URL
+                    const redirectUrl = localStorage.getItem('redirectUrl');
+                    if (redirectUrl) {
+                        localStorage.removeItem('redirectUrl');
+                        console.log('[LoginForm] Redirecting to stored URL:', redirectUrl);
+                        navigate(redirectUrl);
+                    } else {
+                        navigate('/dashboard');
+                    }
+                } else {
+                    console.error('[LoginForm] Authentication state verification failed:', {
+                        isAuth,
+                        hasUser: !!currentUser,
+                        tokenExists: !!localStorage.getItem('auth_token'),
+                        userExists: !!localStorage.getItem('auth_user')
+                    });
+                    setError('Authentication state error. Please try again.');
+                }
             } else {
                 const errorMessage = result.errors?.[0] || result.message || t('login_failed', 'Failed to sign in. Please check your credentials.');
                 console.error('[LoginForm] Login failed with error:', errorMessage);

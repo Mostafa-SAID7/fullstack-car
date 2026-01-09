@@ -1,13 +1,13 @@
 // API Types
 
-export interface Result<T = any> {
+export interface Result<T = unknown> {
   succeeded: boolean;
   data?: T;
   errors: string[];
   message?: string;
 }
 
-export interface PaginatedResult<T = any> {
+export interface PaginatedResult<T = unknown> {
   items: T[];
   pageNumber: number;
   pageSize: number;
@@ -18,7 +18,7 @@ export interface PaginatedResult<T = any> {
 }
 
 // Result utility class
-export class Result<T = any> {
+export class ApiResultClass<T = unknown> {
   public succeeded: boolean;
   public data?: T;
   public errors: string[];
@@ -31,13 +31,13 @@ export class Result<T = any> {
     this.message = message;
   }
 
-  static success<T>(data: T, message?: string): Result<T> {
-    return new Result<T>(true, data, [], message);
+  static success<T>(data: T, message?: string): ApiResultClass<T> {
+    return new ApiResultClass<T>(true, data, [], message);
   }
 
-  static failure<T>(errors: string | string[], message?: string): Result<T> {
+  static failure<T>(errors: string | string[], message?: string): ApiResultClass<T> {
     const errorArray = Array.isArray(errors) ? errors : [errors];
-    return new Result<T>(false, undefined, errorArray, message);
+    return new ApiResultClass<T>(false, undefined, errorArray, message);
   }
 }
 
@@ -46,25 +46,25 @@ export interface RequestConfig {
   retries?: number;
   retryDelay?: number;
   headers?: Record<string, string>;
-  params?: Record<string, any>;
-  data?: any;
+  params?: Record<string, unknown>;
+  data?: unknown;
   signal?: AbortSignal;
   redirectOnError?: boolean; // Whether to redirect to error pages on HTTP errors (default: true)
 }
 
 export interface RequestInterceptor {
   onRequest?: (config: RequestInit) => RequestInit | Promise<RequestInit>;
-  onResponse?: (response: any) => any | Promise<any>;
-  onError?: (error: ApiError) => any | Promise<any>;
+  onResponse?: (response: Response) => Response | Promise<Response>;
+  onError?: (error: ApiError) => ApiError | Promise<ApiError>;
 }
 
 export class ApiError extends Error {
   public status: number;
   public statusCode: number; // Alias for status
   public code?: string;
-  public details?: any;
+  public details?: unknown;
 
-  constructor(message: string, status: number = 500, code?: string, details?: any) {
+  constructor(message: string, status: number = 500, code?: string, details?: unknown) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
@@ -73,11 +73,11 @@ export class ApiError extends Error {
     this.details = details;
   }
 
-  static fromResponse(response: any): ApiError {
-    const message = response.data?.message || response.statusText || 'An error occurred';
+  static fromResponse(response: Response): ApiError {
+    const message = (response as any).data?.message || response.statusText || 'An error occurred';
     const status = response.status || 500;
-    const code = response.data?.code;
-    const details = response.data?.errors || response.data?.details;
+    const code = (response as any).data?.code;
+    const details = (response as any).data?.errors || (response as any).data?.details;
 
     return new ApiError(message, status, code, details);
   }
@@ -90,7 +90,7 @@ export class ApiError extends Error {
     return new ApiError(message, 0, 'TIMEOUT_ERROR');
   }
 
-  static validationError(message = 'Validation failed', details?: any): ApiError {
+  static validationError(message = 'Validation failed', details?: unknown): ApiError {
     return new ApiError(message, 422, 'VALIDATION_ERROR', details);
   }
 
@@ -143,22 +143,15 @@ export class ApiError extends Error {
   }
 }
 
-export interface ApiResult<T = any> {
-  success: boolean;
+export interface ApiResult<T = unknown> {
+  succeeded: boolean;
   data?: T;
   message?: string;
   errors?: string[];
-  pagination?: {
-    page: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
+  statusCode?: number;
 }
 
-export interface PaginatedApiResult<T = any> extends ApiResult<T[]> {
+export interface PaginatedApiResult<T = unknown> extends ApiResult<T[]> {
   pagination: {
     page: number;
     pageSize: number;

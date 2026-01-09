@@ -56,10 +56,12 @@ try
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity (v1)");
-        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Community (v2)");
-        c.SwaggerEndpoint("/swagger/v3/swagger.json", "Admin (v3)");
-        c.SwaggerEndpoint("/swagger/v4/swagger.json", "Shared (v4)");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity API (v1)");
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Community API (v2)");
+        c.SwaggerEndpoint("/swagger/v3/swagger.json", "Admin API (v3)");
+        c.SwaggerEndpoint("/swagger/v4/swagger.json", "Shared API (v4)");
+        c.SwaggerEndpoint("/swagger/v6/swagger.json", "Marketplace API (v6)");
+        c.SwaggerEndpoint("/swagger/v7/swagger.json", "Media API (v7)");
         c.RoutePrefix = string.Empty;
         c.InjectStylesheet("/swagger-ui/custom.css");
     });

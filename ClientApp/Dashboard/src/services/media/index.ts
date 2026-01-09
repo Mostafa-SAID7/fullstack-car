@@ -1,18 +1,7 @@
-// Media Services
+// Media Services - Main Export
 export { VideoService, videoService } from './VideoService';
 export { PodcastService, podcastService } from './PodcastService';
 export { MediaService, mediaService } from './MediaService';
 
-// Types
-export type {
-  Video,
-  Podcast,
-  MediaFilters,
-  PaginatedResult,
-  VideoUploadRequest,
-  PodcastUploadRequest,
-  MediaAnalytics,
-  MediaDashboardStats,
-  MediaType,
-  MediaItem
-} from './types';
+// Re-export types for convenience
+export * from './types';

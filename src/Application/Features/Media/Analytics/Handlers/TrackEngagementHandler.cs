@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Media.Analytics.Commands;
 using Application.Features.Media.Analytics.DTOs;
+using Application.Features.Media.Analytics.Services;
 using Domain.Entities.Media;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace Application.Features.Media.Analytics.Handlers;
 public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Result<EngagementDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMediaAnalyticsService _analyticsService;
 
-    public TrackEngagementHandler(IApplicationDbContext context)
+    public TrackEngagementHandler(IApplicationDbContext context, IMediaAnalyticsService analyticsService)
     {
         _context = context;
+        _analyticsService = analyticsService;
     }
 
     public async Task<Result<EngagementDto>> Handle(TrackEngagementCommand request, CancellationToken cancellationToken)
@@ -44,8 +47,13 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
                 _ => throw new ArgumentException($"Unsupported engagement type: {request.EngagementType}")
             };
 
-            // Update analytics
-            await UpdateEngagementAnalytics(request.MediaId, request.EngagementType, cancellationToken);
+            // Update analytics using the analytics service for accuracy
+            await _analyticsService.UpdateEngagementMetricsAsync(
+                request.MediaId, 
+                request.MediaType, 
+                request.EngagementType.ToString(), 
+                1, 
+                cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -69,11 +77,7 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
             {
                 // Unlike
                 _context.VideoLikes.Remove(existingLike);
-                var video = await _context.Videos.FindAsync(request.MediaId);
-                if (video != null && video.LikeCount > 0)
-                {
-                    video.LikeCount--;
-                }
+                // The analytics service will handle updating counters
             }
             else
             {
@@ -86,11 +90,8 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
                 };
                 _context.VideoLikes.Add(videoLike);
 
-                var video = await _context.Videos.FindAsync(request.MediaId);
-                if (video != null)
-                {
-                    video.LikeCount++;
-                }
+                // The analytics service will handle updating both the media entity and analytics record
+                // Don't update the video.LikeCount here to avoid double counting
 
                 // Remove dislike if exists
                 var existingDislike = await _context.VideoLikes
@@ -98,10 +99,9 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
                 if (existingDislike != null)
                 {
                     _context.VideoLikes.Remove(existingDislike);
-                    if (video != null && video.DislikeCount > 0)
-                    {
-                        video.DislikeCount--;
-                    }
+                    // The analytics service will handle updating counters
+                    // Update analytics for dislike removal
+                    await _analyticsService.UpdateEngagementMetricsAsync(request.MediaId, request.MediaType, "dislike", -1, cancellationToken);
                 }
             }
         }
@@ -114,11 +114,7 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
             if (existingLike != null)
             {
                 _context.PodcastLikes.Remove(existingLike);
-                var podcast = await _context.Podcasts.FindAsync(request.MediaId);
-                if (podcast != null && podcast.LikeCount > 0)
-                {
-                    podcast.LikeCount--;
-                }
+                // The analytics service will handle updating counters
             }
             else
             {
@@ -130,11 +126,7 @@ public class TrackEngagementHandler : IRequestHandler<TrackEngagementCommand, Re
                 };
                 _context.PodcastLikes.Add(podcastLike);
 
-                var podcast = await _context.Podcasts.FindAsync(request.MediaId);
-                if (podcast != null)
-                {
-                    podcast.LikeCount++;
-                }
+                // The analytics service will handle updating counters
             }
         }
 

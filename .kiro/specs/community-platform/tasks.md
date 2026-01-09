@@ -15,7 +15,7 @@ This implementation plan spans **12 sprints over 24 weeks**, building incrementa
 ### Backend Tasks
 
 #### Database Schema Setup
-- [ ] **Task 1.1**: Extend Users table with community profile fields
+- [-] **Task 1.1**: Extend Users table with community profile fields
   - Add Bio, ProfileImageUrl, CoverImageUrl, Location, Website columns
   - Add DateOfBirth, IsPrivateProfile, LastActiveAt columns
   - Add NotificationPreferences, PrivacySettings JSON columns

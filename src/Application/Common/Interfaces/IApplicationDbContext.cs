@@ -94,6 +94,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Media.Video> Videos { get; }
         DbSet<Domain.Entities.Media.Podcast> Podcasts { get; }
         DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; }
+        DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; }
         DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; }
         DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; }
         DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; }

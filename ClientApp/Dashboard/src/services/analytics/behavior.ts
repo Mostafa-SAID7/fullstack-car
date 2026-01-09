@@ -22,7 +22,7 @@ export class BehaviorAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/behavior?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/behavior`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('User behavior metrics error:', error);
       return {
@@ -40,7 +40,7 @@ export class BehaviorAnalyticsService {
       params.append('type', type);
 
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/behavior/heatmap?${params}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Heatmap data error:', error);
       return {
@@ -68,7 +68,7 @@ export class BehaviorAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/behavior/recordings?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/behavior/recordings`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Session recordings error:', error);
       return {

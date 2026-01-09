@@ -44,7 +44,7 @@ public class MediaAnalyticsConfiguration : IEntityTypeConfiguration<MediaAnalyti
             .HasDefaultValue(0);
 
         builder.Property(x => x.AverageWatchTime)
-            .HasColumnType("decimal(5,2)")
+            .HasColumnType("decimal(8,2)")
             .HasDefaultValue(0);
 
         builder.Property(x => x.CompletionRate)

@@ -29,56 +29,56 @@ export class NotificationAPI {
 
   async getNotificationStats(): Promise<{ succeeded: boolean; data?: NotificationStats; errors?: string[] }> {
     const response = await apiClient.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/stats`);
-    return response.data || { succeeded: false, errors: ['No data received'] };
+    return (response as any).data || { succeeded: false, errors: ['No data received'] };
   }
 
   async getNotification(notificationId: string): Promise<any> {
     const response = await apiClient.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/${notificationId}`);
-    return response;
+    return response as any;
   }
 
   async markAsRead(notificationId: string): Promise<any> {
     const response = await apiClient.patch(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/${notificationId}/read`);
-    return response;
+    return response as any;
   }
 
   async markAllAsRead(): Promise<any> {
     const response = await apiClient.patch(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/mark-all-read`);
-    return response;
+    return response as any;
   }
 
   async deleteNotification(notificationId: string): Promise<any> {
     const response = await apiClient.delete(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/${notificationId}`);
-    return response;
+    return response as any;
   }
 
   async createNotification(notification: CreateNotificationRequest): Promise<any> {
     const response = await apiClient.post(API_ENDPOINTS.NOTIFICATIONS.BASE, notification);
-    return response;
+    return response as any;
   }
 
   async getNotificationsByType(type: string, limit: number = 10): Promise<any> {
     const response = await apiClient.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/by-type/${type}?limit=${limit}`);
-    return response;
+    return response as any;
   }
 
   async getNotificationsByCategory(category: string, limit: number = 10): Promise<any> {
     const response = await apiClient.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/by-category/${category}?limit=${limit}`);
-    return response;
+    return response as any;
   }
 
   async sendMarketplaceNotification(notification: any): Promise<any> {
     const response = await apiClient.post(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/marketplace`, notification);
-    return response;
+    return response as any;
   }
 
   async sendSystemBroadcast(broadcast: { title: string; message: string; priority?: string }): Promise<any> {
     const response = await apiClient.post(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/broadcast`, broadcast);
-    return response;
+    return response as any;
   }
 
   async getUnreadCount(): Promise<any> {
     const response = await apiClient.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}/unread-count`);
-    return response;
+    return response as any;
   }
 }

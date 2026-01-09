@@ -22,27 +22,27 @@ export class PermissionsService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async getPermissionByName(name: string): Promise<Permission> {
     const response = await apiClient.get(`${this.baseUrl}/${name}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async createPermission(permission: Omit<Permission, 'createdAt' | 'updatedAt'>) {
     const response = await apiClient.post(this.baseUrl, permission);
-    return response.data;
+    return (response as any).data;
   }
 
   async updatePermission(name: string, permission: Partial<Permission>) {
     const response = await apiClient.put(`${this.baseUrl}/${name}`, permission);
-    return response.data;
+    return (response as any).data;
   }
 
   async deletePermission(name: string) {
     const response = await apiClient.delete(`${this.baseUrl}/${name}`);
-    return response.data;
+    return (response as any).data;
   }
 }
 

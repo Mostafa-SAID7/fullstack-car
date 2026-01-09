@@ -60,7 +60,7 @@ export class AdminService {
   async getDashboardStats(): Promise<ApiResult<DashboardStats>> {
     try {
       const response = await apiClient.get('/admin/dashboard/stats');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get dashboard stats error:', error);
       return {
@@ -74,7 +74,7 @@ export class AdminService {
   async getQuickStats(): Promise<ApiResult<QuickStats>> {
     try {
       const response = await apiClient.get('/admin/dashboard/quick-stats');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get quick stats error:', error);
       return {
@@ -88,7 +88,7 @@ export class AdminService {
   async getSystemInfo(): Promise<ApiResult<SystemInfo>> {
     try {
       const response = await apiClient.get('/admin/system/info');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system info error:', error);
       return {
@@ -102,7 +102,7 @@ export class AdminService {
   async getSystemMetrics(): Promise<ApiResult<SystemMetrics>> {
     try {
       const response = await apiClient.get('/admin/system/metrics');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system metrics error:', error);
       return {
@@ -116,7 +116,7 @@ export class AdminService {
   async getDatabaseMetrics(): Promise<ApiResult<DatabaseMetrics>> {
     try {
       const response = await apiClient.get('/admin/database/metrics');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get database metrics error:', error);
       return {
@@ -131,7 +131,7 @@ export class AdminService {
     try {
       const params = limit ? `?limit=${limit}` : '';
       const response = await apiClient.get(`/admin/activity/logs${params}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get activity logs error:', error);
       return {
@@ -145,7 +145,7 @@ export class AdminService {
   async getSystemAlerts(): Promise<ApiResult<SystemAlert[]>> {
     try {
       const response = await apiClient.get('/admin/system/alerts');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system alerts error:', error);
       return {
@@ -159,7 +159,7 @@ export class AdminService {
   async getPerformanceMetrics(): Promise<ApiResult<SystemPerformanceMetrics>> {
     try {
       const response = await apiClient.get('/admin/performance/metrics');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get performance metrics error:', error);
       return {
@@ -181,7 +181,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/advanced?${queryString}` : '/admin/analytics/advanced';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get advanced analytics error:', error);
       return {
@@ -202,7 +202,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/users?${queryString}` : '/admin/analytics/users';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get user analytics error:', error);
       return {
@@ -223,7 +223,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/content?${queryString}` : '/admin/analytics/content';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get content analytics error:', error);
       return {
@@ -244,7 +244,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/system?${queryString}` : '/admin/analytics/system';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get system analytics error:', error);
       return {
@@ -265,7 +265,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/security?${queryString}` : '/admin/analytics/security';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get security analytics error:', error);
       return {
@@ -286,7 +286,7 @@ export class AdminService {
       const url = queryString ? `/admin/analytics/performance?${queryString}` : '/admin/analytics/performance';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get performance analytics error:', error);
       return {
@@ -317,7 +317,7 @@ export class AdminService {
       const url = queryString ? `/admin/users?${queryString}` : '/admin/users';
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get users error:', error);
       return {
@@ -331,7 +331,7 @@ export class AdminService {
   async getUserById(userId: string): Promise<ApiResult<AdminUser>> {
     try {
       const response = await apiClient.get(`/admin/users/${userId}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get user by ID error:', error);
       return {
@@ -345,7 +345,7 @@ export class AdminService {
   async updateUser(userId: string, userData: Partial<AdminUser>): Promise<ApiResult<AdminUser>> {
     try {
       const response = await apiClient.put(`/admin/users/${userId}`, userData);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Update user error:', error);
       return {
@@ -359,7 +359,7 @@ export class AdminService {
   async deleteUser(userId: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.delete(`/admin/users/${userId}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Delete user error:', error);
       return {
@@ -373,7 +373,7 @@ export class AdminService {
   async activateUser(userId: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post(`/admin/users/${userId}/activate`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Activate user error:', error);
       return {
@@ -387,7 +387,7 @@ export class AdminService {
   async deactivateUser(userId: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post(`/admin/users/${userId}/deactivate`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Deactivate user error:', error);
       return {
@@ -402,7 +402,7 @@ export class AdminService {
   async restartService(serviceName: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post(`/admin/system/services/${serviceName}/restart`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Restart service error:', error);
       return {
@@ -416,7 +416,7 @@ export class AdminService {
   async stopService(serviceName: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post(`/admin/system/services/${serviceName}/stop`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Stop service error:', error);
       return {
@@ -430,7 +430,7 @@ export class AdminService {
   async startService(serviceName: string): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post(`/admin/system/services/${serviceName}/start`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Start service error:', error);
       return {
@@ -444,7 +444,7 @@ export class AdminService {
   async clearCache(): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post('/admin/system/cache/clear');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Clear cache error:', error);
       return {
@@ -458,7 +458,7 @@ export class AdminService {
   async backupDatabase(): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post('/admin/database/backup');
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Backup database error:', error);
       return {
@@ -472,7 +472,7 @@ export class AdminService {
   async exportData(type: string, filters?: any): Promise<ApiResult<any>> {
     try {
       const response = await apiClient.post('/admin/export', { type, filters });
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Export data error:', error);
       return {

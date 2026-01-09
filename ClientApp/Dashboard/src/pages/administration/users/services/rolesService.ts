@@ -21,27 +21,27 @@ export class RolesService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async getRoleById(id: string): Promise<Role> {
     const response = await apiClient.get(`${this.baseUrl}/${id}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async createRole(role: Omit<Role, 'id' | 'createdAt' | 'updatedAt'>) {
     const response = await apiClient.post(this.baseUrl, role);
-    return response.data;
+    return (response as any).data;
   }
 
   async updateRole(id: string, role: Partial<Role>) {
     const response = await apiClient.put(`${this.baseUrl}/${id}`, role);
-    return response.data;
+    return (response as any).data;
   }
 
   async deleteRole(id: string) {
     const response = await apiClient.delete(`${this.baseUrl}/${id}`);
-    return response.data;
+    return (response as any).data;
   }
 }
 

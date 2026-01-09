@@ -12,12 +12,12 @@ export class AuthAccountService {
         'Content-Type': 'multipart/form-data'
       }
     });
-    return response;
+    return response as any;
   }
 
   async deleteAvatar() {
     const response = await apiClient.delete('/auth/avatar');
-    return response;
+    return response as any;
   }
 
   async getPrivacySettings() {
@@ -33,17 +33,17 @@ export class AuthAccountService {
   async updatePrivacySettings(settings: any) {
     // This would need to be implemented in the auth service
     const response = await apiClient.put('/auth/privacy-settings', settings);
-    return response;
+    return response as any;
   }
 
   async deactivateAccount(reason?: string) {
     const response = await apiClient.post('/auth/deactivate', { reason });
-    return response;
+    return response as any;
   }
 
   async deleteAccount(password?: string) {
     const response = await apiClient.post('/auth/delete', { password });
-    return response;
+    return response as any;
   }
 }
 

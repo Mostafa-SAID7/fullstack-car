@@ -200,7 +200,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to fetch users');
     }
     
-    return response.data;
+    return (response as any).data;
     */
   }
 
@@ -242,7 +242,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to fetch user details');
     }
     
-    return response.data;
+    return (response as any).data;
     */
   }
 
@@ -300,7 +300,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to search users');
     }
     
-    return response.data;
+    return (response as any).data;
     */
   }
 
@@ -315,7 +315,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to suspend user');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 
   async banUser(id: string, reason: string, isPermanent = true): Promise<UserAction> {
@@ -328,7 +328,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to ban user');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 
   async deleteUser(id: string, reason: string, deleteAllContent = false): Promise<UserAction> {
@@ -342,7 +342,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to delete user');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 
   async sendMessageToUser(id: string, subject: string, message: string, isUrgent = false): Promise<UserAction> {
@@ -356,7 +356,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to send message');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 
   async updateUserRoles(id: string, roleNames: string[]): Promise<UserAction> {
@@ -368,7 +368,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to update user roles');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 
   async impersonateUser(id: string, reason: string, durationMinutes = 60): Promise<UserAction> {
@@ -381,7 +381,7 @@ export class UsersService {
       throw new Error(response.errors?.join(', ') || 'Failed to impersonate user');
     }
     
-    return response.data;
+    return (response as any).data;
   }
 }
 

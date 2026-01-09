@@ -8151,7 +8151,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("AverageWatchTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(5,2)")
+                        .HasColumnType("decimal(8,2)")
                         .HasDefaultValue(0m);
 
                     b.Property<int>("CommentsCount")
@@ -8267,10 +8267,10 @@ namespace Infrastructure.Migrations
                             AverageWatchTime = 18.5m,
                             CommentsCount = 12,
                             CompletionRate = 74.2m,
-                            CreatedAt = new DateTime(2025, 12, 29, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(4502),
+                            CreatedAt = new DateTime(2025, 12, 30, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(3084),
                             DislikesCount = 3,
                             IsDeleted = false,
-                            LastUpdated = new DateTime(2026, 1, 8, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(3830),
+                            LastUpdated = new DateTime(2026, 1, 9, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(2314),
                             LikesCount = 89,
                             MediaId = new Guid("55555555-5555-5555-5555-555555555555"),
                             MediaType = 1,
@@ -8289,10 +8289,10 @@ namespace Infrastructure.Migrations
                             AverageWatchTime = 28.3m,
                             CommentsCount = 23,
                             CompletionRate = 80.9m,
-                            CreatedAt = new DateTime(2026, 1, 3, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(4558),
+                            CreatedAt = new DateTime(2026, 1, 4, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(3175),
                             DislikesCount = 8,
                             IsDeleted = false,
-                            LastUpdated = new DateTime(2026, 1, 8, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(4557),
+                            LastUpdated = new DateTime(2026, 1, 9, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(3173),
                             LikesCount = 156,
                             MediaId = new Guid("66666666-6666-6666-6666-666666666666"),
                             MediaType = 1,
@@ -8311,10 +8311,10 @@ namespace Infrastructure.Migrations
                             AverageWatchTime = 35.2m,
                             CommentsCount = 8,
                             CompletionRate = 78.2m,
-                            CreatedAt = new DateTime(2025, 12, 31, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(4592),
+                            CreatedAt = new DateTime(2026, 1, 1, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(3224),
                             DislikesCount = 2,
                             IsDeleted = false,
-                            LastUpdated = new DateTime(2026, 1, 8, 20, 8, 35, 415, DateTimeKind.Utc).AddTicks(4579),
+                            LastUpdated = new DateTime(2026, 1, 9, 3, 19, 39, 136, DateTimeKind.Utc).AddTicks(3197),
                             LikesCount = 67,
                             MediaId = new Guid("88888888-8888-8888-8888-888888888888"),
                             MediaType = 2,
@@ -8459,7 +8459,7 @@ namespace Infrastructure.Migrations
                             AllowDownload = true,
                             AudioUrl = "https://example.com/audio/ai-software-dev.mp3",
                             CoverImage = "https://example.com/images/ai-software-cover.jpg",
-                            CreatedAt = new DateTime(2025, 12, 29, 20, 8, 35, 414, DateTimeKind.Utc).AddTicks(2420),
+                            CreatedAt = new DateTime(2025, 12, 30, 3, 19, 39, 134, DateTimeKind.Utc).AddTicks(6586),
                             CreatorId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Exploring how artificial intelligence is transforming the way we write code",
                             DownloadCount = 23,
@@ -8470,7 +8470,7 @@ namespace Infrastructure.Migrations
                             IsPublic = true,
                             LikeCount = 67,
                             PlayCount = 850,
-                            PublishedAt = new DateTime(2025, 12, 31, 20, 8, 35, 413, DateTimeKind.Utc).AddTicks(7174),
+                            PublishedAt = new DateTime(2026, 1, 1, 3, 19, 39, 133, DateTimeKind.Utc).AddTicks(8062),
                             SeasonNumber = 2,
                             SeriesId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Status = 2,
@@ -8485,7 +8485,7 @@ namespace Infrastructure.Migrations
                             AllowDownload = true,
                             AudioUrl = "https://example.com/audio/scalable-teams.mp3",
                             CoverImage = "https://example.com/images/scalable-teams-cover.jpg",
-                            CreatedAt = new DateTime(2025, 12, 31, 20, 8, 35, 414, DateTimeKind.Utc).AddTicks(2490),
+                            CreatedAt = new DateTime(2026, 1, 1, 3, 19, 39, 134, DateTimeKind.Utc).AddTicks(6708),
                             CreatorId = new Guid("44444444-4444-4444-4444-444444444444"),
                             Description = "Strategies for building and managing high-performing development teams",
                             DownloadCount = 45,
@@ -8496,7 +8496,7 @@ namespace Infrastructure.Migrations
                             IsPublic = true,
                             LikeCount = 94,
                             PlayCount = 1200,
-                            PublishedAt = new DateTime(2026, 1, 2, 20, 8, 35, 414, DateTimeKind.Utc).AddTicks(2475),
+                            PublishedAt = new DateTime(2026, 1, 3, 3, 19, 39, 134, DateTimeKind.Utc).AddTicks(6695),
                             SeasonNumber = 1,
                             SeriesId = new Guid("33333333-3333-3333-3333-333333333333"),
                             Status = 2,
@@ -8781,7 +8781,7 @@ namespace Infrastructure.Migrations
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Category = "Technology",
                             CoverImage = "https://example.com/images/tech-talk-cover.jpg",
-                            CreatedAt = new DateTime(2025, 12, 9, 20, 8, 35, 410, DateTimeKind.Utc).AddTicks(4475),
+                            CreatedAt = new DateTime(2025, 12, 10, 3, 19, 39, 123, DateTimeKind.Utc).AddTicks(7445),
                             CreatorId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Weekly discussions about the latest in technology and software development",
                             IsActive = true,
@@ -8794,7 +8794,7 @@ namespace Infrastructure.Migrations
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             Category = "Business",
                             CoverImage = "https://example.com/images/business-insights-cover.jpg",
-                            CreatedAt = new DateTime(2025, 12, 14, 20, 8, 35, 410, DateTimeKind.Utc).AddTicks(6077),
+                            CreatedAt = new DateTime(2025, 12, 15, 3, 19, 39, 123, DateTimeKind.Utc).AddTicks(9594),
                             CreatorId = new Guid("44444444-4444-4444-4444-444444444444"),
                             Description = "Insights and strategies for modern business leaders",
                             IsActive = true,
@@ -8802,6 +8802,52 @@ namespace Infrastructure.Migrations
                             Language = "en",
                             Name = "Business Insights"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.Media.PodcastSubscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PodcastId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UnsubscribedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PodcastId");
+
+                    b.ToTable("PodcastSubscriptions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Media.Video", b =>
@@ -8917,7 +8963,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
                             AllowComments = true,
-                            CreatedAt = new DateTime(2025, 12, 27, 20, 8, 35, 412, DateTimeKind.Utc).AddTicks(4409),
+                            CreatedAt = new DateTime(2025, 12, 28, 3, 19, 39, 125, DateTimeKind.Utc).AddTicks(8272),
                             CreatorId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Learn the basics of ASP.NET Core 9 and its new features",
                             DislikeCount = 3,
@@ -8927,7 +8973,7 @@ namespace Infrastructure.Migrations
                             IsPublic = true,
                             LikeCount = 89,
                             PreviewUrl = "https://example.com/videos/aspnet-core-preview.mp4",
-                            PublishedAt = new DateTime(2025, 12, 29, 20, 8, 35, 412, DateTimeKind.Utc).AddTicks(1835),
+                            PublishedAt = new DateTime(2025, 12, 30, 3, 19, 39, 125, DateTimeKind.Utc).AddTicks(6537),
                             Quality = 1080,
                             Status = 2,
                             Tags = "ASP.NET,C#,Web Development,Tutorial",
@@ -8940,7 +8986,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
                             AllowComments = true,
-                            CreatedAt = new DateTime(2026, 1, 1, 20, 8, 35, 412, DateTimeKind.Utc).AddTicks(4564),
+                            CreatedAt = new DateTime(2026, 1, 2, 3, 19, 39, 125, DateTimeKind.Utc).AddTicks(8354),
                             CreatorId = new Guid("44444444-4444-4444-4444-444444444444"),
                             Description = "Modern React development patterns and best practices",
                             DislikeCount = 8,
@@ -8949,7 +8995,7 @@ namespace Infrastructure.Migrations
                             IsDeleted = false,
                             IsPublic = true,
                             LikeCount = 156,
-                            PublishedAt = new DateTime(2026, 1, 3, 20, 8, 35, 412, DateTimeKind.Utc).AddTicks(4555),
+                            PublishedAt = new DateTime(2026, 1, 4, 3, 19, 39, 125, DateTimeKind.Utc).AddTicks(8346),
                             Quality = 1080,
                             Status = 2,
                             Tags = "React,JavaScript,Frontend,Best Practices",
@@ -8962,7 +9008,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("77777777-7777-7777-7777-777777777777"),
                             AllowComments = true,
-                            CreatedAt = new DateTime(2026, 1, 6, 20, 8, 35, 412, DateTimeKind.Utc).AddTicks(4584),
+                            CreatedAt = new DateTime(2026, 1, 7, 3, 19, 39, 125, DateTimeKind.Utc).AddTicks(8375),
                             CreatorId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Understanding database design principles and normalization",
                             DislikeCount = 0,
@@ -13189,6 +13235,17 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Media.Podcast", "Podcast")
                         .WithMany("Plays")
+                        .HasForeignKey("PodcastId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Podcast");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Media.PodcastSubscription", b =>
+                {
+                    b.HasOne("Domain.Entities.Media.Podcast", "Podcast")
+                        .WithMany()
                         .HasForeignKey("PodcastId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();

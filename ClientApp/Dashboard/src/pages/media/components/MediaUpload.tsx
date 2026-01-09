@@ -199,12 +199,12 @@ export const MediaUpload = () => {
         message: 'Uploading media file...' 
       }));
 
-      const onProgress = (progress: number) => {
-        const stats = calculateUploadStats(progress, selectedFile.size);
+      const onProgress = (progress: { loaded: number; total: number; percentage: number }) => {
+        const stats = calculateUploadStats(progress.percentage, selectedFile.size);
         setUploadProgress(prev => ({
           ...prev,
-          progress: Math.max(prev.progress, progress),
-          message: `Uploading... ${progress}%`,
+          progress: Math.max(prev.progress, progress.percentage),
+          message: `Uploading... ${progress.percentage}%`,
           uploadSpeed: stats.uploadSpeed,
           timeRemaining: stats.timeRemaining,
           bytesUploaded: stats.bytesUploaded,

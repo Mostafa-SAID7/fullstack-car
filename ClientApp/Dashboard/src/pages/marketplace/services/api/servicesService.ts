@@ -35,10 +35,10 @@ class ServicesService {
 
       const response = await apiClient.get(`${this.baseUrl}/services?${queryParams.toString()}`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -53,10 +53,10 @@ class ServicesService {
     try {
       const response = await apiClient.get(`${this.baseUrl}/services/${id}`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -71,10 +71,10 @@ class ServicesService {
     try {
       const response = await apiClient.post(`${this.baseUrl}/services`, data);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -93,10 +93,10 @@ class ServicesService {
     try {
       const response = await apiClient.put(`${this.baseUrl}/services/${id}`, data);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -111,7 +111,7 @@ class ServicesService {
     try {
       const response = await apiClient.delete(`${this.baseUrl}/services/${id}`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
           data: true
@@ -141,10 +141,10 @@ class ServicesService {
 
       const response = await apiClient.get(`${this.baseUrl}/service-providers?${queryParams.toString()}`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -170,10 +170,10 @@ class ServicesService {
 
       const response = await apiClient.get(`${this.baseUrl}/bookings?${queryParams.toString()}`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       
@@ -190,10 +190,10 @@ class ServicesService {
       // This would be a custom endpoint for dashboard statistics
       const response = await apiClient.get(`${this.baseUrl}/statistics`);
       
-      if (response.data.succeeded) {
+      if ((response as any).data.succeeded) {
         return {
           succeeded: true,
-          data: response.data.data
+          data: (response as any).data.data
         };
       }
       

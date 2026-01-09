@@ -150,14 +150,24 @@ public class GetTrendingContentHandler : IRequestHandler<GetTrendingContentQuery
                     .Select(v => new
                     {
                         Video = v,
-                        RecentScore = v.ViewCount + (v.LikeCount * 3) + 
-                                     (int)(DateTime.UtcNow - v.CreatedAt).TotalHours // Bonus for recency
+                        ViewCount = v.ViewCount,
+                        LikeCount = v.LikeCount,
+                        CreatedAt = v.CreatedAt
                     })
-                    .OrderByDescending(x => x.RecentScore)
-                    .Take(request.VideoCount)
                     .ToListAsync(cancellationToken);
 
-                trendingVideos = recentVideos.Select(x => new VideoListDto
+                // Calculate recency score in memory since EF can't translate the DateTime calculation
+                var recentVideosWithScore = recentVideos
+                    .Select(x => new
+                    {
+                        x.Video,
+                        RecentScore = x.ViewCount + (x.LikeCount * 3) + 
+                                     (int)(DateTime.UtcNow - x.CreatedAt).TotalHours // Bonus for recency
+                    })
+                    .OrderByDescending(x => x.RecentScore)
+                    .Take(request.VideoCount);
+
+                trendingVideos = recentVideosWithScore.Select(x => new VideoListDto
                 {
                     Id = x.Video.Id,
                     Title = x.Video.Title,
@@ -276,14 +286,25 @@ public class GetTrendingContentHandler : IRequestHandler<GetTrendingContentQuery
                     .Select(p => new
                     {
                         Podcast = p,
-                        RecentScore = p.PlayCount + (p.LikeCount * 3) + (p.DownloadCount / 2) +
-                                     (int)(DateTime.UtcNow - p.CreatedAt).TotalHours
+                        PlayCount = p.PlayCount,
+                        LikeCount = p.LikeCount,
+                        DownloadCount = p.DownloadCount,
+                        CreatedAt = p.CreatedAt
                     })
-                    .OrderByDescending(x => x.RecentScore)
-                    .Take(request.PodcastCount)
                     .ToListAsync(cancellationToken);
 
-                trendingPodcasts = recentPodcasts.Select(x => new PodcastListDto
+                // Calculate recency score in memory since EF can't translate the DateTime calculation
+                var recentPodcastsWithScore = recentPodcasts
+                    .Select(x => new
+                    {
+                        x.Podcast,
+                        RecentScore = x.PlayCount + (x.LikeCount * 3) + (x.DownloadCount / 2) +
+                                     (int)(DateTime.UtcNow - x.CreatedAt).TotalHours
+                    })
+                    .OrderByDescending(x => x.RecentScore)
+                    .Take(request.PodcastCount);
+
+                trendingPodcasts = recentPodcastsWithScore.Select(x => new PodcastListDto
                 {
                     Id = x.Podcast.Id,
                     Title = x.Podcast.Title,

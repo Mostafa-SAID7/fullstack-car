@@ -259,6 +259,7 @@ export interface CampaignQueryParams {
   endDate?: string;
   sortBy?: string;
   sortDirection?: string;
+  [key: string]: unknown;
 }
 
 export interface AnalyticsQueryParams {
@@ -267,6 +268,7 @@ export interface AnalyticsQueryParams {
   platformId?: string;
   campaignId?: string;
   timeRange?: 'day' | 'week' | 'month' | 'quarter' | 'year';
+  [key: string]: unknown;
 }
 
 // Enums

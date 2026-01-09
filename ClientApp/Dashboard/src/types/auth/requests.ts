@@ -1,5 +1,3 @@
-// Authentication Request Types
-
 export interface LoginRequest {
   email: string;
   password: string;
@@ -40,15 +38,4 @@ export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
-}
-
-export interface UpdateProfileRequest {
-  firstName: string;
-  lastName: string;
-  bio?: string;
-  phoneNumber?: string;
-  isEmailPublic: boolean;
-  isPhonePublic: boolean;
-  allowDirectMessages: boolean;
-  showOnlineStatus: boolean;
 }

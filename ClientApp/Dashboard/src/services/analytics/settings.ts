@@ -8,7 +8,7 @@ export class AnalyticsSettingsService {
   async getAnalyticsSettings(): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/settings`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Get analytics settings error:', error);
       return {
@@ -22,7 +22,7 @@ export class AnalyticsSettingsService {
   async updateAnalyticsSettings(settings: AnalyticsSettings): Promise<any> {
     try {
       const response = await apiClient.put(`${API_ENDPOINTS.ANALYTICS.BASE}/settings`, settings);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Update analytics settings error:', error);
       return {
@@ -36,7 +36,7 @@ export class AnalyticsSettingsService {
   async testGoogleAnalyticsConnection(trackingId: string): Promise<any> {
     try {
       const response = await apiClient.post(`${API_ENDPOINTS.ANALYTICS.BASE}/test-connection`, { trackingId });
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Test Google Analytics connection error:', error);
       return {

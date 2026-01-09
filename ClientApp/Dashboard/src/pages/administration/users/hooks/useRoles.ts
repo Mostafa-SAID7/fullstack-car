@@ -18,7 +18,7 @@ export const useRoles = () => {
       setError(null);
 
       const response = await rolesService.getRoles(params);
-      setRoles(response || []);
+      setRoles((response as any)?.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch roles');
       setRoles([]);

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService, Toast } from '../../../core/services/toast.service';
 import { Subscription } from 'rxjs';
@@ -9,35 +9,37 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule],
   template: `
     <div class="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
-      <div *ngFor="let toast of toasts; trackBy: trackByToastId" 
-        class="transform transition-all duration-300 ease-in-out animate-in slide-in-from-right-full"
-        [class]="getToastClasses(toast)">
-        
-        <div class="flex items-start gap-3 p-4 rounded-lg shadow-lg border backdrop-blur-sm">
-          <div class="flex-shrink-0 mt-0.5">
-            <i [class]="getIconClass(toast.type)"></i>
-          </div>
+      @for (toast of toasts; track toast.id) {
+        <div class="transform transition-all duration-300 ease-in-out animate-in slide-in-from-right-full"
+          [class]="getToastClasses(toast)">
           
-          <div class="flex-1 min-w-0">
-            <p *ngIf="toast.title" class="text-sm font-semibold mb-1">{{ toast.title }}</p>
-            <p class="text-sm">{{ toast.message }}</p>
+          <div class="flex items-start gap-3 p-4 rounded-lg shadow-lg border backdrop-blur-sm">
+            <div class="flex-shrink-0 mt-0.5">
+              <i [class]="getIconClass(toast.type)"></i>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              @if (toast.title) {
+                <p class="text-sm font-semibold mb-1">{{ toast.title }}</p>
+              }
+              <p class="text-sm">{{ toast.message }}</p>
+            </div>
+            
+            <button 
+              (click)="removeToast(toast.id)"
+              class="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 transition-colors">
+              <i class="fas fa-times text-xs"></i>
+            </button>
           </div>
-          
-          <button 
-            (click)="removeToast(toast.id)"
-            class="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 transition-colors">
-            <i class="fas fa-times text-xs"></i>
-          </button>
         </div>
-      </div>
+      }
     </div>
   `
 })
 export class ToastContainerComponent implements OnInit, OnDestroy {
+  private readonly toastService = inject(ToastService);
   toasts: Toast[] = [];
   private subscription?: Subscription;
-
-  constructor(private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.subscription = this.toastService.toasts$.subscribe(toasts => {
@@ -47,10 +49,6 @@ export class ToastContainerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
-  }
-
-  trackByToastId(index: number, toast: Toast): string {
-    return toast.id;
   }
 
   getToastClasses(toast: Toast): string {

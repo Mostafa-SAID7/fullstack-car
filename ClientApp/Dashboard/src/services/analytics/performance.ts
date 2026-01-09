@@ -22,7 +22,7 @@ export class PerformanceAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/performance?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/performance`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Performance metrics error:', error);
       return {
@@ -36,7 +36,7 @@ export class PerformanceAnalyticsService {
   async getCoreWebVitals(): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/performance/core-web-vitals`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Core web vitals error:', error);
       return {

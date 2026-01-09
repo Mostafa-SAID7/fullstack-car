@@ -21,7 +21,7 @@ export class SignalRManager {
       }
 
       // Use the API base URL for SignalR connection
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5101/api';
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5100/api';
       const baseUrl = apiBaseUrl.replace('/api', ''); // Remove /api suffix for hub connection
       
       this.connection = new signalR.HubConnectionBuilder()

@@ -19,7 +19,7 @@ export const usePermissions = () => {
       setError(null);
 
       const response = await permissionsService.getPermissions(params);
-      setPermissions(response.data || []);
+      setPermissions((response as any)?.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch permissions');
       setPermissions([]);

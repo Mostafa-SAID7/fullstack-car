@@ -13,9 +13,17 @@ namespace Domain.Entities.Identity
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? ProfileImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
         public string? Bio { get; set; }
+        public string? Location { get; set; }
+        public string? Website { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public bool IsPrivateProfile { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastLoginAt { get; set; }
+        public DateTime? LastActiveAt { get; set; }
+        public string? NotificationPreferences { get; set; } // JSON
+        public string? PrivacySettings { get; set; } // JSON
         
         // Account Status
         public bool IsActive { get; set; } = true;

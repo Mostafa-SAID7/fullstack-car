@@ -2,7 +2,9 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Media.Analytics.Commands;
 using Application.Features.Media.Analytics.DTOs;
+using Application.Features.Media.Analytics.Services;
 using Domain.Entities.Media;
+using Domain.Enums.Media;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,23 +13,25 @@ namespace Application.Features.Media.Analytics.Handlers;
 public class TrackPodcastPlayHandler : IRequestHandler<TrackPodcastPlayCommand, Result<PodcastPlayDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMediaAnalyticsService _analyticsService;
 
-    public TrackPodcastPlayHandler(IApplicationDbContext context)
+    public TrackPodcastPlayHandler(IApplicationDbContext context, IMediaAnalyticsService analyticsService)
     {
         _context = context;
+        _analyticsService = analyticsService;
     }
 
     public async Task<Result<PodcastPlayDto>> Handle(TrackPodcastPlayCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Verify podcast exists
+            // Verify the podcast exists before tracking the play
             var podcast = await _context.Podcasts
                 .FirstOrDefaultAsync(p => p.Id == request.PodcastId && !p.IsDeleted, cancellationToken);
 
             if (podcast == null)
             {
-                return Result<PodcastPlayDto>.Failure(new[] { "Podcast not found" });
+                return Result<PodcastPlayDto>.Failure(new[] { "Podcast not found or has been deleted" });
             }
 
             // Check for duplicate plays (same user/IP within time window)
@@ -45,7 +49,7 @@ public class TrackPodcastPlayHandler : IRequestHandler<TrackPodcastPlayCommand, 
                 isDuplicate = existingPlay;
             }
 
-            // Create podcast play record using the actual entity properties
+            // Create podcast play record
             var podcastPlay = new PodcastPlay
             {
                 PodcastId = request.PodcastId,
@@ -63,15 +67,19 @@ public class TrackPodcastPlayHandler : IRequestHandler<TrackPodcastPlayCommand, 
             // Update podcast play count if unique
             if (!isDuplicate)
             {
-                podcast.PlayCount++;
+                // Use analytics service for accurate real-time updates
+                await _analyticsService.IncrementViewCountAsync(request.PodcastId, MediaType.Podcast, cancellationToken);
                 
                 if (request.IsDownload)
                 {
                     podcast.DownloadCount++;
                 }
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
+            else
+            {
+                // Even for duplicates, update analytics for data accuracy
+                await _analyticsService.UpdateAnalyticsAsync(request.PodcastId, MediaType.Podcast, cancellationToken);
+            }
 
             var result = new PodcastPlayDto
             {

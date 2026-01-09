@@ -30,12 +30,12 @@ export class AIAgentChatService {
 
   async updateConversationTitle(conversationId: string, title: string) {
     const response = await apiClient.put(`/ai/conversations/${conversationId}`, { title });
-    return response;
+    return response as any;
   }
 
   async deleteConversation(conversationId: string) {
     const response = await apiClient.delete(`/ai/conversations/${conversationId}`);
-    return response;
+    return response as any;
   }
 }
 

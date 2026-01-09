@@ -22,7 +22,7 @@ export class ContentAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/content?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/content`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Content metrics error:', error);
       return {
@@ -49,7 +49,7 @@ export class ContentAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/content/popular?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/content/popular`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Popular content error:', error);
       return {
@@ -63,7 +63,7 @@ export class ContentAnalyticsService {
   async getCustomReports(): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/reports/custom`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Custom reports error:', error);
       return {
@@ -77,7 +77,7 @@ export class ContentAnalyticsService {
   async getCustomReport(reportId: string): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/reports/custom/${reportId}`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Custom report error:', error);
       return {

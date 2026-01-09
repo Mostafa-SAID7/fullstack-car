@@ -21,14 +21,14 @@ export class ReportsService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}/${userId}/reports?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async resolveReport(reportId: string, resolution: string) {
     const response = await apiClient.put(`${this.baseUrl}/reports/${reportId}/resolve`, {
       resolution
     });
-    return response.data;
+    return (response as any).data;
   }
 }
 

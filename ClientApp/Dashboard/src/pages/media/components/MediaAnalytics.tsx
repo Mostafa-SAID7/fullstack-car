@@ -52,7 +52,7 @@ export const MediaAnalytics = () => {
       const [videoData, podcastData, overallData] = await Promise.all([
         videoService.getVideoDashboard().catch(() => null),
         podcastService.getPodcastDashboard().catch(() => null),
-        mediaService.getMediaAnalytics(startDate, endDate).catch(() => null)
+        mediaService.getMediaAnalytics(startDate.toISOString(), endDate.toISOString()).catch(() => null)
       ]);
 
       setVideoAnalytics(videoData);

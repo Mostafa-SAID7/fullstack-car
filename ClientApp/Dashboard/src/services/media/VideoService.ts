@@ -1,84 +1,61 @@
 import { ApiService } from '../api/ApiService';
+import { REQUEST_TIMEOUTS } from '../../config/api/base';
 import type { Video, VideoUploadRequest, MediaFilters, PaginatedResult, MediaAnalytics } from './types';
 
 export class VideoService extends ApiService {
   private readonly baseUrl = '/api/v7.0/media/videos';
 
   async getVideos(filters?: MediaFilters): Promise<PaginatedResult<Video>> {
-    const params = new URLSearchParams();
-    if (filters?.search) params.append('search', filters.search);
-    if (filters?.isPublic !== undefined) params.append('isPublic', filters.isPublic.toString());
-    if (filters?.tags?.length) params.append('tags', filters.tags.join(','));
-    if (filters?.creatorId) params.append('creatorId', filters.creatorId);
-    if (filters?.dateFrom) params.append('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) params.append('dateTo', filters.dateTo);
-    if (filters?.sortBy) params.append('sortBy', filters.sortBy);
-    if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder);
-    if (filters?.pageNumber) params.append('pageNumber', filters.pageNumber.toString());
-    if (filters?.pageSize) params.append('pageSize', filters.pageSize.toString());
-
-    const result = await this.get<PaginatedResult<Video>>(`${this.baseUrl}?${params}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch videos');
+    const queryString = filters ? this.buildQueryString(this.buildFilterParams(filters)) : '';
+    const endpoint = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
+    
+    return this.withErrorHandling(async () => {
+      return this.get<PaginatedResult<Video>>(endpoint);
+    });
   }
 
   async getVideo(id: string): Promise<Video> {
-    const result = await this.get<Video>(`${this.baseUrl}/${id}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch video');
+    return this.withErrorHandling(async () => {
+      return this.get<Video>(`${this.baseUrl}/${id}`);
+    });
   }
 
   async createVideo(request: VideoUploadRequest): Promise<Video> {
-    const result = await this.post<Video>(this.baseUrl, request);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to create video');
+    return this.withErrorHandling(async () => {
+      return this.post<Video>(this.baseUrl, request);
+    });
   }
 
   async updateVideo(id: string, request: Partial<VideoUploadRequest>): Promise<Video> {
-    const result = await this.put<Video>(`${this.baseUrl}/${id}`, request);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to update video');
+    return this.withErrorHandling(async () => {
+      return this.put<Video>(`${this.baseUrl}/${id}`, request);
+    });
   }
 
   async deleteVideo(id: string): Promise<void> {
-    const result = await this.delete(`${this.baseUrl}/${id}`);
-    if (!result.succeeded) {
-      throw new Error(result.message || 'Failed to delete video');
-    }
+    return this.withErrorHandling(async () => {
+      return this.delete<void>(`${this.baseUrl}/${id}`);
+    });
   }
 
   async publishVideo(id: string): Promise<Video> {
-    const result = await this.post<Video>(`${this.baseUrl}/${id}/publish`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to publish video');
+    return this.withErrorHandling(async () => {
+      return this.post<Video>(`${this.baseUrl}/${id}/publish`);
+    });
   }
 
   async getMyVideos(pageNumber: number = 1, pageSize: number = 10): Promise<PaginatedResult<Video>> {
-    const params = new URLSearchParams();
-    params.append('pageNumber', pageNumber.toString());
-    params.append('pageSize', pageSize.toString());
-
-    const result = await this.get<PaginatedResult<Video>>(`${this.baseUrl}/my-videos?${params}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch my videos');
+    const queryString = this.buildQueryString({ pageNumber, pageSize });
+    
+    return this.withErrorHandling(async () => {
+      return this.get<PaginatedResult<Video>>(`${this.baseUrl}/my-videos?${queryString}`);
+    });
   }
 
   async uploadVideo(
     file: File, 
     request: VideoUploadRequest,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: { loaded: number; total: number; percentage: number }) => void
   ): Promise<{
     videoId: string;
     videoUrl: string;
@@ -97,7 +74,7 @@ export class VideoService extends ApiService {
   private async uploadVideoRegular(
     file: File, 
     request: VideoUploadRequest,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: { loaded: number; total: number; percentage: number }) => void
   ): Promise<{
     videoId: string;
     videoUrl: string;
@@ -113,27 +90,22 @@ export class VideoService extends ApiService {
     formData.append('isPublic', request.isPublic.toString());
     formData.append('allowComments', request.allowComments.toString());
 
-    const result = await this.postWithProgress<{
-      videoId: string;
-      videoUrl: string;
-      fileSize: number;
-      fileName: string;
-    }>('/api/v7.0/media/videos/upload', formData, onProgress, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    return this.withErrorHandling(async () => {
+      return this.postWithProgress<{
+        videoId: string;
+        videoUrl: string;
+        fileSize: number;
+        fileName: string;
+      }>('/api/v7.0/media/videos/upload', formData, onProgress, {
+        timeout: REQUEST_TIMEOUTS.UPLOAD
+      });
     });
-
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to upload video');
   }
 
   private async uploadVideoChunked(
     file: File, 
     request: VideoUploadRequest,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: { loaded: number; total: number; percentage: number }) => void
   ): Promise<{
     videoId: string;
     videoUrl: string;
@@ -170,9 +142,7 @@ export class VideoService extends ApiService {
       }
 
       const result = await this.post<any>('/api/v7.0/media/videos/upload/chunked', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        timeout: REQUEST_TIMEOUTS.UPLOAD
       });
 
       if (!result.succeeded) {
@@ -180,7 +150,11 @@ export class VideoService extends ApiService {
       }
 
       uploadedBytes += chunk.size;
-      const progress = Math.round((uploadedBytes / file.size) * 100);
+      const progress = {
+        loaded: uploadedBytes,
+        total: file.size,
+        percentage: Math.round((uploadedBytes / file.size) * 100)
+      };
       onProgress?.(progress);
 
       // If this is the last chunk and upload is complete
@@ -201,15 +175,12 @@ export class VideoService extends ApiService {
     uploadedChunks: number;
     progress?: number;
   }> {
-    const result = await this.get<{
-      uploadedChunks: number;
-      progress?: number;
-    }>(`/api/v7.0/media/videos/upload/progress/${uploadId}`);
-    
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to get upload progress');
+    return this.withErrorHandling(async () => {
+      return this.get<{
+        uploadedChunks: number;
+        progress?: number;
+      }>(`/api/v7.0/media/videos/upload/progress/${uploadId}`);
+    });
   }
 
   private generateUploadId(): string {
@@ -217,81 +188,79 @@ export class VideoService extends ApiService {
   }
 
   async getTrendingVideos(count: number = 10, days: number = 7): Promise<Video[]> {
-    const params = new URLSearchParams();
-    params.append('count', count.toString());
-    params.append('days', days.toString());
-
-    const result = await this.get<Video[]>(`/api/v7.0/media/videos/discovery/trending?${params}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch trending videos');
+    const queryString = this.buildQueryString({ count, days });
+    
+    return this.withErrorHandling(async () => {
+      return this.get<Video[]>(`/api/v7.0/media/videos/discovery/trending?${queryString}`);
+    });
   }
 
   async searchVideos(query: string, page: number = 1, pageSize: number = 10): Promise<Video[]> {
-    const params = new URLSearchParams();
-    params.append('query', query);
-    params.append('page', page.toString());
-    params.append('pageSize', pageSize.toString());
-
-    const result = await this.get<Video[]>(`/api/v7.0/media/videos/discovery/search?${params}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to search videos');
+    const queryString = this.buildQueryString({ query, page, pageSize });
+    
+    return this.withErrorHandling(async () => {
+      return this.get<Video[]>(`/api/v7.0/media/videos/discovery/search?${queryString}`);
+    });
   }
 
   async getFeaturedVideos(count: number = 10): Promise<Video[]> {
-    const params = new URLSearchParams();
-    params.append('count', count.toString());
-
-    const result = await this.get<Video[]>(`/api/v7.0/media/videos/discovery/featured?${params}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch featured videos');
+    const queryString = this.buildQueryString({ count });
+    
+    return this.withErrorHandling(async () => {
+      return this.get<Video[]>(`/api/v7.0/media/videos/discovery/featured?${queryString}`);
+    });
   }
 
   async getVideoCategories(): Promise<string[]> {
-    const result = await this.get<string[]>(`/api/v7.0/media/videos/discovery/categories`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch video categories');
+    return this.withErrorHandling(async () => {
+      return this.get<string[]>(`/api/v7.0/media/videos/discovery/categories`);
+    });
   }
 
   async getVideoAnalytics(id: string): Promise<MediaAnalytics> {
-    const result = await this.get<MediaAnalytics>(`/api/v7.0/media/videos/analytics/${id}`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch video analytics');
+    return this.withErrorHandling(async () => {
+      return this.get<MediaAnalytics>(`/api/v7.0/media/videos/analytics/${id}`);
+    });
   }
 
   async getVideoDashboard(): Promise<MediaAnalytics> {
-    const result = await this.get<MediaAnalytics>(`/api/v7.0/media/videos/analytics`);
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to fetch video dashboard');
+    return this.withErrorHandling(async () => {
+      return this.get<MediaAnalytics>(`/api/v7.0/media/videos/analytics`);
+    });
   }
 
   async likeVideo(id: string, isLike: boolean = true): Promise<void> {
-    const result = await this.post(`/api/v7.0/media/videos/interactions/${id}/like`, { isLike });
-    if (!result.succeeded) {
-      throw new Error(result.message || 'Failed to like video');
-    }
+    return this.withErrorHandling(async () => {
+      return this.post<void>(`/api/v7.0/media/videos/interactions/${id}/like`, { isLike });
+    });
   }
 
   async addComment(id: string, content: string, parentCommentId?: string): Promise<any> {
-    const result = await this.post(`/api/v7.0/media/videos/interactions/${id}/comments`, {
-      content,
-      parentCommentId
+    return this.withErrorHandling(async () => {
+      return this.post<any>(`/api/v7.0/media/videos/interactions/${id}/comments`, {
+        content,
+        parentCommentId
+      });
     });
-    if (result.succeeded && result.data) {
-      return result.data;
-    }
-    throw new Error(result.message || 'Failed to add comment');
+  }
+
+  // Helper method to build filter parameters
+  private buildFilterParams(filters: MediaFilters): Record<string, any> {
+    const params: Record<string, any> = {};
+    
+    if (filters.search) params.search = filters.search;
+    if (filters.isPublic !== undefined) params.isPublic = filters.isPublic;
+    if (filters.tags?.length) params.tags = filters.tags.join(',');
+    if (filters.creatorId) params.creatorId = filters.creatorId;
+    if (filters.dateFrom) params.dateFrom = filters.dateFrom;
+    if (filters.dateTo) params.dateTo = filters.dateTo;
+    if (filters.sortBy) params.sortBy = filters.sortBy;
+    if (filters.sortOrder) params.sortOrder = filters.sortOrder;
+    if (filters.pageNumber) params.pageNumber = filters.pageNumber;
+    if (filters.pageSize) params.pageSize = filters.pageSize;
+    if (filters.status) params.status = filters.status;
+
+    return params;
   }
 }
 

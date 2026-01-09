@@ -27,19 +27,22 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       try {
         const authenticated = authService.isAuthenticated();
         const hasRoles = requiredRoles.length === 0 || authService.hasAnyRole(requiredRoles);
+        const currentUser = authService.getCurrentUser();
 
-        console.log('[ProtectedRoute] Check:', {
+        console.log('[ProtectedRoute] Auth check:', {
           path: location.pathname,
           authenticated,
           requiredRoles,
           hasRoles,
-          currentUser: authService.getCurrentUser()
+          currentUser,
+          token: !!localStorage.getItem('auth_token'),
+          userInStorage: !!localStorage.getItem('auth_user')
         });
 
         setIsAuthenticated(authenticated);
         setHasRequiredRoles(hasRoles);
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error('[ProtectedRoute] Auth check failed:', error);
         setIsAuthenticated(false);
         setHasRequiredRoles(false);
       } finally {
@@ -48,6 +51,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     };
 
     checkAuth();
+    
+    // Also listen for storage changes (in case auth state changes in another tab)
+    const handleStorageChange = () => {
+      console.log('[ProtectedRoute] Storage changed, rechecking auth...');
+      checkAuth();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [requiredRoles, location.pathname]); // Re-check on route change
 
   // Show loading state while checking authentication

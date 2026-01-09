@@ -32,7 +32,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Theory]
@@ -145,7 +145,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 
     [Theory]
@@ -164,6 +164,6 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(content);
         
         var jsonDoc = JsonDocument.Parse(content);
-        Assert.True(jsonDoc.RootElement.GetProperty("Success").GetBoolean());
+        Assert.True(jsonDoc.RootElement.GetProperty("success").GetBoolean());
     }
 }

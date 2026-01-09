@@ -1,5 +1,5 @@
 {
-  "name": "community-car-app",
+  "name": "media-streaming-main-app",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
@@ -34,9 +34,15 @@
     "@angular-devkit/build-angular": "^19.0.0",
     "@angular/cli": "^19.0.0",
     "@angular/compiler-cli": "^19.0.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.7.0",
+    "angular-eslint": "21.0.1",
     "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -46,6 +52,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "~5.6.0"
+    "typescript": "~5.6.0",
+    "typescript-eslint": "8.46.4"
   }
 }

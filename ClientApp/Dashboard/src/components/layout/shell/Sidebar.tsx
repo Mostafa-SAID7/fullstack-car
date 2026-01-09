@@ -27,7 +27,8 @@ import {
   Target,
   TrendingUp,
   Calendar,
-  Bell
+  Bell,
+  Video
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -149,11 +150,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
           description: 'Pages management'
         },
         {
+          path: '/media',
+          icon: Video,
+          label: t('media_management', 'Media Management'),
+          color: 'text-red-600',
+          description: 'Video and podcast management'
+        },
+        {
           path: '/content/media',
           icon: FileImage,
-          label: t('media', 'Media'),
+          label: t('media_library', 'Media Library'),
           color: 'text-indigo-600',
-          description: 'Media library'
+          description: 'Media files and assets'
         },
         {
           path: '/content/localization',

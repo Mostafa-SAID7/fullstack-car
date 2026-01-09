@@ -18,6 +18,8 @@ using Application.Features.Admin.Analytics.Services;
 using Application.Features.Identity.Auth.Services;
 using Application.Features.Identity.OAuth.Interfaces;
 using Application.Features.Identity.Auth.Services;
+using Application.Features.Media.Analytics.Services;
+using Infrastructure.Services.Analytics;
 using Application.Features.Identity.Profile.Interfaces;
 using Application.Features.Identity.Profile.Services;
 using Application.Features.Identity.Password.Interfaces;
@@ -284,8 +286,13 @@ namespace Infrastructure.Extensions
             
             services.AddScoped<DatabaseSeeder>();
 
+            // Register analytics services
+            services.AddScoped<IMediaAnalyticsService, MediaAnalyticsService>();
+
             // Register background services
             services.AddHostedService<RefreshTokenCleanupService>();
+            services.AddHostedService<AnalyticsAggregationService>();
+            services.AddHostedService<AnalyticsValidationService>();
 
             return services;
         }

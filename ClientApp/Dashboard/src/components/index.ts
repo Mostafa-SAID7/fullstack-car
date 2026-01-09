@@ -32,6 +32,12 @@ export * from './special/protected-route/ProtectedRoute';
 export * from './special/theme-provider/ThemeProvider';
 export * from './auth';
 
+// Enhanced Components
+export * from './forms/enhanced';
+export * from './layout/responsive';
+export * from './feedback/loading/LoadingStates';
+export * from './feedback/errors/ErrorStates';
+
 // Shared Components (using shared versions to avoid conflicts)
 export { 
   SearchAndFilters, 

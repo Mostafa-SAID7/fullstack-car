@@ -21,9 +21,9 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   const isProduction = import.meta.env.PROD;
 
   return {
-    API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5101/api',
+    API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5100/api',
     AI_AGENT_URL: import.meta.env.VITE_AI_AGENT_URL || 'http://localhost:8002/api',
-    WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:5101/hub',
+    WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:5100/hub',
     ENVIRONMENT: isProduction ? 'production' : isDevelopment ? 'development' : 'staging',
     DEBUG: isDevelopment || import.meta.env.VITE_DEBUG === 'true',
     VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',

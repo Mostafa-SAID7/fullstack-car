@@ -15,17 +15,17 @@ export class AIAgentKnowledgeService {
         'Content-Type': 'multipart/form-data'
       }
     });
-    return response;
+    return response as any;
   }
 
   async getKnowledgeBase() {
     const response = await apiClient.get('/ai/knowledge');
-    return response;
+    return response as any;
   }
 
   async deleteKnowledge(knowledgeId: string) {
     const response = await apiClient.delete(`/ai/knowledge/${knowledgeId}`);
-    return response;
+    return response as any;
   }
 }
 

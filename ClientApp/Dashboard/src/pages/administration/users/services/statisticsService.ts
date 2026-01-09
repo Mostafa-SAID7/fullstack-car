@@ -20,17 +20,17 @@ export class StatisticsService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}/statistics?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async getDashboardStats(): Promise<UserDashboardStats> {
     const response = await apiClient.get(`${this.baseUrl}/dashboard-stats`);
-    return response.data;
+    return (response as any).data;
   }
 
   async exportUserStatistics(format: 'csv' | 'excel' | 'pdf' = 'csv') {
     const response = await apiClient.get(`${this.baseUrl}/statistics/export?format=${format}`);
-    return response.data;
+    return (response as any).data;
   }
 }
 

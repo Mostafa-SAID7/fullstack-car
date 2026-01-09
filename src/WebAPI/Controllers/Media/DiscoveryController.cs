@@ -25,9 +25,14 @@ public class DiscoveryController : BaseController
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(query.SearchTerm))
+            // Allow search without search term if other filters are provided
+            if (string.IsNullOrWhiteSpace(query.SearchTerm) && 
+                query.MediaType == null && 
+                string.IsNullOrWhiteSpace(query.Category) && 
+                string.IsNullOrWhiteSpace(query.Tags) &&
+                query.CreatorId == null)
             {
-                return BadRequest("Search term is required");
+                return BadRequest("At least one search parameter is required (searchTerm, mediaType, category, tags, or creatorId)");
             }
 
             var result = await Mediator.Send(query);

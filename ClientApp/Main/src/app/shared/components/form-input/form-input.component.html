@@ -1,47 +1,59 @@
-<div class="form-input" [class.form-input--error]="hasError" [class.form-input--focused]="isFocused">
-    <!-- Label -->
-    <label *ngIf="label" [for]="label" class="form-input__label">
-        {{ label }}
-        <span *ngIf="required" class="form-input__required">*</span>
+<div [class]="containerClasses">
+  <!-- Label -->
+  @if (label) {
+    <label 
+      [for]="inputId"
+      class="text-sm font-medium text-gray-900 flex items-center gap-1">
+      {{ label }}
+      @if (required) {
+        <span class="text-red-500">*</span>
+      }
     </label>
+  }
 
-    <!-- Input Container -->
-    <div class="form-input__container">
-        <!-- Prefix Icon -->
-        <span *ngIf="prefixIcon || icon" class="form-input__icon form-input__icon--prefix">
-            <i [class]="'fa-solid ' + (prefixIcon || icon)"></i>
-        </span>
+  <!-- Input Container -->
+  <div class="relative">
+    <!-- Start Icon -->
+    @if (startIcon) {
+      <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <mat-icon class="text-base">{{ startIcon }}</mat-icon>
+      </div>
+    }
 
-        <!-- Input Field -->
-        <input [id]="label" [type]="currentType" [placeholder]="placeholder" [disabled]="disabled" [value]="value"
-            (input)="onInputChange($event)" (blur)="onBlur()" (focus)="onFocus()" class="form-input__field"
-            [class.form-input__field--with-prefix]="prefixIcon || icon"
-            [class.form-input__field--with-suffix]="suffixIcon || showToggle" />
+    <!-- Input -->
+    <input
+      [id]="inputId"
+      [type]="type"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="disabled"
+      [required]="required"
+      [class]="inputClasses"
+      (input)="onInput($event)"
+      (blur)="onBlur($event)"
+      (focus)="onFocus($event)"
+    />
 
-        <!-- Password Toggle -->
-        <button *ngIf="type === 'password' && showToggle" type="button" (click)="togglePasswordVisibility()"
-            class="form-input__icon form-input__icon--suffix form-input__toggle"
-            [attr.aria-label]="isPasswordVisible ? 'Hide password' : 'Show password'">
-            <i [class]="isPasswordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
-        </button>
+    <!-- End Icon -->
+    @if (endIcon) {
+      <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <mat-icon class="text-base">{{ endIcon }}</mat-icon>
+      </div>
+    }
+  </div>
 
-        <!-- Suffix Icon -->
-        <span *ngIf="suffixIcon && !(type === 'password' && showToggle)"
-            class="form-input__icon form-input__icon--suffix">
-            <i [class]="'fa-solid ' + suffixIcon"></i>
-        </span>
-    </div>
-
-    <!-- Hint Text -->
-    <p *ngIf="hint && !hasError" class="form-input__hint">
-        {{ hint }}
+  <!-- Error Message -->
+  @if (error) {
+    <p class="text-sm text-red-600 flex items-center gap-1">
+      <span class="w-1 h-1 bg-red-600 rounded-full flex-shrink-0"></span>
+      {{ error }}
     </p>
+  }
 
-    <!-- Error Messages -->
-    <div *ngIf="hasError" class="form-input__errors">
-        <p *ngFor="let error of errorMessages" class="form-input__error">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            {{ error }}
-        </p>
-    </div>
+  <!-- Helper Text -->
+  @if (helperText && !error) {
+    <p class="text-sm text-gray-500">
+      {{ helperText }}
+    </p>
+  }
 </div>

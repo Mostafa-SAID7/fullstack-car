@@ -22,7 +22,7 @@ export class ActivitiesService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}/${userId}/activities?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 
   async getUserSecurityLogs(userId: string, params?: {
@@ -43,7 +43,7 @@ export class ActivitiesService {
     }
 
     const response = await apiClient.get(`${this.baseUrl}/${userId}/security-logs?${searchParams.toString()}`);
-    return response.data;
+    return (response as any).data;
   }
 }
 

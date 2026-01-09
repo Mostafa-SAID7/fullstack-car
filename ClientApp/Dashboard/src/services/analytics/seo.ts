@@ -15,7 +15,7 @@ export class SEOAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/seo/metrics?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/seo/metrics`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('SEO metrics error:', error);
       return {
@@ -37,7 +37,7 @@ export class SEOAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/seo/keywords?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/seo/keywords`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Keyword rankings error:', error);
       return {
@@ -51,7 +51,7 @@ export class SEOAnalyticsService {
   async getBacklinkAnalysis(): Promise<any> {
     try {
       const response = await apiClient.get(`${API_ENDPOINTS.ANALYTICS.BASE}/seo/backlinks`);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Backlink analysis error:', error);
       return {

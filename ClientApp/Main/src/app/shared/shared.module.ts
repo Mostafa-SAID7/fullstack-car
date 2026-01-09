@@ -12,8 +12,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 
+// Import standalone components
+import { FormButtonComponent } from './components/form-button/form-button.component';
+import { FormInputComponent } from './components/form-input/form-input.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { ErrorDisplayComponent } from './components/error-display/error-display.component';
+
 @NgModule({
-    declarations: [],
+    declarations: [
+        // No declarations needed for standalone components
+    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -25,7 +33,13 @@ import { MatBadgeModule } from '@angular/material/badge';
         MatCardModule,
         MatMenuModule,
         MatDividerModule,
-        MatBadgeModule
+        MatBadgeModule,
+        TranslateModule,
+        // Import standalone components
+        FormButtonComponent,
+        FormInputComponent,
+        LoadingSpinnerComponent,
+        ErrorDisplayComponent
     ],
     exports: [
         CommonModule,
@@ -39,7 +53,12 @@ import { MatBadgeModule } from '@angular/material/badge';
         MatMenuModule,
         MatDividerModule,
         MatBadgeModule,
-        TranslateModule
+        TranslateModule,
+        // Export standalone components
+        FormButtonComponent,
+        FormInputComponent,
+        LoadingSpinnerComponent,
+        ErrorDisplayComponent
     ]
 })
 export class SharedModule { }

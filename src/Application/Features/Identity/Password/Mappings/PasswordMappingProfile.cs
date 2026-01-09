@@ -11,14 +11,9 @@ namespace Application.Features.Identity.Password.Mappings
         {
             // Password Strength Result - no mapping needed as it's created directly
             
-            // Basic user info for password operations
-            CreateMap<ApplicationUser, object>()
-                .ForMember(dest => dest, opt => opt.MapFrom(src => new 
-                { 
-                    UserId = src.Id.ToString(),
-                    Email = src.Email,
-                    FullName = $"{src.FirstName} {src.LastName}"
-                }));
+            // Basic user info for password operations - removed invalid mapping
+            // CreateMap<ApplicationUser, object>() is not valid AutoMapper syntax
+            // If needed, create specific DTOs and map to those instead
         }
     }
 }

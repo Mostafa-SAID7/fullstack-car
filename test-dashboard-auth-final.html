@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Auth Test - Final</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .status { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard Authentication Test - Final</h1>
+        
+        <div class="section info">
+            <h3>Test Instructions</h3>
+            <p>This page tests the complete authentication flow with the fixed auth service.</p>
+            <ol>
+                <li>Click "Test Login" to authenticate with the backend</li>
+                <li>Check the authentication state in the dashboard</li>
+                <li>Verify protected routes work correctly</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h3>Authentication Test</h3>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="checkAuthState()">Check Auth State</button>
+            <button onclick="testProtectedRoute()">Test Protected Route</button>
+            <button onclick="clearAuth()">Clear Auth</button>
+            
+            <div id="authStatus" class="status"></div>
+            <pre id="authDetails"></pre>
+        </div>
+
+        <div class="section">
+            <h3>Dashboard Links</h3>
+            <p>After successful authentication, test these links:</p>
+            <ul>
+                <li><a href="http://localhost:3018/debug/auth" target="_blank">Auth Debug Page</a></li>
+                <li><a href="http://localhost:3018/dashboard" target="_blank">Dashboard Home</a></li

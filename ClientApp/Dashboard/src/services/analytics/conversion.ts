@@ -22,7 +22,7 @@ export class ConversionAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/conversion?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/conversion`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Conversion metrics error:', error);
       return {
@@ -50,7 +50,7 @@ export class ConversionAnalyticsService {
       const url = queryString ? `${API_ENDPOINTS.ANALYTICS.BASE}/conversion/ecommerce?${queryString}` : `${API_ENDPOINTS.ANALYTICS.BASE}/conversion/ecommerce`;
 
       const response = await apiClient.get(url);
-      return response;
+      return response as any;
     } catch (error) {
       console.error('Ecommerce metrics error:', error);
       return {
