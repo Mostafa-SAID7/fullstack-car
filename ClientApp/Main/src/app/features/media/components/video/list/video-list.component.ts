@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -8,16 +8,20 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { VideoService, VideoFilters } from '../../../services/video.service';
 import { VideoList, MediaFilters, MediaStatus } from '../../../models';
 import { PaginatedResult } from '../../../../../core/models/pagination.model';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 import { MediaCardComponent } from '../../media-card/media-card.component';
+
 
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent],
-  templateUrl: './video-list.component.html',
-  styleUrls: ['./video-list.component.scss']
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent, PaginationComponent],
+  templateUrl: './video-list.component.html'
 })
 export class VideoListComponent implements OnInit {
+  @Input() compact = false;
+  @Input() limit: number | null = null;
+
   videos: VideoList[] = [];
   loading = false;
   totalCount = 0;
@@ -26,12 +30,14 @@ export class VideoListComponent implements OnInit {
   totalPages = 0;
 
   searchForm: FormGroup;
+  showFilters = false;
   filters: Partial<MediaFilters> = {
     pageNumber: 1,
     pageSize: 12,
     sortBy: 'CreatedAt',
     sortDescending: true
   };
+
 
   sortOptions = [
     { value: 'CreatedAt', label: 'Newest First', descending: true },
@@ -63,6 +69,10 @@ export class VideoListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.limit) {
+      this.pageSize = this.limit;
+      this.filters.pageSize = this.limit;
+    }
     this.loadVideos();
     this.setupSearch();
   }
@@ -197,6 +207,28 @@ export class VideoListComponent implements OnInit {
     this.router.navigate(['/media/videos/upload']);
   }
 
+  onPlay(video: VideoList): void {
+    this.playVideo(video);
+  }
+
+  onEdit(video: VideoList): void {
+    // Navigate to edit page (assuming route exists)
+    this.router.navigate(['/media/videos/edit', video.id]);
+  }
+
+  onDelete(video: VideoList): void {
+    if (confirm('Are you sure you want to delete this video?')) {
+      this.videoService.deleteVideo(video.id).subscribe({
+        next: () => {
+          this.loadVideos();
+        },
+        error: (error) => {
+          console.error('Error deleting video:', error);
+        }
+      });
+    }
+  }
+
   clearFilters(): void {
     this.searchForm.reset({
       searchTerm: '',
@@ -206,15 +238,8 @@ export class VideoListComponent implements OnInit {
     });
   }
 
-  get pages(): number[] {
-    const pages = [];
-    const start = Math.max(1, this.currentPage - 2);
-    const end = Math.min(this.totalPages, this.currentPage + 2);
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    return pages;
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 }
+

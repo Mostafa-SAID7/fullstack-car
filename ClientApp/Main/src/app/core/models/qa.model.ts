@@ -65,3 +65,17 @@ export interface CreateAnswerRequest {
     content: string;
     imageUrl?: string;
 }
+
+export interface QAParams {
+    pageNumber: number;
+    pageSize: number;
+    searchTerm?: string;
+    sortBy?: string;
+}
+
+export interface QAPaginatedResult {
+    items: Question[];
+    totalCount: number;
+    totalPages: number;
+    pageNumber: number;
+}

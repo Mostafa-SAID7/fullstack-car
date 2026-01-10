@@ -1,4 +1,4 @@
-<div class="video-detail-container p-4 lg:p-8 max-w-7xl mx-auto" *ngIf="video; else statusTpl">
+<div class="video-detail-container p-4 lg:p-8 max-w-7xl mx-auto animate-fade-in" *ngIf="video; else statusTpl">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Video Player Section -->
         <div class="lg:col-span-2 space-y-6">
@@ -7,69 +7,67 @@
                     [poster]="video.thumbnailUrl || video.thumbnail"></video>
             </div>
 
-            <div
-                class="info-card bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+            <div class="fb-card p-6">
                 <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
-                    <h1 class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">{{ video.title }}</h1>
+                    <h1 class="text-2xl lg:text-3xl font-black text-foreground tracking-tight">{{ video.title }}</h1>
                     <div class="flex items-center gap-3">
                         <button (click)="likeVideo()"
-                            class="flex items-center gap-2 px-4 py-2 rounded-full transition-all"
-                            [class.bg-blue-50]="video.isLikedByUser" [class.text-blue-600]="video.isLikedByUser"
-                            [class.bg-slate-100]="!video.isLikedByUser"
-                            [class.dark:bg-slate-800]="!video.isLikedByUser">
-                            <i class="fas fa-thumbs-up" [class.text-blue-600]="video.isLikedByUser"></i>
-                            <span class="font-medium">{{ video.likeCount }}</span>
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm bg-secondary dark:bg-white/5"
+                            [ngClass]="{'bg-primary/10 text-primary': video.isLikedByUser}">
+                            <i class="fas fa-thumbs-up text-sm"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">{{ video.likeCount }}</span>
                         </button>
                         <button
-                            class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full transition-all hover:bg-slate-200 dark:hover:bg-slate-700">
-                            <i class="fas fa-share"></i>
-                            <span class="font-medium">Share</span>
+                            class="flex items-center gap-2 px-4 py-2 bg-secondary dark:bg-white/5 rounded-xl transition-all hover:text-primary active:scale-95 shadow-sm">
+                            <i class="fas fa-share text-sm"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Share</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 py-4 border-y border-slate-100 dark:border-slate-800 mb-4">
+                <div class="flex items-center gap-4 py-4 border-y border-black/5 dark:border-white/5 mb-4">
                     <div
                         class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl">
                         {{ video.creatorName.charAt(0) }}
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900 dark:text-white">{{ video.creatorName }}</h3>
-                        <p class="text-sm text-slate-500">{{ video.publishedAt | date:'mediumDate' }} • {{
-                            video.viewCount }} views</p>
+                        <h3 class="font-black text-foreground uppercase tracking-tight">{{ video.creatorName }}</h3>
+                        <p class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            {{ video.publishedAt | date:'mediumDate' }} • {{ video.viewCount }} views
+                        </p>
                     </div>
                     <button
-                        class="ml-auto px-6 py-2 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-full font-bold hover:opacity-90 transition-opacity">
+                        class="ml-auto px-6 py-2 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
                         Subscribe
                     </button>
                 </div>
 
-                <div class="description text-slate-600 dark:text-slate-400 whitespace-pre-line leading-relaxed">
+                <div class="description text-muted-foreground text-sm leading-relaxed">
                     {{ video.description }}
                 </div>
 
                 <div class="flex flex-wrap gap-2 mt-4" *ngIf="video.tags">
                     <span *ngFor="let tag of video.tags.split(',')"
-                        class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-500 rounded-full">
+                        class="px-3 py-1 bg-secondary dark:bg-white/5 text-[9px] font-black uppercase tracking-widest text-muted-foreground rounded-lg hover:text-primary transition-colors cursor-pointer">
                         #{{ tag.trim() }}
                     </span>
                 </div>
             </div>
 
             <!-- Comments Section -->
-            <div
-                class="comments-section bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-                <h2 class="text-xl font-bold mb-6 text-slate-900 dark:text-white">{{ video.commentsCount }} Comments
+            <div class="fb-card p-6">
+                <h2 class="text-lg font-black uppercase tracking-widest mb-6 text-foreground">
+                    {{ video.commentsCount }} Comments
                 </h2>
 
                 <div class="flex gap-4 mb-8">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex-shrink-0"></div>
+                    <div class="w-10 h-10 rounded-xl bg-secondary dark:bg-white/5 flex-shrink-0"></div>
                     <div class="flex-grow">
                         <textarea [(ngModel)]="newComment" placeholder="Add a comment..."
-                            class="w-full bg-transparent border-b border-slate-200 dark:border-slate-800 focus:border-blue-500 outline-none py-2 resize-none h-20 transition-colors"></textarea>
-                        <div class="flex justify-end mt-2">
+                            class="w-full bg-secondary/50 dark:bg-white/5 rounded-xl border-2 border-transparent focus:border-primary/20 outline-none p-4 resize-none h-24 transition-all text-sm font-bold placeholder:text-muted-foreground"></textarea>
+                        <div class="flex justify-end mt-4">
                             <button [disabled]="!newComment.trim() || submittingComment" (click)="addComment()"
-                                class="px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center gap-2">
+                                class="px-8 py-2.5 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 transition-all flex items-center gap-2">
                                 <span *ngIf="submittingComment"
                                     class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                                 Comment
@@ -79,26 +77,30 @@
                 </div>
 
                 <div class="space-y-6">
-                    <div *ngFor="let comment of video.comments" class="flex gap-4">
+                    <div *ngFor="let comment of video.comments" class="flex gap-4 group">
                         <div
-                            class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-bold text-slate-500">
+                            class="w-10 h-10 rounded-xl bg-secondary dark:bg-white/5 flex items-center justify-center font-black text-muted-foreground border border-black/5 dark:border-white/5">
                             {{ comment.authorName.charAt(0) }}
                         </div>
-                        <div>
+                        <div class="flex-grow">
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-sm text-slate-900 dark:text-white">{{ comment.authorName
-                                    }}</span>
-                                <span class="text-xs text-slate-500">{{ comment.createdAt | date:'shortDate' }}</span>
+                                <span
+                                    class="font-black text-[11px] text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">
+                                    {{ comment.authorName }}
+                                </span>
+                                <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{{
+                                    comment.createdAt | date:'shortDate' }}</span>
                             </div>
-                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{{ comment.content }}
+                            <p class="text-muted-foreground text-sm leading-relaxed">{{ comment.content }}
                             </p>
-                            <div class="flex items-center gap-4 mt-2">
-                                <button class="flex items-center gap-1 text-xs text-slate-500 hover:text-blue-500">
-                                    <i class="far fa-thumbs-up"></i>
+                            <div class="flex items-center gap-4 mt-3">
+                                <button
+                                    class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+                                    <i class="far fa-thumbs-up text-[10px]"></i>
                                     {{ comment.likeCount }}
                                 </button>
                                 <button
-                                    class="text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Reply</button>
+                                    class="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">Reply</button>
                             </div>
                         </div>
                     </div>
@@ -108,20 +110,22 @@
 
         <!-- Sidebar / Recommended (Placeholder) -->
         <div class="lg:col-span-1 space-y-6">
-            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Up Next</h2>
+            <h2 class="text-lg font-black uppercase tracking-widest text-foreground">Up Next</h2>
             <div class="space-y-4">
                 <!-- Placeholder for recommended videos -->
-                <div *ngFor="let item of [1,2,3,4,5]" class="flex gap-3 group cursor-pointer">
+                <div *ngFor="let item of [1,2,3,4,5]" class="flex gap-4 group cursor-pointer">
                     <div
-                        class="w-40 h-24 bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 relative">
+                        class="w-32 h-20 bg-secondary dark:bg-white/5 rounded-xl overflow-hidden flex-shrink-0 relative border border-black/5 dark:border-white/10">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
                     </div>
                     <div class="flex flex-col justify-center">
                         <h4
-                            class="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                            class="font-black text-[11px] text-foreground uppercase tracking-tight line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                             Related Video Title Goes Here...</h4>
-                        <p class="text-xs text-slate-500 mt-1">Creator Name</p>
-                        <p class="text-xs text-slate-500">1.2M views • 2 days ago</p>
+                        <p class="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Creator
+                            Name</p>
+                        <p class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">1.2M views • 2
+                            days ago</p>
                     </div>
                 </div>
             </div>

@@ -6,20 +6,19 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="container">
-      <h1>Service Provider Details</h1>
-      <div class="placeholder">
-        <i class="fas fa-store"></i>
-        <p>Service provider details will be implemented here</p>
+    <div class="px-8 py-24 text-center animate-fade-in max-w-2xl mx-auto">
+      <div class="w-20 h-20 rounded-2xl bg-secondary dark:bg-white/5 flex items-center justify-center mx-auto mb-8 border border-black/5 dark:border-white/10 shadow-lg">
+        <i class="fas fa-id-card text-3xl text-muted-foreground/30"></i>
+      </div>
+      <h2 class="text-2xl font-black text-foreground mb-4 uppercase tracking-tighter">Provider Intelligence</h2>
+      <div class="p-8 border-2 border-dashed border-black/5 dark:border-white/5 rounded-3xl">
+        <p class="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-loose">
+          Service provider detailed profiles are currently being synchronized with our network.
+        </p>
       </div>
     </div>
-  `,
-  styles: [`
-    .container { padding: 2rem; text-align: center; }
-    .placeholder { padding: 3rem; color: #6b7280; }
-    .placeholder i { font-size: 3rem; margin-bottom: 1rem; }
-  `]
+  `
 })
 export class ServiceProviderDetailComponent implements OnInit {
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }

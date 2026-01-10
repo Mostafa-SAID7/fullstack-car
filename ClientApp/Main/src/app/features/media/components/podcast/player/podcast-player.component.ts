@@ -11,8 +11,7 @@ import { PodcastDetails } from '../../../models';
   selector: 'app-podcast-player',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './podcast-player.component.html',
-  styleUrls: ['./podcast-player.component.scss']
+  templateUrl: './podcast-player.component.html'
 })
 export class PodcastPlayerComponent implements OnInit, OnDestroy {
   podcast: PodcastDetails | null = null;

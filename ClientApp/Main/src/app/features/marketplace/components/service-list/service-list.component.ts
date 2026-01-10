@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MarketplaceService } from '../../services/marketplace.service';
 import { CarService, MarketplaceFilters, ServiceType } from '../../models/marketplace.model';
-import { PaginatedResult } from '../../../../core/models/pagination.model';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-service-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './service-list.component.html',
-  styleUrls: ['./service-list.component.scss']
+  imports: [CommonModule, FormsModule, PaginationComponent],
+  templateUrl: './service-list.component.html'
 })
 export class ServiceListComponent implements OnInit {
   services: CarService[] = [];
@@ -40,6 +39,8 @@ export class ServiceListComponent implements OnInit {
   serviceTypes = Object.values(ServiceType);
   Math = Math;
 
+  showFilters = false;
+
   constructor(
     private marketplaceService: MarketplaceService,
     private router: Router
@@ -48,6 +49,7 @@ export class ServiceListComponent implements OnInit {
   ngOnInit(): void {
     this.loadServices();
   }
+
 
   loadServices(): void {
     this.loading = true;
@@ -93,6 +95,10 @@ export class ServiceListComponent implements OnInit {
     });
   }
 
+  createService(): void {
+    this.router.navigate(['/marketplace/services/create']);
+  }
+
   clearFilters(): void {
     this.filters = {
       searchTerm: '',
@@ -106,6 +112,10 @@ export class ServiceListComponent implements OnInit {
       sortDescending: true
     };
     this.onFilterChange();
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
   getServiceTypeLabel(type: ServiceType): string {

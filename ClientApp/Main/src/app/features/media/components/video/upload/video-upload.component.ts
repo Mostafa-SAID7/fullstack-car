@@ -9,8 +9,7 @@ import { VideoQuality } from '../../../models';
   selector: 'app-video-upload',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './video-upload.component.html',
-  styleUrls: ['./video-upload.component.scss']
+  templateUrl: './video-upload.component.html'
 })
 export class VideoUploadComponent {
   uploadForm: FormGroup;
@@ -90,12 +89,12 @@ export class VideoUploadComponent {
     const now = Date.now();
     const elapsed = (now - this.uploadStartTime) / 1000; // seconds
     this.bytesUploaded = (progress / 100) * this.totalBytes;
-    
+
     if (elapsed > 0 && progress > 0) {
       const uploadSpeed = this.bytesUploaded / elapsed; // bytes per second
       const remainingBytes = this.totalBytes - this.bytesUploaded;
       const timeRemaining = remainingBytes / uploadSpeed; // seconds
-      
+
       this.uploadSpeed = this.formatSpeed(uploadSpeed);
       this.timeRemaining = this.formatTime(timeRemaining);
     } else {
@@ -108,22 +107,22 @@ export class VideoUploadComponent {
     const units = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
     let size = bytesPerSecond;
     let unitIndex = 0;
-    
+
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-    
+
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   }
 
   private formatTime(seconds: number): string {
     if (!isFinite(seconds) || seconds < 0) return 'Calculating...';
-    
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m ${secs}s`;
     } else if (minutes > 0) {

@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MediaService } from '../../services/media.service';
 import { VideoPlaylist } from '../../models';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-playlist',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './playlist.component.html',
-  styleUrls: ['./playlist.component.scss']
+  imports: [CommonModule, RouterModule, FormsModule, PaginationComponent],
+  templateUrl: './playlist.component.html'
 })
 export class PlaylistComponent implements OnInit {
   playlists: VideoPlaylist[] = [];
@@ -21,6 +21,25 @@ export class PlaylistComponent implements OnInit {
   newPlaylistDescription = '';
   isPublic = true;
   creating = false;
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 9; // 3x3 grid
+  totalItems = 0;
+
+  get paginatedPlaylists(): VideoPlaylist[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.playlists.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.playlists.length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   constructor(
     private mediaService: MediaService,

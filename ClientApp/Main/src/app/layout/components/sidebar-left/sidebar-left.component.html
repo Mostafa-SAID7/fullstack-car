@@ -1,137 +1,61 @@
-<div class="flex flex-col h-full p-2 space-y-0.5 animate-fade-in items-center lg:items-stretch">
+<div
+    class="flex flex-col h-full p-3 space-y-4 animate-fade-in items-stretch bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 shadow-xl dark:shadow-2xl rounded-2xl overflow-hidden">
+
     <!-- Main Navigation Items (Scrollable) -->
-    <div class="flex-1 space-y-0.5 overflow-y-auto custom-scroll w-full">
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/community" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-sky-500/10 text-sky-500 group-hover:bg-sky-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-user-group text-lg"></i>
-            </div>
-            <span
-                class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Friends</span>
-        </div>
-
-        <div
-            class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-clock text-lg"></i>
-            </div>
-            <span
-                class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Memories</span>
-        </div>
-
-        <div
-            class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-purple-500/10 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-bookmark text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Saved</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/community/news" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-orange-500/10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-newspaper text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Latest
-                News</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/community/qa" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-circle-question text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Knowledge
-                Center</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/community/maps" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-map-location-dot text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Automotive
-                Maps</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/community/guides" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-book-open text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Maintenance
-                Guides</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/media" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-play text-lg"></i>
-            </div>
-            <span class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Videos &
-                Podcasts</span>
-        </div>
-
-        <div class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group"
-            routerLink="/marketplace" routerLinkActive="!bg-primary/10 transition-all duration-500">
-            <div
-                class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fa-solid fa-store text-lg"></i>
-            </div>
-            <span
-                class="text-sm font-bold text-foreground/80 group-hover:text-foreground hidden lg:inline">Marketplace</span>
-        </div>
-
-        <hr class="my-4 border-border/10 mx-3 w-full lg:w-auto">
-
-        <h3
-            class="px-4 text-[10px] text-muted-foreground/50 font-black mb-3 uppercase tracking-[0.2em] flex items-center gap-2 lg:justify-start justify-center">
-            <span class="w-1 h-1 bg-primary rounded-full"></span>
-            <span class="hidden lg:inline">Shortcuts</span>
-        </h3>
-
-        <div
-            class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all hover:bg-secondary/50 active:scale-95 cursor-pointer group">
-            <div
-                class="w-10 h-10 flex-shrink-0 bg-primary/20 rounded-xl flex items-center justify-center text-primary font-black italic text-[10px] group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
-                OFF</div>
-            <span
-                class="text-sm font-bold text-foreground/80 truncate group-hover:text-foreground hidden lg:inline">Off-road
-                Lovers
-                Egypt</span>
-        </div>
+    <div class="flex-1 space-y-6 overflow-y-auto pr-1 -mr-1 custom-scroll w-full">
+        <app-community-sidebar-left
+            *ngIf="currentSection === 'community' || currentSection === 'default'"></app-community-sidebar-left>
+        <app-media-sidebar-left
+            *ngIf="currentSection === 'video' || currentSection === 'media' || currentSection === 'podcast'"></app-media-sidebar-left>
+        <app-marketplace-sidebar-left *ngIf="currentSection === 'marketplace'"></app-marketplace-sidebar-left>
     </div>
 
-    <!-- Bottom Section (User Profile & Copyright) -->
-    <div class="mt-auto pt-4 space-y-3 w-full">
+
+    <!-- Bottom Section (User Profile & Navigation Switcher) -->
+    <div class="mt-auto pt-4 space-y-4 w-full">
+        <!-- Profile Link -->
         <div routerLink="/community/profile"
-            class="flex items-center justify-center lg:justify-start gap-3 p-2 rounded-2xl transition-all hover:mica-effect active:scale-95 cursor-pointer group bg-white/5 border border-white/5 mx-1">
+            class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-2xl transition-all hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer group border border-transparent hover:border-primary/20">
             <div
-                class="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-tr from-primary/80 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-primary/10 overflow-hidden">
+                class="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-black shadow-lg shadow-primary/20 overflow-hidden text-xs">
                 <img *ngIf="currentUser?.profileImageUrl" [src]="currentUser.profileImageUrl"
                     class="w-full h-full object-cover">
                 <span *ngIf="!currentUser?.profileImageUrl">{{ currentUser?.firstName?.[0] || 'U' }}{{
                     currentUser?.lastName?.[0] || 'P' }}</span>
             </div>
-            <div class="flex-col min-w-0 hidden lg:flex">
-                <span class="font-bold text-sm text-foreground truncate">{{ currentUser?.firstName ?
+            <div class="flex-col min-w-0 flex md:hidden lg:flex">
+                <span class="font-extrabold text-xs text-foreground truncate">{{ currentUser?.firstName ?
                     currentUser.firstName + ' ' +
-                    currentUser.lastName : 'User Profile' }}</span>
-                <span class="text-[10px] text-muted-foreground/60 font-medium tracking-tight">View Profile</span>
+                    currentUser.lastName : 'User Account' }}</span>
+                <span class="text-[9px] text-primary/60 font-black uppercase tracking-wider">Account Settings</span>
             </div>
         </div>
 
-        <div
-            class="px-2 py-4 text-[8px] text-muted-foreground/30 font-bold tracking-tighter uppercase text-center mica-effect rounded-2xl border border-white/5 hidden lg:block mx-1">
-            <p>&copy; {{ currentYear }} COMMUNITY CAR</p>
+        <!-- Global Navigation Shortcut (To help switch between sections) -->
+        <div class="grid md:hidden lg:grid grid-cols-3 gap-2 p-1 bg-slate-100 dark:bg-white/5 rounded-xl">
+            <button routerLink="/community"
+                class="flex items-center justify-center p-2 rounded-xl transition-all hover:bg-secondary dark:hover:bg-white/5 active:scale-95 group"
+                [attr.title]="'Community'"
+                [ngClass]="{'bg-white shadow-sm dark:bg-white/10': currentSection === 'community'}">
+                <i class="fa-solid fa-user-group text-[11px] text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors"
+                    [class.!text-primary]="currentSection === 'community'"></i>
+            </button>
+            <button routerLink="/media"
+                class="flex items-center justify-center p-2 rounded-xl transition-all hover:bg-secondary dark:hover:bg-white/5 active:scale-95 group"
+                [attr.title]="'Media Hub'"
+                [ngClass]="{'bg-white shadow-sm dark:bg-white/10': currentSection === 'media'}">
+                <i class="fa-solid fa-play text-[11px] text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors"
+                    [class.!text-blue-500]="currentSection === 'media'"></i>
+            </button>
+            <button routerLink="/marketplace"
+                class="flex items-center justify-center p-2 rounded-xl transition-all hover:bg-secondary dark:hover:bg-white/5 active:scale-95 group"
+                [attr.title]="'Marketplace'"
+                [ngClass]="{'bg-white shadow-sm dark:bg-white/10': currentSection === 'marketplace'}">
+                <i class="fa-solid fa-store text-[11px] text-gray-500 dark:text-gray-400 group-hover:text-emerald-500 transition-colors"
+                    [class.!text-emerald-500]="currentSection === 'marketplace'"></i>
+            </button>
         </div>
+
+
     </div>
 </div>

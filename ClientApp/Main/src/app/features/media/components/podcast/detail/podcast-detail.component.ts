@@ -11,8 +11,7 @@ import { FormsModule } from '@angular/forms';
     selector: 'app-podcast-detail',
     standalone: true,
     imports: [CommonModule, RouterModule, FormsModule],
-    templateUrl: './podcast-detail.component.html',
-    styleUrls: ['./podcast-detail.component.scss']
+    templateUrl: './podcast-detail.component.html'
 })
 export class PodcastDetailComponent implements OnInit, OnDestroy {
     podcast: PodcastDetails | null = null;
@@ -92,7 +91,7 @@ export class PodcastDetailComponent implements OnInit, OnDestroy {
         //         this.submittingComment = false;
         //     }
         // });
-        
+
         // Temporary mock
         setTimeout(() => {
             this.newComment = '';

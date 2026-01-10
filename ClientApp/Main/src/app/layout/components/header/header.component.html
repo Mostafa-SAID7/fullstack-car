@@ -1,317 +1,256 @@
 <div
-    class="h-14 relative before:absolute before:top-0 before:left-0 before:w-full before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:opacity-50 flex items-center justify-between px-2 sm:px-4 md:px-6 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] backdrop-blur-md border-b border-white/5 shadow-sm">
-    <div class="flex items-center gap-2 sm:gap-3">
+    class="h-16 relative before:absolute before:top-0 before:left-0 before:w-full before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:opacity-50 flex items-center justify-between px-4 sm:px-6 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] backdrop-blur-md border-b border-white/5 shadow-sm z-50">
+
+    <!-- LEFT: Logo -->
+    <div class="flex items-center gap-2 sm:gap-3 z-10">
+        <!-- Mobile Toggle + Logo (Styled Container) -->
+        <div
+            class="md:hidden flex items-center gap-1 bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-2xl p-1 shadow-xl dark:shadow-2xl transition-all">
+            <!-- Sidebar Toggle -->
+            <button
+                class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                (click)="layoutService.toggleMobileMenu()">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+
+            <!-- Mobile Logo -->
+            <div routerLink="/"
+                class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0 shadow-lg shadow-primary/20">
+                <span class="text-white font-black text-xl tracking-tighter italic">CC</span>
+            </div>
+        </div>
+
+        <!-- Desktop Brand Pill (Logo + Text) -->
         <div routerLink="/"
-            class="w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0 shadow-lg shadow-primary/20">
-            <span class="text-white font-black text-xl tracking-tighter italic">CC</span>
+            class="hidden md:flex items-center gap-3 bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-full p-1.5 pr-6 shadow-xl dark:shadow-2xl hover:shadow-2xl transition-all cursor-pointer group">
+            <div
+                class="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
+                <span class="text-white font-black text-xl tracking-tighter italic">CC</span>
+            </div>
+            <span class="font-bold text-lg tracking-tight text-gray-900 dark:text-white">Community Car</span>
         </div>
     </div>
 
-    <nav class="flex items-center h-full hidden lg:flex gap-1 lg:gap-4 xl:gap-8 flex-1 justify-center max-w-2xl px-4">
-        <div routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground transition-all duration-300 hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
-            matTooltip="Home">
-            <i class="fa-solid fa-house text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
+    <!-- CENTER: Search + Nav + Theme (Desktop Only - lg:flex) -->
+    <div
+        class="flex items-center justify-between bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-full p-1.5 shadow-xl dark:shadow-2xl absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 max-w-[900px] w-fit transition-all duration-300">
+
+        <!-- Search Bar (Visual) -->
+        <div (click)="toggleSearch()"
+            class="hidden lg:flex items-center gap-3 bg-secondary/50 dark:bg-white/5 hover:bg-secondary dark:hover:bg-white/10 transition-colors border border-transparent dark:border-white/5 rounded-full px-4 h-10 w-64 cursor-text group mr-2">
+            <i
+                class="fa-solid fa-search text-lg text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors"></i>
+            <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Search</span>
         </div>
-        <div routerLink="/community" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
-            matTooltip="Friends">
-            <i class="fa-solid fa-user-group text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
-        </div>
-        <div routerLink="/media" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
-            matTooltip="Video">
-            <div class="relative group-active:scale-95 group-hover:scale-110 transition-transform">
-                <i class="fa-solid fa-tv text-2xl transition-transform"></i>
-                <span
-                    class="absolute -top-1.5 -right-2 bg-primary text-[10px] font-black text-white px-1.5 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[18px] h-[18px] flex items-center justify-center animate-badge-pulse animate-badge-bounce z-10 after:absolute after:inset-0 after:rounded-full after:bg-primary after:opacity-40 after:animate-ping">9+</span>
+
+        <!-- Navigation Links -->
+        <nav class="flex items-center gap-1 mx-2">
+            <!-- Home -->
+            <div routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-secondary dark:hover:bg-white/5 rounded-full group active:scale-95 [&.active]:bg-primary/10"
+                matTooltip="Home">
+                <i
+                    class="fa-solid fa-house text-xl text-black dark:text-white group-hover:text-primary group-[.active]:!text-primary transition-colors group-hover:scale-110"></i>
             </div>
-        </div>
-        <div routerLink="/marketplace" routerLinkActive="active"
-            class="relative h-full flex-1 flex items-center justify-center cursor-pointer text-muted-foreground hover:bg-gradient-to-br hover:from-secondary/80 hover:to-secondary/60 hover:shadow-lg hover:shadow-primary/10 hover:border hover:border-primary/20 rounded-xl my-1 transition-all duration-300 group active:text-primary [&.active]:text-primary [&.active]:bg-gradient-to-br [&.active]:from-primary/10 [&.active]:to-primary/5 [&.active]:shadow-lg [&.active]:shadow-primary/20 [&.active]:border [&.active]:border-primary/30 [&.active]:after:w-12 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 hover:after:w-12 after:h-[3px] after:bg-primary after:rounded-t-full after:transition-all after:duration-300 after:shadow-[0_-4px_12px_rgba(220,38,38,0.5)]"
-            matTooltip="Marketplace">
-            <i class="fa-solid fa-store text-2xl group-active:scale-95 group-hover:scale-110 transition-transform"></i>
-        </div>
-    </nav>
 
-    <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-        <!-- AI Chat Toggle -->
-        <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
-            [matMenuTriggerFor]="aiMenu" matTooltip="AI Assistant">
-            <i class="fa-solid fa-robot text-lg group-hover:scale-110 transition-transform"></i>
-        </button>
 
-        <mat-menu #aiMenu="matMenu" class="custom-mat-menu !max-w-none">
-            <div class="w-[320px] sm:w-[380px] h-[500px] flex flex-col overflow-hidden bg-background/80 backdrop-blur-3xl"
-                (click)="$event.stopPropagation()">
-                <!-- AI Header -->
-                <div class="p-4 flex items-center justify-between border-b border-border/50 bg-white/5 relative">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary cursor-pointer hover:bg-primary/20 transition-colors"
-                            (click)="showAiModes = !showAiModes">
-                            <i class="fas fa-robot text-xs"></i>
-                        </div>
-                        <div class="cursor-pointer" (click)="showAiModes = !showAiModes">
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-sm text-foreground tracking-tight">AI Assistant</span>
-                                <i class="fas fa-chevron-down text-[8px] text-muted-foreground transition-transform duration-300"
-                                    [class.rotate-180]="showAiModes"></i>
-                            </div>
-                            <span
-                                class="text-[9px] text-emerald-500 font-bold uppercase tracking-[0.2em] block leading-none mt-0.5">{{
-                                aiMode }} Mode</span>
-                        </div>
-                    </div>
 
-                    <!-- Mode Dropdown -->
-                    <div class="absolute top-full left-4 right-4 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl p-2 z-20 shadow-2xl mt-2 animate-fade-in"
-                        *ngIf="showAiModes">
-                        <button (click)="setAiMode('chat')"
-                            class="w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-white/5 text-xs"
-                            [ngClass]="{'text-primary bg-primary/10': aiMode === 'chat'}">
-                            <i class="fas fa-comments w-4"></i> General Chat
-                        </button>
-                        <button (click)="setAiMode('maintenance')"
-                            class="w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-white/5 text-xs"
-                            [ngClass]="{'text-primary bg-primary/10': aiMode === 'maintenance'}">
-                            <i class="fas fa-wrench w-4"></i> Maintenance
-                        </button>
-                        <button (click)="setAiMode('recommendation')"
-                            class="w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-white/5 text-xs"
-                            [ngClass]="{'text-primary bg-primary/20': aiMode === 'recommendation'}">
-                            <i class="fas fa-search w-4"></i> Car Matching
-                        </button>
-                    </div>
-                </div>
 
-                <!-- Messages -->
-                <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 custom-scroll scroll-smooth"
-                    #aiChatContainer>
-                    <div *ngFor="let msg of aiMessages" class="flex flex-col max-w-[85%] relative animate-slide-up"
-                        [class.self-end]="msg.isUser" [class.items-end]="msg.isUser" [class.self-start]="!msg.isUser"
-                        [class.items-start]="!msg.isUser">
-                        <div class="p-3 text-xs leading-relaxed"
-                            [class]="msg.isUser ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-lg shadow-primary/20' : 'bg-secondary/50 text-foreground rounded-2xl rounded-tl-none border border-border/50'"
-                            [innerHTML]="parseMarkdown(msg.text || '')">
-                        </div>
-                        <span class="text-[8px] text-muted-foreground/60 mt-1 px-1 font-bold uppercase tracking-wider">
-                            {{ msg.timestamp | date:'shortTime' }}
-                        </span>
-                    </div>
 
-                    <div class="flex gap-1.5 p-3 bg-secondary/30 rounded-2xl w-fit animate-fade-in" *ngIf="isAiTyping">
-                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-typing"></span>
-                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-typing"
-                            [style.animation-delay]="'-0.16s'"></span>
-                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-typing"
-                            [style.animation-delay]="'-0.32s'"></span>
-                    </div>
-                </div>
-
-                <!-- Input Area -->
-                <div class="p-3 bg-black/5 border-t border-border/50 flex gap-2">
-                    <input type="text" [(ngModel)]="currentChatMsg" (keyup.enter)="sendAiMessage()"
-                        placeholder="Ask AI assistant..." [disabled]="isAiTyping"
-                        class="flex-1 bg-secondary/50 border border-transparent rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground/40 shadow-inner">
-                    <button (click)="sendAiMessage()" [disabled]="!currentChatMsg.trim() || isAiTyping"
-                        class="bg-primary text-white rounded-xl w-10 h-8 flex items-center justify-center transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/40 disabled:opacity-30 disabled:cursor-not-allowed">
-                        <i class="fas fa-paper-plane text-xs"></i>
-                    </button>
+            <!-- Video -->
+            <div routerLink="/media" routerLinkActive="active"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-secondary dark:hover:bg-white/5 rounded-full group active:scale-95 [&.active]:bg-primary/10"
+                matTooltip="Media">
+                <div class="relative">
+                    <i
+                        class="fa-solid fa-video text-xl text-black dark:text-white group-hover:text-primary group-[.active]:!text-primary transition-colors group-hover:scale-110"></i>
+                    <span
+                        class="absolute -top-1.5 -right-1.5 bg-primary text-[9px] font-black text-white px-1 py-0.5 rounded-full border-2 border-white dark:border-[#111] min-w-[14px] h-[14px] flex items-center justify-center">9+</span>
                 </div>
             </div>
-        </mat-menu>
 
-        <!-- Search Toggle -->
-        <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
-            (click)="toggleSearch()" matTooltip="Search">
-            <i class="fa-solid fa-search text-lg group-hover:scale-110 transition-transform"></i>
-        </button>
-
-        <!-- Search Overlay -->
-        <div *ngIf="isSearchOpen"
-            class="fixed inset-0 z-[100] flex items-start justify-center pt-2 sm:pt-4 px-2 sm:px-4 animate-fade-in">
-            <div class="absolute inset-0 bg-background/80 backdrop-blur-md" (click)="toggleSearch()"></div>
-            <div
-                class="relative w-full max-w-2xl bg-card border border-border/40 shadow-2xl rounded-2xl overflow-hidden mt-2">
-                <div class="flex items-center p-4 gap-4">
-                    <i class="fa-solid fa-search text-primary text-xl"></i>
-                    <input type="text" placeholder="Search Community Car..."
-                        class="w-full bg-transparent border-none outline-none text-lg text-foreground placeholder:text-muted-foreground/50"
-                        autoFocus (keyup.escape)="toggleSearch()">
-                    <button
-                        class="px-3 py-1 bg-secondary rounded-lg text-xs font-bold hover:bg-secondary/80 transition-colors"
-                        (click)="toggleSearch()">ESC</button>
-                </div>
+            <!-- Marketplace -->
+            <div routerLink="/marketplace" routerLinkActive="active"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-secondary dark:hover:bg-white/5 rounded-full group active:scale-95 [&.active]:bg-primary/10"
+                matTooltip="Marketplace">
+                <i
+                    class="fa-solid fa-store text-xl text-black dark:text-white group-hover:text-primary group-[.active]:!text-primary transition-colors group-hover:scale-110"></i>
             </div>
-        </div>
+        </nav>
 
-        <!-- Language Switcher -->
-        <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
-            [matMenuTriggerFor]="langMenu" matTooltip="Language">
-            <i class="fa-solid fa-globe text-xl group-hover:scale-110 transition-transform"></i>
-        </button>
-        <mat-menu #langMenu="matMenu" class="custom-mat-menu">
-            <button mat-menu-item (click)="switchLanguage('en-US')" [class.bg-secondary]="currentLang === 'en-US'">
-                <span class="mr-2">🇺🇸</span> English
-            </button>
-            <button mat-menu-item (click)="switchLanguage('ar-EG')" [class.bg-secondary]="currentLang === 'ar-EG'">
-                <span class="mr-2">🇪🇬</span> العربية
-            </button>
-        </mat-menu>
+        <!-- Vertical Divider -->
+        <div class="w-[1px] h-6 bg-border/50 dark:bg-white/10 mx-2"></div>
 
-        <!-- Theme Toggle -->
+        <!-- Theme Toggle (Moved to Center) -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation group"
+            class="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-secondary dark:hover:bg-white/5 transition-all duration-300 cursor-pointer active:scale-90 group"
             (click)="toggleTheme()" [matTooltip]="getThemeTooltip()">
-            <i class="fa-solid text-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110" [ngClass]="{
-                    'fa-sun text-primary scale-110 drop-shadow-[0_0_8px_hsl(var(--color-primary)/0.4)] rotate-0 animate-sun-glow': !themeService.isDark(),
-                    'fa-moon text-primary scale-100 rotate-0 animate-moon-pulse': themeService.isDark()
-                }">
+            <i [class]="'fa-solid text-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-12 ' + (themeService.isDark() ? 'fa-moon' : 'fa-sun')"
+                [class.text-primary]="true">
             </i>
         </button>
+    </div>
 
-        <!-- Menu Button (Mobile Only) -->
+    <!-- RIGHT: Option Icons -->
+    <div
+        class="flex items-center gap-1 lg:gap-1 flex-shrink-0 z-10 bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-full p-1.5 shadow-xl dark:shadow-2xl transition-all duration-300">
+
+
+        <!-- Language Switcher (Hidden on Mobile) -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 touch-manipulation lg:hidden group"
-            matTooltip="Menu" (click)="layoutService.toggleMobileMenu()">
-            <i class="fa-solid fa-bars text-xl group-hover:scale-110 transition-transform"></i>
+            class="hidden lg:flex w-10 h-10 rounded-full items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-[inset_0_0_0_1px_hsl(var(--color-primary)/0.2)] transition-all duration-300 cursor-pointer active:scale-90 group"
+            [matMenuTriggerFor]="langMenu" matTooltip="Language">
+            <i
+                class="fa-solid fa-globe text-xl text-black dark:text-white stroke-current group-hover:scale-110 transition-transform group-hover:text-primary"></i>
         </button>
 
-        <!-- Messenger Dropdown -->
-        <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 relative touch-manipulation group"
-            [matMenuTriggerFor]="messengerMenu" matTooltip="Messenger">
-            <i class="fa-brands fa-facebook-messenger text-xl group-hover:scale-110 transition-transform"></i>
-            <span
-                class="absolute -top-1 -right-1 bg-primary text-[10px] font-black text-white px-1.5 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[18px] h-[18px] flex items-center justify-center animate-badge-pulse animate-badge-bounce z-10 after:absolute after:inset-0 after:rounded-full after:bg-primary after:opacity-40 after:animate-ping scale-75 origin-top-right">3</span>
-        </button>
 
-        <mat-menu #messengerMenu="matMenu" class="notification-menu w-80 sm:w-96">
-            <div class="px-4 py-3 border-b border-border/50 flex items-center justify-between"
-                (click)="$event.stopPropagation()">
-                <h3 class="font-bold text-lg text-foreground">Messages</h3>
-                <button class="text-xs text-primary hover:underline font-bold">New Message</button>
-            </div>
-            <div class="py-2">
-                <div *ngFor="let msg of mockMessages" mat-menu-item
-                    class="!h-auto !py-3 !px-4 hover:bg-secondary/30 transition-colors border-b border-border/10 last:border-0">
-                    <div class="flex items-center gap-3">
-                        <div class="relative w-12 h-12 flex-shrink-0">
-                            <div
-                                class="w-full h-full rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-bold text-sm ring-2 ring-primary/10">
-                                {{ msg.user[0] }}
-                            </div>
-                            <span *ngIf="msg.online"
-                                class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-card"></span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-sm text-foreground truncate">{{ msg.user }}</span>
-                                <span class="text-[10px] text-muted-foreground">{{ msg.time }}</span>
-                            </div>
-                            <p class="text-[12px] text-muted-foreground truncate leading-snug">{{ msg.text }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="p-3 border-t border-border/50 bg-secondary/10" routerLink="/messages">
-                <button class="w-full text-center text-xs font-bold text-primary hover:underline">See all in
-                    Messenger</button>
-            </div>
-        </mat-menu>
-
-        <!-- Notifications -->
+        <!-- Notifications (Hidden on Mobile) -->
         <button
-            class="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground/70 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 hover:border hover:border-primary/30 transition-all duration-300 cursor-pointer active:scale-90 relative touch-manipulation group"
+            class="hidden lg:flex w-10 h-10 rounded-full items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-[inset_0_0_0_1px_hsl(var(--color-primary)/0.2)] transition-all duration-300 cursor-pointer active:scale-90 relative group"
             [matMenuTriggerFor]="notificationMenu" matTooltip="Notifications">
-            <i class="fa-solid fa-bell text-xl group-hover:rotate-12 group-hover:scale-110 transition-transform"
+            <i class="fa-solid fa-bell text-xl text-black dark:text-white stroke-current group-hover:rotate-12 group-hover:scale-110 transition-transform group-hover:text-primary"
                 [class.text-primary]="(unreadCount$ | async)! > 0"></i>
             <span *ngIf="(unreadCount$ | async)! > 0"
-                class="absolute -top-1 -right-1 bg-primary text-[10px] font-black text-white px-1.5 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[18px] h-[18px] flex items-center justify-center animate-badge-pulse animate-badge-bounce z-10 after:absolute after:inset-0 after:rounded-full after:bg-primary after:opacity-40 after:animate-ping">
+                class="absolute -top-1 -right-1 bg-primary text-[10px] font-black text-white px-1 py-0.5 rounded-full border-2 border-background shadow-lg shadow-primary/20 min-w-[16px] h-[16px] flex items-center justify-center animate-badge-pulse z-10">
                 {{ (unreadCount$ | async)! > 99 ? '99+' : (unreadCount$ | async) }}
             </span>
         </button>
 
-        <mat-menu #notificationMenu="matMenu" class="notification-menu w-80 sm:w-96">
-            <ng-template matMenuContent>
-                <div class="px-4 py-3 border-b flex items-center justify-between" (click)="$event.stopPropagation()">
-                    <h3 class="font-bold text-lg">Notifications</h3>
-                    <button class="text-xs text-primary hover:underline" (click)="markAllRead()">Mark all as
-                        read</button>
-                </div>
-                <div class="max-h-[70vh] overflow-y-auto">
-                    <ng-container *ngIf="(notifications$ | async) as notifications">
-                        <div *ngIf="notifications.length === 0" class="p-8 text-center text-muted-foreground">
-                            <i class="fa-regular fa-bell-slash text-4xl mb-2 opacity-50"></i>
-                            <p>No notifications yet</p>
-                        </div>
-
-                        <a mat-menu-item *ngFor="let note of notifications"
-                            class="!h-auto !py-3 !px-4 border-b last:border-0 hover:bg-secondary/50 transition-colors no-underline block"
-                            [ngClass]="{
-                                'bg-blue-50': !note.isRead && !themeService.isDark(),
-                                'bg-blue-900/10': !note.isRead && themeService.isDark()
-                            }" (click)="handleNotificationClick(note)">
-                            <span class="flex items-start gap-3 w-full text-left">
-                                <span
-                                    class="w-10 h-10 rounded-full bg-secondary flex-shrink-0 overflow-hidden relative block">
-                                    <img *ngIf="note.sourceUserAvatar; else defaultAvatar" [src]="note.sourceUserAvatar"
-                                        class="w-full h-full object-cover" />
-                                    <ng-template #defaultAvatar>
-                                        <i
-                                            class="fa-solid fa-user absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500"></i>
-                                    </ng-template>
-                                    <span *ngIf="!note.isRead"
-                                        class="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-card"></span>
-                                </span>
-                                <span class="flex-1 min-w-0 flex flex-col items-start">
-                                    <span
-                                        class="text-sm font-medium leading-tight mb-1 line-clamp-2 truncate-2-lines whitespace-normal text-left block">
-                                        {{ note.message }}
-                                    </span>
-                                    <span class="text-xs text-muted-foreground">{{ note.createdAt | date:'short'
-                                        }}</span>
-                                </span>
-                            </span>
-                        </a>
-                    </ng-container>
-                </div>
-            </ng-template>
-        </mat-menu>
-
-        <!-- Account Dropdown -->
+        <!-- Account Dropdown (Visible Always) -->
         <button [matMenuTriggerFor]="accountMenu"
-            class="w-10 h-10 rounded-xl bg-secondary/80 backdrop-blur-3xl bg-background/60 border border-white/5 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-90 ml-1 group"
+            class="w-10 h-10 rounded-full bg-background/60 border border-white/5 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-primary/5 hover:border-primary/30 hover:shadow-[inset_0_0_0_1px_hsl(var(--color-primary)/0.2)] transition-all active:scale-90 lg:ml-1 group"
             matTooltip="Account">
-            <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
-            <div class="w-full h-full flex items-center justify-center text-primary font-black italic text-sm group-hover:scale-110 transition-transform">
+            <div
+                class="w-full h-full flex items-center justify-center text-primary font-black italic text-xs group-hover:scale-110 transition-transform">
                 {{ (currentUser$ | async)?.firstName?.[0] || 'U' }}{{ (currentUser$ | async)?.lastName?.[0] || 'P' }}
             </div>
         </button>
 
-        <mat-menu #accountMenu="matMenu" class="custom-mat-menu w-56">
-            <div class="px-4 py-3 border-b border-border/50 bg-secondary/5" (click)="$event.stopPropagation()">
-                <p class="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-1">Signed in as</p>
-                <p class="text-sm font-bold text-foreground truncate">{{ (currentUser$ | async)?.firstName }} {{
-                    (currentUser$ | async)?.lastName }}</p>
-            </div>
-            <button mat-menu-item routerLink="/community/profile">
-                <i class="fa-solid fa-user-circle mr-3 text-primary/70"></i>
-                <span>My Profile</span>
-            </button>
-            <button mat-menu-item routerLink="/settings">
-                <i class="fa-solid fa-cog mr-3 text-primary/70"></i>
-                <span>Settings</span>
-            </button>
-            <div class="border-t border-border/50 my-1"></div>
-            <button mat-menu-item (click)="logout()" class="!text-destructive">
-                <i class="fa-solid fa-sign-out-alt mr-3"></i>
-                <span>Sign Out</span>
-            </button>
-        </mat-menu>
+        <!-- Mobile More Options (Hidden on Desktop) -->
+        <button
+            class="flex lg:hidden w-10 h-10 rounded-full items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-[inset_0_0_0_1px_hsl(var(--color-primary)/0.2)] transition-all duration-300 cursor-pointer active:scale-90 ml-1 group"
+            [matMenuTriggerFor]="mobileOptionsMenu" matTooltip="Options">
+            <i
+                class="fa-solid fa-ellipsis-vertical text-xl text-black dark:text-white stroke-current group-hover:scale-110 transition-transform group-hover:text-primary"></i>
+        </button>
     </div>
+
+    <!-- MENUS & MODALS (Kept same as before, just positionally moved in HTML for tidiness) -->
+
+
+    <!-- Search Overlay -->
+    <div *ngIf="isSearchOpen"
+        class="fixed inset-0 z-[100] flex items-start justify-center pt-2 sm:pt-4 px-2 sm:px-4 animate-fade-in">
+        <div class="absolute inset-0 bg-background/80 backdrop-blur-md" (click)="toggleSearch()"></div>
+        <div
+            class="relative w-full max-w-2xl bg-card border border-border/40 shadow-2xl rounded-2xl overflow-hidden mt-2">
+            <div class="flex items-center p-4 gap-4">
+                <i class="fa-solid fa-search text-2xl text-primary"></i>
+                <input type="text" placeholder="Search Community Car..."
+                    class="w-full bg-transparent border-none outline-none text-lg text-foreground placeholder:text-muted-foreground/50"
+                    autoFocus (keyup.escape)="toggleSearch()">
+                <button
+                    class="px-3 py-1 bg-secondary rounded-lg text-xs font-bold hover:bg-secondary/80 transition-colors"
+                    (click)="toggleSearch()">ESC</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Menu -->
+    <mat-menu #langMenu="matMenu" class="custom-mat-menu">
+        <button mat-menu-item (click)="switchLanguage('en-US')" [class.bg-secondary]="currentLang === 'en-US'">
+            <span class="mr-2">🇺🇸</span> English
+        </button>
+        <button mat-menu-item (click)="switchLanguage('ar-EG')" [class.bg-secondary]="currentLang === 'ar-EG'">
+            <span class="mr-2">🇪🇬</span> العربية
+        </button>
+    </mat-menu>
+
+
+    <!-- Notification Menu -->
+    <mat-menu #notificationMenu="matMenu" class="notification-menu w-80 sm:w-96">
+        <ng-template matMenuContent>
+            <div class="px-4 py-3 border-b flex items-center justify-between bg-secondary/5"
+                (click)="$event.stopPropagation()">
+                <h3 class="font-bold text-sm uppercase tracking-widest text-muted-foreground">Notifications</h3>
+                <button class="text-xs text-primary hover:underline font-bold" (click)="markAllRead()">Mark all as
+                    read</button>
+            </div>
+            <div class="max-h-[70vh] overflow-y-auto">
+                <ng-container *ngIf="(notifications$ | async) as notifications">
+                    <div *ngIf="notifications.length === 0" class="p-8 text-center text-muted-foreground">
+                        <i class="fa-solid fa-bell-slash text-4xl mb-2 opacity-30"></i>
+                        <p class="text-xs font-medium">No notifications yet</p>
+                    </div>
+
+                    <a mat-menu-item *ngFor="let note of notifications"
+                        class="!h-auto !py-3 !px-4 border-b last:border-0 hover:bg-secondary/50 transition-colors no-underline block"
+                        [ngClass]="{
+                            'bg-blue-50': !note.isRead && !themeService.isDark(),
+                            'bg-blue-900/10': !note.isRead && themeService.isDark()
+                        }" (click)="handleNotificationClick(note)">
+                        <span class="flex items-start gap-3 w-full text-left">
+                            <span
+                                class="w-10 h-10 rounded-full bg-secondary flex-shrink-0 overflow-hidden relative block">
+                                <img *ngIf="note.sourceUserAvatar; else defaultAvatar" [src]="note.sourceUserAvatar"
+                                    class="w-full h-full object-cover" />
+                                <ng-template #defaultAvatar>
+                                    <i
+                                        class="fa-solid fa-user absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+                                </ng-template>
+                                <span *ngIf="!note.isRead"
+                                    class="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-card"></span>
+                            </span>
+                            <span class="flex-1 min-w-0 flex flex-col items-start">
+                                <span
+                                    class="text-sm font-medium leading-tight mb-1 line-clamp-2 truncate-2-lines whitespace-normal text-left block">
+                                    {{ note.message }}
+                                </span>
+                                <span class="text-xs text-muted-foreground">{{ note.createdAt | date:'short'
+                                    }}</span>
+                            </span>
+                        </span>
+                    </a>
+                </ng-container>
+            </div>
+        </ng-template>
+    </mat-menu>
+
+    <!-- Account Menu -->
+    <mat-menu #accountMenu="matMenu" class="custom-mat-menu w-56">
+        <div class="px-4 py-3 border-b border-border/50 bg-secondary/5" (click)="$event.stopPropagation()">
+            <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-[0.2em] mb-1">Signed in as</p>
+            <p class="text-xs font-bold text-foreground truncate">{{ (currentUser$ | async)?.firstName }} {{
+                (currentUser$ | async)?.lastName }}</p>
+        </div>
+        <button mat-menu-item routerLink="/community/profile" class="!flex !items-center !gap-3">
+            <i class="fa-solid fa-user-circle text-lg text-primary/70"></i>
+            <span class="text-xs font-medium">My Profile</span>
+        </button>
+        <button mat-menu-item routerLink="/settings" class="!flex !items-center !gap-3">
+            <i class="fa-solid fa-cog text-lg text-primary/70"></i>
+            <span class="text-xs font-medium">Settings</span>
+        </button>
+        <div class="border-t border-border/50 my-1"></div>
+        <button mat-menu-item (click)="logout()" class="!text-destructive !flex !items-center !gap-3">
+            <i class="fa-solid fa-sign-out-alt text-lg"></i>
+            <span class="text-xs font-medium">Sign Out</span>
+        </button>
+    </mat-menu>
+
+    <!-- Mobile Options Menu -->
+    <mat-menu #mobileOptionsMenu="matMenu" class="custom-mat-menu w-64">
+        <button mat-menu-item (click)="toggleSearch()">
+            <i class="fa-solid fa-search mr-3 text-lg"></i> Search
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="notificationMenu">
+            <i class="fa-solid fa-bell mr-3 text-lg"></i> Notifications
+            <span *ngIf="(unreadCount$ | async)! > 0"
+                class="ml-auto bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                {{ (unreadCount$ | async) }}
+            </span>
+        </button>
+    </mat-menu>
 
 </div>

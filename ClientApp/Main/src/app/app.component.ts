@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LayoutService } from './core/services/layout.service';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -16,4 +17,5 @@ import { LayoutService } from './core/services/layout.service';
 export class AppComponent {
   title = 'Media Streaming Platform';
   layoutService = inject(LayoutService);
+  private themeService = inject(ThemeService);
 }

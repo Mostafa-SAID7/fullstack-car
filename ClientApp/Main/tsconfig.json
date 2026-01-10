@@ -11,7 +11,10 @@
         "declaration": false,
         "downlevelIteration": true,
         "experimentalDecorators": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "importHelpers": true,
         "target": "ES2022",
         "module": "ESNext",
@@ -29,6 +32,9 @@
             ],
             "@shared/*": [
                 "src/app/shared/*"
+            ],
+            "@hugeicons/core-free-icons": [
+                "node_modules/@hugeicons/core-free-icons/dist/types/index.d.ts"
             ]
         }
     },

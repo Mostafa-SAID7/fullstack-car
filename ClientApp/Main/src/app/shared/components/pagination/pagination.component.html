@@ -1,35 +1,38 @@
-<div class="pagination">
-    <div class="pagination__info">
-        Showing {{ startItem }} - {{ endItem }} of {{ totalItems }}
+<div class="flex items-center justify-center mt-12 gap-3" *ngIf="totalPages > 1">
+    <!-- First Page -->
+    <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+        class="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-black border border-black/10 dark:border-white/10 text-slate-500 disabled:opacity-20 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-90">
+        <i class="fas fa-angle-double-left text-xs"></i>
+    </button>
+
+    <!-- Previous Button -->
+    <button (click)="previousPage()" [disabled]="currentPage === 1"
+        class="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-black border border-black/10 dark:border-white/10 text-slate-500 disabled:opacity-20 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-90">
+        <i class="fas fa-angle-left"></i>
+    </button>
+
+    <!-- Page Numbers -->
+    <div class="flex items-center gap-2 px-2">
+        <ng-container *ngFor="let page of pages">
+            <button (click)="goToPage(page)" [ngClass]="{
+                'bg-primary text-white border-primary shadow-lg shadow-primary/30 scale-105 z-10': page === currentPage,
+                'bg-white dark:bg-black border-black/10 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary hover:border-primary/30': page !== currentPage
+            }"
+                class="w-11 h-11 flex items-center justify-center rounded-xl border transition-all font-bold text-sm active:scale-95">
+                {{ page }}
+            </button>
+        </ng-container>
     </div>
 
-    <div class="pagination__controls">
-        <!-- Previous Button -->
-        <button class="pagination__btn" [disabled]="currentPage === 1" (click)="previousPage()">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
+    <!-- Next Button -->
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+        class="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-black border border-black/10 dark:border-white/10 text-slate-500 disabled:opacity-20 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-90">
+        <i class="fas fa-angle-right"></i>
+    </button>
 
-        <!-- First Page -->
-        <button *ngIf="showFirstPage" class="pagination__btn pagination__page" (click)="goToPage(1)">
-            1
-        </button>
-        <span *ngIf="showFirstPage && pages[0] > 2" class="pagination__ellipsis">...</span>
-
-        <!-- Page Numbers -->
-        <button *ngFor="let page of pages" class="pagination__btn pagination__page"
-            [class.pagination__page--active]="page === currentPage" (click)="goToPage(page)">
-            {{ page }}
-        </button>
-
-        <!-- Last Page -->
-        <span *ngIf="showLastPage && pages[pages.length - 1] < totalPages - 1" class="pagination__ellipsis">...</span>
-        <button *ngIf="showLastPage" class="pagination__btn pagination__page" (click)="goToPage(totalPages)">
-            {{ totalPages }}
-        </button>
-
-        <!-- Next Button -->
-        <button class="pagination__btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
-    </div>
+    <!-- Last Page -->
+    <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+        class="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-black border border-black/10 dark:border-white/10 text-slate-500 disabled:opacity-20 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-90">
+        <i class="fas fa-angle-double-right text-xs"></i>
+    </button>
 </div>

@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarLeftComponent } from '../../components/sidebar-left/sidebar-left.component';
 import { SidebarRightComponent } from '../../components/sidebar-right/sidebar-right.component';
 import { AIChatWidgetComponent } from '../../../features/ai-agent/components/ai-chat-widget/ai-chat-widget.component';
 import { LayoutService } from '../../../core/services/layout.service';
+import { AIAgentService } from '../../../features/ai-agent/services/ai-agent.service';
 import { ToastContainerComponent } from '../../../shared/components/toast-container/toast-container.component';
 
 @Component({
@@ -17,8 +19,10 @@ import { ToastContainerComponent } from '../../../shared/components/toast-contai
         HeaderComponent,
         SidebarLeftComponent,
         SidebarRightComponent,
-        ToastContainerComponent
+        ToastContainerComponent,
+        FormsModule
     ],
+    providers: [DatePipe],
     template: `
 <div class="min-h-screen bg-background text-foreground flex flex-col">
     <!-- Header with Mica effect -->
@@ -26,11 +30,11 @@ import { ToastContainerComponent } from '../../../shared/components/toast-contai
 
     <!-- Main Layout Container: Exactly fills viewport minus header -->
     <div
-        class="flex-1 grid grid-cols-1 md:grid-cols-[80px_1fr] lg:grid-cols-[240px_1fr] xl:grid-cols-[240px_1fr_240px] gap-4 xl:gap-6 w-full h-[calc(100vh-3.5rem)] mt-14 overflow-hidden bg-background/50">
+        class="flex-1 grid grid-cols-1 md:grid-cols-[80px_1fr] lg:grid-cols-[240px_1fr] xl:grid-cols-[240px_1fr_240px] gap-4 xl:gap-6 w-full h-[calc(100vh-3.5rem)] mt-14 overflow-hidden">
 
         <!-- Left Sidebar -->
         <aside
-            class="hidden md:block h-[calc(100vh-3.5rem)] pb-4 md:pl-2 lg:pl-4 border-r border-border/10 transition-all duration-500">
+            class="hidden md:block h-[calc(100vh-3.5rem)] pb-4 md:pl-2 lg:pl-4 border-r border-border/10 transition-all duration-500 pt-6">
             <app-sidebar-left class="block h-full animate-fade-in"></app-sidebar-left>
         </aside>
 
@@ -43,12 +47,142 @@ import { ToastContainerComponent } from '../../../shared/components/toast-contai
                 <div style="display:none" id="localization-test">Welcome</div>
             </div>
         </main>
-
         <!-- Right Sidebar -->
         <aside
-            class="hidden xl:block h-[calc(100vh-3.5rem)] pb-4 pr-4 border-l border-border/10">
-            <app-sidebar-right class="block h-full animate-fade-in"></app-sidebar-right>
+            class="hidden xl:flex xl:flex-col h-[calc(100vh-3.5rem)] pb-4 pr-4 border-l border-border/10 pt-6">
+            <div class="flex-1 overflow-hidden">
+                <app-sidebar-right class="block h-full animate-fade-in"></app-sidebar-right>
+            </div>
         </aside>
+    </div>
+
+    <!-- Global Chat Actions (Moved out of sidebar and available on all screens) -->
+    <div class="fixed bottom-6 right-6 z-[60] flex flex-col gap-4 w-[calc(100vw-3rem)] sm:w-[380px]">
+        <!-- Overlay Panels -->
+        <div class="relative w-full">
+            <!-- AI Overlay -->
+            <div *ngIf="isAiVisible"
+                class="absolute bottom-0 right-0 w-full h-[500px] max-h-[calc(100vh-200px)] bg-white dark:bg-[#111] rounded-[2rem] border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col animate-slide-up">
+                <div class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white cursor-pointer"
+                            (click)="showAiModes = !showAiModes">
+                            <i class="fa-solid fa-robot text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 cursor-pointer" (click)="showAiModes = !showAiModes">
+                                <span class="font-bold text-xs uppercase text-primary">AI Assistant</span>
+                                <i class="fa-solid fa-chevron-down text-[10px] opacity-40 text-primary" [class.rotate-180]="showAiModes"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button (click)="toggleAi()" class="text-muted-foreground hover:text-foreground">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- AI Modes Dropdown -->
+                <div *ngIf="showAiModes"
+                    class="absolute top-16 left-4 right-4 bg-white dark:bg-slate-800 rounded-2xl p-2 border border-black/5 dark:border-white/10 z-10 shadow-xl animate-fade-in">
+                    <button (click)="setAiMode('chat')"
+                        class="w-full text-left flex items-center gap-3 p-2 rounded-xl text-xs hover:bg-primary/5 transition-colors"
+                        [ngClass]="{'text-primary bg-primary/5': aiMode === 'chat'}">
+                        <i class="fa-solid fa-comment-dots w-4 text-center"></i> General Chat
+                    </button>
+                    <button (click)="setAiMode('maintenance')"
+                        class="w-full text-left flex items-center gap-3 p-2 rounded-xl text-xs hover:bg-primary/5 transition-colors"
+                        [ngClass]="{'text-primary bg-primary/5': aiMode === 'maintenance'}">
+                        <i class="fa-solid fa-tools w-4 text-center"></i> Maintenance
+                    </button>
+                    <button (click)="setAiMode('recommendation')"
+                        class="w-full text-left flex items-center gap-3 p-2 rounded-xl text-xs hover:bg-primary/5 transition-colors"
+                        [ngClass]="{'text-primary bg-primary/5': aiMode === 'recommendation'}">
+                        <i class="fa-solid fa-car w-4 text-center"></i> Car Matching
+                    </button>
+                </div>
+
+                <!-- AI Messages -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll" #aiChatContainer>
+                    <div *ngFor="let msg of aiMessages" class="flex flex-col max-w-[85%]"
+                        [class.ml-auto]="msg.isUser" [class.items-end]="msg.isUser">
+                        <div class="p-3 text-[13px] leading-relaxed rounded-2xl shadow-sm"
+                            [ngClass]="msg.isUser ? 'bg-primary text-white rounded-tr-none' : 'bg-slate-100 dark:bg-white/5 rounded-tl-none border border-black/5 dark:border-white/5'"
+                            [innerHTML]="parseMarkdown(msg.text)">
+                        </div>
+                    </div>
+                    <div *ngIf="isAiTyping" class="flex gap-1.5 p-3 bg-slate-100 dark:bg-white/5 rounded-2xl w-fit">
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" [style.animation-delay]="'0.2s'"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" [style.animation-delay]="'0.4s'"></span>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50/50 dark:bg-white/[0.02] border-t border-black/5 dark:border-white/5 flex gap-2">
+                    <input type="text" [(ngModel)]="currentChatMsg" (keyup.enter)="sendAiMessage()"
+                        placeholder="Ask anything..."
+                        class="flex-1 bg-white dark:bg-slate-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                    <button (click)="sendAiMessage()" [disabled]="!currentChatMsg.trim() || isAiTyping"
+                        class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg shadow-primary/20">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messenger Overlay -->
+            <div *ngIf="isMessengerVisible"
+                class="absolute bottom-0 right-0 w-full h-[500px] max-h-[calc(100vh-200px)] bg-white dark:bg-[#111] rounded-[2rem] border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col animate-slide-up">
+                <div class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-primary">Community Messages</h3>
+                    <button (click)="toggleMessenger()" class="text-muted-foreground hover:text-foreground">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-2 custom-scroll">
+                    <div *ngFor="let msg of mockMessages" 
+                        class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer group mb-1">
+                        <div class="relative w-12 h-12 flex-shrink-0">
+                            <div class="w-full h-full rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                                {{ msg.user[0] }}
+                            </div>
+                            <span *ngIf="msg.online" class="absolute bottom-0.5 right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 shadow-sm"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-0.5">
+                                <span class="font-bold text-[13px] truncate">{{ msg.user }}</span>
+                                <span class="text-[10px] opacity-40">{{ msg.time }}</span>
+                            </div>
+                            <p class="text-[11px] opacity-60 truncate">{{ msg.text }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-black/5 dark:border-white/5 text-center bg-slate-50 dark:bg-white/[0.02]">
+                    <button class="w-full py-2.5 text-[11px] font-black uppercase text-white bg-primary rounded-xl tracking-widest hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95" routerLink="/community/messages">Open Full Messenger</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Split Buttons -->
+        <div class="flex h-14 bg-white/80 dark:bg-[#111]/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-black/5 dark:border-white/10 p-1.5 gap-1.5 ml-auto w-fit">
+            <button (click)="toggleMessenger()"
+                class="w-14 h-11 flex items-center justify-center rounded-xl transition-all group relative"
+                [ngClass]="isMessengerVisible ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-50 dark:hover:bg-white/5'">
+                <div class="relative">
+                    <i class="fa-solid fa-comment-dots text-lg transition-all"
+                        [ngClass]="isMessengerVisible ? 'text-white' : 'group-hover:text-primary'"></i>
+                    <span *ngIf="!isMessengerVisible"
+                        class="absolute -top-1.5 -right-2 bg-primary text-[8px] font-black text-white px-1 py-0.5 rounded-full border-2 border-white dark:border-slate-900 min-w-[14px]">3</span>
+                </div>
+            </button>
+            
+            <div class="w-[1px] h-6 my-auto bg-black/5 dark:bg-white/10"></div>
+
+            <button (click)="toggleAi()"
+                class="w-14 h-11 flex items-center justify-center rounded-xl transition-all group"
+                [ngClass]="isAiVisible ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-50 dark:hover:bg-white/5'">
+                <i class="fa-solid fa-robot text-lg transition-all"
+                    [ngClass]="isAiVisible ? 'text-white' : 'group-hover:text-primary'"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Mobile Menu Overlay -->
@@ -58,8 +192,9 @@ import { ToastContainerComponent } from '../../../shared/components/toast-contai
             (click)="layoutService.closeMobileMenu()"></div>
 
         <!-- Menu Content -->
+        <!-- Menu Content -->
         <div
-            class="absolute right-0 top-0 h-full w-[240px] bg-background shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-4 flex flex-col">
+            class="absolute left-0 top-0 h-full w-auto min-w-[80px] border-r border-border/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-16 px-2 flex flex-col">
             <div class="flex-1 min-h-0 mb-4">
                 <app-sidebar-left class="h-full block"></app-sidebar-left>
             </div>
@@ -67,11 +202,100 @@ import { ToastContainerComponent } from '../../../shared/components/toast-contai
         </div>
     </div>
 
+
+
     <!-- Toast Notifications -->
     <app-toast-container></app-toast-container>
 </div>
   `
 })
 export class MainLayoutComponent {
+    private aiAgentService = inject(AIAgentService);
+
+    // Chat Actions State
+    isAiVisible = false;
+    isMessengerVisible = false;
+    aiMessages: any[] = [];
+    currentChatMsg = '';
+    isAiTyping = false;
+    aiMode: 'chat' | 'maintenance' | 'recommendation' = 'chat';
+    showAiModes = false;
+
+    // Messenger Mock Data
+    mockMessages = [
+        { id: 1, user: 'Sarah Jenkins', text: 'Hey, did you see the new Off-road guide?', time: '2m ago', online: true },
+        { id: 2, user: 'Mike Ross', text: 'The Egypt meet is next Friday!', time: '1h ago', online: true },
+        { id: 3, user: 'Alex Cooper', text: 'Thanks for the maintenance advice.', time: '5h ago', online: false }
+    ];
+
+    @ViewChild('aiChatContainer') private aiChatContainer!: ElementRef;
+
     constructor(public layoutService: LayoutService) { }
+
+    // Modal/Toggle logic
+    toggleAi() {
+        this.isAiVisible = !this.isAiVisible;
+        if (this.isAiVisible) {
+            this.isMessengerVisible = false;
+            if (this.aiMessages.length === 0) {
+                this.aiMessages.push({
+                    text: "Hello! I'm your AI automotive assistant. **How can I help you today?**",
+                    isUser: false,
+                    timestamp: new Date()
+                });
+            }
+        }
+    }
+
+    toggleMessenger() {
+        this.isMessengerVisible = !this.isMessengerVisible;
+        if (this.isMessengerVisible) {
+            this.isAiVisible = false;
+        }
+    }
+
+    sendAiMessage() {
+        if (!this.currentChatMsg.trim() || this.isAiTyping) return;
+
+        const userMsg = this.currentChatMsg;
+        this.aiMessages.push({ text: userMsg, isUser: true, timestamp: new Date() });
+        this.currentChatMsg = '';
+        this.isAiTyping = true;
+
+        this.aiAgentService.chat({
+            message: this.aiMode !== 'chat' ? `[${this.aiMode.toUpperCase()} MODE] ${userMsg}` : userMsg,
+            context: 'Global Chat'
+        }).subscribe({
+            next: (res: any) => {
+                this.isAiTyping = false;
+                this.aiMessages.push({ text: res?.message || 'No response.', isUser: false, timestamp: new Date() });
+                this.scrollToAiBottom();
+            },
+            error: () => {
+                this.isAiTyping = false;
+                this.aiMessages.push({ text: 'Connection trouble. Try again later.', isUser: false, timestamp: new Date() });
+                this.scrollToAiBottom();
+            }
+        });
+    }
+
+    private scrollToAiBottom() {
+        setTimeout(() => {
+            if (this.aiChatContainer) {
+                this.aiChatContainer.nativeElement.scrollTop = this.aiChatContainer.nativeElement.scrollHeight;
+            }
+        }, 100);
+    }
+
+    setAiMode(mode: any) {
+        this.aiMode = mode;
+        this.showAiModes = false;
+    }
+
+    parseMarkdown(text: string): string {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n- (.*)/g, '<br>• $1')
+            .replace(/\n/g, '<br>');
+    }
 }

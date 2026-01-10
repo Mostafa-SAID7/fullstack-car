@@ -1,63 +1,80 @@
-<div class="media-card" [class.video-card]="isVideo" [class.podcast-card]="isPodcast">
+<div class="fb-card group/card overflow-hidden cursor-pointer flex flex-col h-full" (click)="onPlay()">
+
   <!-- Thumbnail/Cover -->
-  <div class="media-thumbnail" (click)="onPlay()">
-    <img [src]="thumbnail" [alt]="media.title" class="thumbnail-image">
-    
+  <div class="relative overflow-hidden shrink-0" [ngClass]="isVideo ? 'aspect-video' : 'aspect-square'">
+    <img [src]="thumbnail" [alt]="media.title"
+      class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110">
+
     <!-- Play Overlay -->
-    <div class="play-overlay">
-      <div class="play-button">
-        <i [class]="isVideo ? 'fas fa-play' : 'fas fa-headphones'"></i>
+    <div
+      class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
+      <div
+        class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/30 transform scale-75 group-hover/card:scale-100 transition-transform duration-500">
+        <i [class]="isVideo ? 'fas fa-play text-xl ml-1' : 'fas fa-headphones text-xl'"></i>
       </div>
     </div>
-    
+
     <!-- Duration Badge -->
-    <div class="duration-badge">
+    <div
+      class="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg">
       {{ formatDuration(media.duration) }}
     </div>
-    
+
     <!-- Episode Badge (Podcasts only) -->
-    <div *ngIf="episodeInfo" class="episode-badge">
+    <div *ngIf="episodeInfo"
+      class="absolute top-2 left-2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg shadow-lg">
       {{ episodeInfo }}
     </div>
   </div>
 
   <!-- Content -->
-  <div class="media-content">
+  <div class="p-4 flex flex-col flex-1">
     <!-- Title -->
-    <h3 class="media-title" [title]="media.title" (click)="onPlay()">
+    <h3
+      class="text-sm font-black text-foreground line-clamp-2 leading-tight group-hover/card:text-primary transition-colors tracking-tight mb-3"
+      [title]="media.title">
       {{ media.title }}
     </h3>
 
     <!-- Stats -->
-    <div class="media-stats">
-      <span class="stat-item">
-        <i [class]="isVideo ? 'fas fa-eye' : 'fas fa-headphones'"></i>
-        {{ formatNumber(viewOrPlayCount) }}
-      </span>
-      
-      <span class="stat-item">
-        <i class="fas fa-heart"></i>
-        {{ formatNumber(media.likeCount) }}
-      </span>
-      
-      <span class="stat-item" *ngIf="media.publishedAt">
-        <i class="fas fa-clock"></i>
-        {{ formatDate(media.publishedAt) }}
-      </span>
+    <div class="flex items-center gap-4 mt-auto">
+      <div class="flex items-center gap-1.5 text-muted-foreground">
+        <i [class]="isVideo ? 'fas fa-eye text-[10px]' : 'fas fa-headphones text-[10px]'"></i>
+        <span class="text-[10px] font-bold uppercase tracking-wider">{{ formatNumber(viewOrPlayCount) }}</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 text-muted-foreground">
+        <i class="fas fa-heart text-[10px]"></i>
+        <span class="text-[10px] font-bold uppercase tracking-wider">{{ formatNumber(media.likeCount) }}</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 text-muted-foreground ml-auto" *ngIf="media.publishedAt">
+        <i class="fas fa-clock text-[10px]"></i>
+        <span class="text-[10px] font-bold uppercase tracking-wider">{{ formatDate(media.publishedAt) }}</span>
+      </div>
     </div>
 
     <!-- Actions -->
-    <div class="media-actions" *ngIf="showActions">
-      <button class="action-btn" (click)="onPlay()" [title]="isVideo ? 'Watch Video' : 'Listen to Podcast'">
-        <i [class]="isVideo ? 'fas fa-play' : 'fas fa-headphones'"></i>
-      </button>
-      
-      <button class="action-btn" (click)="onLike()" title="Like">
-        <i class="fas fa-heart"></i>
-      </button>
-      
-      <button class="action-btn" (click)="onShare()" title="Share">
-        <i class="fas fa-share"></i>
+    <div class="flex items-center justify-between pt-4 mt-4 border-t border-black/5 dark:border-white/5"
+      *ngIf="showActions" (click)="$event.stopPropagation()">
+      <div class="flex gap-1">
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-xl bg-secondary dark:bg-white/5 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
+          (click)="onLike()" title="Like">
+          <i class="fas fa-heart text-sm"></i>
+        </button>
+
+        <button
+          class="w-9 h-9 flex items-center justify-center rounded-xl bg-secondary dark:bg-white/5 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
+          (click)="onShare()" title="Share">
+          <i class="fas fa-share text-sm"></i>
+        </button>
+      </div>
+
+      <button
+        class="px-4 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+        (click)="onPlay()">
+        {{ isVideo ? 'Watch' : 'Listen' }}
       </button>
     </div>
   </div>

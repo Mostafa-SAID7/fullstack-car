@@ -5,8 +5,7 @@ import { CommonModule } from '@angular/common';
     selector: 'app-pagination',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './pagination.component.html',
-    styleUrls: ['./pagination.component.scss']
+    templateUrl: './pagination.component.html'
 })
 export class PaginationComponent {
     @Input() currentPage = 1;

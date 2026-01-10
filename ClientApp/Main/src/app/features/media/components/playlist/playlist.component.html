@@ -1,54 +1,83 @@
-<div class="playlist-container">
+<div class="playlist-container max-w-7xl mx-auto p-4 lg:p-10 animate-fade-in">
   <!-- Header -->
-  <div class="playlist-header">
-    <h1>My Playlists</h1>
-    <button (click)="openCreateForm()" class="create-playlist-btn">
+  <div
+    class="playlist-header flex flex-wrap items-center justify-between mb-10 gap-6 border-b border-black/5 dark:border-white/5 pb-8">
+    <div>
+      <h1 class="text-4xl lg:text-5xl font-black text-foreground mb-2 tracking-tighter uppercase italic">My Playlists
+      </h1>
+      <p class="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Personalized video
+        collections & curation</p>
+    </div>
+
+    <button (click)="openCreateForm()"
+      class="flex items-center gap-3 px-8 py-4 bg-primary text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
       <i class="fas fa-plus"></i>
-      Create Playlist
+      New Collection
     </button>
   </div>
 
-  <!-- Create Playlist Form -->
-  <div class="create-form-overlay" *ngIf="showCreateForm" (click)="closeCreateForm()">
-    <div class="create-form" (click)="$event.stopPropagation()">
-      <h3>Create New Playlist</h3>
-      
-      <div class="form-group">
-        <label for="playlistName">Playlist Name *</label>
-        <input type="text" 
-               id="playlistName" 
-               [(ngModel)]="newPlaylistName" 
-               placeholder="Enter playlist name"
-               maxlength="100" />
+  <!-- Create Playlist Form Overlay -->
+  <div
+    class="create-form-overlay fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fade-in"
+    *ngIf="showCreateForm" (click)="closeCreateForm()">
+    <div class="create-form fb-card p-10 w-full max-w-xl shadow-2xl relative overflow-hidden"
+      (click)="$event.stopPropagation()">
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-indigo-500"></div>
+
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-xl font-black text-foreground uppercase tracking-tight italic">Create New Collection</h3>
+        <button (click)="closeCreateForm()" class="text-muted-foreground hover:text-primary transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
-      <div class="form-group">
-        <label for="playlistDescription">Description (Optional)</label>
-        <textarea id="playlistDescription" 
-                  [(ngModel)]="newPlaylistDescription" 
-                  placeholder="Describe your playlist..."
-                  rows="3"
-                  maxlength="500"></textarea>
+      <div class="space-y-6">
+        <div class="form-group space-y-2">
+          <label for="playlistName"
+            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Collection Name
+            *</label>
+          <input type="text" id="playlistName" [(ngModel)]="newPlaylistName" placeholder="E.g., Morning Motivation"
+            class="w-full bg-secondary/50 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl px-5 py-4 outline-none transition-all text-sm font-bold placeholder:text-muted-foreground/40"
+            maxlength="100" />
+        </div>
+
+        <div class="form-group space-y-2">
+          <label for="playlistDescription"
+            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Description
+            (Optional)</label>
+          <textarea id="playlistDescription" [(ngModel)]="newPlaylistDescription" placeholder="Describe the curation..."
+            rows="3"
+            class="w-full bg-secondary/50 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl px-5 py-4 outline-none transition-all text-sm font-bold placeholder:text-muted-foreground/40 resize-none"
+            maxlength="500"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <div class="relative">
+              <input type="checkbox" [(ngModel)]="isPublic" class="sr-only" />
+              <div
+                class="w-6 h-6 border-2 border-black/10 dark:border-white/10 rounded-lg bg-secondary/50 dark:bg-white/5 transition-all group-hover:border-primary/40 flex items-center justify-center">
+                <i class="fas fa-check text-[10px] text-primary transform scale-0 transition-transform"
+                  [class.scale-100]="isPublic"></i>
+              </div>
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Make this collection
+              public</span>
+          </label>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label class="checkbox-label">
-          <input type="checkbox" [(ngModel)]="isPublic" />
-          <span class="checkmark"></span>
-          Make this playlist public
-        </label>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" (click)="closeCreateForm()" class="cancel-btn">Cancel</button>
-        <button type="button" 
-                (click)="createPlaylist()" 
-                [disabled]="!newPlaylistName.trim() || creating"
-                class="create-btn">
-          <span *ngIf="!creating">Create</span>
-          <span *ngIf="creating">
+      <div class="flex gap-4 mt-10">
+        <button type="button" (click)="closeCreateForm()"
+          class="flex-1 py-4 bg-secondary dark:bg-white/5 text-foreground rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-secondary/80 transition-all active:scale-95 border border-black/5 dark:border-white/10">
+          Cancel
+        </button>
+        <button type="button" (click)="createPlaylist()" [disabled]="!newPlaylistName.trim() || creating"
+          class="flex-1 py-4 bg-primary text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 transition-all">
+          <span *ngIf="!creating">Build Collection</span>
+          <span *ngIf="creating" class="flex items-center justify-center gap-2">
             <i class="fas fa-spinner fa-spin"></i>
-            Creating...
+            Building...
           </span>
         </button>
       </div>
@@ -56,69 +85,93 @@
   </div>
 
   <!-- Playlists Grid -->
-  <div class="playlists-grid" *ngIf="!loading">
-    <div class="playlist-card" 
-         *ngFor="let playlist of playlists" 
-         (click)="viewPlaylist(playlist)">
-      
-      <div class="playlist-thumbnail">
-        <div class="thumbnail-grid" *ngIf="playlist.videos && playlist.videos.length > 0">
-          <!-- Show up to 4 video thumbnails in a grid -->
-          <img *ngFor="let video of playlist.videos.slice(0, 4); let i = index" 
-               [src]="video.thumbnailUrl || '/assets/images/video-placeholder.jpg'" 
-               [alt]="video.title"
-               class="grid-thumbnail"
-               [class]="'thumb-' + (i + 1)" />
+  <div class="playlists-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" *ngIf="!loading">
+    <div *ngFor="let playlist of paginatedPlaylists" (click)="viewPlaylist(playlist)"
+      class="fb-card group cursor-pointer border-none shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden flex flex-col">
+
+      <div class="relative h-48 overflow-hidden bg-secondary/50 dark:bg-white/5">
+        <div class="thumbnail-grid grid grid-cols-2 grid-rows-2 h-full gap-0.5"
+          *ngIf="playlist.videos && playlist.videos.length > 0">
+          <img *ngFor="let video of playlist.videos.slice(0, 4); let i = index"
+            [src]="video.thumbnailUrl || '/assets/images/video-placeholder.jpg'" [alt]="video.title"
+            class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110" />
+          <div *ngIf="playlist.videos.length < 4" class="bg-primary/5 flex items-center justify-center">
+            <i class="fas fa-list text-muted-foreground/20"></i>
+          </div>
         </div>
-        <div class="empty-thumbnail" *ngIf="!playlist.videos || playlist.videos.length === 0">
-          <i class="fas fa-list"></i>
-          <span>Empty Playlist</span>
+
+        <div class="empty-thumbnail h-full flex flex-col items-center justify-center text-muted-foreground opacity-30"
+          *ngIf="!playlist.videos || playlist.videos.length === 0">
+          <i class="fas fa-list-ul text-4xl mb-3"></i>
+          <span class="text-[10px] font-black uppercase tracking-widest">Awaiting Content</span>
         </div>
-        
-        <div class="playlist-overlay">
-          <div class="video-count">
-            <i class="fas fa-play-circle"></i>
-            {{ playlist.videoCount }} videos
+
+        <div
+          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex items-end justify-between translate-y-2 group-hover:translate-y-0 transition-transform">
+          <div class="flex items-center gap-2 text-white font-black text-[9px] uppercase tracking-widest">
+            <i class="fas fa-play-circle text-primary text-xs"></i>
+            {{ playlist.videoCount }} Curated Clips
+          </div>
+          <div class="text-white/60 text-[8px] font-black uppercase tracking-widest">
+            {{ getTotalDuration(playlist) }} Total
           </div>
         </div>
       </div>
 
-      <div class="playlist-info">
-        <h3 class="playlist-title">{{ playlist.name }}</h3>
-        <p class="playlist-description" *ngIf="playlist.description">
-          {{ playlist.description }}
-        </p>
-        
-        <div class="playlist-meta">
-          <span class="video-count">{{ playlist.videoCount }} videos</span>
-          <span class="total-duration">{{ getTotalDuration(playlist) }}</span>
-          <span class="visibility">
-            <i class="fas" [class.fa-globe]="playlist.isPublic" [class.fa-lock]="!playlist.isPublic"></i>
-            {{ playlist.isPublic ? 'Public' : 'Private' }}
-          </span>
+      <div class="p-6 flex-grow flex flex-col">
+        <div class="mb-4">
+          <h3
+            class="text-lg font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors leading-tight mb-2 line-clamp-1">
+            {{ playlist.name }}</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed line-clamp-2 min-h-[2rem]">
+            {{ playlist.description || 'A unique collection of hand-picked media content.' }}
+          </p>
         </div>
 
-        <div class="playlist-stats" *ngIf="playlist.viewCount > 0">
-          <span class="views">{{ formatNumber(playlist.viewCount) }} views</span>
-          <span class="updated">Updated {{ playlist.updatedAt | date:'shortDate' }}</span>
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/5">
+          <div class="flex items-center gap-3">
+            <span
+              class="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+              <i class="fas" [class.fa-globe-americas]="playlist.isPublic" [class.fa-lock]="!playlist.isPublic"
+                [class.text-primary]="playlist.isPublic"></i>
+              {{ playlist.isPublic ? 'Public' : 'Private' }}
+            </span>
+          </div>
+
+          <div class="text-[8px] font-black uppercase tracking-widest text-muted-foreground opacity-40">
+            Updated {{ playlist.updatedAt | date:'shortDate' }}
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Empty State -->
-    <div class="empty-state" *ngIf="playlists.length === 0">
-      <i class="fas fa-list"></i>
-      <h3>No Playlists Yet</h3>
-      <p>Create your first playlist to organize your favorite videos</p>
-      <button (click)="openCreateForm()" class="create-first-playlist-btn">
-        Create Your First Playlist
+    <div
+      class="empty-state col-span-full py-24 flex flex-col items-center justify-center text-center bg-white dark:bg-[#111] rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10"
+      *ngIf="playlists.length === 0">
+      <div class="w-24 h-24 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-xl mb-8">
+        <i class="fas fa-list-ul text-3xl text-slate-300"></i>
+      </div>
+      <h3 class="text-2xl font-black text-slate-900 dark:text-white uppercase italic mb-2">The Archive is Silent</h3>
+      <p class="text-slate-500 font-bold text-xs uppercase tracking-[0.2em] mb-10 max-w-sm">You haven't constructed any
+        collections yet. Curate your first masterpiece today.</p>
+      <button (click)="openCreateForm()"
+        class="px-12 py-4 bg-primary text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+        Curate First Playlist
       </button>
     </div>
   </div>
 
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1 && !loading" class="mt-12 mb-20">
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" [pageSize]="pageSize"
+      [totalItems]="playlists.length" (pageChange)="onPageChange($event)"></app-pagination>
+  </div>
+
   <!-- Loading State -->
-  <div class="loading-container" *ngIf="loading">
-    <div class="loading-spinner"></div>
-    <p>Loading playlists...</p>
+  <div class="flex flex-col items-center justify-center min-h-[50vh]" *ngIf="loading">
+    <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
+    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Synchronizing
+      Playlists...</p>
   </div>
 </div>

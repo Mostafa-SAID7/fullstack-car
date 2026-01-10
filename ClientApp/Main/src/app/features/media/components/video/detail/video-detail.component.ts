@@ -10,8 +10,7 @@ import { FormsModule } from '@angular/forms';
     selector: 'app-video-detail',
     standalone: true,
     imports: [CommonModule, RouterModule, FormsModule],
-    templateUrl: './video-detail.component.html',
-    styleUrls: ['./video-detail.component.scss']
+    templateUrl: './video-detail.component.html'
 })
 export class VideoDetailComponent implements OnInit, OnDestroy {
     video: VideoDetails | null = null;

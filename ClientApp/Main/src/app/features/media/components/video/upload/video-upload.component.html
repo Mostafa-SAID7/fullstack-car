@@ -1,8 +1,5 @@
 <div class="video-upload-container p-4 lg:p-8 max-w-4xl mx-auto">
-  <div class="header mb-8">
-    <h1 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Upload New Video</h1>
-    <p class="text-slate-500 font-medium italic">Share your automotive experiences with the community.</p>
-  </div>
+
 
   <div
     class="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-10 shadow-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
@@ -30,7 +27,7 @@
           </div>
 
           <div *ngIf="selectedFile"
-            class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-blue-200 dark:border-blue-900">
+            class="flex items-center gap-3 bg-white dark:bg-[#111] p-3 rounded-xl border border-black/5 dark:border-white/10">
             <i class="fas fa-file-video text-blue-600"></i>
             <div class="text-left">
               <p class="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{{ selectedFile.name }}
@@ -51,7 +48,7 @@
           <div>
             <label class="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Video Title</label>
             <input formControlName="title" type="text" placeholder="e.g. My Road Trip Across the Alps"
-              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium">
+              class="w-full bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium">
             <p *ngIf="uploadForm.get('title')?.touched && uploadForm.get('title')?.invalid"
               class="text-[10px] text-red-500 mt-1 font-bold">Title is too short (min 5 chars)</p>
           </div>
@@ -59,7 +56,7 @@
           <div>
             <label class="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
             <textarea formControlName="description" rows="5" placeholder="Tell the community about your video..."
-              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium resize-none"></textarea>
+              class="w-full bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium resize-none"></textarea>
             <p *ngIf="uploadForm.get('description')?.touched && uploadForm.get('description')?.invalid"
               class="text-[10px] text-red-500 mt-1 font-bold">Description is too short (min 20 chars)</p>
           </div>
@@ -85,7 +82,7 @@
           <div>
             <label class="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Tags</label>
             <input formControlName="tags" type="text" placeholder="e.g. cars, travel, review (comma separated)"
-              class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium">
+              class="w-full bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-700 font-medium">
           </div>
 
           <div class="space-y-4 pt-4">
@@ -116,15 +113,14 @@
 
         <!-- Upload Progress -->
         <div *ngIf="uploading" class="mb-6 w-full max-w-md">
-          <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="bg-white dark:bg-[#111] rounded-2xl p-4 space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Upload Progress</span>
               <span class="text-sm text-slate-500">{{ progress }}%</span>
             </div>
-            
+
             <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
-              <div
-                class="h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-300"
+              <div class="h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-300"
                 [style.width.%]="progress">
               </div>
             </div>
@@ -138,7 +134,8 @@
                 <span class="font-bold">Time remaining:</span> {{ timeRemaining }}
               </div>
               <div class="col-span-2">
-                <span class="font-bold">Uploaded:</span> {{ formatFileSize(bytesUploaded) }} of {{ formatFileSize(totalBytes) }}
+                <span class="font-bold">Uploaded:</span> {{ formatFileSize(bytesUploaded) }} of {{
+                formatFileSize(totalBytes) }}
               </div>
             </div>
 

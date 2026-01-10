@@ -7,8 +7,7 @@ import { VideoList, PodcastList } from '../../models';
   selector: 'app-media-card',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './media-card.component.html',
-  styleUrls: ['./media-card.component.scss']
+  templateUrl: './media-card.component.html'
 })
 export class MediaCardComponent {
   @Input() media!: VideoList | PodcastList;
@@ -68,7 +67,7 @@ export class MediaCardComponent {
       const hours = parseInt(parts[0]);
       const minutes = parseInt(parts[1]);
       const seconds = parseInt(parts[2]);
-      
+
       if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       } else {
@@ -89,12 +88,12 @@ export class MediaCardComponent {
 
   formatDate(date: Date | undefined): string {
     if (!date) return '';
-    
+
     const now = new Date();
     const mediaDate = new Date(date);
     const diffTime = Math.abs(now.getTime() - mediaDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) {
       return '1 day ago';
     } else if (diffDays < 7) {

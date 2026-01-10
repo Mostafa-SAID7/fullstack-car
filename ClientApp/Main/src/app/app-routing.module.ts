@@ -21,14 +21,14 @@ export const routes: Routes = [
       // Home/Discovery page - using existing community feed for now
       {
         path: '',
-        loadComponent: () => import('./features/community/components/community-feed/community-feed.component').then(m => m.CommunityFeedComponent)
+        loadComponent: () => import('./features/community/components/feed/community-feed/community-feed.component').then(m => m.CommunityFeedComponent)
       },
       // Media streaming routes
       {
         path: 'media',
-        loadChildren: () => import('./features/media/media.module').then(m => m.MediaModule),
-        canActivate: [AuthGuard]
+        loadChildren: () => import('./features/media/media.module').then(m => m.MediaModule)
       },
+
       // Community features (existing)
       {
         path: 'community',

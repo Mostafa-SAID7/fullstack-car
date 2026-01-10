@@ -1,129 +1,187 @@
-<div class="podcast-player-container" *ngIf="!loading && podcast">
+<div class="podcast-player-container max-w-7xl mx-auto p-4 lg:p-10 animate-fade-in" *ngIf="!loading && podcast">
   <!-- Header -->
-  <div class="player-header">
-    <button (click)="goBack()" class="back-btn">
-      <i class="fas fa-arrow-left"></i>
-      Back to Podcasts
+  <div
+    class="player-header flex flex-wrap items-center justify-between mb-10 gap-6 border-b border-black/5 dark:border-white/5 pb-8">
+    <button (click)="goBack()"
+      class="flex items-center gap-3 px-6 py-2.5 bg-secondary dark:bg-white/5 text-foreground rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-secondary/80 transition-all active:scale-95 shadow-sm">
+      <i class="fas fa-arrow-left text-primary"></i>
+      Return to Hub
     </button>
-    
-    <div class="podcast-actions">
-      <button (click)="likePodcast()" class="like-btn" [class.liked]="podcast.isLiked">
-        <i class="fas fa-heart"></i>
-        {{ podcast.likesCount }}
+
+    <div class="podcast-actions flex items-center gap-2">
+      <button (click)="likePodcast()"
+        class="flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all active:scale-95 shadow-sm"
+        [ngClass]="podcast.isLiked ? 'bg-primary/10 text-primary' : 'bg-secondary dark:bg-white/5'">
+        <i class="fas fa-heart text-sm"></i>
+        <span class="text-[10px] font-black uppercase tracking-widest">{{ podcast.likesCount }}</span>
       </button>
-      <button (click)="toggleComments()" class="comments-btn">
-        <i class="fas fa-comment"></i>
-        {{ podcast.commentsCount }}
+      <button (click)="toggleComments()"
+        class="w-11 h-11 flex items-center justify-center rounded-xl bg-secondary dark:bg-white/5 text-muted-foreground hover:text-primary transition-all active:scale-90 shadow-sm">
+        <i class="fas fa-comment text-sm"></i>
       </button>
     </div>
   </div>
 
   <!-- Podcast Info -->
-  <div class="podcast-info">
-    <div class="podcast-thumbnail">
-      <img [src]="podcast.thumbnailUrl || '/assets/images/podcast-placeholder.jpg'" 
-           [alt]="podcast.title" />
-    </div>
-    
-    <div class="podcast-details">
-      <h1 class="podcast-title">{{ podcast.title }}</h1>
-      <p class="podcast-creator">by {{ podcast.creatorName }}</p>
-      <p class="podcast-description">{{ podcast.description }}</p>
-      
-      <div class="podcast-meta">
-        <span class="episode-info" *ngIf="podcast.episodeNumber">
-          Episode {{ podcast.episodeNumber }}
-          <span *ngIf="podcast.seasonNumber"> • Season {{ podcast.seasonNumber }}</span>
-        </span>
-        <span class="duration">{{ formatTime(duration) }}</span>
-        <span class="publish-date">{{ podcast.publishedAt | date:'mediumDate' }}</span>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
+    <div class="lg:col-span-1">
+      <div
+        class="aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-black/5 dark:border-white/5 ring-1 ring-black/10 dark:ring-white/10 group relative">
+        <img [src]="podcast.thumbnailUrl || '/assets/images/podcast-placeholder.jpg'" [alt]="podcast.title"
+          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+          <p class="text-white text-[10px] font-black uppercase tracking-widest">Now Broadcasting</p>
+        </div>
       </div>
-      
-      <div class="podcast-tags" *ngIf="podcast.tags">
-        <span class="tag" *ngFor="let tag of podcast.tags.split(',')">{{ tag.trim() }}</span>
+    </div>
+
+    <div class="lg:col-span-2 flex flex-col justify-center">
+      <div class="flex items-center gap-2 mb-4">
+        <span
+          class="px-2.5 py-1 bg-primary text-white text-[9px] font-black rounded-lg uppercase tracking-widest shadow-lg shadow-primary/20">Episode
+          {{ podcast.episodeNumber }}</span>
+        <span class="text-muted-foreground text-[10px] font-black uppercase tracking-widest opacity-60"
+          *ngIf="podcast.series">Series Highlight</span>
+      </div>
+
+      <h1 class="text-4xl lg:text-6xl font-black text-foreground mb-4 tracking-tighter leading-tight">{{ podcast.title
+        }}</h1>
+      <p class="text-primary font-black uppercase tracking-[0.2em] text-xs mb-8">Streamed by {{ podcast.creatorName }}
+      </p>
+
+      <p class="text-muted-foreground font-medium text-sm lg:text-base leading-relaxed mb-8 max-w-2xl">{{
+        podcast.description }}</p>
+
+      <div
+        class="flex flex-wrap items-center gap-10 text-muted-foreground text-[10px] font-black uppercase tracking-widest opacity-60">
+        <span class="flex items-center gap-2"><i class="far fa-clock text-primary"></i> {{ formatTime(duration)
+          }}</span>
+        <span class="flex items-center gap-2"><i class="far fa-calendar text-primary"></i> {{ podcast.publishedAt |
+          date:'mediumDate' }}</span>
+        <span class="flex items-center gap-2" *ngIf="podcast.seasonNumber"><i
+            class="fas fa-layer-group text-primary"></i> Season {{ podcast.seasonNumber }}</span>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-8" *ngIf="podcast.tags">
+        <span
+          class="px-4 py-1.5 bg-secondary dark:bg-white/5 border border-black/5 dark:border-white/10 text-[9px] font-black uppercase tracking-widest text-muted-foreground rounded-lg hover:text-primary transition-colors cursor-pointer capitalize shadow-sm"
+          *ngFor="let tag of podcast.tags.split(',')">{{ tag.trim() }}</span>
       </div>
     </div>
   </div>
 
   <!-- Audio Player -->
-  <div class="audio-player">
-    <div class="player-controls">
-      <button (click)="skipBackward()" class="control-btn">
-        <i class="fas fa-backward"></i>
-        <span class="skip-text">30s</span>
-      </button>
-      
-      <button (click)="togglePlayPause()" class="play-pause-btn">
-        <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
-      </button>
-      
-      <button (click)="skipForward()" class="control-btn">
-        <i class="fas fa-forward"></i>
-        <span class="skip-text">30s</span>
-      </button>
-    </div>
+  <div class="fb-card p-8 lg:p-12 mb-12 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-indigo-500/5"></div>
 
-    <div class="progress-section">
-      <span class="time-display">{{ formatTime(currentTime) }}</span>
-      
-      <div class="progress-container">
-        <input type="range" 
-               min="0" 
-               max="100" 
-               [value]="getProgressPercentage()"
-               (input)="seek($event)"
-               class="progress-slider" />
+    <div class="relative space-y-10">
+      <div class="flex items-center justify-center gap-8">
+        <button (click)="skipBackward()"
+          class="w-14 h-14 rounded-2xl bg-secondary dark:bg-white/5 flex flex-col items-center justify-center gap-0.5 text-foreground hover:text-primary transition-all active:scale-95 shadow-sm">
+          <i class="fas fa-undo-alt text-lg"></i>
+          <span class="text-[9px] font-black uppercase tracking-tighter">30s</span>
+        </button>
+
+        <button (click)="togglePlayPause()"
+          class="w-24 h-24 bg-primary text-white rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 transform transition-all hover:scale-105 active:scale-95">
+          <i class="fas text-4xl" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
+        </button>
+
+        <button (click)="skipForward()"
+          class="w-14 h-14 rounded-2xl bg-secondary dark:bg-white/5 flex flex-col items-center justify-center gap-0.5 text-foreground hover:text-primary transition-all active:scale-95 shadow-sm">
+          <i class="fas fa-redo-alt text-lg"></i>
+          <span class="text-[9px] font-black uppercase tracking-tighter">30s</span>
+        </button>
       </div>
-      
-      <span class="time-display">{{ formatTime(duration) }}</span>
-    </div>
 
-    <div class="volume-section">
-      <i class="fas fa-volume-up"></i>
-      <input type="range" 
-             min="0" 
-             max="100" 
-             [value]="volume * 100"
-             (input)="setVolume($event)"
-             class="volume-slider" />
-    </div>
-  </div>
-
-  <!-- Transcript Section -->
-  <div class="transcript-section" *ngIf="podcast.transcript">
-    <h3>Transcript</h3>
-    <div class="transcript-content">
-      <p>{{ podcast.transcript }}</p>
-    </div>
-  </div>
-
-  <!-- Comments Section -->
-  <div class="comments-section" *ngIf="showComments">
-    <h3>Comments ({{ podcast.commentsCount }})</h3>
-    
-    <div class="add-comment">
-      <textarea [(ngModel)]="newComment" 
-                placeholder="Add a comment..."
-                class="comment-input"></textarea>
-      <button (click)="addComment()" 
-              [disabled]="!newComment.trim()"
-              class="submit-comment-btn">
-        Post Comment
-      </button>
-    </div>
-
-    <div class="comments-list">
-      <div class="comment" *ngFor="let comment of podcast.comments">
-        <div class="comment-avatar">
-          <img [src]="comment.authorAvatar || '/assets/images/default-avatar.jpg'" 
-               [alt]="comment.authorName" />
+      <div class="space-y-4">
+        <div
+          class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <span>{{ formatTime(currentTime) }}</span>
+          <span>{{ formatTime(duration) }}</span>
         </div>
-        <div class="comment-content">
-          <div class="comment-header">
-            <span class="comment-author">{{ comment.authorName }}</span>
-            <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+
+        <div class="relative h-2 group">
+          <input type="range" min="0" max="100" [value]="getProgressPercentage()" (input)="seek($event)"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <div class="absolute inset-0 bg-secondary dark:bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-primary rounded-full relative" [style.width.%]="getProgressPercentage()">
+              <div
+                class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-lg scale-0 group-hover:scale-100 transition-transform">
+              </div>
+            </div>
           </div>
-          <p class="comment-text">{{ comment.content }}</p>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center justify-center gap-4 max-w-xs mx-auto opacity-60 hover:opacity-100 transition-opacity">
+        <i class="fas fa-volume-down text-muted-foreground text-xs"></i>
+        <div class="relative flex-grow h-1">
+          <input type="range" min="0" max="100" [value]="volume * 100" (input)="setVolume($event)"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <div class="absolute inset-0 bg-secondary dark:bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-muted-foreground rounded-full" [style.width.%]="volume * 100"></div>
+          </div>
+        </div>
+        <i class="fas fa-volume-up text-muted-foreground text-xs"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <!-- Transcript Section -->
+    <div class="lg:col-span-2 space-y-6" *ngIf="podcast.transcript">
+      <h3 class="text-sm font-black uppercase tracking-widest text-foreground flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-xs">
+          <i class="fas fa-quote-left"></i>
+        </span>
+        Episode Transcript
+      </h3>
+      <div
+        class="fb-card p-6 lg:p-10 leading-relaxed text-muted-foreground font-medium text-sm lg:text-base max-h-[500px] overflow-y-auto custom-scrollbar">
+        {{ podcast.transcript }}
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="lg:col-span-1 space-y-6" *ngIf="showComments">
+      <h3 class="text-sm font-black uppercase tracking-widest text-foreground flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-xs">
+          <i class="fas fa-comment"></i>
+        </span>
+        Conversations
+      </h3>
+
+      <div class="fb-card p-6 space-y-6">
+        <div class="space-y-4">
+          <textarea [(ngModel)]="newComment" placeholder="Join the conversation..."
+            class="w-full bg-secondary/50 dark:bg-white/5 rounded-xl border-2 border-transparent focus:border-primary/20 outline-none p-4 resize-none h-24 transition-all text-sm font-bold placeholder:text-muted-foreground"></textarea>
+          <button (click)="addComment()" [disabled]="!newComment.trim()"
+            class="w-full py-3 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 transition-all">
+            Share Thoughts
+          </button>
+        </div>
+
+        <div class="space-y-6 pt-6 border-t border-black/5 dark:border-white/5">
+          <div class="flex gap-4 group" *ngFor="let comment of podcast.comments">
+            <div
+              class="w-10 h-10 rounded-xl bg-secondary dark:bg-white/5 overflow-hidden flex-shrink-0 border border-black/5 dark:border-white/5 shadow-sm">
+              <img [src]="comment.authorAvatar || '/assets/images/default-avatar.jpg'" [alt]="comment.authorName"
+                class="w-full h-full object-cover" />
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span
+                  class="font-black text-[11px] text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{{
+                  comment.authorName }}</span>
+                <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{{ comment.createdAt
+                  | date:'short' }}</span>
+              </div>
+              <p class="text-muted-foreground text-xs leading-relaxed">{{ comment.content }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -131,7 +189,17 @@
 </div>
 
 <!-- Loading State -->
-<div class="loading-container" *ngIf="loading">
-  <div class="loading-spinner"></div>
-  <p>Loading podcast...</p>
+<div class="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center bg-white dark:bg-[#111]"
+  *ngIf="loading">
+  <div class="flex flex-col items-center gap-6">
+    <div class="relative">
+      <div class="w-20 h-20 border-4 border-blue-600/20 rounded-full"></div>
+      <div
+        class="w-20 h-20 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0">
+      </div>
+      <i
+        class="fas fa-headphones absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 text-xl"></i>
+    </div>
+    <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Warming up the broadcast...</p>
+  </div>
 </div>

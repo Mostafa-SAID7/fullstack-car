@@ -44,6 +44,7 @@ namespace Infrastructure.Data
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
+        public DbSet<UserConnection> UserConnections { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
@@ -53,6 +54,13 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Community.QA.Answer> Answers { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionVote> QuestionVotes { get; set; }
         public DbSet<Domain.Entities.Community.QA.AnswerVote> AnswerVotes { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QAVote> QAVotes { get; set; }
+        public DbSet<Domain.Entities.Community.QA.UserReputation> UserReputations { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QAExpert> QAExperts { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QAAnalytics> QAAnalytics { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QAUserActivity> QAUserActivities { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QACategory> QACategories { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QATag> QATags { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionCategory> QuestionCategories { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionTag> QuestionTags { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionView> QuestionViews { get; set; }

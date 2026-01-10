@@ -13,8 +13,14 @@ export class QAService {
 
     constructor(private http: HttpClient) { }
 
-    getQuestions(pageNumber: number = 1, pageSize: number = 10, groupId?: string): Observable<PaginatedResult<Question>> {
+    getQuestions(pageNumber: number = 1, pageSize: number = 10, searchTerm?: string, sortBy?: string, groupId?: string): Observable<PaginatedResult<Question>> {
         let url = `${this.apiUrl}/questions?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+        if (searchTerm) {
+            url += `&searchTerm=${encodeURIComponent(searchTerm)}`;
+        }
+        if (sortBy) {
+            url += `&sortBy=${sortBy}`;
+        }
         if (groupId) {
             url += `&groupId=${groupId}`;
         }

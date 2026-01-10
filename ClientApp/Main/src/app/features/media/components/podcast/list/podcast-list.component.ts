@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,16 +7,20 @@ import { MediaService } from '../../../services/media.service';
 import { PodcastService, PodcastFilters } from '../../../services/podcast.service';
 import { PodcastList, MediaFilters, MediaStatus } from '../../../models';
 import { PaginatedResult } from '../../../../../core/models/pagination.model';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 import { MediaCardComponent } from '../../media-card/media-card.component';
+
 
 @Component({
   selector: 'app-podcast-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent],
-  templateUrl: './podcast-list.component.html',
-  styleUrls: ['./podcast-list.component.scss']
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent, PaginationComponent],
+  templateUrl: './podcast-list.component.html'
 })
 export class PodcastListComponent implements OnInit {
+  @Input() compact = false;
+  @Input() limit: number | null = null;
+
   podcasts: PodcastList[] = [];
   loading = false;
   totalCount = 0;
@@ -25,6 +29,7 @@ export class PodcastListComponent implements OnInit {
   totalPages = 0;
 
   searchForm: FormGroup;
+  showFilters = false;
   filters: Partial<MediaFilters> = {
     pageNumber: 1,
     pageSize: 12,
@@ -54,6 +59,10 @@ export class PodcastListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.limit) {
+      this.pageSize = this.limit;
+      this.filters.pageSize = this.limit;
+    }
     this.loadPodcasts();
     this.setupSearch();
   }
@@ -67,11 +76,20 @@ export class PodcastListComponent implements OnInit {
       .subscribe(() => {
         this.onSearch();
       });
+
+    this.searchForm.get('sortBy')?.valueChanges.subscribe(() => {
+      this.onSearch();
+    });
   }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
 
   private loadPodcasts(): void {
     this.loading = true;
-    
+
     // Create proper PodcastFilters object with required properties
     const podcastFilters: PodcastFilters = {
       pageNumber: this.filters.pageNumber || 1,
@@ -85,7 +103,7 @@ export class PodcastListComponent implements OnInit {
       fromDate: this.filters.fromDate,
       toDate: this.filters.toDate
     };
-    
+
     this.podcastService.getPodcasts(podcastFilters).subscribe({
       next: (response: any) => {
         this.podcasts = response.data?.items || response.items || [];
@@ -127,13 +145,25 @@ export class PodcastListComponent implements OnInit {
     this.router.navigate(['/media/podcasts/upload']);
   }
 
-  get pages(): number[] {
-    const pages = [];
-    const start = Math.max(1, this.currentPage - 2);
-    const end = Math.min(this.totalPages, this.currentPage + 2);
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
+  onPlay(podcast: PodcastList): void {
+    this.playPodcast(podcast);
+  }
+
+  onEdit(podcast: PodcastList): void {
+    this.router.navigate(['/media/podcasts/edit', podcast.id]);
+  }
+
+  onDelete(podcast: PodcastList): void {
+    if (confirm('Are you sure you want to delete this podcast?')) {
+      this.podcastService.deletePodcast(podcast.id).subscribe({
+        next: () => {
+          this.loadPodcasts();
+        },
+        error: (error: any) => {
+          console.error('Error deleting podcast:', error);
+        }
+      });
     }
-    return pages;
   }
 }
+

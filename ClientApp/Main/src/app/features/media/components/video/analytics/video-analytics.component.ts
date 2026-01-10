@@ -106,7 +106,7 @@ import { VideoService } from '../../../services/video.service';
           <!-- Views Chart -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <h2 class="text-xl font-bold text-slate-900 mb-4">Views Over Time</h2>
-            <div class="h-64 bg-slate-50 rounded-xl flex items-center justify-center">
+            <div class="h-64 bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-xl flex items-center justify-center">
               <div class="text-center">
                 <i class="fas fa-chart-line text-slate-300 text-4xl mb-2"></i>
                 <p class="text-slate-500">Chart visualization would go here</p>
@@ -117,7 +117,7 @@ import { VideoService } from '../../../services/video.service';
           <!-- Audience Retention -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <h2 class="text-xl font-bold text-slate-900 mb-4">Audience Retention</h2>
-            <div class="h-64 bg-slate-50 rounded-xl flex items-center justify-center">
+            <div class="h-64 bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-xl flex items-center justify-center">
               <div class="text-center">
                 <i class="fas fa-chart-area text-slate-300 text-4xl mb-2"></i>
                 <p class="text-slate-500">Retention chart would go here</p>
@@ -142,7 +142,7 @@ import { VideoService } from '../../../services/video.service';
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let video of topVideos; let i = index" class="border-b border-slate-50 hover:bg-slate-50">
+                <tr *ngFor="let video of topVideos; let i = index" class="border-b border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5">
                   <td class="py-4 px-4">
                     <div class="flex items-center gap-3">
                       <div class="w-16 h-10 bg-slate-100 rounded overflow-hidden flex-shrink-0">
@@ -215,7 +215,7 @@ import { VideoService } from '../../../services/video.service';
             <h2 class="text-xl font-bold text-slate-900 mb-6">Traffic Sources</h2>
             
             <div class="space-y-4">
-              <div *ngFor="let source of trafficSources" class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+              <div *ngFor="let source of trafficSources" class="flex items-center justify-between p-3 bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-lg">
                 <div class="flex items-center gap-3">
                   <div class="p-2 bg-white rounded-lg">
                     <i [class]="source.icon" class="text-slate-600"></i>
@@ -241,15 +241,15 @@ export class VideoAnalyticsComponent implements OnInit {
   totalViews = 0;
   viewsGrowth = 0;
   viewsProgress = 0;
-  
+
   averageWatchTime = '0:00';
   watchTimeGrowth = 0;
   watchTimeProgress = 0;
-  
+
   engagementRate = 0;
   engagementGrowth = 0;
   engagementProgress = 0;
-  
+
   subscribers = 0;
   subscriberGrowth = 0;
   subscriberProgress = 0;
@@ -259,7 +259,7 @@ export class VideoAnalyticsComponent implements OnInit {
   topCountries: any[] = [];
   trafficSources: any[] = [];
 
-  constructor(private videoService: VideoService) {}
+  constructor(private videoService: VideoService) { }
 
   ngOnInit() {
     this.loadAnalyticsData();
@@ -270,15 +270,15 @@ export class VideoAnalyticsComponent implements OnInit {
     this.totalViews = 1250000;
     this.viewsGrowth = 15.2;
     this.viewsProgress = 75;
-    
+
     this.averageWatchTime = '4:32';
     this.watchTimeGrowth = 8.7;
     this.watchTimeProgress = 68;
-    
+
     this.engagementRate = 12.4;
     this.engagementGrowth = 5.3;
     this.engagementProgress = 82;
-    
+
     this.subscribers = 45600;
     this.subscriberGrowth = 12.1;
     this.subscriberProgress = 91;
@@ -386,7 +386,7 @@ export class VideoAnalyticsComponent implements OnInit {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) return '1 day ago';
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;

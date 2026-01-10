@@ -26,6 +26,25 @@ namespace Infrastructure.Configurations.Identity
             builder.Property(u => u.Bio)
                 .HasMaxLength(1000);
 
+            builder.Property(u => u.CoverImageUrl)
+                .HasMaxLength(2048);
+
+            builder.Property(u => u.Location)
+                .HasMaxLength(100);
+
+            builder.Property(u => u.Website)
+                .HasMaxLength(500);
+
+            builder.Property(u => u.IsPrivateProfile)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(u => u.NotificationPreferences)
+                .HasColumnType("nvarchar(max)");
+
+            builder.Property(u => u.PrivacySettings)
+                .HasColumnType("nvarchar(max)");
+
             builder.Property(u => u.IsActive)
                 .IsRequired();
 
@@ -46,6 +65,9 @@ namespace Infrastructure.Configurations.Identity
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Status);
             builder.HasIndex(u => u.IsActive);
+            builder.HasIndex(u => u.IsPrivateProfile);
+            builder.HasIndex(u => u.LastActiveAt);
+            builder.HasIndex(u => u.Location);
             builder.HasIndex(u => new { u.ExternalProvider, u.ExternalProviderId });
 
             // Configure relationships - Use Restrict for Posts to avoid cascade conflicts

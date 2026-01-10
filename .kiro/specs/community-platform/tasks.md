@@ -15,14 +15,14 @@ This implementation plan spans **12 sprints over 24 weeks**, building incrementa
 ### Backend Tasks
 
 #### Database Schema Setup
-- [-] **Task 1.1**: Extend Users table with community profile fields
+- [x] **Task 1.1**: Extend Users table with community profile fields
   - Add Bio, ProfileImageUrl, CoverImageUrl, Location, Website columns
   - Add DateOfBirth, IsPrivateProfile, LastActiveAt columns
   - Add NotificationPreferences, PrivacySettings JSON columns
   - **Requirement**: User Profile Management (Req 1)
   - **Estimate**: 4 hours
 
-- [ ] **Task 1.2**: Create UserConnections table and relationships
+- [x] **Task 1.2**: Create UserConnections table and relationships
   - Implement friend/follow connection system
   - Add indexes for performance optimization
   - Create foreign key constraints
@@ -30,7 +30,7 @@ This implementation plan spans **12 sprints over 24 weeks**, building incrementa
   - **Estimate**: 6 hours
 
 #### Domain Models and Entities
-- [ ] **Task 1.3**: Create UserProfile domain entity
+- [-] **Task 1.3**: Create UserProfile domain entity
   - Implement profile validation logic
   - Add privacy setting enums
   - Create value objects for profile data

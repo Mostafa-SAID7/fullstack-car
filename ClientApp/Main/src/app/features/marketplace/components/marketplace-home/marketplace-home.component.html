@@ -1,0 +1,86 @@
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-8 md:space-y-12">
+
+    <!-- Categories Grid -->
+    <section class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-black uppercase tracking-[0.1em] text-foreground flex items-center gap-3">
+                <span class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-grid-2 text-primary"></i>
+                </span>
+                Browse Categories
+            </h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div *ngFor="let cat of categories" [routerLink]="['/marketplace/services']"
+                [queryParams]="{type: cat.type}"
+                class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-3xl p-6 flex flex-col items-center text-center space-y-4 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                <div
+                    class="w-16 h-16 bg-secondary dark:bg-white/5 rounded-2xl flex items-center justify-center text-2xl text-gray-400 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+                    <i [class]="'fas ' + cat.icon"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-foreground">{{ getServiceTypeLabel(cat.type) }}</h3>
+                    <p class="text-[10px] text-muted-foreground font-medium">{{ cat.count }}+ Listings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Services -->
+    <section class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-black uppercase tracking-[0.1em] text-foreground flex items-center gap-3">
+                <span class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-star text-primary"></i>
+                </span>
+                Featured Services
+            </h2>
+            <button routerLink="/marketplace/services"
+                class="text-xs font-black uppercase tracking-widest text-primary hover:underline">View All</button>
+        </div>
+
+        <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let i of [1,2,3]"
+                class="bg-white dark:bg-[#111] rounded-[2.5rem] p-4 border border-black/5 dark:border-white/5 animate-pulse">
+                <div class="aspect-video bg-secondary/50 dark:bg-white/5 rounded-2xl mb-4"></div>
+                <div class="h-4 bg-secondary/50 dark:bg-white/5 rounded w-3/4 mb-3"></div>
+                <div class="h-8 bg-secondary/50 dark:bg-white/5 rounded w-full"></div>
+            </div>
+        </div>
+
+        <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let service of featuredServices" [routerLink]="['/marketplace/services', service.id]"
+                class="bg-white dark:bg-[#111] rounded-[2.5rem] p-4 shadow-xl border border-black/5 dark:border-white/5 group hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
+                <div class="aspect-video bg-secondary/50 dark:bg-white/5 rounded-2xl mb-4 overflow-hidden relative">
+                    <img *ngIf="service.imageUrl" [src]="service.imageUrl" alt="Service"
+                        class="w-full h-full object-cover">
+                    <div *ngIf="!service.imageUrl"
+                        class="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                        <i class="fas fa-tools text-4xl"></i>
+                    </div>
+                </div>
+                <div class="px-2 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest mb-1 block">{{
+                                getServiceTypeLabel(service.type) }}</span>
+                            <h3
+                                class="font-extrabold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                                {{ service.name }}</h3>
+                        </div>
+                        <div class="flex items-center gap-1 text-amber-500">
+                            <i class="fas fa-star text-xs"></i>
+                            <span class="text-xs font-black">{{ service.rating | number:'1.1-1' }}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/5">
+                        <span class="font-black text-primary text-lg">{{ service.basePrice | currency }}</span>
+                        <span class="text-[10px] font-black text-muted-foreground uppercase tracking-wider">{{
+                            service.totalBookings }}+ Booked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

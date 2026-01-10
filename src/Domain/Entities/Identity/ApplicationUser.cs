@@ -55,6 +55,8 @@ namespace Domain.Entities.Identity
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
         public virtual ICollection<UserFriend> Friends { get; set; } = new List<UserFriend>();
         public virtual ICollection<UserFriend> FriendOf { get; set; } = new List<UserFriend>();
+        public virtual ICollection<UserConnection> SentConnections { get; set; } = new List<UserConnection>();
+        public virtual ICollection<UserConnection> ReceivedConnections { get; set; } = new List<UserConnection>();
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public virtual ICollection<GroupMember> GroupMemberships { get; set; } = new List<GroupMember>();
         public virtual ICollection<UserClaim> Claims { get; set; } = new List<UserClaim>();

@@ -4,13 +4,12 @@ namespace Domain.Entities.Community.QA
 {
     public class QuestionTag : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Color { get; set; } = "#007bff";
-        public int UsageCount { get; set; } = 0;
-        public bool IsActive { get; set; } = true;
+        // Foreign Keys
+        public Guid QuestionId { get; set; }
+        public Guid TagId { get; set; }
 
         // Navigation Properties
-        public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+        public virtual Question Question { get; set; } = null!;
+        public virtual QATag Tag { get; set; } = null!;
     }
 }
