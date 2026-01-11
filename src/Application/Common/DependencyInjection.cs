@@ -1,6 +1,7 @@
 using Application.Common.Behaviors;
 using Application.Features.Media.Shared.Interfaces;
 using Application.Features.Media.Shared.Services;
+using Application.Features.Community.QA.Services;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
@@ -26,6 +27,8 @@ namespace Application.Common
             
             // Register media services
             services.AddScoped<IMediaService, MediaService>();
+
+            // QA services are registered in Infrastructure layer
 
             return services;
         }

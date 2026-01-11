@@ -1,0 +1,24 @@
+using Application.Features.Community.QA.Commands;
+using FluentValidation;
+
+namespace Application.Features.Community.QA.Validators;
+
+public class UpdateAnswerValidator : AbstractValidator<UpdateAnswerCommand>
+{
+    public UpdateAnswerValidator()
+    {
+        RuleFor(x => x.AnswerId)
+            .NotEmpty()
+            .WithMessage("Answer ID is required");
+
+        RuleFor(x => x.UserId)
+            .NotEmpty()
+            .WithMessage("User ID is required");
+
+        RuleFor(x => x.Request.Content)
+            .NotEmpty()
+            .WithMessage("Answer content is required")
+            .Length(20, 10000)
+            .WithMessage("Answer content must be between 20 and 10,000 characters");
+    }
+}

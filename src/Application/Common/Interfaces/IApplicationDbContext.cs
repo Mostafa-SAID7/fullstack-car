@@ -3,6 +3,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Community.Social;
+using Domain.Entities.Community.QA;
 using Domain.Entities.Marketplace;
 using Domain.Entities.Marketplace.Services;
 using Domain.Entities.Marketplace.Providers;
@@ -50,6 +51,23 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Community.Guides.GuideRating> GuideRatings { get; }
         DbSet<Domain.Entities.Community.Guides.GuideBookmark> GuideBookmarks { get; }
         DbSet<Domain.Entities.Community.Guides.GuideView> GuideViews { get; }
+
+        // Community QA Tables
+        DbSet<Question> Questions { get; }
+        DbSet<Answer> Answers { get; }
+        DbSet<AnswerHistory> AnswerHistories { get; }
+        DbSet<QuestionCategory> QuestionCategories { get; }
+        DbSet<QuestionTag> QuestionTags { get; }
+        DbSet<QuestionVote> QuestionVotes { get; }
+        DbSet<AnswerVote> AnswerVotes { get; }
+        DbSet<QAVote> QAVotes { get; }
+        DbSet<QuestionView> QuestionViews { get; }
+        DbSet<QuestionBookmark> QuestionBookmarks { get; }
+        DbSet<UserReputation> UserReputations { get; }
+        DbSet<QAUserActivity> QAUserActivities { get; }
+        DbSet<QAExpert> QAExperts { get; }
+        DbSet<QATag> QATags { get; }
+        DbSet<QAAnalytics> QAAnalytics { get; }
 
         // Shared Tables
         DbSet<Notification> Notifications { get; }

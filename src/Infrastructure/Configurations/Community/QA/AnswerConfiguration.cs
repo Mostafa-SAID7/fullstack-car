@@ -51,6 +51,11 @@ namespace Infrastructure.Configurations.Community.QA
                 .HasForeignKey(x => x.AnswerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(x => x.VersionHistory)
+                .WithOne(x => x.Answer)
+                .HasForeignKey(x => x.AnswerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasIndex(x => x.QuestionId);
             builder.HasIndex(x => x.UserId);
             builder.HasIndex(x => x.Status);

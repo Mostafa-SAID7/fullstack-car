@@ -20,6 +20,7 @@ namespace Infrastructure.Data.Seeds
         private readonly NotificationSeeder _notificationSeeder;
         private readonly MediaSeeder _mediaSeeder;
         private readonly ManagementSeeder _managementSeeder;
+        private readonly QASeedDataService _qaSeedDataService;
 
         public DatabaseSeeder(
             ILogger<DatabaseSeeder> logger,
@@ -33,7 +34,8 @@ namespace Infrastructure.Data.Seeds
             AdminSeeder adminSeeder,
             NotificationSeeder notificationSeeder,
             MediaSeeder mediaSeeder,
-            ManagementSeeder managementSeeder)
+            ManagementSeeder managementSeeder,
+            QASeedDataService qaSeedDataService)
         {
             _logger = logger;
             _context = context;
@@ -47,6 +49,7 @@ namespace Infrastructure.Data.Seeds
             _notificationSeeder = notificationSeeder;
             _mediaSeeder = mediaSeeder;
             _managementSeeder = managementSeeder;
+            _qaSeedDataService = qaSeedDataService;
         }
 
         public async Task InitializeAsync()
@@ -96,7 +99,10 @@ namespace Infrastructure.Data.Seeds
                 await _contentSeeder.SeedLikesAsync();
                 await _socialSeeder.SeedFriendsAsync();
                 await _contentSeeder.SeedReviewsAsync();
-                await _knowledgeSeeder.SeedQAAsync();
+                
+                // Use comprehensive QA seeding service instead of basic QA seeding
+                await _qaSeedDataService.SeedAllQADataAsync();
+                
                 await _mapsSeeder.SeedMapsAsync();
                 await _knowledgeSeeder.SeedNewsAsync();
                 await _knowledgeSeeder.SeedGuidesAsync();
@@ -174,6 +180,18 @@ namespace Infrastructure.Data.Seeds
             _context.Questions.RemoveRange(_context.Questions);
             _context.QuestionCategories.RemoveRange(_context.QuestionCategories);
 
+            // Clear comprehensive QA system data
+            _context.QAUserActivities.RemoveRange(_context.QAUserActivities);
+            _context.QAAnalytics.RemoveRange(_context.QAAnalytics);
+            _context.QAExperts.RemoveRange(_context.QAExperts);
+            _context.UserReputations.RemoveRange(_context.UserReputations);
+            _context.QAVotes.RemoveRange(_context.QAVotes);
+            _context.QuestionTags.RemoveRange(_context.QuestionTags);
+            _context.QuestionBookmarks.RemoveRange(_context.QuestionBookmarks);
+            _context.QuestionViews.RemoveRange(_context.QuestionViews);
+            _context.QATags.RemoveRange(_context.QATags);
+            _context.QACategories.RemoveRange(_context.QACategories);
+
             _context.Notifications.RemoveRange(_context.Notifications);
             _context.CommentLikes.RemoveRange(_context.CommentLikes);
             _context.PostLikes.RemoveRange(_context.PostLikes);
@@ -226,6 +244,13 @@ namespace Infrastructure.Data.Seeds
             var reviewCount = await _context.CommunityReviews.CountAsync();
             var questionCount = await _context.Questions.CountAsync();
             var answerCount = await _context.Answers.CountAsync();
+            var qaVoteCount = await _context.QAVotes.CountAsync();
+            var userReputationCount = await _context.UserReputations.CountAsync();
+            var qaExpertCount = await _context.QAExperts.CountAsync();
+            var qaCategoryCount = await _context.QACategories.CountAsync();
+            var qaTagCount = await _context.QATags.CountAsync();
+            var qaAnalyticsCount = await _context.QAAnalytics.CountAsync();
+            var qaUserActivityCount = await _context.QAUserActivities.CountAsync();
             var locationCount = await _context.Locations.CountAsync();
             var articleCount = await _context.Articles.CountAsync();
             var guideCount = await _context.Guides.CountAsync();
@@ -252,6 +277,13 @@ namespace Infrastructure.Data.Seeds
             _logger.LogInformation("  Reviews: {ReviewCount:N0}", reviewCount);
             _logger.LogInformation("  Questions: {QuestionCount:N0}", questionCount);
             _logger.LogInformation("  Answers: {AnswerCount:N0}", answerCount);
+            _logger.LogInformation("  QA Votes: {QAVoteCount:N0}", qaVoteCount);
+            _logger.LogInformation("  User Reputations: {UserReputationCount:N0}", userReputationCount);
+            _logger.LogInformation("  QA Experts: {QAExpertCount:N0}", qaExpertCount);
+            _logger.LogInformation("  QA Categories: {QACategoryCount:N0}", qaCategoryCount);
+            _logger.LogInformation("  QA Tags: {QATagCount:N0}", qaTagCount);
+            _logger.LogInformation("  QA Analytics: {QAAnalyticsCount:N0}", qaAnalyticsCount);
+            _logger.LogInformation("  QA User Activities: {QAUserActivityCount:N0}", qaUserActivityCount);
             _logger.LogInformation("  Locations: {LocationCount:N0}", locationCount);
             _logger.LogInformation("  News Articles: {ArticleCount:N0}", articleCount);
             _logger.LogInformation("  Guides: {GuideCount:N0}", guideCount);

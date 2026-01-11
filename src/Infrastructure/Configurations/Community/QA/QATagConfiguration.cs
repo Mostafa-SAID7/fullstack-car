@@ -25,7 +25,7 @@ namespace Infrastructure.Configurations.Community.QA
 
             // Foreign key relationships
             builder.HasOne(t => t.Category)
-                .WithMany(c => c.Tags)
+                .WithMany()
                 .HasForeignKey(t => t.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 

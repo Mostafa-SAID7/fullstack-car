@@ -125,13 +125,51 @@ namespace Domain.ValueObjects.Community.Social
 
             website = website.Trim();
             
-            if (!website.StartsWith("http://") && !website.StartsWith("https://"))
-                website = "https://" + website;
-
-            if (!Uri.TryCreate(website, UriKind.Absolute, out Uri? uri) || 
-                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            // First check for obviously invalid formats
+            if (website.Contains(" ") || !website.Contains("."))
             {
                 throw new ArgumentException("Invalid website URL format");
+            }
+            
+            Uri? uri = null;
+            bool isValidUri = false;
+            
+            // If it doesn't start with http/https, add https
+            if (!website.StartsWith("http://") && !website.StartsWith("https://"))
+            {
+                var httpsWebsite = "https://" + website;
+                isValidUri = Uri.TryCreate(httpsWebsite, UriKind.Absolute, out uri);
+                if (isValidUri && uri != null && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                {
+                    website = httpsWebsite;
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid website URL format");
+                }
+            }
+            else
+            {
+                // For URLs that already have a scheme, validate them directly
+                isValidUri = Uri.TryCreate(website, UriKind.Absolute, out uri);
+                
+                // Explicitly reject non-HTTP/HTTPS schemes
+                if (isValidUri && uri != null && uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                {
+                    throw new ArgumentException("Invalid website URL format");
+                }
+            }
+
+            // Validate the URI and ensure it's HTTP/HTTPS only
+            if (!isValidUri || uri == null || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new ArgumentException("Invalid website URL format");
+            }
+
+            // Normalize http to https
+            if (uri.Scheme == Uri.UriSchemeHttp)
+            {
+                website = website.Replace("http://", "https://");
             }
 
             if (website.Length > 500)

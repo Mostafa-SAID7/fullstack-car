@@ -44,7 +44,7 @@ namespace Infrastructure.Configurations.Community.QA
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(e => e.Category)
-                .WithMany(c => c.Experts)
+                .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 

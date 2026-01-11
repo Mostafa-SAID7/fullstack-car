@@ -207,6 +207,10 @@ namespace Domain.Entities.Community.Social
             if (viewerId == UserId)
                 return true;
 
+            // If profile is private, only friends can view
+            if (IsPrivateProfile)
+                return isViewerFriend;
+
             // Check privacy settings
             return PrivacySettings.ProfileVisibility switch
             {

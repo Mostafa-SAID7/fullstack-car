@@ -19,7 +19,9 @@ using Application.Features.Identity.Auth.Services;
 using Application.Features.Identity.OAuth.Interfaces;
 using Application.Features.Identity.Auth.Services;
 using Application.Features.Media.Analytics.Services;
+using Application.Features.Community.QA.Services;
 using Infrastructure.Services.Analytics;
+using Infrastructure.Services.QA;
 using Application.Features.Identity.Profile.Interfaces;
 using Application.Features.Identity.Profile.Services;
 using Application.Features.Identity.Password.Interfaces;
@@ -223,6 +225,11 @@ namespace Infrastructure.Extensions
             // Media Services
             services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
 
+            // QA Services
+            services.AddScoped<IQAService, QAService>();
+            services.AddScoped<IReputationService, ReputationService>();
+            services.AddScoped<IExpertService, ExpertService>();
+
             // File Storage Configuration
             services.Configure<FileStorageSettings>(configuration.GetSection(FileStorageSettings.SectionName));
             
@@ -277,6 +284,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<AdminSeeder>();
             services.AddScoped<NotificationSeeder>();
             services.AddScoped<MediaSeeder>();
+            services.AddScoped<QASeedDataService>();
             
             // Management Seeders
             services.AddScoped<UserManagementSeeder>();

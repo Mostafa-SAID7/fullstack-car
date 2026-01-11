@@ -52,6 +52,7 @@ namespace Infrastructure.Data
         // Community Q&A Tables
         public DbSet<Domain.Entities.Community.QA.Question> Questions { get; set; }
         public DbSet<Domain.Entities.Community.QA.Answer> Answers { get; set; }
+        public DbSet<Domain.Entities.Community.QA.AnswerHistory> AnswerHistories { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionVote> QuestionVotes { get; set; }
         public DbSet<Domain.Entities.Community.QA.AnswerVote> AnswerVotes { get; set; }
         public DbSet<Domain.Entities.Community.QA.QAVote> QAVotes { get; set; }

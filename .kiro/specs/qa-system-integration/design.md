@@ -245,6 +245,304 @@ CREATE INDEX IX_QAUserActivity_UserId_Date ON QAUserActivity(UserId, CreatedAt D
 CREATE INDEX IX_QAUserActivity_Type_Date ON QAUserActivity(ActivityType, CreatedAt DESC);
 ```
 
+## Comprehensive QA Seed Data Strategy
+
+### Data Seeding Overview
+
+The QA system requires comprehensive seed data to demonstrate functionality and provide a realistic testing environment. The seeding strategy includes:
+
+#### Categories and Tags Seed Data
+```sql
+-- Technology Categories
+INSERT INTO QACategories (Id, Name, Description, IconUrl, Color, QuestionCount, ExpertCount, IsActive) VALUES
+(NEWID(), 'Web Development', 'Frontend and backend web development questions', '/icons/web-dev.svg', '#3B82F6', 15, 8, 1),
+(NEWID(), 'Mobile Development', 'iOS, Android, and cross-platform mobile development', '/icons/mobile-dev.svg', '#10B981', 12, 6, 1),
+(NEWID(), 'Database Design', 'SQL, NoSQL, database architecture and optimization', '/icons/database.svg', '#8B5CF6', 8, 4, 1),
+(NEWID(), 'DevOps & Cloud', 'CI/CD, containerization, cloud platforms', '/icons/devops.svg', '#F59E0B', 10, 5, 1),
+(NEWID(), 'Data Science', 'Machine learning, analytics, data processing', '/icons/data-science.svg', '#EF4444', 7, 3, 1),
+(NEWID(), 'Cybersecurity', 'Security best practices, vulnerability assessment', '/icons/security.svg', '#6B7280', 5, 2, 1);
+
+-- Popular Tags
+INSERT INTO QATags (Id, Name, Description, UsageCount, CategoryId) VALUES
+(NEWID(), 'javascript', 'JavaScript programming language', 25, (SELECT Id FROM QACategories WHERE Name = 'Web Development')),
+(NEWID(), 'react', 'React.js frontend framework', 18, (SELECT Id FROM QACategories WHERE Name = 'Web Development')),
+(NEWID(), 'nodejs', 'Node.js backend runtime', 15, (SELECT Id FROM QACategories WHERE Name = 'Web Development')),
+(NEWID(), 'typescript', 'TypeScript programming language', 12, (SELECT Id FROM QACategories WHERE Name = 'Web Development')),
+(NEWID(), 'angular', 'Angular frontend framework', 10, (SELECT Id FROM QACategories WHERE Name = 'Web Development')),
+(NEWID(), 'sql-server', 'Microsoft SQL Server database', 14, (SELECT Id FROM QACategories WHERE Name = 'Database Design')),
+(NEWID(), 'entity-framework', 'Entity Framework ORM', 11, (SELECT Id FROM QACategories WHERE Name = 'Database Design')),
+(NEWID(), 'docker', 'Docker containerization', 16, (SELECT Id FROM QACategories WHERE Name = 'DevOps & Cloud')),
+(NEWID(), 'azure', 'Microsoft Azure cloud platform', 13, (SELECT Id FROM QACategories WHERE Name = 'DevOps & Cloud')),
+(NEWID(), 'python', 'Python programming language', 20, (SELECT Id FROM QACategories WHERE Name = 'Data Science'));
+```
+
+#### Sample Questions Seed Data
+```sql
+-- High-quality questions with realistic content
+INSERT INTO Questions (Id, UserId, Title, Content, Category, Tags, ViewCount, VoteScore, AnswerCount, CreatedAt) VALUES
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), 
+'How to implement JWT authentication in ASP.NET Core 9?',
+'I''m building a new web API using ASP.NET Core 9 and need to implement JWT token-based authentication. I want to understand the best practices for:
+
+1. Token generation and validation
+2. Refresh token implementation
+3. Role-based authorization
+4. Security considerations
+
+I''ve looked at the Microsoft documentation but would appreciate real-world examples and common pitfalls to avoid.',
+'Web Development', 
+'["aspnet-core", "jwt", "authentication", "security"]',
+156, 8, 3, DATEADD(day, -5, GETUTCDATE())),
+
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%developer%'), 
+'Best practices for React state management in large applications?',
+'Our React application is growing and we''re experiencing state management issues. We''re currently using useState and useContext, but considering:
+
+- Redux Toolkit
+- Zustand  
+- Jotai
+- React Query for server state
+
+What are the trade-offs and when should we choose each approach? Looking for guidance based on team size (8 developers) and app complexity (50+ components).',
+'Web Development',
+'["react", "state-management", "redux", "performance"]',
+243, 12, 5, DATEADD(day, -3, GETUTCDATE())),
+
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%admin%'), 
+'SQL Server performance optimization for large datasets?',
+'Working with a SQL Server database containing 10M+ records in the main table. Queries are becoming slow (5+ seconds). Current issues:
+
+- Complex JOIN operations across 6 tables
+- Full table scans on filtered queries
+- Index fragmentation
+- Blocking and deadlocks during peak hours
+
+What systematic approach should I take to identify and resolve these performance bottlenecks?',
+'Database Design',
+'["sql-server", "performance", "indexing", "optimization"]',
+189, 15, 4, DATEADD(day, -7, GETUTCDATE())),
+
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user%'), 
+'Docker multi-stage builds for .NET applications?',
+'I want to optimize my Docker images for .NET applications. Currently using a simple Dockerfile but the images are 800MB+. 
+
+Questions:
+1. How to implement multi-stage builds effectively?
+2. Best base images for .NET 9 applications?
+3. Security scanning and vulnerability management?
+4. CI/CD integration with Azure DevOps?
+
+Looking for a complete example with explanations.',
+'DevOps & Cloud',
+'["docker", "dotnet", "optimization", "ci-cd"]',
+98, 6, 2, DATEADD(day, -2, GETUTCDATE()));
+```
+
+#### Sample Answers Seed Data
+```sql
+-- High-quality answers with code examples
+INSERT INTO Answers (Id, QuestionId, UserId, Content, VoteScore, IsAccepted, CreatedAt) VALUES
+(NEWID(), (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%JWT authentication%'), 
+(SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'),
+'Here''s a comprehensive approach to implementing JWT authentication in ASP.NET Core 9:
+
+## 1. JWT Token Generation
+
+```csharp
+public class JwtTokenService
+{
+    private readonly IConfiguration _configuration;
+    
+    public string GenerateToken(ApplicationUser user, IList<string> roles)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
+        
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+        
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(15), // Short-lived access token
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+        
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+}
+```
+
+## 2. Refresh Token Implementation
+
+```csharp
+public class RefreshToken
+{
+    public string Token { get; set; } = Guid.NewGuid().ToString();
+    public DateTime Expires { get; set; } = DateTime.UtcNow.AddDays(7);
+    public bool IsExpired => DateTime.UtcNow >= Expires;
+    public DateTime Created { get; set; } = DateTime.UtcNow;
+    public string CreatedByIp { get; set; }
+    public DateTime? Revoked { get; set; }
+    public string RevokedByIp { get; set; }
+    public bool IsActive => Revoked == null && !IsExpired;
+}
+```
+
+## 3. Program.cs Configuration
+
+```csharp
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"])),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+```
+
+## Security Best Practices
+
+1. **Use HTTPS only** in production
+2. **Short-lived access tokens** (15 minutes)
+3. **Secure refresh token storage** (HttpOnly cookies)
+4. **Token rotation** on refresh
+5. **Rate limiting** on auth endpoints
+
+This approach provides a secure, scalable authentication system. Let me know if you need clarification on any part!',
+18, 1, DATEADD(day, -4, GETUTCDATE())),
+
+(NEWID(), (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%React state management%'), 
+(SELECT TOP 1 Id FROM Users WHERE Email LIKE '%senior%'),
+'For a team of 8 developers with 50+ components, here''s my recommendation based on 5 years of React experience:
+
+## Decision Matrix
+
+| Solution | Learning Curve | Boilerplate | DevTools | Team Size Fit |
+|----------|---------------|-------------|----------|---------------|
+| Redux Toolkit | Medium | Low | Excellent | Perfect |
+| Zustand | Low | Very Low | Good | Good |
+| Jotai | Medium | Low | Good | Medium |
+| React Query | Low | Very Low | Excellent | Perfect |
+
+## My Recommendation: Redux Toolkit + React Query
+
+### Why Redux Toolkit?
+- **Predictable state updates** - crucial for team collaboration
+- **Excellent DevTools** - time-travel debugging saves hours
+- **Mature ecosystem** - extensive middleware and tooling
+- **Team scalability** - clear patterns everyone can follow
+
+```typescript
+// store/slices/userSlice.ts
+import { createSlice, PayloadAction } from ''@reduxjs/toolkit''
+
+interface UserState {
+  currentUser: User | null
+  preferences: UserPreferences
+}
+
+const userSlice = createSlice({
+  name: ''user'',
+  initialState,
+  reducers: {
+    setUser: (state, action: PayloadAction<User>) => {
+      state.currentUser = action.payload
+    },
+    updatePreferences: (state, action: PayloadAction<Partial<UserPreferences>>) => {
+      state.preferences = { ...state.preferences, ...action.payload }
+    }
+  }
+})
+```
+
+### Why React Query for Server State?
+- **Automatic caching** and background updates
+- **Optimistic updates** for better UX
+- **Error handling** and retry logic built-in
+
+```typescript
+// hooks/useQuestions.ts
+export const useQuestions = (filters: QuestionFilters) => {
+  return useQuery({
+    queryKey: [''questions'', filters],
+    queryFn: () => questionService.getQuestions(filters),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000 // 10 minutes
+  })
+}
+```
+
+## Implementation Strategy
+
+1. **Start with React Query** for all server state
+2. **Use Redux Toolkit** for complex client state only
+3. **Keep useState** for simple component state
+4. **Establish clear boundaries** - document what goes where
+
+This hybrid approach gives you the best of both worlds without over-engineering.',
+14, 1, DATEADD(day, -2, GETUTCDATE()));
+```
+
+#### User Reputation and Expert Seed Data
+```sql
+-- Sample user reputation data
+INSERT INTO UserReputation (Id, UserId, ReputationScore, QuestionsAsked, AnswersGiven, AcceptedAnswers, UpvotesReceived, DownvotesReceived, BadgesEarned, ExpertiseAreas, LastUpdated) VALUES
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), 2850, 12, 45, 28, 156, 8, '["Expert", "Knowledgeable", "Helpful", "Great Answer"]', '["Web Development", "Database Design"]', GETUTCDATE()),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%senior%'), 1920, 8, 32, 19, 98, 5, '["Knowledgeable", "Helpful", "Good Answer"]', '["Web Development", "DevOps & Cloud"]', GETUTCDATE()),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%developer%'), 1150, 15, 28, 12, 67, 12, '["Contributor", "Helpful"]', '["Mobile Development", "Web Development"]', GETUTCDATE()),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%admin%'), 890, 6, 18, 8, 45, 3, '["Contributor"]', '["Database Design", "Cybersecurity"]', GETUTCDATE());
+
+-- Expert assignments
+INSERT INTO QAExperts (Id, UserId, CategoryId, ExpertiseLevel, AnswerCount, AcceptedAnswerCount, AverageRating, ResponseRate, NotificationEnabled) VALUES
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), (SELECT Id FROM QACategories WHERE Name = 'Web Development'), 'Expert', 28, 18, 4.7, 85.5, 1),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), (SELECT Id FROM QACategories WHERE Name = 'Database Design'), 'Expert', 17, 10, 4.5, 78.2, 1),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%senior%'), (SELECT Id FROM QACategories WHERE Name = 'Web Development'), 'Expert', 19, 12, 4.4, 72.1, 1),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%senior%'), (SELECT Id FROM QACategories WHERE Name = 'DevOps & Cloud'), 'Intermediate', 13, 7, 4.2, 68.9, 1);
+```
+
+#### Voting and Activity Seed Data
+```sql
+-- Sample voting data
+INSERT INTO QAVotes (Id, UserId, ContentId, ContentType, VoteType, CreatedAt) VALUES
+-- Votes on questions
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user1%'), (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%JWT%'), 'Question', 'Up', DATEADD(day, -4, GETUTCDATE())),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user2%'), (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%JWT%'), 'Question', 'Up', DATEADD(day, -4, GETUTCDATE())),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user3%'), (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%React%'), 'Question', 'Up', DATEADD(day, -2, GETUTCDATE())),
+-- Votes on answers
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user1%'), (SELECT TOP 1 Id FROM Answers WHERE Content LIKE '%JWT Token Generation%'), 'Answer', 'Up', DATEADD(day, -3, GETUTCDATE())),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%user2%'), (SELECT TOP 1 Id FROM Answers WHERE Content LIKE '%Redux Toolkit%'), 'Answer', 'Up', DATEADD(day, -1, GETUTCDATE()));
+
+-- Sample user activity
+INSERT INTO QAUserActivity (Id, UserId, ActivityType, ContentId, Category, ReputationChange, CreatedAt) VALUES
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), 'QuestionAsked', (SELECT TOP 1 Id FROM Questions WHERE Title LIKE '%JWT%'), 'Web Development', 0, DATEADD(day, -5, GETUTCDATE())),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), 'AnswerGiven', (SELECT TOP 1 Id FROM Answers WHERE Content LIKE '%JWT Token Generation%'), 'Web Development', 15, DATEADD(day, -4, GETUTCDATE())),
+(NEWID(), (SELECT TOP 1 Id FROM Users WHERE Email LIKE '%expert%'), 'AnswerAccepted', (SELECT TOP 1 Id FROM Answers WHERE Content LIKE '%JWT Token Generation%'), 'Web Development', 25, DATEADD(day, -3, GETUTCDATE()));
+
+-- Sample analytics data
+INSERT INTO QAAnalytics (Date, QuestionsAsked, QuestionsAnswered, AnswersAccepted, TotalVotes, UniqueUsers, AverageResponseTime, TopCategory) VALUES
+(DATEADD(day, -7, CAST(GETUTCDATE() AS DATE)), 8, 6, 4, 23, 15, 180, 'Web Development'),
+(DATEADD(day, -6, CAST(GETUTCDATE() AS DATE)), 12, 9, 6, 31, 18, 165, 'Web Development'),
+(DATEADD(day, -5, CAST(GETUTCDATE() AS DATE)), 6, 8, 5, 28, 12, 145, 'Database Design'),
+(DATEADD(day, -4, CAST(GETUTCDATE() AS DATE)), 10, 11, 7, 35, 20, 120, 'Web Development'),
+(DATEADD(day, -3, CAST(GETUTCDATE() AS DATE)), 15, 12, 8, 42, 25, 95, 'DevOps & Cloud'),
+(DATEADD(day, -2, CAST(GETUTCDATE() AS DATE)), 9, 10, 6, 38, 16, 110, 'Web Development'),
+(DATEADD(day, -1, CAST(GETUTCDATE() AS DATE)), 11, 8, 5, 29, 19, 135, 'Mobile Development');
+```
+
 ## API Design
 
 ### QA Controllers
@@ -1815,6 +2113,46 @@ Property-based testing (PBT) validates software correctness by testing universal
 **Property 68: User Satisfaction Surveys**
 *For any* eligible user interaction, satisfaction surveys should be generated and feedback collected appropriately
 **Validates: Requirements 12.6**
+
+#### Data Seeding and Quality Properties
+
+**Property 69: Comprehensive Seed Data Population**
+*For any* QA table in the system, it should be populated with realistic seed data that maintains referential integrity
+**Validates: Requirements 13.1**
+
+**Property 70: Question Seed Data Quality**
+*For any* seeded question, it should have realistic content, proper categorization, and valid metadata
+**Validates: Requirements 13.2**
+
+**Property 71: Answer Seed Data Relationships**
+*For any* seeded answer, it should be properly linked to existing questions and maintain vote score consistency
+**Validates: Requirements 13.3**
+
+**Property 72: Reputation Seed Data Accuracy**
+*For any* seeded user reputation, the score should accurately reflect the user's question and answer activity
+**Validates: Requirements 13.4**
+
+**Property 73: Category and Expert Seed Data Consistency**
+*For any* seeded category, it should have appropriate expert assignments and realistic question counts
+**Validates: Requirements 13.5, 13.7**
+
+**Property 74: Historical Analytics Seed Data**
+*For any* seeded analytics data, it should provide realistic historical trends for reporting demonstrations
+**Validates: Requirements 13.8**
+
+#### Enhanced Duplicate Prevention Properties
+
+**Property 75: Semantic Similarity Detection**
+*For any* new question, the system should detect semantically similar existing questions using content analysis beyond keyword matching
+**Validates: Requirements 6.8**
+
+**Property 76: Identical Question Prevention**
+*For any* question submission, if an identical question already exists, the system should prevent submission and redirect to the existing question
+**Validates: Requirements 6.7**
+
+**Property 77: Similarity Score Accuracy**
+*For any* question similarity comparison, the system should provide accurate similarity scores above 70% for truly similar questions
+**Validates: Requirements 6.3**
 
 ## Error Handling Strategy
 
