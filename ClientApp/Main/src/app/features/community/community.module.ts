@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { CommunityFeedComponent } from './components/feed/community-feed/community-feed.component';
 import { GuidesListComponent } from './components/guides/guides-list/guides-list.component';
 import { NewsListComponent } from './components/news/news-list/news-list.component';
-import { QAListComponent } from './components/qa/qa-list/qa-list.component';
 import { MapsExplorerComponent } from './components/maps/maps-explorer/maps-explorer.component';
 import { UserProfileComponent } from './components/profile/user-profile/user-profile.component';
 import { PostListComponent } from './components/posts/post-list/post-list.component';
@@ -15,12 +14,29 @@ import { ReviewListComponent } from './components/reviews/review-list/review-lis
 import { FriendListComponent } from './components/friends/friend-list/friend-list.component';
 import { PageListComponent } from './components/pages/page-list/page-list.component';
 
+// QA Components - using consistent naming
+import { QuestionListComponent } from './components/qa/question-list/question-list.component';
+import { QuestionDetailComponent } from './components/qa/question-detail/question-detail.component';
+import { QuestionFormComponent } from './components/qa/question-form/question-form.component';
+import { QuestionSearchComponent } from './components/qa/question-search/question-search.component';
+// import { AnswerFormComponent } from './components/qa/answer-form/answer-form.component';
+
 const routes: Routes = [
   { path: '', component: CommunityFeedComponent },
   { path: 'profile', component: UserProfileComponent },
   { path: 'guides', component: GuidesListComponent },
   { path: 'news', component: NewsListComponent },
-  { path: 'qa', component: QAListComponent },
+  // QA Routes with sub-routes
+  { 
+    path: 'qa', 
+    children: [
+      { path: '', component: QuestionListComponent },
+      { path: 'ask', component: QuestionFormComponent },
+      { path: 'search', component: QuestionSearchComponent },
+      { path: ':id', component: QuestionDetailComponent },
+      { path: ':id/edit', component: QuestionFormComponent }
+    ]
+  },
   { path: 'maps', component: MapsExplorerComponent },
   { path: 'posts', component: PostListComponent },
   { path: 'groups', component: GroupListComponent },
@@ -38,7 +54,11 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     CommunityFeedComponent,
     NewsListComponent,
-    QAListComponent,
+    QuestionListComponent, // Updated import
+    QuestionDetailComponent,
+    QuestionFormComponent,
+    QuestionSearchComponent,
+    // AnswerFormComponent,
     MapsExplorerComponent,
     GuidesListComponent,
     UserProfileComponent,

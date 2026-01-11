@@ -175,6 +175,19 @@ namespace Infrastructure.Data.Seeds
             _context.LocationCategories.RemoveRange(_context.LocationCategories);
             
             _context.AnswerComments.RemoveRange(_context.AnswerComments);
+            
+            // Break circular dependency between Questions and Answers
+            // First, clear AcceptedAnswerId from all questions
+            var questionsWithAcceptedAnswers = await _context.Questions
+                .Where(q => q.AcceptedAnswerId != null)
+                .ToListAsync();
+            foreach (var question in questionsWithAcceptedAnswers)
+            {
+                question.AcceptedAnswerId = null;
+            }
+            await _context.SaveChangesAsync();
+            
+            // Now we can safely remove answers and questions
             _context.Answers.RemoveRange(_context.Answers);
             _context.QuestionVotes.RemoveRange(_context.QuestionVotes);
             _context.Questions.RemoveRange(_context.Questions);
@@ -213,6 +226,14 @@ namespace Infrastructure.Data.Seeds
             {
                 var seededUserIds = seededUsers.Select(u => u.Id).ToList();
                 
+                // Clear RefreshTokens first (has FK to Users)
+                var refreshTokens = await _context.RefreshTokens.Where(rt => seededUserIds.Contains(rt.UserId)).ToListAsync();
+                _context.RefreshTokens.RemoveRange(refreshTokens);
+
+                // Clear UserActivities (has FK to Users)
+                var userActivities = await _context.UserActivities.Where(ua => seededUserIds.Contains(ua.UserId)).ToListAsync();
+                _context.UserActivities.RemoveRange(userActivities);
+
                 var userRoles = await _context.UserRoles.Where(ur => seededUserIds.Contains(ur.UserId)).ToListAsync();
                 _context.UserRoles.RemoveRange(userRoles);
 

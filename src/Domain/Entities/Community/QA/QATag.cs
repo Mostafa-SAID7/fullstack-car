@@ -10,7 +10,7 @@ namespace Domain.Entities.Community.QA
         public Guid? CategoryId { get; set; }
 
         // Navigation Properties
-        public virtual QuestionCategory? Category { get; set; }
+        public virtual QACategory? Category { get; set; }
         public virtual ICollection<QuestionTag> QuestionTags { get; set; } = new List<QuestionTag>();
     }
 }

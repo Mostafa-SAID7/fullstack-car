@@ -1,7 +1,9 @@
 using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
+using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.QA.Queries;
 using Application.Features.Identity.Core.Interfaces;
+using Infrastructure.Services.QA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -19,10 +21,14 @@ namespace WebAPI.Controllers.Community.QA
     public class AnswersController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
+        private readonly IQAHubService _qaHubService;
 
-        public AnswersController(ICurrentUserService currentUserService)
+        public AnswersController(
+            ICurrentUserService currentUserService,
+            IQAHubService qaHubService)
         {
             _currentUserService = currentUserService;
+            _qaHubService = qaHubService;
         }
 
         /// <summary>
@@ -122,6 +128,18 @@ namespace WebAPI.Controllers.Community.QA
 
             if (result.Succeeded)
             {
+                // Send real-time notification about the new answer
+                try
+                {
+                    await _qaHubService.NotifyNewAnswerAsync(result.Data);
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but don't fail the request
+                    // Real-time notification failure shouldn't break the core functionality
+                    // TODO: Add proper logging here
+                }
+
                 var location = Url.Action(nameof(GetAnswer), new { id = result.Data.Id });
                 return Created(result.Data, location!, "Answer created successfully");
             }

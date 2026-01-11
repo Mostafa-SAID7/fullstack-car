@@ -5,28 +5,28 @@ namespace Infrastructure.Services.QA;
 
 public class QAService : IQAService
 {
+    private readonly IQASearchService _searchService;
+
+    public QAService(IQASearchService searchService)
+    {
+        _searchService = searchService;
+    }
+
     public async Task<List<QuestionSimilarityDto>> FindSimilarQuestionsAsync(string title, string content, Guid? excludeQuestionId = null)
     {
-        // TODO: Implement semantic similarity search
-        // This will be implemented in later tasks with proper search indexing
-        await Task.CompletedTask;
-        return new List<QuestionSimilarityDto>();
+        var result = await _searchService.FindSimilarQuestionsAsync(title, content, excludeQuestionId);
+        return result.IsSuccess ? result.Data : new List<QuestionSimilarityDto>();
     }
 
     public async Task<bool> IsQuestionDuplicateAsync(string title, string content)
     {
-        // TODO: Implement duplicate detection logic
-        // This will be implemented in later tasks with proper similarity algorithms
-        await Task.CompletedTask;
-        return false;
+        var result = await _searchService.IsQuestionDuplicateAsync(title, content);
+        return result.IsSuccess && result.Data;
     }
 
     public async Task<double> CalculateSimilarityScoreAsync(string text1, string text2)
     {
-        // TODO: Implement similarity calculation algorithm
-        // This will be implemented in later tasks with proper NLP techniques
-        await Task.CompletedTask;
-        return 0.0;
+        return await _searchService.CalculateSemanticSimilarityAsync(text1, text2);
     }
 
     public async Task NotifyExpertsAsync(Guid questionId, string category)

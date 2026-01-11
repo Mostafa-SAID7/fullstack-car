@@ -13,13 +13,16 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
 {
     private readonly IApplicationDbContext _context;
     private readonly IQAService _qaService;
+    private readonly IQASearchService _searchService;
 
     public GetQuestionDetailHandler(
         IApplicationDbContext context,
-        IQAService qaService)
+        IQAService qaService,
+        IQASearchService searchService)
     {
         _context = context;
         _qaService = qaService;
+        _searchService = searchService;
     }
 
     public async Task<Result<QuestionDetailDto>> Handle(GetQuestionDetailQuery request, CancellationToken cancellationToken)
@@ -86,8 +89,10 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
             })
             .ToListAsync(cancellationToken);
 
-        // Get similar questions
-        var similarQuestions = await GetSimilarQuestionsInternal(question.Id, question.Title, question.Content, 3, 0.7, cancellationToken);
+        // Get similar questions using the search service
+        var similarQuestionsResult = await _searchService.FindSimilarQuestionsAsync(
+            question.Title, question.Content, question.Id, 3, 0.7, cancellationToken);
+        var similarQuestions = similarQuestionsResult.IsSuccess ? similarQuestionsResult.Data : new List<QuestionSimilarityDto>();
 
         var questionDetailDto = new QuestionDetailDto
         {
@@ -118,143 +123,56 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
 
         return Result<QuestionDetailDto>.Success(questionDetailDto);
     }
-
-    private async Task<List<QuestionSimilarityDto>> GetSimilarQuestionsInternal(
-        Guid questionId, 
-        string title, 
-        string content, 
-        int maxResults, 
-        double minSimilarityScore, 
-        CancellationToken cancellationToken)
-    {
-        // Simple similarity implementation - in production, use more sophisticated algorithms
-        var otherQuestions = await _context.Questions
-            .Where(q => q.Id != questionId && !q.IsDeleted)
-            .Include(q => q.User)
-            .Take(50) // Limit for performance
-            .ToListAsync(cancellationToken);
-
-        var similarQuestions = new List<QuestionSimilarityDto>();
-
-        foreach (var otherQuestion in otherQuestions)
-        {
-            var titleSimilarity = await _qaService.CalculateSimilarityScoreAsync(title, otherQuestion.Title);
-            var contentSimilarity = await _qaService.CalculateSimilarityScoreAsync(content, otherQuestion.Content);
-            var overallSimilarity = (titleSimilarity * 0.7) + (contentSimilarity * 0.3);
-
-            if (overallSimilarity >= minSimilarityScore)
-            {
-                similarQuestions.Add(new QuestionSimilarityDto
-                {
-                    Id = otherQuestion.Id,
-                    Title = otherQuestion.Title,
-                    Category = "General", // TODO: Map CategoryId to category name in later tasks
-                    VoteScore = otherQuestion.UpvotesCount - otherQuestion.DownvotesCount,
-                    AnswerCount = otherQuestion.AnswersCount,
-                    HasAcceptedAnswer = otherQuestion.HasAcceptedAnswer,
-                    SimilarityScore = overallSimilarity,
-                    CreatedAt = otherQuestion.CreatedAt
-                });
-            }
-        }
-
-        return similarQuestions
-            .OrderByDescending(q => q.SimilarityScore)
-            .Take(maxResults)
-            .ToList();
-    }
 }
 
 public class SearchQuestionsHandler : IRequestHandler<SearchQuestionsQuery, Result<PaginatedList<QuestionListDto>>>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IQASearchService _searchService;
 
-    public SearchQuestionsHandler(IApplicationDbContext context)
+    public SearchQuestionsHandler(IQASearchService searchService)
     {
-        _context = context;
+        _searchService = searchService;
     }
 
     public async Task<Result<PaginatedList<QuestionListDto>>> Handle(SearchQuestionsQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Questions
-            .Where(q => !q.IsDeleted)
-            .AsQueryable();
+        // Convert tags string to list if provided
+        var tagsList = !string.IsNullOrWhiteSpace(request.Tags) 
+            ? request.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToList()
+            : null;
 
-        // Apply search term filter
-        if (!string.IsNullOrEmpty(request.SearchTerm))
-        {
-            var searchTerm = request.SearchTerm.ToLower();
-            query = query.Where(q => 
-                q.Title.ToLower().Contains(searchTerm) || 
-                q.Content.ToLower().Contains(searchTerm) ||
-                (q.Tags != null && q.Tags.ToLower().Contains(searchTerm)));
-        }
+        // Use the unified search service
+        var result = await _searchService.SearchQuestionsAsync(
+            request.SearchTerm,
+            request.Category,
+            tagsList,
+            null, // fromDate
+            null, // toDate
+            null, // minVotes
+            null, // maxVotes
+            null, // hasAcceptedAnswer
+            null, // isClosed
+            request.SortBy,
+            request.SortDescending,
+            request.PageNumber,
+            request.PageSize,
+            cancellationToken);
 
-        // Apply category filter
-        if (!string.IsNullOrEmpty(request.Category))
-        {
-            // TODO: Filter by category when category mapping is implemented
-            // query = query.Where(q => q.Category.Name == request.Category);
-        }
-
-        // Apply tags filter
-        if (!string.IsNullOrEmpty(request.Tags))
-        {
-            query = query.Where(q => q.Tags != null && q.Tags.Contains(request.Tags));
-        }
-
-        // Apply sorting
-        query = request.SortBy.ToLower() switch
-        {
-            "title" => request.SortDescending ? query.OrderByDescending(q => q.Title) : query.OrderBy(q => q.Title),
-            "votescore" => request.SortDescending ? query.OrderByDescending(q => q.UpvotesCount - q.DownvotesCount) : query.OrderBy(q => q.UpvotesCount - q.DownvotesCount),
-            "answercount" => request.SortDescending ? query.OrderByDescending(q => q.AnswersCount) : query.OrderBy(q => q.AnswersCount),
-            "viewcount" => request.SortDescending ? query.OrderByDescending(q => q.ViewsCount) : query.OrderBy(q => q.ViewsCount),
-            "relevance" => query.OrderByDescending(q => q.UpvotesCount - q.DownvotesCount).ThenByDescending(q => q.ViewsCount),
-            _ => request.SortDescending ? query.OrderByDescending(q => q.CreatedAt) : query.OrderBy(q => q.CreatedAt)
-        };
-
-        // Join with user and reputation data
-        var questionsQuery = query
-            .Join(_context.Users, q => q.UserId, u => u.Id, (q, u) => new { Question = q, User = u })
-            .GroupJoin(_context.UserReputations, qu => qu.User.Id, ur => ur.UserId,
-                (qu, ur) => new { qu.Question, qu.User, Reputation = ur.FirstOrDefault() })
-            .Select(x => new QuestionListDto
-            {
-                Id = x.Question.Id,
-                Title = x.Question.Title,
-                Category = "General", // TODO: Map CategoryId to category name in later tasks
-                Tags = x.Question.Tags != null ? x.Question.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>(),
-                ViewCount = x.Question.ViewsCount,
-                VoteScore = x.Question.UpvotesCount - x.Question.DownvotesCount,
-                AnswerCount = x.Question.AnswersCount,
-                HasAcceptedAnswer = x.Question.AcceptedAnswerId != null,
-                IsClosed = x.Question.Status != QuestionStatus.Open,
-                UserId = x.Question.UserId,
-                UserName = x.User.UserName ?? "Unknown",
-                UserReputation = x.Reputation != null ? x.Reputation.ReputationScore : 0,
-                CreatedAt = x.Question.CreatedAt,
-                LastActivityAt = x.Question.UpdatedAt ?? x.Question.CreatedAt
-            });
-
-        var paginatedResult = await PaginatedList<QuestionListDto>.CreateAsync(
-            questionsQuery, request.PageNumber, request.PageSize);
-
-        return Result<PaginatedList<QuestionListDto>>.Success(paginatedResult);
+        return result;
     }
 }
 
 public class GetSimilarQuestionsHandler : IRequestHandler<GetSimilarQuestionsQuery, Result<List<QuestionSimilarityDto>>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
+    private readonly IQASearchService _searchService;
 
     public GetSimilarQuestionsHandler(
         IApplicationDbContext context,
-        IQAService qaService)
+        IQASearchService searchService)
     {
         _context = context;
-        _qaService = qaService;
+        _searchService = searchService;
     }
 
     public async Task<Result<List<QuestionSimilarityDto>>> Handle(GetSimilarQuestionsQuery request, CancellationToken cancellationToken)
@@ -282,53 +200,11 @@ public class GetSimilarQuestionsHandler : IRequestHandler<GetSimilarQuestionsQue
             return Result<List<QuestionSimilarityDto>>.Failure("Title or content must be provided");
         }
 
-        // Get other questions for comparison
-        var otherQuestions = await _context.Questions
-            .Where(q => q.Id != request.QuestionId && !q.IsDeleted)
-            .Include(q => q.User)
-            .Take(100) // Limit for performance
-            .ToListAsync(cancellationToken);
+        // Use the unified search service
+        var result = await _searchService.FindSimilarQuestionsAsync(
+            title, content, request.QuestionId, request.MaxResults, request.MinSimilarityScore, cancellationToken);
 
-        var similarQuestions = new List<QuestionSimilarityDto>();
-
-        foreach (var otherQuestion in otherQuestions)
-        {
-            double overallSimilarity = 0;
-
-            if (!string.IsNullOrEmpty(title))
-            {
-                var titleSimilarity = await _qaService.CalculateSimilarityScoreAsync(title, otherQuestion.Title);
-                overallSimilarity += titleSimilarity * 0.7;
-            }
-
-            if (!string.IsNullOrEmpty(content))
-            {
-                var contentSimilarity = await _qaService.CalculateSimilarityScoreAsync(content, otherQuestion.Content);
-                overallSimilarity += contentSimilarity * 0.3;
-            }
-
-            if (overallSimilarity >= request.MinSimilarityScore)
-            {
-                similarQuestions.Add(new QuestionSimilarityDto
-                {
-                    Id = otherQuestion.Id,
-                    Title = otherQuestion.Title,
-                    Category = "General", // TODO: Map CategoryId to category name in later tasks
-                    VoteScore = otherQuestion.UpvotesCount - otherQuestion.DownvotesCount,
-                    AnswerCount = otherQuestion.AnswersCount,
-                    HasAcceptedAnswer = otherQuestion.HasAcceptedAnswer,
-                    SimilarityScore = overallSimilarity,
-                    CreatedAt = otherQuestion.CreatedAt
-                });
-            }
-        }
-
-        var result = similarQuestions
-            .OrderByDescending(q => q.SimilarityScore)
-            .Take(request.MaxResults)
-            .ToList();
-
-        return Result<List<QuestionSimilarityDto>>.Success(result);
+        return result;
     }
 }
 

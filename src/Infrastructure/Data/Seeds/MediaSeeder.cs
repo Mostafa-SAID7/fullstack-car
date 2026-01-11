@@ -328,12 +328,13 @@ public class MediaSeeder
             var viewers = users.OrderBy(x => random.Next()).Take(random.Next(5, users.Count)).ToList();
             foreach (var viewer in viewers)
             {
+                var maxDuration = Math.Max(1, (int)video.Duration.TotalMinutes);
                 videoViews.Add(new VideoView
                 {
                     Id = Guid.NewGuid(),
                     VideoId = video.Id,
                     UserId = viewer.Id,
-                    WatchDuration = TimeSpan.FromMinutes(random.Next(1, (int)video.Duration.TotalMinutes + 1)),
+                    WatchDuration = TimeSpan.FromMinutes(random.Next(1, maxDuration + 1)),
                     IsCompleted = random.Next(0, 3) == 0, // 33% completion rate
                     CreatedAt = DateTime.UtcNow.AddDays(-random.Next(1, 30))
                 });
@@ -384,12 +385,13 @@ public class MediaSeeder
             var listeners = users.OrderBy(x => random.Next()).Take(random.Next(3, users.Count)).ToList();
             foreach (var listener in listeners)
             {
+                var maxDuration = Math.Max(5, (int)podcast.Duration.TotalMinutes);
                 podcastPlays.Add(new PodcastPlay
                 {
                     Id = Guid.NewGuid(),
                     PodcastId = podcast.Id,
                     UserId = listener.Id,
-                    PlayDuration = TimeSpan.FromMinutes(random.Next(5, (int)podcast.Duration.TotalMinutes + 1)),
+                    PlayDuration = TimeSpan.FromMinutes(random.Next(1, maxDuration + 1)),
                     IsCompleted = random.Next(0, 4) == 0, // 25% completion rate
                     CreatedAt = DateTime.UtcNow.AddDays(-random.Next(1, 30))
                 });

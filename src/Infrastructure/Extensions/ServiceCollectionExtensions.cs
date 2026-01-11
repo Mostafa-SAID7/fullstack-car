@@ -226,9 +226,16 @@ namespace Infrastructure.Extensions
             services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
 
             // QA Services
+            services.Configure<QASearchOptions>(configuration.GetSection(QASearchOptions.SectionName));
             services.AddScoped<IQAService, QAService>();
+            services.AddScoped<IQASearchService, QASearchService>();
             services.AddScoped<IReputationService, ReputationService>();
+            services.AddScoped<IQAHubService, QAHubService>();
             services.AddScoped<IExpertService, ExpertService>();
+            
+            // Domain Services
+            services.AddScoped<Domain.Services.IExpertIdentificationService, Domain.Services.ExpertIdentificationService>();
+            services.AddScoped<Domain.Services.IReputationService, Domain.Services.ReputationDomainService>();
 
             // File Storage Configuration
             services.Configure<FileStorageSettings>(configuration.GetSection(FileStorageSettings.SectionName));

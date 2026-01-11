@@ -108,6 +108,7 @@ try
     // Add SignalR hubs
     app.MapHub<NotificationHub>("/hubs/notificationHub");
     app.MapHub<ChatHub>("/hubs/chat");
+    app.MapHub<QAHub>("/hubs/qa");
 
     // Initialize and seed database
     using (var scope = app.Services.CreateScope())

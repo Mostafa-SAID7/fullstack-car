@@ -28,7 +28,9 @@ import {
   TrendingUp,
   Calendar,
   Bell,
-  Video
+  Video,
+  MessageSquare,
+  HelpCircle
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -148,6 +150,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('pages', 'Pages'),
           color: 'text-orange-600',
           description: 'Pages management'
+        },
+        {
+          path: '/content/qa',
+          icon: HelpCircle,
+          label: t('qa_system', 'QA System'),
+          color: 'text-green-600',
+          description: 'Question & Answer management'
         },
         {
           path: '/media',

@@ -1,0 +1,61 @@
+<div class="space-y-4">
+  <div class="flex items-center justify-between">
+    <h4 class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Filter by Tags</h4>
+    <button 
+      *ngIf="selectedTags.length > 0"
+      (click)="clearAllTags()"
+      class="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors">
+      Clear All
+    </button>
+  </div>
+
+  <!-- Selected Tags -->
+  <div *ngIf="selectedTags.length > 0" class="space-y-2">
+    <h5 class="text-xs font-bold uppercase tracking-widest text-muted-foreground opacity-70">Selected Tags</h5>
+    <div class="flex flex-wrap gap-2">
+      <button 
+        *ngFor="let tag of selectedTags"
+        (click)="removeTag(tag)"
+        class="px-3 py-1 bg-primary text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2">
+        <span>{{ tag }}</span>
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Popular Tags -->
+  <div class="space-y-3">
+    <h5 class="text-xs font-bold uppercase tracking-widest text-muted-foreground opacity-70">Popular Tags</h5>
+    <div class="flex flex-wrap gap-2">
+      <button 
+        *ngFor="let tag of popularTags"
+        (click)="toggleTag(tag.name)"
+        [ngClass]="isTagSelected(tag.name) ? 'bg-primary text-white' : 'bg-secondary/50 dark:bg-white/5 hover:bg-secondary'"
+        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1">
+        <span>{{ tag.name }}</span>
+        <span class="opacity-70">({{ tag.usageCount }})</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Show More Tags -->
+  <div class="space-y-3">
+    <button 
+      (click)="toggleShowAllTags()"
+      class="text-xs font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+      <i class="fas" [ngClass]="showAllTags ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      <span>{{ showAllTags ? 'Show Less' : 'Show More Tags' }}</span>
+    </button>
+
+    <div *ngIf="showAllTags" class="flex flex-wrap gap-2 animate-fade-in">
+      <button 
+        *ngFor="let tag of allTags"
+        (click)="toggleTag(tag.name)"
+        [ngClass]="isTagSelected(tag.name) ? 'bg-primary text-white' : 'bg-secondary/50 dark:bg-white/5 hover:bg-secondary'"
+        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1">
+        <span>{{ tag.name }}</span>
+        <span class="opacity-70">({{ tag.usageCount }})</span>
+      </button>
+    </div>
+  </div>
+</div>

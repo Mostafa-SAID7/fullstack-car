@@ -66,6 +66,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<UserReputation> UserReputations { get; }
         DbSet<QAUserActivity> QAUserActivities { get; }
         DbSet<QAExpert> QAExperts { get; }
+        DbSet<QACategory> QACategories { get; }
         DbSet<QATag> QATags { get; }
         DbSet<QAAnalytics> QAAnalytics { get; }
 

@@ -118,7 +118,7 @@
 
 /* Global Card Style (Matches Header/Nav) */
 .fb-card {
-    @apply bg-white dark:bg-[#111] rounded-2xl border border-black/5 dark:border-white/10 shadow-xl dark:shadow-2xl transition-all duration-300 !important;
+    @apply bg-white dark:bg-[#111] rounded border border-black/5 dark:border-white/10 shadow-xl dark:shadow-2xl transition-all duration-300 !important;
 }
 
 @layer utilities {

@@ -49,97 +49,97 @@ namespace Infrastructure.Data.Seeds
         {
             _logger.LogInformation("Seeding QA categories...");
 
-            if (await _context.QACategories.AnyAsync())
+            if (await _context.QuestionCategories.AnyAsync())
             {
-                _logger.LogInformation("QA categories already exist, skipping...");
+                _logger.LogInformation("Question categories already exist, skipping...");
                 return;
             }
 
             var categories = new[]
             {
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "Web Development",
                     Description = "Frontend and backend web development questions",
                     IconUrl = "/icons/web-dev.svg",
                     Color = "#3B82F6",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 1,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-365),
                     CreatedBy = "System"
                 },
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "Mobile Development",
                     Description = "iOS, Android, and cross-platform mobile development",
                     IconUrl = "/icons/mobile-dev.svg",
                     Color = "#10B981",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 2,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-350),
                     CreatedBy = "System"
                 },
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "Database Design",
                     Description = "SQL, NoSQL, database architecture and optimization",
                     IconUrl = "/icons/database.svg",
                     Color = "#8B5CF6",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 3,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-340),
                     CreatedBy = "System"
                 },
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "DevOps & Cloud",
                     Description = "CI/CD, containerization, cloud platforms",
                     IconUrl = "/icons/devops.svg",
                     Color = "#F59E0B",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 4,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-330),
                     CreatedBy = "System"
                 },
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "Data Science",
                     Description = "Machine learning, analytics, data processing",
                     IconUrl = "/icons/data-science.svg",
                     Color = "#EF4444",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 5,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-320),
                     CreatedBy = "System"
                 },
-                new QACategory
+                new QuestionCategory
                 {
                     Id = Guid.NewGuid(),
                     Name = "Cybersecurity",
                     Description = "Security best practices, vulnerability assessment",
                     IconUrl = "/icons/security.svg",
                     Color = "#6B7280",
-                    QuestionCount = 0,
-                    ExpertCount = 0,
+                    QuestionsCount = 0,
+                    SortOrder = 6,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-310),
                     CreatedBy = "System"
                 }
             };
 
-            _context.QACategories.AddRange(categories);
+            _context.QuestionCategories.AddRange(categories);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Created {Count} QA categories", categories.Length);
+            _logger.LogInformation("Created {Count} question categories", categories.Length);
         }
         private async Task SeedQATagsAsync()
         {
@@ -151,7 +151,7 @@ namespace Infrastructure.Data.Seeds
                 return;
             }
 
-            var categories = await _context.QACategories.ToListAsync();
+            var categories = await _context.QuestionCategories.ToListAsync();
             var webDevCategory = categories.FirstOrDefault(c => c.Name == "Web Development");
             var mobileDevCategory = categories.FirstOrDefault(c => c.Name == "Mobile Development");
             var databaseCategory = categories.FirstOrDefault(c => c.Name == "Database Design");
@@ -161,32 +161,32 @@ namespace Infrastructure.Data.Seeds
             var tags = new[]
             {
                 // Web Development Tags
-                new QATag { Id = Guid.NewGuid(), Name = "javascript", Description = "JavaScript programming language", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-300), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "react", Description = "React.js frontend framework", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-295), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "nodejs", Description = "Node.js backend runtime", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-290), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "typescript", Description = "TypeScript programming language", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-285), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "angular", Description = "Angular frontend framework", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-280), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "aspnet-core", Description = "ASP.NET Core framework", UsageCount = 0, CategoryId = webDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-275), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "javascript", Description = "JavaScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-300), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "react", Description = "React.js frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-295), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "nodejs", Description = "Node.js backend runtime", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-290), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "typescript", Description = "TypeScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-285), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "angular", Description = "Angular frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-280), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "aspnet-core", Description = "ASP.NET Core framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-275), CreatedBy = "System" },
                 
                 // Database Tags
-                new QATag { Id = Guid.NewGuid(), Name = "sql-server", Description = "Microsoft SQL Server database", UsageCount = 0, CategoryId = databaseCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-270), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "entity-framework", Description = "Entity Framework ORM", UsageCount = 0, CategoryId = databaseCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-265), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "mongodb", Description = "MongoDB NoSQL database", UsageCount = 0, CategoryId = databaseCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-260), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "sql-server", Description = "Microsoft SQL Server database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-270), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "entity-framework", Description = "Entity Framework ORM", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-265), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "mongodb", Description = "MongoDB NoSQL database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-260), CreatedBy = "System" },
                 
                 // DevOps Tags
-                new QATag { Id = Guid.NewGuid(), Name = "docker", Description = "Docker containerization", UsageCount = 0, CategoryId = devopsCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-255), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "azure", Description = "Microsoft Azure cloud platform", UsageCount = 0, CategoryId = devopsCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-250), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "kubernetes", Description = "Kubernetes container orchestration", UsageCount = 0, CategoryId = devopsCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-245), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "docker", Description = "Docker containerization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-255), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "azure", Description = "Microsoft Azure cloud platform", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-250), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "kubernetes", Description = "Kubernetes container orchestration", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-245), CreatedBy = "System" },
                 
                 // Data Science Tags
-                new QATag { Id = Guid.NewGuid(), Name = "python", Description = "Python programming language", UsageCount = 0, CategoryId = dataScienceCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-240), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "machine-learning", Description = "Machine learning algorithms and techniques", UsageCount = 0, CategoryId = dataScienceCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-235), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "data-analysis", Description = "Data analysis and visualization", UsageCount = 0, CategoryId = dataScienceCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-230), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "python", Description = "Python programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-240), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "machine-learning", Description = "Machine learning algorithms and techniques", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-235), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "data-analysis", Description = "Data analysis and visualization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-230), CreatedBy = "System" },
                 
                 // Mobile Development Tags
-                new QATag { Id = Guid.NewGuid(), Name = "ios", Description = "iOS mobile development", UsageCount = 0, CategoryId = mobileDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-225), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "android", Description = "Android mobile development", UsageCount = 0, CategoryId = mobileDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-220), CreatedBy = "System" },
-                new QATag { Id = Guid.NewGuid(), Name = "flutter", Description = "Flutter cross-platform framework", UsageCount = 0, CategoryId = mobileDevCategory?.Id, CreatedAt = DateTime.UtcNow.AddDays(-215), CreatedBy = "System" }
+                new QATag { Id = Guid.NewGuid(), Name = "ios", Description = "iOS mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-225), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "android", Description = "Android mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-220), CreatedBy = "System" },
+                new QATag { Id = Guid.NewGuid(), Name = "flutter", Description = "Flutter cross-platform framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-215), CreatedBy = "System" }
             };
 
             _context.QATags.AddRange(tags);
@@ -204,7 +204,7 @@ namespace Infrastructure.Data.Seeds
             }
 
             var users = await _context.Users.ToListAsync();
-            var categories = await _context.QACategories.ToListAsync();
+            var categories = await _context.QuestionCategories.ToListAsync();
             var tags = await _context.QATags.ToListAsync();
 
             if (!users.Any() || !categories.Any())
@@ -786,7 +786,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                     .Distinct()
                     .ToList();
 
-                var categories = await _context.QACategories.Where(c => userCategories.Contains(c.Id)).ToListAsync();
+                var categories = await _context.QuestionCategories.Where(c => userCategories.Contains(c.Id)).ToListAsync();
                 userExpertise.AddRange(categories.Select(c => c.Name));
 
                 // Add some random expertise for variety
@@ -830,7 +830,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             }
 
             var users = await _context.Users.ToListAsync();
-            var categories = await _context.QACategories.ToListAsync();
+            var categories = await _context.QuestionCategories.ToListAsync();
             var reputations = await _context.UserReputations.ToListAsync();
             var answers = await _context.Answers.ToListAsync();
 
@@ -984,11 +984,8 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             _context.QAExperts.AddRange(experts);
             await _context.SaveChangesAsync();
 
-            // Update category expert counts
-            foreach (var category in categories)
-            {
-                category.ExpertCount = experts.Count(e => e.CategoryId == category.Id);
-            }
+            // Update category question counts will be done after questions are seeded
+            // Note: QuestionCategory doesn't have ExpertCount property
 
             await _context.SaveChangesAsync();
             _logger.LogInformation("Created {Count} expert profiles across {CategoryCount} categories", 
@@ -1007,7 +1004,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             var questions = await _context.Questions.ToListAsync();
             var answers = await _context.Answers.ToListAsync();
             var votes = await _context.QAVotes.ToListAsync();
-            var categories = await _context.QACategories.ToListAsync();
+            var categories = await _context.QuestionCategories.ToListAsync();
 
             if (!questions.Any() && !answers.Any())
             {
@@ -1133,7 +1130,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             var questions = await _context.Questions.ToListAsync();
             var answers = await _context.Answers.ToListAsync();
             var votes = await _context.QAVotes.ToListAsync();
-            var categories = await _context.QACategories.ToListAsync();
+            var categories = await _context.QuestionCategories.ToListAsync();
 
             var activities = new List<QAUserActivity>();
 

@@ -1,5 +1,5 @@
 export { DashboardOverview } from './dashboard';
-export { Content, LocalizationManagement, Media, ThemesManagement } from './content';
+export { Content, LocalizationManagement, Media, ThemesManagement, QAManagement, QAAnalytics } from './content';
 export { MediaManagement } from './media';
 export { Settings } from './settings';
 export { AIAgentManagement, ModelTraining } from './ai-agent';

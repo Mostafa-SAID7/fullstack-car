@@ -32,6 +32,9 @@ export * from './special/protected-route/ProtectedRoute';
 export * from './special/theme-provider/ThemeProvider';
 export * from './auth';
 
+// QA Components
+export * from './qa';
+
 // Enhanced Components
 export * from './forms/enhanced';
 export * from './layout/responsive';
@@ -104,3 +107,15 @@ export { default as ProtectedRoute } from './special/protected-route/ProtectedRo
 export { default as ThemeProvider, ThemeToggle } from './special/theme-provider/ThemeProvider';
 
 export { LoginForm, RegisterForm, ForgotPasswordForm, ResetPasswordForm, AuthLayout, AuthDebug } from './auth';
+
+// QA Components
+export { 
+  QAAnalyticsComponent, 
+  ModerationDashboardComponent, 
+  UserReputationManagementComponent, 
+  QAConfigurationComponent,
+  QAAnalytics,
+  ModerationDashboard,
+  UserReputationManagement,
+  QAConfiguration
+} from './qa';
