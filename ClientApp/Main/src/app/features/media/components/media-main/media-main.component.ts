@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { VideoListComponent } from '../video/list/video-list.component';
-import { VideoSearchComponent } from '../video/search/video-search.component';
 import { VideoAnalyticsComponent } from '../video/analytics/video-analytics.component';
 import { VideoCategoryComponent } from '../video/category/video-category.component';
 import { PodcastListComponent } from '../podcast/list/podcast-list.component';
-import { PodcastSearchComponent } from '../podcast/search/podcast-search.component';
 import { PodcastSubscriptionComponent } from '../podcast/subscription/podcast-subscription.component';
 import { PodcastCategoryComponent } from '../podcast/category/podcast-category.component';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -26,11 +24,9 @@ export type MediaTabId = 'explore' | 'videos' | 'podcasts' | 'video-analytics' |
   imports: [
     CommonModule,
     VideoListComponent,
-    VideoSearchComponent,
     VideoAnalyticsComponent,
     VideoCategoryComponent,
     PodcastListComponent,
-    PodcastSearchComponent,
     PodcastSubscriptionComponent,
     PodcastCategoryComponent
   ],

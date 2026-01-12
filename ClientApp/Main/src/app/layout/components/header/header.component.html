@@ -159,11 +159,13 @@
 
     <!-- Language Menu -->
     <mat-menu #langMenu="matMenu" class="custom-mat-menu">
-        <button mat-menu-item (click)="switchLanguage('en-US')" [class.bg-secondary]="currentLang === 'en-US'">
-            <span class="mr-2">🇺🇸</span> English
-        </button>
-        <button mat-menu-item (click)="switchLanguage('ar-EG')" [class.bg-secondary]="currentLang === 'ar-EG'">
-            <span class="mr-2">🇪🇬</span> العربية
+        <button 
+            mat-menu-item 
+            *ngFor="let language of supportedLanguages" 
+            (click)="switchLanguage(language.code)" 
+            [class.bg-secondary]="isLanguageSelected(language.code)">
+            <span class="mr-2">{{ language.flag }}</span> 
+            {{ language.name }}
         </button>
     </mat-menu>
 

@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 // Shared Components (reusing existing UI)
 import { LoadingSpinnerComponent } from '../../../../../shared/components/loading-spinner/loading-spinner.component';
 
 // Services
-import { NotificationService } from '../../../../../core/services/notification.service';
 import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
@@ -18,7 +17,7 @@ import { ToastService } from '../../../../../core/services/toast.service';
   ],
   template: `
     <div class="flex flex-col items-center gap-2 p-2 relative">
-      <!-- Loading Overlay (reusing LoadingSpinnerComponent) -->
+      <!-- Loading Overlay -->
       <app-loading-spinner
         *ngIf="isVoting"
         [overlay]="true"
@@ -32,30 +31,18 @@ import { ToastService } from '../../../../../core/services/toast.service';
         [class.text-green-500]="userVote === 'Up'"
         [class.bg-green-100]="userVote === 'Up'"
         [class.border-green-500]="userVote === 'Up'"
-        [class.focus:ring-green-500]="userVote === 'Up'"
         [class.text-gray-500]="userVote !== 'Up'"
-        [class.hover:text-green-500]="userVote !== 'Up' && !isVoting && !disabled"
-        [class.hover:border-green-500]="userVote !== 'Up' && !isVoting && !disabled"
-        [class.hover:bg-green-50]="userVote !== 'Up' && !isVoting && !disabled"
-        [class.dark:hover:bg-green-900/20]="userVote !== 'Up' && !isVoting && !disabled"
         [disabled]="isVoting || disabled"
         (click)="vote('Up')"
-        [title]="getUpvoteTooltip()"
-        [attr.aria-label]="'Upvote this ' + contentType.toLowerCase()">
-        <i class="fas fa-chevron-up text-2xl" [class.animate-pulse]="isVoting && lastVoteType === 'Up'"></i>
+        [title]="getUpvoteTooltip()">
+        <i class="fas fa-chevron-up text-2xl"></i>
       </button>
 
       <!-- Vote Score -->
       <div class="text-xl font-bold text-center min-w-8 px-2 py-1 rounded-lg transition-colors duration-200"
            [class.text-green-500]="voteScore > 0"
-           [class.bg-green-50]="voteScore > 0"
-           [class.dark:bg-green-900/20]="voteScore > 0"
            [class.text-red-500]="voteScore < 0"
-           [class.bg-red-50]="voteScore < 0"
-           [class.dark:bg-red-900/20]="voteScore < 0"
-           [class.text-gray-700]="voteScore === 0"
-           [class.dark:text-gray-300]="voteScore === 0"
-           [title]="getScoreTooltip()">
+           [class.text-gray-700]="voteScore === 0">
         {{ formatVoteScore(voteScore) }}
       </div>
 
@@ -65,22 +52,15 @@ import { ToastService } from '../../../../../core/services/toast.service';
         [class.text-red-500]="userVote === 'Down'"
         [class.bg-red-100]="userVote === 'Down'"
         [class.border-red-500]="userVote === 'Down'"
-        [class.focus:ring-red-500]="userVote === 'Down'"
         [class.text-gray-500]="userVote !== 'Down'"
-        [class.hover:text-red-500]="userVote !== 'Down' && !isVoting && !disabled"
-        [class.hover:border-red-500]="userVote !== 'Down' && !isVoting && !disabled"
-        [class.hover:bg-red-50]="userVote !== 'Down' && !isVoting && !disabled"
-        [class.dark:hover:bg-red-900/20]="userVote !== 'Down' && !isVoting && !disabled"
         [disabled]="isVoting || disabled"
         (click)="vote('Down')"
-        [title]="getDownvoteTooltip()"
-        [attr.aria-label]="'Downvote this ' + contentType.toLowerCase()">
-        <i class="fas fa-chevron-down text-2xl" [class.animate-pulse]="isVoting && lastVoteType === 'Down'"></i>
-      </button>
+        [title]="getDownvoteTooltip()">
+        <i class="fas fa-chevron-down text-2xl"></i>
       </button>
 
-      <!-- Vote Breakdown (optional) -->
-      <div *ngIf="showBreakdown" class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border text-xs min-w-16">
+      <!-- Vote Breakdown -->
+      <div *ngIf="showBreakdown" class="mt-2 p-2 bg-gray-100 rounded-lg border text-xs min-w-16">
         <div class="flex items-center justify-between gap-2 text-green-600 mb-1">
           <i class="fas fa-thumbs-up"></i>
           <span class="font-bold">{{ upvotesCount }}</span>
@@ -91,19 +71,15 @@ import { ToastService } from '../../../../../core/services/toast.service';
         </div>
       </div>
 
-      <!-- Vote Status Indicator -->
-      <div *ngIf="showStatus && (userVote || recentVoteChange)" class="mt-1 text-xs font-medium text-center">
-        <span *ngIf="userVote === 'Up'" class="text-green-600 dark:text-green-400">
+      <!-- Vote Status -->
+      <div *ngIf="showStatus && userVote" class="mt-1 text-xs font-medium text-center">
+        <span *ngIf="userVote === 'Up'" class="text-green-600">
           <i class="fas fa-check-circle mr-1"></i>
           Upvoted
         </span>
-        <span *ngIf="userVote === 'Down'" class="text-red-600 dark:text-red-400">
+        <span *ngIf="userVote === 'Down'" class="text-red-600">
           <i class="fas fa-check-circle mr-1"></i>
           Downvoted
-        </span>
-        <span *ngIf="recentVoteChange && !userVote" class="text-gray-600 dark:text-gray-400">
-          <i class="fas fa-undo mr-1"></i>
-          Vote removed
         </span>
       </div>
     </div>
@@ -130,7 +106,6 @@ export class VotingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private notificationService: NotificationService,
     private toastService: ToastService
   ) {}
 

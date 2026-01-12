@@ -13,7 +13,6 @@ import { AnswerListComponent } from '../answer-list/answer-list.component';
 import { AnswerFormComponent } from '../answer-form/answer-form.component';
 import { VotingComponent } from '../voting/voting.component';
 import { ReputationDisplayComponent } from '../reputation-display/reputation-display.component';
-import { QANotificationsComponent } from '../qa-notifications/qa-notifications.component';
 
 // Services
 import { QAService } from '../../../services/qa.service';
@@ -36,31 +35,25 @@ import { Answer as LegacyAnswer } from '../../../../../core/models/qa.model';
     AnswerListComponent,
     AnswerFormComponent,
     VotingComponent,
-    ReputationDisplayComponent,
-    QANotificationsComponent
+    ReputationDisplayComponent
   ],
   template: `
     <div class="max-w-6xl mx-auto p-6 space-y-8">
       
-      <!-- QA Header with Notifications -->
+      <!-- QA Header -->
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-black text-foreground uppercase tracking-widest">Question & Answers</h1>
           <p class="text-muted-foreground font-bold text-sm uppercase tracking-widest">Community knowledge sharing</p>
         </div>
         
-        <!-- QA Notifications (reusing existing notification system) -->
+        <!-- User Reputation Display -->
         <div class="flex items-center gap-4">
           <app-reputation-display
             *ngIf="userReputation"
             [userReputation]="userReputation"
             [compact]="true">
           </app-reputation-display>
-          
-          <app-qa-notifications
-            (notificationClicked)="onNotificationClicked($event)"
-            (allNotificationsViewed)="onAllNotificationsViewed()">
-          </app-qa-notifications>
         </div>
       </div>
 
@@ -468,16 +461,6 @@ export class QAIntegrationComponent implements OnInit, OnDestroy {
       localStorage.setItem(`qa_answer_draft_${this.questionId}`, content);
       this.toastService.success('Draft saved');
     }
-  }
-
-  onNotificationClicked(notification: any): void {
-    // Handle QA notification click
-    console.log('QA notification clicked:', notification);
-  }
-
-  onAllNotificationsViewed(): void {
-    // Navigate to full notifications page
-    console.log('View all QA notifications');
   }
 
   goToQAHome(): void {

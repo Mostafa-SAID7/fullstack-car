@@ -31,6 +31,10 @@ namespace Domain.Entities.Identity
         public DateTime? SuspendedUntil { get; set; }
         public string? SuspensionReason { get; set; }
         
+        // Localization Preferences
+        public string PreferredLanguage { get; set; } = "en-US";
+        public bool IsRTLPreferred { get; set; } = false;
+        
         // Security & Privacy
         public bool IsEmailPublic { get; set; } = false;
         public bool IsPhonePublic { get; set; } = false;

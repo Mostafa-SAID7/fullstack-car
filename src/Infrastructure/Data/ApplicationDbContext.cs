@@ -134,6 +134,8 @@ namespace Infrastructure.Data
         // Shared Localization Tables
         public DbSet<Domain.Entities.Shared.Localization.LocalizationResource> LocalizationResources { get; set; }
         public DbSet<Domain.Entities.Shared.Localization.Culture> Cultures { get; set; }
+        public DbSet<Domain.Entities.Shared.Localization.TranslationAudit> TranslationAudits { get; set; }
+        public DbSet<Domain.Entities.Shared.Localization.TranslationCompleteness> TranslationCompleteness { get; set; }
 
         // Shared Logging Tables
         public DbSet<Domain.Entities.Shared.Logging.LogEntry> LogEntries { get; set; }

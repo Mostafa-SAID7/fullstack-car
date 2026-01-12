@@ -71,6 +71,8 @@ export class LoginComponent implements OnInit {
 
       if (result.succeeded) {
         console.log('[Angular LoginComponent] Login successful, navigating to app dashboard');
+        // Clear loading state before navigation
+        this.loading = false;
         this.router.navigate(['/community']);
       } else {
         const errorMessage = (result.errors && result.errors.length > 0)
@@ -79,11 +81,11 @@ export class LoginComponent implements OnInit {
         console.error('[Angular LoginComponent] Login failed:', errorMessage);
         console.error('[Angular LoginComponent] Full result:', result);
         this.error = errorMessage;
+        this.loading = false;
       }
     } catch (error: any) {
       console.error('[Angular LoginComponent] Login exception:', error);
       this.error = error.message || 'Login failed. Please try again.';
-    } finally {
       this.loading = false;
     }
   }

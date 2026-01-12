@@ -5,12 +5,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { ThemeService } from '../../../core/services/theme.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslationService, SupportedLanguage } from '../../../core/services/translation.service';
 import { Notification } from '../../../core/models/notification.model';
 
 
@@ -31,28 +32,35 @@ import { Notification } from '../../../core/models/notification.model';
 
 export class HeaderComponent implements OnInit {
 
-
     themeService = inject(ThemeService);
     layoutService = inject(LayoutService);
     notificationService = inject(NotificationService);
     authService = inject(AuthService);
+    translationService = inject(TranslationService);
+    translateService = inject(TranslateService);
     router = inject(Router);
 
     isSearchOpen = false;
-    currentLang = 'en-US';
+    
+    // Language properties
+    supportedLanguages = this.translationService.supportedLanguages;
+    currentLanguage$ = this.translationService.currentLanguage$;
+    isRTL$ = this.translationService.isRTL$;
 
     notifications$ = this.notificationService.notifications$;
     unreadCount$ = this.notificationService.unreadCount$;
     currentUser$ = this.authService.currentUser$;
 
-
     ngOnInit() {
+        // Initialize translations on component load
+        this.translationService.initializeTranslations().catch(error => {
+            console.error('Failed to initialize translations:', error);
+        });
     }
 
     toggleSearch() {
         this.isSearchOpen = !this.isSearchOpen;
     }
-
 
     // Auth Methods
     logout() {
@@ -80,8 +88,30 @@ export class HeaderComponent implements OnInit {
         this.notificationService.markAllAsRead().subscribe();
     }
 
-    switchLanguage(lang: string) {
-        localStorage.setItem('language', lang);
+    /**
+     * Switch application language
+     */
+    async switchLanguage(languageCode: string): Promise<void> {
+        try {
+            await this.translationService.changeLanguage(languageCode);
+            console.log(`Language switched to ${languageCode}`);
+        } catch (error) {
+            console.error(`Failed to switch language to ${languageCode}:`, error);
+        }
+    }
+
+    /**
+     * Get current language info
+     */
+    getCurrentLanguage(): SupportedLanguage {
+        return this.translationService.getCurrentLanguage();
+    }
+
+    /**
+     * Check if a language is currently selected
+     */
+    isLanguageSelected(languageCode: string): boolean {
+        return this.translationService.getCurrentLanguage().code === languageCode;
     }
 }
 

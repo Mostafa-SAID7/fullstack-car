@@ -61,6 +61,16 @@ namespace Infrastructure.Configurations.Identity
             builder.Property(u => u.ExternalProviderId)
                 .HasMaxLength(100);
 
+            // Localization preferences
+            builder.Property(u => u.PreferredLanguage)
+                .IsRequired()
+                .HasMaxLength(10)
+                .HasDefaultValue("en-US");
+
+            builder.Property(u => u.IsRTLPreferred)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             // Indexes
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Status);
@@ -69,6 +79,8 @@ namespace Infrastructure.Configurations.Identity
             builder.HasIndex(u => u.LastActiveAt);
             builder.HasIndex(u => u.Location);
             builder.HasIndex(u => new { u.ExternalProvider, u.ExternalProviderId });
+            builder.HasIndex(u => u.PreferredLanguage);
+            builder.HasIndex(u => u.IsRTLPreferred);
 
             // Configure relationships - Use Restrict for Posts to avoid cascade conflicts
             builder.HasMany(u => u.Posts)

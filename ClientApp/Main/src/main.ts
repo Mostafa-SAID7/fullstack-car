@@ -16,6 +16,7 @@ import { AuthService } from './app/core/services/auth.service';
 import { Router } from '@angular/router';
 
 import { environment } from './environments/environment';
+import { CustomTranslationLoader } from './app/core/services/translation-loader.service';
 
 // Functional Auth Interceptor
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -71,16 +72,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 
-export class CustomTranslateLoader implements TranslateLoader {
-  constructor(private http: HttpClient) { }
-
-  getTranslation(lang: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/v4/shared/localization/resources/${lang}`);
-  }
-}
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new CustomTranslateLoader(http);
+export function createTranslateLoader(http: HttpClient) {
+  return new CustomTranslationLoader();
 }
 
 bootstrapApplication(AppComponent, {
@@ -92,7 +85,7 @@ bootstrapApplication(AppComponent, {
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
+          useFactory: createTranslateLoader,
           deps: [HttpClient]
         },
         defaultLanguage: 'en-US'

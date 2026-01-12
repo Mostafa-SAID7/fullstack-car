@@ -171,6 +171,9 @@ namespace WebAPI.Extensions
             services.AddScoped<Application.Features.Shared.Notifications.Interfaces.INotificationHubService, Infrastructure.Services.Notifications.NotificationHubService>();
             services.AddScoped<Application.Features.Shared.Chat.Interfaces.IChatNotificationService, Application.Features.Shared.Chat.Services.ChatNotificationService>();
 
+            // Add Localization Services
+            services.AddScoped<Application.Common.Interfaces.ICultureService, Infrastructure.Services.CultureService>();
+
             // Add API Versioning
             services.AddApiVersioning(options =>
             {

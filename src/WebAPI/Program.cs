@@ -3,6 +3,7 @@ using WebAPI.Hubs.Shared;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 using Infrastructure.Data.Seeds;
+using Infrastructure.Data;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Reflection;
@@ -24,6 +25,14 @@ try
 
     // Configure logging
     builder.Host.UseSerilog();
+
+    // Configure Host Options to handle background service exceptions gracefully
+    builder.Services.Configure<HostOptions>(options =>
+    {
+        options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+        options.ServicesStartConcurrently = true;
+        options.ServicesStopConcurrently = true;
+    });
 
     // Add Application Insights
     if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("ApplicationInsights")))
@@ -93,15 +102,11 @@ try
     // Add JWT validation middleware
     app.UseMiddleware<JwtValidationMiddleware>();
 
-    // Localization Middleware
-    var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
-    if (localizationOptions != null)
-    {
-        app.UseRequestLocalization(localizationOptions.Value);
-    }
-
     app.UseAuthentication();
     app.UseAuthorization();
+
+    // Enhanced Culture Detection Middleware (after authentication so user preferences work)
+    app.UseMiddleware<CultureDetectionMiddleware>();
 
     app.MapControllers();
 
@@ -120,6 +125,17 @@ try
 
             try
             {
+                // First, try to ensure the database exists
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                
+                // Test database connectivity
+                var canConnect = await context.Database.CanConnectAsync();
+                if (!canConnect)
+                {
+                    logger.LogWarning("Cannot connect to database. Attempting to create database...");
+                    await context.Database.EnsureCreatedAsync();
+                }
+
                 var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
                 await seeder.InitializeAsync();
                 logger.LogInformation("Database initialized successfully");

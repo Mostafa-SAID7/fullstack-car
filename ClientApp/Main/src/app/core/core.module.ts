@@ -13,6 +13,7 @@ import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/theme.service';
 import { NotificationService } from './services/notification.service';
 import { SignalRService } from './services/signalr.service';
+import { TranslationService } from './services/translation.service';
 
 // Guards
 import { AuthGuard, GuestGuard, RoleGuard, ContentCreatorGuard, AdminGuard } from './guards/auth.guard';
@@ -35,6 +36,7 @@ import { AuthGuard, GuestGuard, RoleGuard, ContentCreatorGuard, AdminGuard } fro
     ThemeService,
     NotificationService,
     SignalRService,
+    TranslationService,
     
     // Guards
     AuthGuard,

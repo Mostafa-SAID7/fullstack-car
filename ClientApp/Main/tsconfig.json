@@ -38,6 +38,10 @@
             ]
         }
     },
+    "exclude": [
+        "src/**/*.spec.ts",
+        "src/**/__tests__/**/*"
+    ],
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,
         "strictInjectionParameters": true,

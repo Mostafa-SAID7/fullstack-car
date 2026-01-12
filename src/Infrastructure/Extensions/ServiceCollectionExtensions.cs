@@ -17,7 +17,7 @@ using Application.Features.Admin.Analytics.Interfaces;
 using Application.Features.Admin.Analytics.Services;
 using Application.Features.Identity.Auth.Services;
 using Application.Features.Identity.OAuth.Interfaces;
-using Application.Features.Identity.Auth.Services;
+using Infrastructure.Services;
 using Application.Features.Community.QA.Interfaces;
 using Application.Features.Media.Analytics.Services;
 using Application.Features.Community.QA.Services;
@@ -77,6 +77,12 @@ namespace Infrastructure.Extensions
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<ITranslationRepository, TranslationRepository>();
+            services.AddSingleton<ITranslationCacheMetricsService, TranslationCacheMetricsService>();
+            
+            // Configure translation cache warmup options
+            services.Configure<TranslationCacheWarmupOptions>(configuration.GetSection(TranslationCacheWarmupOptions.SectionName));
+            services.AddHostedService<TranslationCacheWarmupService>();
 
             // Add Media Repositories
             services.AddScoped<IVideoRepository, VideoRepository>();

@@ -75,6 +75,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           console.log('[Angular AuthService] Login response:', response);
+          this.isLoadingSubject.next(false);
           if (response.succeeded && response.data) {
             // Backend returns nested AuthResponse structure, map it to LoginResponse
             const authResponse = response.data;
@@ -88,7 +89,6 @@ export class AuthService {
             
             // Note: Router navigation should be handled by the component
           }
-          this.isLoadingSubject.next(false);
         }),
         catchError(error => {
           console.error('[Angular AuthService] Login error:', error);
