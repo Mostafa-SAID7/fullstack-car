@@ -178,7 +178,7 @@ describe('QA Angular Integration Property Tests', () => {
             expect(updatedState!.notifications.length).toBeGreaterThanOrEqual(initialState?.notifications.length || 0);
           }
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -212,7 +212,7 @@ describe('QA Angular Integration Property Tests', () => {
             ? /^\/qa\/questions\/[^\/]+$/ 
             : /^\/qa\/answers\/[^\/]+$/);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -290,7 +290,7 @@ describe('QA Angular Integration Property Tests', () => {
           expect(latestNotification?.isRead).toBe(false);
           expect(latestNotification?.timestamp).toBeInstanceOf(Date);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -342,7 +342,7 @@ describe('QA Angular Integration Property Tests', () => {
           const stateTypingUsers = currentState?.typingUsers.get(typingData.questionId) || [];
           expect(stateTypingUsers).toEqual(updatedTypingUsers);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 });

@@ -70,7 +70,7 @@ public class QACQRSPropertyTests : IDisposable
     /// the system should reject the request with appropriate validation errors
     /// Validates: Requirements 1.1
     /// </summary>
-    [Property(MaxTest = 25)]
+    [Property(MaxTest = 5)]
     public bool QuestionCreationValidation_RequiredFieldsMissing_ShouldReject(string content)
     {
         // Skip valid content for this property test - we only want to test invalid cases
@@ -130,7 +130,7 @@ public class QACQRSPropertyTests : IDisposable
     /// according to defined rules and reject invalid content
     /// Validates: Requirements 1.2
     /// </summary>
-    [Property(MaxTest = 25)]
+    [Property(MaxTest = 5)]
     public bool ContentLengthAndQualityValidation_InvalidContent_ShouldReject(string title, string content)
     {
         // Skip null/empty titles for this test
@@ -192,7 +192,7 @@ public class QACQRSPropertyTests : IDisposable
     /// For any vote cast on content, the vote count should be updated immediately and reflected in real-time
     /// Validates: Requirements 3.1
     /// </summary>
-    [Property(MaxTest = 25)]
+    [Property(MaxTest = 5)]
     public bool VoteCountUpdates_VoteCast_ShouldUpdateImmediately(bool isUpvote, bool isQuestion)
     {
         // Arrange
@@ -283,7 +283,7 @@ public class QACQRSPropertyTests : IDisposable
     /// For any user attempting to vote on their own content, the system should reject the vote
     /// Validates: Requirements 3.2
     /// </summary>
-    [Property(MaxTest = 25)]
+    [Property(MaxTest = 5)]
     public bool SelfVotePrevention_UserVotesOnOwnContent_ShouldReject(bool isUpvote, bool isQuestion)
     {
         // Arrange

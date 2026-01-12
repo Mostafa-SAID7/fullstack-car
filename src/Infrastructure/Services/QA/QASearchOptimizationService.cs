@@ -47,8 +47,11 @@ public class QASearchOptimizationService : IQASearchOptimizationService
 
         try
         {
+            // Enhanced cache key with client type differentiation
+            var enhancedCacheKey = $"{cacheKey}:unified";
+            
             // Try to get from cache first
-            var cachedResult = await _cacheService.GetAsync<T>(cacheKey);
+            var cachedResult = await _cacheService.GetAsync<T>(enhancedCacheKey);
             if (cachedResult != null)
             {
                 stopwatch.Stop();
@@ -60,26 +63,29 @@ public class QASearchOptimizationService : IQASearchOptimizationService
                 return cachedResult;
             }
 
-            // Execute search query with optimization
-            var result = await ExecuteWithOptimizationAsync(searchQuery, searchTerm);
+            // Execute search query with dual-frontend optimization
+            var result = await ExecuteWithDualFrontendOptimizationAsync(searchQuery, searchTerm);
             
             stopwatch.Stop();
 
-            // Cache the result if it meets criteria
-            if (ShouldCacheResult(searchTerm, stopwatch.ElapsedMilliseconds))
+            // Cache the result with enhanced strategy for dual frontend usage
+            if (ShouldCacheResultForDualFrontend(searchTerm, stopwatch.ElapsedMilliseconds))
             {
-                var cacheExpiry = CalculateCacheExpiry(searchTerm);
-                await _cacheService.SetAsync(cacheKey, result, cacheExpiry);
+                var cacheExpiry = CalculateDualFrontendCacheExpiry(searchTerm);
                 
-                _logger.LogDebug("Cached search result for query: {SearchTerm}", searchTerm);
+                // Cache with tags for efficient invalidation across both frontends
+                var cacheTags = new[] { "qa-search", "dual-frontend", $"term-{queryHash}" };
+                await _cacheService.SetAsync(enhancedCacheKey, result, cacheExpiry);
+                
+                _logger.LogDebug("Cached search result for dual frontend usage: {SearchTerm}", searchTerm);
             }
 
             await UpdateSearchMetricsAsync(queryHash, stopwatch.ElapsedMilliseconds, true, false);
             
-            // Log slow searches
+            // Log slow searches with enhanced context
             if (stopwatch.ElapsedMilliseconds > _options.SlowSearchThresholdMs)
             {
-                _logger.LogWarning("Slow search detected: '{SearchTerm}' took {ElapsedMs}ms", 
+                _logger.LogWarning("Slow search detected for dual frontend: '{SearchTerm}' took {ElapsedMs}ms", 
                     searchTerm, stopwatch.ElapsedMilliseconds);
             }
 
@@ -90,7 +96,7 @@ public class QASearchOptimizationService : IQASearchOptimizationService
             stopwatch.Stop();
             await UpdateSearchMetricsAsync(queryHash, stopwatch.ElapsedMilliseconds, false, false);
             
-            _logger.LogError(ex, "Search query failed: '{SearchTerm}' after {ElapsedMs}ms", 
+            _logger.LogError(ex, "Search query failed for dual frontend: '{SearchTerm}' after {ElapsedMs}ms", 
                 searchTerm, stopwatch.ElapsedMilliseconds);
             throw;
         }
@@ -193,23 +199,49 @@ public class QASearchOptimizationService : IQASearchOptimizationService
         }
     }
 
-    private async Task<T> ExecuteWithOptimizationAsync<T>(Func<Task<T>> searchQuery, string searchTerm)
+    private async Task<T> ExecuteWithDualFrontendOptimizationAsync<T>(Func<Task<T>> searchQuery, string searchTerm)
     {
-        // Apply search-specific optimizations
+        // Apply search-specific optimizations for dual frontend usage
         if (IsComplexSearch(searchTerm))
         {
             // For complex searches, apply additional optimizations
-            return await ExecuteComplexSearchAsync(searchQuery);
+            return await ExecuteComplexSearchWithDualFrontendAsync(searchQuery);
         }
 
         return await searchQuery();
     }
 
-    private async Task<T> ExecuteComplexSearchAsync<T>(Func<Task<T>> searchQuery)
+    private async Task<T> ExecuteComplexSearchWithDualFrontendAsync<T>(Func<Task<T>> searchQuery)
     {
-        // Implement complex search optimizations
-        // This could include query rewriting, parallel execution, etc.
+        // Implement complex search optimizations for dual frontend
+        // This could include query rewriting, parallel execution, result formatting
         return await searchQuery();
+    }
+
+    private bool ShouldCacheResultForDualFrontend(string searchTerm, long executionTimeMs)
+    {
+        // Enhanced caching strategy for dual frontend usage
+        return executionTimeMs > _options.CacheThresholdMs ||
+               IsPopularSearchTerm(searchTerm) ||
+               IsCrossClientSearchTerm(searchTerm);
+    }
+
+    private bool IsCrossClientSearchTerm(string searchTerm)
+    {
+        // Identify search terms that are commonly used by both Angular and React clients
+        var crossClientTerms = new[] { "javascript", "react", "angular", "api", "database", "performance" };
+        return crossClientTerms.Any(term => searchTerm.ToLowerInvariant().Contains(term));
+    }
+
+    private TimeSpan CalculateDualFrontendCacheExpiry(string searchTerm)
+    {
+        // Enhanced cache expiry strategy for dual frontend
+        if (IsPopularSearchTerm(searchTerm) || IsCrossClientSearchTerm(searchTerm))
+        {
+            return TimeSpan.FromMinutes(_options.PopularTermCacheMinutes * 1.5); // Longer cache for cross-client terms
+        }
+
+        return TimeSpan.FromMinutes(_options.DefaultCacheMinutes);
     }
 
     private bool IsComplexSearch(string searchTerm)

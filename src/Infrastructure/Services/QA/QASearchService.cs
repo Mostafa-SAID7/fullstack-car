@@ -244,9 +244,13 @@ public class QASearchService : IQASearchService
 
             // Get user reputations separately to avoid complex GroupJoin issues with mocks
             var userIds = questions.Select(q => q.UserId).Distinct().ToList();
-            var userReputations = await _context.UserReputations
+            var userReputationsList = await _context.UserReputations
                 .Where(ur => userIds.Contains(ur.UserId))
-                .ToDictionaryAsync(ur => ur.UserId, ur => ur.ReputationScore, cancellationToken);
+                .ToListAsync(cancellationToken);
+            
+            var userReputations = userReputationsList
+                .GroupBy(ur => ur.UserId)
+                .ToDictionary(g => g.Key, g => g.First().ReputationScore);
 
             var questionDtos = questions.Select(q => new QuestionListDto
             {
@@ -488,7 +492,7 @@ public class QASearchService : IQASearchService
 
             // Get candidate questions for comparison
             var candidateQuestions = await _context.Questions
-                .Where(q => !q.IsDeleted && q.Id != (excludeQuestionId ?? Guid.Empty))
+                .Where(q => !q.IsDeleted && (!excludeQuestionId.HasValue || q.Id != excludeQuestionId.Value))
                 .Include(q => q.Category)
                 .Take(200) // Limit for performance - in production, use search index
                 .ToListAsync(cancellationToken);

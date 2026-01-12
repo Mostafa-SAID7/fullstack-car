@@ -110,49 +110,62 @@ try
     app.MapHub<ChatHub>("/hubs/chat");
     app.MapHub<QAHub>("/hubs/qa");
 
-    // Initialize and seed database
-    using (var scope = app.Services.CreateScope())
+    // Initialize and seed database (skip for Testing environment)
+    if (!app.Environment.IsEnvironment("Testing"))
     {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Application starting - Version: {Version}", Assembly.GetExecutingAssembly().GetName().Version?.ToString());
-
-        try
+        using (var scope = app.Services.CreateScope())
         {
-            var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-            await seeder.InitializeAsync();
-            logger.LogInformation("Database initialized successfully");
-            
-            // Check if seeding is requested via command line argument
-            if (args.Contains("--seed-database"))
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Application starting - Version: {Version}", Assembly.GetExecutingAssembly().GetName().Version?.ToString());
+
+            try
             {
-                logger.LogInformation("Database seeding requested via command line argument");
-                await seeder.SeedAsync();
-                logger.LogInformation("Database seeding completed successfully");
+                var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+                await seeder.InitializeAsync();
+                logger.LogInformation("Database initialized successfully");
                 
-                // Exit after seeding if requested via command line (but not during testing)
-                if (!app.Environment.IsEnvironment("Testing"))
+                // Check if seeding is requested via command line argument
+                if (args.Contains("--seed-database"))
                 {
-                    logger.LogInformation("Seeding completed. Exiting application.");
-                    return;
+                    logger.LogInformation("Database seeding requested via command line argument");
+                    await seeder.SeedAsync();
+                    logger.LogInformation("Database seeding completed successfully");
+                    
+                    // Exit after seeding if requested via command line (but not during testing)
+                    if (!app.Environment.IsEnvironment("Testing"))
+                    {
+                        logger.LogInformation("Seeding completed. Exiting application.");
+                        return;
+                    }
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error during database initialization and seeding");
-            
-            // If seeding was specifically requested, exit with error (but not during testing)
-            if (args.Contains("--seed-database") && !app.Environment.IsEnvironment("Testing"))
+            catch (Exception ex)
             {
-                logger.LogError("Database seeding failed. Exiting with error code 1.");
-                Environment.Exit(1);
+                logger.LogError(ex, "Error during database initialization and seeding");
+                
+                // If seeding was specifically requested, exit with error (but not during testing)
+                if (args.Contains("--seed-database") && !app.Environment.IsEnvironment("Testing"))
+                {
+                    logger.LogError("Database seeding failed. Exiting with error code 1.");
+                    Environment.Exit(1);
+                }
+                
+                // Otherwise, continue with app startup
+                logger.LogWarning("Continuing with application startup despite database setup errors");
             }
-            
-            // Otherwise, continue with app startup
-            logger.LogWarning("Continuing with application startup despite database setup errors");
-        }
 
-        logger.LogInformation("Database setup completed - Environment: {Environment}", app.Environment.EnvironmentName);
+            logger.LogInformation("Database setup completed - Environment: {Environment}", app.Environment.EnvironmentName);
+        }
+    }
+    else
+    {
+        // For Testing environment, just log that we're starting
+        using (var scope = app.Services.CreateScope())
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Application starting in Testing environment - Version: {Version}", Assembly.GetExecutingAssembly().GetName().Version?.ToString());
+            logger.LogInformation("Skipping database initialization for Testing environment");
+        }
     }
 
     Log.Information("Community Car API started successfully");

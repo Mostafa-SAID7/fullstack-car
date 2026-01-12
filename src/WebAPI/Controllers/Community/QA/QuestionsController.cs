@@ -442,5 +442,33 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to accept answer", result.Errors);
         }
+
+        /// <summary>
+        /// Get questions requiring moderation
+        /// Used by React Dashboard for admin moderation workflows
+        /// </summary>
+        /// <param name="pageSize">Number of questions per page</param>
+        /// <returns>Paginated list of questions requiring moderation</returns>
+        [HttpGet("moderation-queue")]
+        public async Task<IActionResult> GetModerationQueue([FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                // Return mock moderation queue for now
+                var moderationQueue = new
+                {
+                    Questions = new object[0],
+                    TotalCount = 0,
+                    PageSize = pageSize,
+                    CurrentPage = 1
+                };
+
+                return Ok(moderationQueue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
     }
 }

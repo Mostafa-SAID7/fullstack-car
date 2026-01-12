@@ -17,7 +17,7 @@ namespace WebAPI.Controllers.Community.QA
     /// </summary>
     [Authorize]
     [ApiVersion("7.0")]
-    [Route("api/v{version:apiVersion}/qa/voting")]
+    [Route("api/v{version:apiVersion}/qa/votes")]
     public class VotingController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
@@ -81,7 +81,7 @@ namespace WebAPI.Controllers.Community.QA
                     // TODO: Add proper logging here
                 }
 
-                return Success("Vote created successfully");
+                return Created(string.Empty, new { message = "Vote created successfully" });
             }
 
             if (result.Errors.Any(e => e.Contains("not found")))

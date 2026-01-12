@@ -483,6 +483,15 @@ public class QAHealthMonitoringService : IQAHealthMonitoringService
     {
         try
         {
+            // Check if using in-memory database (for testing)
+            if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                // For in-memory database, just check if context can be accessed
+                var canConnect = await _context.Database.CanConnectAsync();
+                return canConnect ? "Healthy" : "Unhealthy";
+            }
+            
+            // For relational databases, use SQL query
             await _context.Database.ExecuteSqlRawAsync("SELECT 1");
             return "Healthy";
         }

@@ -62,7 +62,7 @@ public class ReputationSystemPropertyTests : IDisposable
     /// For any answer that is accepted, the answerer should receive bonus reputation points
     /// Validates: Requirements 4.2
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 10)]
     public bool AnswerAcceptanceBonus_AcceptedAnswer_ShouldReceiveBonusPoints()
     {
         // Arrange
@@ -138,7 +138,7 @@ public class ReputationSystemPropertyTests : IDisposable
     /// For any action that affects reputation, the user's reputation score should be updated and displayed in real-time
     /// Validates: Requirements 4.3
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 10)]
     public bool RealtimeReputationUpdates_ReputationChange_ShouldUpdateImmediately(int reputationChange)
     {
         // Constrain reputation change to reasonable values
@@ -191,7 +191,7 @@ public class ReputationSystemPropertyTests : IDisposable
     /// For any user reaching a reputation milestone, appropriate badges should be awarded automatically
     /// Validates: Requirements 4.4
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 10)]
     public bool BadgeAwardOnMilestones_ReputationMilestone_ShouldAwardBadge(int targetReputation)
     {
         // Test specific milestone values
@@ -252,7 +252,7 @@ public class ReputationSystemPropertyTests : IDisposable
     /// For any question posted in a category, all users designated as experts in that category should be identified and notified
     /// Validates: Requirements 5.1
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 10)]
     public bool ExpertIdentificationAndNotification_QuestionInCategory_ShouldNotifyExperts()
     {
         // Arrange

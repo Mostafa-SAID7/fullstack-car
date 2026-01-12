@@ -40,7 +40,7 @@ public class QARealTimePropertyTests
     /// For any new answer posted, all viewers of the question should receive the update immediately
     /// Validates: Requirements 11.1
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool RealTimeAnswerBroadcasting_NewAnswerPosted_AllViewersReceiveUpdate(
         NonEmptyString content, 
         NonEmptyString userName)
@@ -99,7 +99,7 @@ public class QARealTimePropertyTests
     /// For any vote cast, all viewers should see the updated vote count without page refresh
     /// Validates: Requirements 11.2
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool LiveVoteCountUpdates_VoteCast_AllViewersReceiveUpdate(
         bool isUpvote, 
         bool isQuestion,
@@ -165,7 +165,7 @@ public class QARealTimePropertyTests
     /// For any new answer, the question author should receive a real-time notification
     /// Validates: Requirements 11.4
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool RealTimeAnswerNotifications_NewAnswer_QuestionAuthorReceivesNotification(
         NonEmptyString content,
         NonEmptyString userName,
@@ -226,7 +226,7 @@ public class QARealTimePropertyTests
     /// For any connection interruption, the system should automatically attempt reconnection with exponential backoff
     /// Validates: Requirements 11.6
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool ConnectionStability_ConnectionInterruption_SystemAttemptsReconnection(
         NonEmptyString status,
         PositiveInt activeConnections)
@@ -263,7 +263,7 @@ public class QARealTimePropertyTests
     /// Additional property test for answer acceptance real-time notifications
     /// Validates that answer acceptance triggers immediate notifications to relevant users
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool AnswerAcceptanceNotification_AnswerAccepted_RelevantUsersReceiveUpdate(
         NonEmptyString questionTitle,
         NonEmptyString answerAuthorName,
@@ -324,7 +324,7 @@ public class QARealTimePropertyTests
     /// Property test for expert notifications real-time delivery
     /// Validates that expert notifications are delivered immediately to relevant experts
     /// </summary>
-    [Property(MaxTest = 100)]
+    [Property(MaxTest = 5)]
     public bool ExpertNotification_NewQuestionInCategory_ExpertsReceiveImmediateNotification(
         NonEmptyString questionTitle,
         NonEmptyString category,

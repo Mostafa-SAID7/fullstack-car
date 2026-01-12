@@ -100,6 +100,9 @@ public class ConnectionStatusDto
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     public string? Message { get; set; }
     public int ActiveConnections { get; set; }
+    public string? ClientType { get; set; } // "Angular-Main", "React-Dashboard", etc.
+    public bool OptimizationsEnabled { get; set; } = false;
+    public Dictionary<string, object>? PerformanceMetrics { get; set; }
 }
 
 /// <summary>

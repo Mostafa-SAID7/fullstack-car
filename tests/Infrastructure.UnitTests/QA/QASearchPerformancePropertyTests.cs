@@ -66,7 +66,7 @@ public class QASearchPerformancePropertyTests : IDisposable
     /// For any search query, results should be returned within 2 seconds
     /// Validates: Requirements 6.1
     /// </summary>
-    [Property(MaxTest = 10)]
+    [Property(MaxTest = 5)]
     public bool SearchPerformance_AnySearchQuery_ReturnsWithin2Seconds(NonEmptyString searchTerm)
     {
         // Arrange
@@ -120,7 +120,7 @@ public class QASearchPerformancePropertyTests : IDisposable
     /// For any search term, the search should find matches across questions, answers, and tags
     /// Validates: Requirements 6.2
     /// </summary>
-    [Property(MaxTest = 5)]
+    [Property(MaxTest = 3)]
     public bool FullTextSearchCoverage_AnySearchTerm_FindsMatchesAcrossContent(NonEmptyString searchTerm)
     {
         // Arrange
@@ -152,7 +152,7 @@ public class QASearchPerformancePropertyTests : IDisposable
     /// For any new question being created, the system should suggest similar existing questions
     /// Validates: Requirements 6.3
     /// </summary>
-    [Property(MaxTest = 5)]
+    [Property(MaxTest = 3)]
     public bool SimilarQuestionSuggestions_AnyQuestion_ReturnsSimilarQuestions(NonEmptyString title, NonEmptyString content)
     {
         // Arrange

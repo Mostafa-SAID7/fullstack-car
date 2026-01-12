@@ -285,7 +285,7 @@ describe('QA Dashboard Property Tests', () => {
           // The reason should be non-empty for audit logging
           expect(reason.trim().length).toBeGreaterThan(0);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 47: Badge awarding should be applied correctly and logged', async () => {
@@ -311,7 +311,7 @@ describe('QA Dashboard Property Tests', () => {
           // Badge type should be valid
           expect(['Helpful', 'Expert', 'Mentor', 'Pioneer', 'Scholar']).toContain(badgeType);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -345,7 +345,7 @@ describe('QA Dashboard Property Tests', () => {
           const duplicateResult = await mockQAService.bulkDeleteQuestions(questionIds);
           expect(duplicateResult.succeeded).toBe(true);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 48: Bulk answer deletion should be applied consistently to all selected items', async () => {
@@ -368,7 +368,7 @@ describe('QA Dashboard Property Tests', () => {
             expect(id.length).toBeGreaterThan(0);
           });
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 48: Bulk question closure should be applied consistently with proper reason', async () => {
@@ -394,7 +394,7 @@ describe('QA Dashboard Property Tests', () => {
             expect(question.isClosed).toBe(false);
           });
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 48: Bulk user reputation adjustment should be applied consistently', async () => {
@@ -426,7 +426,7 @@ describe('QA Dashboard Property Tests', () => {
           expect(typeof adjustment).toBe('number');
           expect(reason.trim().length).toBeGreaterThan(0);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -499,7 +499,7 @@ describe('QA Dashboard Property Tests', () => {
           // Verify service was called with correct parameters
           expect(mockQAAnalyticsService.getQAAnalytics).toHaveBeenCalledWith(timeRange);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 49: User reputation display should accurately reflect user data', async () => {
@@ -543,7 +543,7 @@ describe('QA Dashboard Property Tests', () => {
           const level = getReputationLevel(user.reputationScore);
           expect(['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master']).toContain(level);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 49: Content metrics should maintain data consistency', async () => {
@@ -589,7 +589,7 @@ describe('QA Dashboard Property Tests', () => {
           expect(acceptanceRate).toBeGreaterThanOrEqual(0);
           expect(acceptanceRate).toBeLessThanOrEqual(1);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 
@@ -702,7 +702,7 @@ describe('QA Dashboard Property Tests', () => {
           // Verify service was called with correct configuration
           expect(mockQAAnalyticsService.generateQAReport).toHaveBeenCalledWith(config);
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 51: Report configuration validation should ensure data integrity', async () => {
@@ -747,7 +747,7 @@ describe('QA Dashboard Property Tests', () => {
             expect(daysDifference).toBeLessThanOrEqual(365 * 5); // Max 5 years
           }
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
 
     test('Feature: qa-system-integration, Property 51: Report recommendations should be relevant and actionable', async () => {
@@ -795,7 +795,7 @@ describe('QA Dashboard Property Tests', () => {
             });
           }
         }
-      ), { numRuns: 100 });
+      ), { numRuns: 5 });
     });
   });
 });

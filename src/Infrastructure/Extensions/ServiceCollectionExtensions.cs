@@ -251,12 +251,14 @@ namespace Infrastructure.Extensions
             services.Configure<QAConnectionOptions>(configuration.GetSection(QAConnectionOptions.SectionName));
             services.Configure<QASearchPerformanceOptions>(configuration.GetSection(QASearchPerformanceOptions.SectionName));
             services.Configure<QACdnOptions>(configuration.GetSection(QACdnOptions.SectionName));
+            services.Configure<QAStaticAssetOptions>(configuration.GetSection(QAStaticAssetOptions.SectionName));
             services.Configure<QAPerformanceMonitoringOptions>(configuration.GetSection(QAPerformanceMonitoringOptions.SectionName));
             
             services.AddScoped<IQAQueryOptimizationService, QAQueryOptimizationService>();
             services.AddScoped<IQAConnectionOptimizationService, QAConnectionOptimizationService>();
             services.AddScoped<IQASearchOptimizationService, QASearchOptimizationService>();
             services.AddScoped<IQACdnOptimizationService, QACdnOptimizationService>();
+            services.AddScoped<IQAStaticAssetOptimizationService, QAStaticAssetOptimizationService>();
             services.AddHostedService<QAPerformanceMonitoringService>();
             
             // Domain Services

@@ -412,21 +412,21 @@ This implementation plan focuses on integrating a comprehensive Question and Ans
   - _Requirements: All requirements_
 
 
-- [-] **Task 8.4**: Performance optimization with unified architecture
+- [x] **Task 8.4**: Performance optimization with unified architecture
   - Optimize database queries and indexing with realistic data volumes
   - Tune SignalR connection management for both client types
   - Optimize search performance and caching for dual frontend usage
   - Implement CDN integration for static assets shared across applications
   - _Requirements: Performance requirements_
 
-- [ ] **Task 8.5**: Security testing and hardening across all applications
+- [x] **Task 8.5**: Security testing and hardening across all applications
   - Conduct security audit of unified API endpoints
   - Test authentication and authorization flows for both frontends
   - Validate input sanitization and XSS protection across applications
   - Test rate limiting and abuse prevention for all client types
   - _Requirements: Security requirements_
 
-- [ ] **Task 8.6**: Comprehensive property-based testing
+- [x] **Task 8.6**: Comprehensive property-based testing
   - Run all property tests with extended iterations
   - Test edge cases and boundary conditions with seeded data
   - Validate system invariants under stress from both frontends

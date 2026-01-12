@@ -1,0 +1,1 @@
+// This file will be moved here - placeholder for folder structure
