@@ -1,5 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+// Types
+import { UserReputation } from '../../../../../shared/types/qa-api.types';
 
 @Component({
   selector: 'app-reputation-display',
@@ -8,19 +11,21 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ],
   template: `
-    <div class="flex items-center gap-3" [class.gap-2]="compact">
-      <!-- Reputation Score -->
-      <div class="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800"
+    <div class="flex items-center gap-3" [class.gap-2]="compact" [class.flex-col]="vertical && !compact">
+      <!-- Reputation Score (reusing existing design tokens) -->
+      <div class="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800 transition-colors"
+           [class.px-3]="!compact"
+           [class.py-1.5]="!compact"
            [title]="getReputationTooltip()">
-        <i class="fas fa-star text-sm"></i>
-        <span class="text-sm font-bold">{{ formatReputation(reputation) }}</span>
+        <i class="fas fa-star text-sm" [class.text-base]="!compact"></i>
+        <span class="text-sm font-bold" [class.text-base]="!compact">{{ formatReputation(reputation) }}</span>
       </div>
 
       <!-- Badges (if not compact) -->
-      <div *ngIf="!compact && badges.length > 0" class="flex gap-1 flex-wrap">
+      <div *ngIf="!compact && displayBadges.length > 0" class="flex gap-1 flex-wrap" [class.justify-center]="vertical">
         <span 
-          *ngFor="let badge of badges" 
-          class="px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
+          *ngFor="let badge of displayBadges" 
+          class="px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 transition-colors"
           [class]="getBadgeClasses(badge)"
           [title]="getBadgeTooltip(badge)">
           <i class="fas" [class]="getBadgeIcon(badge)"></i>
@@ -29,8 +34,8 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <!-- Reputation Level Indicator -->
-      <div *ngIf="!compact" class="flex flex-col gap-1 min-w-20">
-        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+      <div *ngIf="!compact && showLevelProgress" class="flex flex-col gap-1 min-w-20" [class.items-center]="vertical">
+        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden" [class.w-20]="!vertical" [class.w-full]="vertical">
           <div 
             class="h-full transition-all duration-300 rounded-full"
             [style.width.%]="getLevelProgress()"
@@ -39,14 +44,70 @@ import { CommonModule } from '@angular/common';
         </div>
         <span class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">{{ getReputationLevel() }}</span>
       </div>
+
+      <!-- Detailed Stats (if expanded) -->
+      <div *ngIf="showDetailedStats && !compact" class="flex gap-4 text-xs text-gray-600 dark:text-gray-400" [class.flex-col]="vertical" [class.items-center]="vertical">
+        <div class="flex items-center gap-1" title="Questions asked">
+          <i class="fas fa-question-circle"></i>
+          <span class="font-medium">{{ userReputation?.questionsAsked || 0 }}</span>
+        </div>
+        <div class="flex items-center gap-1" title="Answers given">
+          <i class="fas fa-comment"></i>
+          <span class="font-medium">{{ userReputation?.answersGiven || 0 }}</span>
+        </div>
+        <div class="flex items-center gap-1" title="Accepted answers">
+          <i class="fas fa-check-circle text-green-500"></i>
+          <span class="font-medium">{{ userReputation?.acceptedAnswers || 0 }}</span>
+        </div>
+      </div>
+
+      <!-- Expertise Areas (if available and not compact) -->
+      <div *ngIf="!compact && expertiseAreas.length > 0" class="flex flex-wrap gap-1" [class.justify-center]="vertical">
+        <span 
+          *ngFor="let area of displayExpertiseAreas" 
+          class="px-2 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium"
+          [title]="'Expert in ' + area">
+          {{ area }}
+        </span>
+        <span 
+          *ngIf="expertiseAreas.length > maxExpertiseDisplay"
+          class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-xs font-medium"
+          [title]="'And ' + (expertiseAreas.length - maxExpertiseDisplay) + ' more areas'">
+          +{{ expertiseAreas.length - maxExpertiseDisplay }}
+        </span>
+      </div>
     </div>
   `,
   styles: []
 })
-export class ReputationDisplayComponent {
+export class ReputationDisplayComponent implements OnInit {
   @Input() reputation = 0;
   @Input() badges: string[] = [];
+  @Input() expertiseAreas: string[] = [];
+  @Input() userReputation?: UserReputation; // Full user reputation object
   @Input() compact = false;
+  @Input() vertical = false;
+  @Input() showLevelProgress = true;
+  @Input() showDetailedStats = false;
+  @Input() maxBadgeDisplay = 3;
+  @Input() maxExpertiseDisplay = 2;
+
+  displayBadges: string[] = [];
+  displayExpertiseAreas: string[] = [];
+
+  ngOnInit(): void {
+    this.updateDisplayArrays();
+  }
+
+  private updateDisplayArrays(): void {
+    // Use badges from userReputation if available, otherwise use input
+    const allBadges = this.userReputation?.badgesEarned || this.badges;
+    this.displayBadges = allBadges.slice(0, this.maxBadgeDisplay);
+
+    // Use expertise areas from userReputation if available, otherwise use input
+    const allExpertiseAreas = this.userReputation?.expertiseAreas || this.expertiseAreas;
+    this.displayExpertiseAreas = allExpertiseAreas.slice(0, this.maxExpertiseDisplay);
+  }
 
   formatReputation(reputation: number): string {
     if (reputation >= 1000000) {

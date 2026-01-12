@@ -8,4 +8,7 @@ export { useAIAgent } from './ai-agent';
 export { useToast } from '../components/feedback/toasts/ToastProvider';
 export { useModal } from './useModal';
 
+// QA Hooks
+export * from './qa';
+
 // Management Hooks

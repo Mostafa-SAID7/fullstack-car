@@ -1,0 +1,351 @@
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto space-y-6">
+  
+  <!-- Search Header Card -->
+  <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="text-center space-y-4">
+      <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto">
+        <mat-icon class="text-blue-600 dark:text-blue-400 text-3xl">search</mat-icon>
+      </div>
+      <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+        Search Questions & Answers
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Find answers to your questions or discover new knowledge from our community
+      </p>
+    </div>
+  </div>
+
+  <!-- Search Form Card -->
+  <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+    <form [formGroup]="searchForm" class="space-y-6">
+      
+      <!-- Main Search Input -->
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-grow">
+          <app-form-input
+            formControlName="searchTerm"
+            placeholder="Search questions, answers, or topics..."
+            startIcon="search"
+            [fullWidth]="true"
+            variant="outlined">
+          </app-form-input>
+        </div>
+        
+        <button 
+          type="button" 
+          (click)="performSearch()"
+          [disabled]="loading"
+          class="px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
+          <mat-icon *ngIf="!loading">search</mat-icon>
+          <app-loading-spinner *ngIf="loading" size="sm"></app-loading-spinner>
+          <span>{{ loading ? 'Searching...' : 'Search' }}</span>
+        </button>
+      </div>
+
+      <!-- Quick Filters -->
+      <div class="flex flex-wrap gap-2">
+        <button 
+          *ngFor="let filter of quickFilters" 
+          type="button"
+          (click)="toggleQuickFilter(filter.value)"
+          [class]="isQuickFilterSelected(filter.value) ? 
+            'bg-blue-600 text-white' : 
+            'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+          class="px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
+          <mat-icon class="text-base">{{ filter.icon }}</mat-icon>
+          <span>{{ filter.label }}</span>
+        </button>
+      </div>
+
+      <!-- Advanced Filters Toggle -->
+      <div class="text-center">
+        <button 
+          type="button" 
+          (click)="toggleAdvancedFilters()"
+          class="px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors flex items-center gap-2 mx-auto">
+          <mat-icon>{{ showAdvancedFilters ? 'expand_less' : 'expand_more' }}</mat-icon>
+          <span>{{ showAdvancedFilters ? 'Hide' : 'Show' }} Advanced Filters</span>
+        </button>
+      </div>
+
+      <!-- Advanced Filters Panel -->
+      <div *ngIf="showAdvancedFilters" class="space-y-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Category Filter -->
+          <app-qa-category-filter
+            [selectedCategory]="selectedCategory"
+            (categoryChange)="onCategoryChange($event)">
+          </app-qa-category-filter>
+
+          <!-- Tag Filter -->
+          <app-qa-tag-cloud
+            [selectedTags]="selectedTags"
+            (tagsChange)="onTagsChange($event)">
+          </app-qa-tag-cloud>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Date Range -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date Range</label>
+            <div class="relative">
+              <select 
+                formControlName="dateRange"
+                class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                <option value="">Any time</option>
+                <option value="today">Today</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+                <option value="year">This year</option>
+              </select>
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-base">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <!-- Sort Options -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
+            <div class="relative">
+              <select 
+                formControlName="sortBy"
+                class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                <option value="relevance">Relevance</option>
+                <option value="newest">Newest</option>
+                <option value="votes">Most Voted</option>
+                <option value="answers">Most Answered</option>
+                <option value="views">Most Viewed</option>
+              </select>
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-base">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <!-- Min Vote Score -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Vote Score</label>
+            <input 
+              formControlName="minVoteScore"
+              type="number"
+              min="0"
+              placeholder="Any score"
+              class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <!-- Has Accepted Answer -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Answer Status</label>
+            <div class="relative">
+              <select 
+                formControlName="hasAcceptedAnswer"
+                class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                <option [ngValue]="null">Any status</option>
+                <option [ngValue]="true">Has accepted answer</option>
+                <option [ngValue]="false">No accepted answer</option>
+              </select>
+              <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-base">expand_more</mat-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="flex justify-center gap-4">
+          <button 
+            type="button" 
+            (click)="clearAllFilters()"
+            *ngIf="hasActiveFilters"
+            class="px-6 py-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/30 rounded-lg font-medium transition-colors flex items-center gap-2">
+            <mat-icon>clear</mat-icon>
+            <span>Clear All Filters</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Search Results Card -->
+  <div *ngIf="hasSearched" class="bg-white dark:bg-gray-900 rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-200 dark:border-gray-700 min-h-[500px]">
+    
+    <!-- Results Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+        <div class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+          <mat-icon class="text-green-600 dark:text-green-400 text-base">search</mat-icon>
+        </div>
+        Search Results
+        <span *ngIf="!loading" class="text-gray-500 dark:text-gray-400 font-normal text-base">
+          ({{ totalResults }} {{ totalResults === 1 ? 'result' : 'results' }})
+        </span>
+      </h2>
+
+      <!-- Search Result Tabs -->
+      <div class="flex gap-2">
+        <button 
+          *ngFor="let tab of searchTabs; let i = index"
+          (click)="onTabChange(i)"
+          [class]="activeTabIndex === i ? 
+            'bg-blue-600 text-white' : 
+            'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+          class="px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
+          <mat-icon class="text-base">{{ tab.icon }}</mat-icon>
+          <span>{{ tab.label }}</span>
+          <span *ngIf="tab.count > 0" class="bg-white/20 px-2 py-1 rounded-full text-xs">{{ tab.count }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    <app-error-display 
+      *ngIf="error && !loading"
+      [message]="error"
+      (retry)="performSearch()">
+    </app-error-display>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="space-y-4">
+      <div *ngFor="let i of [1,2,3,4]" class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 mt-4">
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-18"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results List -->
+    <div *ngIf="!loading && !error && searchResults.length > 0" class="space-y-4">
+      <div 
+        *ngFor="let result of searchResults; trackBy: trackByFn" 
+        (click)="navigateToResult(result)"
+        class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+        
+        <!-- Result Header -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium flex items-center gap-2">
+              <mat-icon class="text-sm">{{ result.type === 'Question' ? 'help_outline' : 'chat_bubble_outline' }}</mat-icon>
+              <span>{{ result.type }}</span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 font-medium">
+            <span class="flex items-center gap-1">
+              <mat-icon class="text-sm">thumb_up</mat-icon>
+              {{ result.score }}
+            </span>
+            <span *ngIf="result.type === 'Question' && result.answerCount !== undefined" class="flex items-center gap-1">
+              <mat-icon class="text-sm">chat_bubble_outline</mat-icon>
+              {{ result.answerCount }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Result Content -->
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-3 line-clamp-2">
+          {{ result.title }}
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+          {{ result.excerpt }}
+        </p>
+        
+        <!-- Tags -->
+        <div *ngIf="result.tags.length > 0" class="flex flex-wrap gap-2 mb-4">
+          <span 
+            *ngFor="let tag of result.tags.slice(0, 5)" 
+            class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs font-medium">
+            {{ tag }}
+          </span>
+          <span *ngIf="result.tags.length > 5" class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded text-xs">
+            +{{ result.tags.length - 5 }} more
+          </span>
+        </div>
+        
+        <!-- Result Meta -->
+        <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400 font-medium">
+          <span class="flex items-center gap-1">
+            <mat-icon class="text-sm">folder</mat-icon>
+            {{ result.category }}
+          </span>
+          <span class="flex items-center gap-1">
+            <mat-icon class="text-sm">person</mat-icon>
+            {{ result.author }}
+          </span>
+          <span class="flex items-center gap-1">
+            <mat-icon class="text-sm">schedule</mat-icon>
+            {{ formatDate(result.createdAt) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="totalResults > pageSize" class="mt-8">
+        <app-pagination
+          [currentPage]="currentPage"
+          [pageSize]="pageSize"
+          [totalItems]="totalResults"
+          [totalPages]="Math.ceil(totalResults / pageSize)"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="!loading && !error && searchResults.length === 0" class="py-24 text-center">
+      <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-8">
+        <mat-icon class="text-3xl text-gray-400">search_off</mat-icon>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No results found</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search terms or filters</p>
+      
+      <!-- Similar Questions Component for duplicate prevention -->
+      <app-similar-questions
+        [searchTerm]="searchForm.get('searchTerm')?.value"
+        [category]="selectedCategory"
+        [tags]="selectedTags">
+      </app-similar-questions>
+    </div>
+  </div>
+
+  <!-- Popular Searches Card (when no search performed) -->
+  <div *ngIf="!hasSearched" class="bg-white dark:bg-gray-900 rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+      <div class="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+        <mat-icon class="text-yellow-600 dark:text-yellow-400 text-base">trending_up</mat-icon>
+      </div>
+      Popular Searches
+    </h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <button 
+        *ngFor="let suggestion of popularSearches" 
+        (click)="applySuggestion(suggestion)"
+        class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left group">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+            <mat-icon class="text-blue-600 dark:text-blue-400">{{ suggestion.icon }}</mat-icon>
+          </div>
+          <div>
+            <span class="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors block">
+              {{ suggestion.text }}
+            </span>
+            <span class="text-xs text-gray-500 dark:text-gray-400">{{ suggestion.category }}</span>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

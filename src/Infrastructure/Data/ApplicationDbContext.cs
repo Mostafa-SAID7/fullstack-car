@@ -67,6 +67,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Community.QA.QuestionView> QuestionViews { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionBookmark> QuestionBookmarks { get; set; }
         public DbSet<Domain.Entities.Community.QA.AnswerComment> AnswerComments { get; set; }
+        public DbSet<Domain.Entities.Community.QA.QAUserFeedback> QAUserFeedback { get; set; }
 
         // Community Maps Tables
         public DbSet<Domain.Entities.Community.Maps.Location> Locations { get; set; }
@@ -279,6 +280,14 @@ namespace Infrastructure.Data
             builder.Entity<IdentityUserToken<Guid>>().ToTable("AspNetUserTokens");
             builder.Entity<RoleClaim>().ToTable("AspNetRoleClaims");
             builder.Entity<SecurityLog>().ToTable("SecurityLogs");
+
+            // Configure QAUserFeedback Metadata property as JSON
+            builder.Entity<Domain.Entities.Community.QA.QAUserFeedback>()
+                .Property(e => e.Metadata)
+                .HasConversion(
+                    v => v == null ? null : System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
+                    v => v == null ? null : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(v, (System.Text.Json.JsonSerializerOptions?)null))
+                .HasColumnType("nvarchar(max)");
 
             // Apply all configurations first
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

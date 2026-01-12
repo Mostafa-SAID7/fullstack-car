@@ -7,22 +7,17 @@ using Application.Common.Models;
 
 namespace WebAPI.IntegrationTests;
 
-public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Program>>
+public class FileUploadValidationTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public FileUploadValidationTests(WebApplicationFactory<Program> factory)
+    public FileUploadValidationTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     [Fact]
     public async Task FileValidationService_ValidateVideoFile_WithValidMp4_ShouldReturnValid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         // Create a minimal valid MP4 file header
@@ -56,7 +51,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateVideoFile_WithInvalidExtension_ShouldReturnInvalid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         var data = Encoding.UTF8.GetBytes("This is not a video file");
@@ -78,7 +73,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateVideoFile_WithExcessiveSize_ShouldReturnInvalid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         var data = new byte[100];
@@ -100,7 +95,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateAudioFile_WithValidMp3_ShouldReturnValid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         // Create a minimal valid MP3 file header (ID3 tag)
@@ -130,7 +125,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateAudioFile_WithInvalidMimeType_ShouldReturnInvalid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         var data = Encoding.UTF8.GetBytes("This is not an audio file");
@@ -152,7 +147,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateImageFile_WithValidJpeg_ShouldReturnValid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         // Create a minimal valid JPEG file header
@@ -187,7 +182,7 @@ public class FileUploadValidationTests : IClassFixture<WebApplicationFactory<Pro
     public async Task FileValidationService_ValidateFile_WithDangerousFileName_ShouldReturnInvalid()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var validationService = scope.ServiceProvider.GetRequiredService<IFileValidationService>();
         
         var data = new byte[100];

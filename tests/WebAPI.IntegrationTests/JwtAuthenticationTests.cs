@@ -12,22 +12,17 @@ using Application.Common.Models;
 
 namespace WebAPI.IntegrationTests
 {
-    public class JwtAuthenticationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class JwtAuthenticationTests : BaseIntegrationTest
     {
-        private readonly WebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
-
-        public JwtAuthenticationTests(WebApplicationFactory<Program> factory)
+        public JwtAuthenticationTests(WebApplicationFactory<Program> factory) : base(factory)
         {
-            _factory = factory;
-            _client = _factory.CreateClient();
         }
 
         [Fact]
         public void JwtTokenService_GenerateAccessToken_ShouldCreateValidToken()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             
             var userId = Guid.NewGuid();
@@ -62,7 +57,7 @@ namespace WebAPI.IntegrationTests
         public void JwtTokenService_ValidateToken_ShouldReturnNullForInvalidToken()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             
             var invalidToken = "invalid.token.here";
@@ -78,7 +73,7 @@ namespace WebAPI.IntegrationTests
         public void JwtTokenService_IsTokenExpired_ShouldDetectExpiredToken()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             
             var userId = Guid.NewGuid();
@@ -100,7 +95,7 @@ namespace WebAPI.IntegrationTests
             // Arrange - Try to access a protected endpoint without token
             
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/logout", null);
+            var response = await Client.PostAsync("/api/v1/auth/logout", null);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -110,7 +105,7 @@ namespace WebAPI.IntegrationTests
         public async Task AuthenticationEndpoint_WithValidToken_ShouldAllowAccess()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             
             var userId = Guid.NewGuid();
@@ -121,8 +116,8 @@ namespace WebAPI.IntegrationTests
             var token = jwtTokenService.GenerateAccessToken(userId, email, fullName, roles);
 
             // Act
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _client.PostAsync("/api/v1/auth/logout", null);
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await Client.PostAsync("/api/v1/auth/logout", null);
 
             // Assert
             // Should not be Unauthorized (401) - might be BadRequest or other status depending on implementation
@@ -133,7 +128,7 @@ namespace WebAPI.IntegrationTests
         public void RefreshToken_ShouldGenerateUniqueTokens()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
 
             // Act
@@ -150,7 +145,7 @@ namespace WebAPI.IntegrationTests
         public void GetUserIdFromToken_ShouldExtractCorrectUserId()
         {
             // Arrange
-            using var scope = _factory.Services.CreateScope();
+            using var scope = Factory.Services.CreateScope();
             var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             
             var expectedUserId = Guid.NewGuid();

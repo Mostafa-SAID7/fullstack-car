@@ -133,7 +133,8 @@ export class AuthService {
           roles: authData.user.roles || ['User'],
           isActive: authData.user.isActive,
           isEmailConfirmed: authData.user.isEmailConfirmed,
-          createdAt: authData.user.createdAt
+          createdAt: authData.user.createdAt,
+          status: 'active' as const // Default status
         };
         
         console.log('[AuthService] Mapped user info:', userInfo);
@@ -152,10 +153,11 @@ export class AuthService {
               lastName: profileResult.data.lastName,
               email: profileResult.data.email,
               name: `${profileResult.data.firstName} ${profileResult.data.lastName}`,
-              roles: ['User'], // fallback roles
-              isActive: true,
+              roles: profileResult.data.roles || ['User'], // fallback roles
+              isActive: profileResult.data.isActive || true,
               isEmailConfirmed: profileResult.data.isEmailConfirmed || true,
-              createdAt: profileResult.data.createdAt || new Date().toISOString()
+              createdAt: profileResult.data.createdAt || new Date().toISOString(),
+              status: profileResult.data.status || 'active'
             };
           } else {
             console.error('[AuthService] Failed to fetch profile after login.');

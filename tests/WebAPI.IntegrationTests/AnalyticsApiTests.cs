@@ -5,15 +5,10 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests;
 
-public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class AnalyticsApiTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public AnalyticsApiTests(WebApplicationFactory<Program> factory)
+    public AnalyticsApiTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     [Fact]
@@ -31,7 +26,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{videoId}/views", trackingData);
+        var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{videoId}/views", trackingData);
 
         // Assert
         // Note: This will likely fail without proper authentication and existing video
@@ -54,7 +49,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/podcasts/{podcastId}/plays", trackingData);
+        var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/podcasts/{podcastId}/plays", trackingData);
 
         // Assert
         Assert.NotNull(response);
@@ -64,7 +59,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetDashboard_WithoutAuth_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/dashboard");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7.0/media/analytics/dashboard");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -77,7 +72,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
         var videoId = Guid.NewGuid();
 
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/analytics/videos/{videoId}");
+        var response = await UnauthenticatedClient.GetAsync($"/api/v7.0/media/analytics/videos/{videoId}");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -90,7 +85,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
         var podcastId = Guid.NewGuid();
 
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/analytics/podcasts/{podcastId}");
+        var response = await UnauthenticatedClient.GetAsync($"/api/v7.0/media/analytics/podcasts/{podcastId}");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -100,7 +95,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetCreatorAnalytics_WithoutAuth_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/creator");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7.0/media/analytics/creator");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -110,7 +105,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task ExportAnalytics_WithoutAuth_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/export?format=csv");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7.0/media/analytics/export?format=csv");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -120,7 +115,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetRealtimeAnalytics_WithoutAuth_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/realtime");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7.0/media/analytics/realtime");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -130,7 +125,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetAnalyticsTrends_WithoutAuth_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/trends");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7.0/media/analytics/trends");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -142,7 +137,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task ExportAnalytics_WithDifferentFormats_ReturnsUnauthorized(string format)
     {
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/analytics/export?format={format}");
+        var response = await UnauthenticatedClient.GetAsync($"/api/v7.0/media/analytics/export?format={format}");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
@@ -155,7 +150,7 @@ public class AnalyticsApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetDashboard_WithDifferentTimeRanges_ReturnsUnauthorized(string timeRange)
     {
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/analytics/dashboard?timeRange={timeRange}");
+        var response = await UnauthenticatedClient.GetAsync($"/api/v7.0/media/analytics/dashboard?timeRange={timeRange}");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);

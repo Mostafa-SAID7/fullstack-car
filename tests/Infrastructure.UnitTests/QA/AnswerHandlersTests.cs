@@ -19,6 +19,7 @@ public class AnswerHandlersTests : IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly Mock<IQAService> _mockQAService;
+    private readonly Mock<IContentQualityService> _mockContentQualityService;
     private readonly Mock<IReputationService> _mockReputationService;
 
     public AnswerHandlersTests()
@@ -29,11 +30,19 @@ public class AnswerHandlersTests : IDisposable
 
         _context = new ApplicationDbContext(options);
         _mockQAService = new Mock<IQAService>();
+        _mockContentQualityService = new Mock<IContentQualityService>();
         _mockReputationService = new Mock<IReputationService>();
 
         // Setup default mock behaviors
         _mockQAService.Setup(x => x.ValidateContentQualityAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
+        
+        _mockContentQualityService.Setup(x => x.EvaluateAnswerQualityAsync(It.IsAny<string>()))
+            .ReturnsAsync(0.8);
+        _mockContentQualityService.Setup(x => x.IsSpamAsync(It.IsAny<string>()))
+            .ReturnsAsync(false);
+        _mockContentQualityService.Setup(x => x.DetectInappropriateContentAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<string>());
         
         _mockReputationService.Setup(x => x.UpdateUserReputationAsync(
             It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
@@ -60,7 +69,7 @@ public class AnswerHandlersTests : IDisposable
         _context.UserReputations.Add(new UserReputation { UserId = user.Id, ReputationScore = 100 });
         await _context.SaveChangesAsync();
 
-        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object);
         var command = new CreateAnswerCommand
         {
             QuestionId = question.Id,
@@ -99,7 +108,7 @@ public class AnswerHandlersTests : IDisposable
     public async Task CreateAnswerHandler_QuestionNotFound_ReturnsFailure()
     {
         // Arrange
-        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object);
         var command = new CreateAnswerCommand
         {
             QuestionId = Guid.NewGuid(),
@@ -134,7 +143,7 @@ public class AnswerHandlersTests : IDisposable
         _context.Questions.Add(question);
         await _context.SaveChangesAsync();
 
-        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object);
         var command = new CreateAnswerCommand
         {
             QuestionId = question.Id,
@@ -180,7 +189,7 @@ public class AnswerHandlersTests : IDisposable
         _context.Answers.Add(existingAnswer);
         await _context.SaveChangesAsync();
 
-        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var handler = new CreateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object);
         var command = new CreateAnswerCommand
         {
             QuestionId = question.Id,
@@ -228,7 +237,7 @@ public class AnswerHandlersTests : IDisposable
         _context.UserReputations.Add(new UserReputation { UserId = user.Id, ReputationScore = 100 });
         await _context.SaveChangesAsync();
 
-        var handler = new UpdateAnswerHandler(_context, _mockQAService.Object);
+        var handler = new UpdateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object);
         var command = new UpdateAnswerCommand
         {
             AnswerId = answer.Id,
@@ -287,7 +296,7 @@ public class AnswerHandlersTests : IDisposable
         _context.Answers.Add(answer);
         await _context.SaveChangesAsync();
 
-        var handler = new UpdateAnswerHandler(_context, _mockQAService.Object);
+        var handler = new UpdateAnswerHandler(_context, _mockQAService.Object, _mockContentQualityService.Object);
         var command = new UpdateAnswerCommand
         {
             AnswerId = answer.Id,

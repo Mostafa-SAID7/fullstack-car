@@ -2,6 +2,7 @@ using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
 using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.QA.Queries;
+using Application.Features.Community.QA.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,14 @@ namespace WebAPI.Controllers.Community.QA
     public class ReputationController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
+        private readonly IQAHubService _qaHubService;
 
-        public ReputationController(ICurrentUserService currentUserService)
+        public ReputationController(
+            ICurrentUserService currentUserService,
+            IQAHubService qaHubService)
         {
             _currentUserService = currentUserService;
+            _qaHubService = qaHubService;
         }
 
         /// <summary>
@@ -180,9 +185,33 @@ namespace WebAPI.Controllers.Community.QA
 
             var result = await Mediator.Send(command);
 
-            return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Badge awarded successfully")
-                : this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to award badge");
+            if (result.IsSuccess)
+            {
+                // Send real-time notification about reputation/badge update
+                try
+                {
+                    var reputationUpdateDto = new ReputationUpdateDto
+                    {
+                        UserId = userId,
+                        Change = 0, // Badge awards might not change reputation score directly
+                        NewReputation = result.Data.ReputationScore,
+                        Reason = $"Badge awarded: {request.BadgeName}",
+                        BadgesEarned = new List<string> { request.BadgeName },
+                        Timestamp = DateTime.UtcNow
+                    };
+                    await _qaHubService.NotifyReputationUpdateAsync(reputationUpdateDto);
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but don't fail the request
+                    // Real-time notification failure shouldn't break the core functionality
+                    // TODO: Add proper logging here
+                }
+
+                return this.ApiSuccess(result.Data, "Badge awarded successfully");
+            }
+
+            return this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to award badge");
         }
 
         /// <summary>

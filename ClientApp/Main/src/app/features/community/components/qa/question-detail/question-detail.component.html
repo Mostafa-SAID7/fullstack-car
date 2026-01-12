@@ -291,17 +291,14 @@
     <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
       <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-8">
         
-        <!-- Voting Sidebar -->
+        <!-- Real-time Voting Sidebar -->
         <div class="flex lg:flex-col items-center lg:items-start gap-4">
-          <app-voting
+          <app-real-time-vote-display
             [contentId]="question.id"
             contentType="Question"
-            [voteScore]="question.voteScore"
-            [upvotesCount]="question.upvotesCount"
-            [downvotesCount]="question.downvotesCount"
-            [userVote]="question.userVote"
-            (voted)="onQuestionVoted()">
-          </app-voting>
+            [initialVoteScore]="question.voteScore"
+            [initialUserVote]="question.userVote || null">
+          </app-real-time-vote-display>
 
           <!-- Question Stats -->
           <div class="text-center lg:text-left">
@@ -406,8 +403,14 @@
       </div>
     </div>
 
-    <!-- Card 5: Answers Section -->
+    <!-- Card 5: Answers Section with Real-time Features -->
     <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      
+      <!-- Connection Status -->
+      <div class="mb-4">
+        <app-connection-status></app-connection-status>
+      </div>
+
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
         <h2 class="text-xl font-black text-foreground uppercase tracking-widest flex items-center gap-3">
           <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
@@ -433,14 +436,23 @@
         </p>
       </div>
 
-      <!-- Answers List -->
-      <app-answer-list
-        [answers]="question.answers"
+      <!-- Typing Indicators -->
+      <app-typing-indicator 
         [questionId]="question.id"
-        [acceptedAnswerId]="question.acceptedAnswerId"
-        (answerVoted)="onAnswerVoted()"
-        (answerAccepted)="onAnswerAccepted()">
-      </app-answer-list>
+        class="mb-6">
+      </app-typing-indicator>
+
+      <!-- Real-time Answers List -->
+      <app-real-time-answer-list
+        [questionId]="question.id"
+        [questionAuthorId]="question.userId"
+        [currentUserId]="currentUserId || undefined"
+        [initialAnswers]="convertAnswersForRealTime(question.answers || [])"
+        (answerAccepted)="onAnswerAccepted()"
+        (answerShared)="onAnswerShared($event)"
+        (answerEdit)="onAnswerEdit($event)"
+        (retryLoad)="onRetry()">
+      </app-real-time-answer-list>
     </div>
   </div>
 </div>

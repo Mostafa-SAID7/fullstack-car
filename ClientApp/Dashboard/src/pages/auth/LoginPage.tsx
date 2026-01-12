@@ -72,6 +72,7 @@ export const LoginPage: React.FC = () => {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <FormField
+              name="email"
               label="Email Address"
               type="email"
               value={formData.email}
@@ -84,6 +85,7 @@ export const LoginPage: React.FC = () => {
 
             <div className="relative">
               <FormField
+                name="password"
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}

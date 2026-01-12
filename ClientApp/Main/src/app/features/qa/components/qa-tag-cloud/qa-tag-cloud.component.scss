@@ -1,0 +1,242 @@
+// QA Tag Cloud Component Styles
+// Consistent with shared tag styling patterns
+
+// Tag cloud animations
+.tag-cloud {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Tag button hover effects
+.tag-button {
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.tag-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tag-button:active {
+  transform: translateY(0);
+  transition: transform 0.1s ease-in-out;
+}
+
+// Tag size variations with smooth scaling
+.tag-xl {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.tag-lg {
+  font-weight: 500;
+}
+
+.tag-md {
+  font-weight: 500;
+}
+
+.tag-sm {
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+// Selected tag animation
+.tag-selected {
+  animation: tagSelect 0.3s ease-out;
+}
+
+@keyframes tagSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Trending indicator animation
+.trending-indicator {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// Tag search input styling
+.tag-search-input {
+  transition: all 0.2s ease-in-out;
+}
+
+.tag-search-input:focus {
+  transform: scale(1.02);
+}
+
+// Custom scrollbar for tag list
+.tag-list-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.tag-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tag-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tag-list-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 2px;
+}
+
+.tag-list-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+// Tag removal animation
+.tag-remove {
+  transition: all 0.2s ease-in-out;
+}
+
+.tag-remove:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(239, 68, 68);
+}
+
+// Loading spinner
+.tag-loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Tag statistics styling
+.tag-stats {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tag-stats {
+    background: rgba(17, 24, 39, 0.8);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .tag-button {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+  
+  .tag-xl {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .tag-search-input {
+    font-size: 0.875rem;
+  }
+}
+
+// Focus states for accessibility
+.tag-button:focus {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+.tag-search-input:focus {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .tag-button {
+    border: 2px solid currentColor;
+  }
+  
+  .tag-selected {
+    border: 2px solid white;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .tag-button,
+  .tag-cloud,
+  .trending-indicator {
+    animation: none;
+    transition: none;
+  }
+  
+  .tag-button:hover {
+    transform: none;
+  }
+}
+
+// Tag color variations for better visual hierarchy
+.tag-primary {
+  background: linear-gradient(135deg, theme('colors.blue.500'), theme('colors.blue.600'));
+  color: white;
+}
+
+.tag-secondary {
+  background: linear-gradient(135deg, theme('colors.gray.100'), theme('colors.gray.200'));
+  color: theme('colors.gray.800');
+}
+
+@media (prefers-color-scheme: dark) {
+  .tag-secondary {
+    background: linear-gradient(135deg, theme('colors.gray.800'), theme('colors.gray.700'));
+    color: theme('colors.gray.200');
+  }
+}
+
+// Tag expansion animation
+.tag-expand {
+  animation: expandIn 0.3s ease-out;
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    max-height: 16rem;
+  }
+}

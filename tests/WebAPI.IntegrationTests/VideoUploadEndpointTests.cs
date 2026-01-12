@@ -1,40 +1,15 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
+using Xunit;
 
 namespace WebAPI.IntegrationTests;
 
-public class VideoUploadEndpointTests : IClassFixture<WebApplicationFactory<Program>>
+public class VideoUploadEndpointTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public VideoUploadEndpointTests(WebApplicationFactory<Program> factory)
+    public VideoUploadEndpointTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                // Add test authentication and set it as default
-                services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("Test", options => { });
-                
-                // Override the default authentication scheme
-                services.Configure<AuthenticationOptions>(options =>
-                {
-                    options.DefaultAuthenticateScheme = "Test";
-                    options.DefaultChallengeScheme = "Test";
-                });
-            });
-        });
-        _client = _factory.CreateClient();
     }
 
     [Fact]
@@ -56,7 +31,7 @@ public class VideoUploadEndpointTests : IClassFixture<WebApplicationFactory<Prog
         content.Add(new StringContent("true"), "AllowComments");
 
         // Act
-        var response = await _client.PostAsync("/api/v7.0/media/videos/upload", content);
+        var response = await Client.PostAsync("/api/v7.0/media/videos/upload", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -85,36 +60,12 @@ public class VideoUploadEndpointTests : IClassFixture<WebApplicationFactory<Prog
         content.Add(new StringContent("true"), "AllowComments");
 
         // Act
-        var response = await _client.PostAsync("/api/v7.0/media/videos/upload", content);
+        var response = await Client.PostAsync("/api/v7.0/media/videos/upload", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Contains("validation failed", responseContent.ToLower());
-    }
-}
-
-public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
-{
-    public TestAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
-        : base(options, logger, encoder, clock)
-    {
-    }
-
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-    {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, "TestUser"),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
-        };
-
-        var identity = new ClaimsIdentity(claims, "Test");
-        var principal = new ClaimsPrincipal(identity);
-        var ticket = new AuthenticationTicket(principal, "Test");
-
-        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }

@@ -289,6 +289,7 @@ public class MediaAnalyticsController : ControllerBase
     /// Get analytics dashboard data
     /// </summary>
     [HttpGet("dashboard")]
+    [Authorize]
     public async Task<IActionResult> GetAnalyticsDashboard([FromQuery] string timeRange = "30d")
     {
         try

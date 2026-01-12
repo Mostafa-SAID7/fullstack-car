@@ -22,6 +22,9 @@ namespace Infrastructure.Migrations
             migrationBuilder.EnsureSchema(
                 name: "Media");
 
+            // AdminSystemMetrics table already created in InitialCreate migration
+            // Commenting out duplicate creation to avoid conflict
+            /*
             migrationBuilder.CreateTable(
                 name: "AdminSystemMetrics",
                 schema: "Admin",
@@ -46,6 +49,7 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AdminSystemMetrics", x => x.Id);
                 });
+            */
 
             migrationBuilder.CreateTable(
                 name: "ApiUsageLogs",

@@ -29,7 +29,6 @@ import {
   Calendar,
   Bell,
   Video,
-  MessageSquare,
   HelpCircle
 } from 'lucide-react';
 

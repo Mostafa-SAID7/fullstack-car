@@ -1,5 +1,6 @@
 using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.QA.Interfaces;
+using Infrastructure.Services.QA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -11,15 +12,18 @@ namespace Infrastructure.Hubs;
 /// Unified SignalR Hub for QA system real-time communication
 /// Serves both Angular Main App and React Dashboard clients
 /// Provides real-time updates for questions, answers, votes, and expert notifications
+/// Includes unified connection management and reliability features
 /// </summary>
 [Authorize]
 public class QAHub : Hub<IQAHub>
 {
     private readonly ILogger<QAHub> _logger;
+    private readonly IQAConnectionManager _connectionManager;
 
-    public QAHub(ILogger<QAHub> logger)
+    public QAHub(ILogger<QAHub> logger, IQAConnectionManager connectionManager)
     {
         _logger = logger;
+        _connectionManager = connectionManager;
     }
 
     #region Connection Management
@@ -28,14 +32,32 @@ public class QAHub : Hub<IQAHub>
     {
         var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userName = Context.User?.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
+        var userAgent = Context.GetHttpContext()?.Request.Headers["User-Agent"].ToString() ?? "";
         
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var userGuid))
         {
             // Add user to their personal group for direct notifications
             await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
             
+            // Track connection in connection manager
+            _connectionManager.TrackConnection(Context.ConnectionId, userGuid, userName, userAgent);
+            
             _logger.LogInformation("QA Hub: User {UserName} ({UserId}) connected with connection {ConnectionId}", 
                 userName, userId, Context.ConnectionId);
+
+            // Send connection confirmation to client
+            await Clients.Caller.ReceiveConnectionStatus(new ConnectionStatusDto
+            {
+                Status = "Connected",
+                Message = "Successfully connected to QA Hub",
+                Timestamp = DateTime.UtcNow,
+                ActiveConnections = await _connectionManager.GetActiveConnectionCountAsync()
+            });
+        }
+        else
+        {
+            _logger.LogWarning("QA Hub: Anonymous or invalid user attempted connection with {ConnectionId}", 
+                Context.ConnectionId);
         }
         
         await base.OnConnectedAsync();
@@ -49,6 +71,10 @@ public class QAHub : Hub<IQAHub>
         if (!string.IsNullOrEmpty(userId))
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user_{userId}");
+            
+            // Track disconnection in connection manager
+            var reason = exception?.Message ?? "Normal disconnection";
+            _connectionManager.TrackDisconnection(Context.ConnectionId, reason);
             
             _logger.LogInformation("QA Hub: User {UserName} ({UserId}) disconnected from connection {ConnectionId}", 
                 userName, userId, Context.ConnectionId);
@@ -79,6 +105,10 @@ public class QAHub : Hub<IQAHub>
         
         await Groups.AddToGroupAsync(Context.ConnectionId, $"question_{questionId}");
         
+        // Track group join in connection manager
+        _connectionManager.TrackGroupJoin(Context.ConnectionId, $"question_{questionId}");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: User {UserName} ({UserId}) joined question {QuestionId}", 
             userName, userId, questionId);
     }
@@ -95,6 +125,10 @@ public class QAHub : Hub<IQAHub>
         var userName = GetCurrentUserName();
         
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"question_{questionId}");
+        
+        // Track group leave in connection manager
+        _connectionManager.TrackGroupLeave(Context.ConnectionId, $"question_{questionId}");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
         
         _logger.LogDebug("QA Hub: User {UserName} ({UserId}) left question {QuestionId}", 
             userName, userId, questionId);
@@ -125,6 +159,10 @@ public class QAHub : Hub<IQAHub>
         var normalizedCategory = category.Trim().ToLowerInvariant().Replace(" ", "_");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"category_{normalizedCategory}");
         
+        // Track group join in connection manager
+        _connectionManager.TrackGroupJoin(Context.ConnectionId, $"category_{normalizedCategory}");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: User {UserName} ({UserId}) joined category {Category}", 
             userName, userId, category);
     }
@@ -148,6 +186,10 @@ public class QAHub : Hub<IQAHub>
         var normalizedCategory = category.Trim().ToLowerInvariant().Replace(" ", "_");
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"category_{normalizedCategory}");
         
+        // Track group leave in connection manager
+        _connectionManager.TrackGroupLeave(Context.ConnectionId, $"category_{normalizedCategory}");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: User {UserName} ({UserId}) left category {Category}", 
             userName, userId, category);
     }
@@ -168,6 +210,10 @@ public class QAHub : Hub<IQAHub>
         
         await Groups.AddToGroupAsync(Context.ConnectionId, "experts");
         
+        // Track group join in connection manager
+        _connectionManager.TrackGroupJoin(Context.ConnectionId, "experts");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: Expert {UserName} ({UserId}) joined experts group", 
             userName, userId);
     }
@@ -182,6 +228,10 @@ public class QAHub : Hub<IQAHub>
         var userName = GetCurrentUserName();
         
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, "experts");
+        
+        // Track group leave in connection manager
+        _connectionManager.TrackGroupLeave(Context.ConnectionId, "experts");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
         
         _logger.LogDebug("QA Hub: Expert {UserName} ({UserId}) left experts group", 
             userName, userId);
@@ -208,6 +258,9 @@ public class QAHub : Hub<IQAHub>
             _logger.LogWarning("QA Hub: Anonymous user attempted to send typing indicator");
             return;
         }
+        
+        // Update connection activity
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
         
         var typingIndicator = new TypingIndicatorDto
         {
@@ -245,6 +298,10 @@ public class QAHub : Hub<IQAHub>
         
         await Groups.AddToGroupAsync(Context.ConnectionId, "moderators");
         
+        // Track group join in connection manager
+        _connectionManager.TrackGroupJoin(Context.ConnectionId, "moderators");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: Moderator {UserName} ({UserId}) joined moderators group", 
             userName, userId);
     }
@@ -259,6 +316,10 @@ public class QAHub : Hub<IQAHub>
         var userName = GetCurrentUserName();
         
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, "moderators");
+        
+        // Track group leave in connection manager
+        _connectionManager.TrackGroupLeave(Context.ConnectionId, "moderators");
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
         
         _logger.LogDebug("QA Hub: Moderator {UserName} ({UserId}) left moderators group", 
             userName, userId);
@@ -278,9 +339,69 @@ public class QAHub : Hub<IQAHub>
         var userId = GetCurrentUserId();
         var userName = GetCurrentUserName();
         
+        // Update connection activity
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
         _logger.LogDebug("QA Hub: Ping from user {UserName} ({UserId})", userName, userId);
         
         return $"Pong from QA Hub at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC";
+    }
+
+    /// <summary>
+    /// Get connection health information for monitoring
+    /// Used by React Dashboard for connection monitoring
+    /// </summary>
+    [HubMethodName("GetConnectionHealth")]
+    public async Task<ConnectionHealthDto> GetConnectionHealth()
+    {
+        var userId = GetCurrentUserId();
+        var userName = GetCurrentUserName();
+        
+        _logger.LogDebug("QA Hub: Connection health requested by {UserName} ({UserId})", userName, userId);
+        
+        return await _connectionManager.GetConnectionHealthAsync();
+    }
+
+    /// <summary>
+    /// Get active connections for monitoring
+    /// Used by React Dashboard for connection monitoring
+    /// </summary>
+    [HubMethodName("GetActiveConnections")]
+    public async Task<List<ActiveConnectionDto>> GetActiveConnections()
+    {
+        var userId = GetCurrentUserId();
+        var userName = GetCurrentUserName();
+        
+        // TODO: Add role-based authorization check for admin/moderator role
+        
+        _logger.LogDebug("QA Hub: Active connections requested by {UserName} ({UserId})", userName, userId);
+        
+        return await _connectionManager.GetActiveConnectionsAsync();
+    }
+
+    /// <summary>
+    /// Test connection reliability by sending a test message
+    /// Used by both Angular and React clients for connection testing
+    /// </summary>
+    [HubMethodName("TestConnection")]
+    public async Task TestConnection(string testMessage)
+    {
+        var userId = GetCurrentUserId();
+        var userName = GetCurrentUserName();
+        
+        // Update connection activity
+        _connectionManager.UpdateConnectionActivity(Context.ConnectionId);
+        
+        // Echo the test message back to the caller
+        await Clients.Caller.ReceiveConnectionStatus(new ConnectionStatusDto
+        {
+            Status = "TestResponse",
+            Message = $"Echo: {testMessage}",
+            Timestamp = DateTime.UtcNow
+        });
+        
+        _logger.LogDebug("QA Hub: Connection test from {UserName} ({UserId}): {TestMessage}", 
+            userName, userId, testMessage);
     }
 
     #endregion

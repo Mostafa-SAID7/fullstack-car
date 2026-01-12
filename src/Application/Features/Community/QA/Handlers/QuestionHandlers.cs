@@ -15,32 +15,81 @@ public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Resu
 {
     private readonly IApplicationDbContext _context;
     private readonly IQAService _qaService;
+    private readonly IContentQualityService _contentQualityService;
     private readonly IReputationService _reputationService;
+    private readonly IDuplicatePreventionService _duplicatePreventionService;
 
     public CreateQuestionHandler(
         IApplicationDbContext context,
         IQAService qaService,
-        IReputationService reputationService)
+        IContentQualityService contentQualityService,
+        IReputationService reputationService,
+        IDuplicatePreventionService duplicatePreventionService)
     {
         _context = context;
         _qaService = qaService;
+        _contentQualityService = contentQualityService;
         _reputationService = reputationService;
+        _duplicatePreventionService = duplicatePreventionService;
     }
 
     public async Task<Result<QuestionDto>> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
     {
-        // Validate content quality
-        var isQualityContent = await _qaService.ValidateContentQualityAsync(request.Request.Content);
-        if (!isQualityContent)
+        // Enhanced content quality validation
+        var qualityScore = await _contentQualityService.EvaluateQuestionQualityAsync(request.Request.Title, request.Request.Content);
+        if (qualityScore < 0.5) // Minimum quality threshold
         {
-            return Result<QuestionDto>.Failure("Question content does not meet quality standards");
+            var assessment = await _contentQualityService.GetDetailedQualityAssessmentAsync(request.Request.Content, "Question");
+            var issues = assessment?.QualityIssues?.Any() == true 
+                ? string.Join(", ", assessment.QualityIssues) 
+                : "Content does not meet quality standards";
+            return Result<QuestionDto>.Failure($"Question does not meet quality standards: {issues}");
         }
 
-        // Check for duplicates
-        var isDuplicate = await _qaService.IsQuestionDuplicateAsync(request.Request.Title, request.Request.Content);
-        if (isDuplicate)
+        // Check for spam
+        var isSpam = await _contentQualityService.IsSpamAsync(request.Request.Content);
+        if (isSpam)
         {
-            return Result<QuestionDto>.Failure("A similar question already exists");
+            return Result<QuestionDto>.Failure("Question content appears to be spam");
+        }
+
+        // Check for inappropriate content
+        var inappropriateContent = await _contentQualityService.DetectInappropriateContentAsync(request.Request.Content);
+        if (inappropriateContent.Any())
+        {
+            var issues = string.Join(", ", inappropriateContent);
+            return Result<QuestionDto>.Failure($"Question contains inappropriate content: {issues}");
+        }
+
+        // Enhanced duplicate prevention with semantic analysis
+        var duplicateValidation = await _duplicatePreventionService.ValidateQuestionForDuplicatesAsync(
+            request.Request.Title, 
+            request.Request.Content, 
+            "General", // TODO: Use actual category in later tasks
+            request.Request.Tags,
+            cancellationToken);
+
+        if (!duplicateValidation.IsSuccess)
+        {
+            return Result<QuestionDto>.Failure(duplicateValidation.ErrorMessage ?? "Duplicate validation failed");
+        }
+
+        if (!duplicateValidation.Data.IsValid)
+        {
+            if (duplicateValidation.Data.ValidationStatus == "Duplicate")
+            {
+                var duplicateInfo = duplicateValidation.Data.DuplicateInfo;
+                return Result<QuestionDto>.Failure(
+                    $"This question is a duplicate of an existing question: '{duplicateInfo?.DuplicateQuestionTitle}'. " +
+                    $"Please check the existing question at {duplicateInfo?.RedirectUrl}");
+            }
+            else if (duplicateValidation.Data.ValidationStatus == "Similar")
+            {
+                // For similar questions, we could either warn or proceed
+                // For now, let's proceed but log the similar questions for analytics
+                var similarCount = duplicateValidation.Data.SuggestedQuestions.Count;
+                // Log similar questions found for potential user notification
+            }
         }
 
         // Create the question
@@ -190,13 +239,19 @@ public class UpdateQuestionHandler : IRequestHandler<UpdateQuestionCommand, Resu
 {
     private readonly IApplicationDbContext _context;
     private readonly IQAService _qaService;
+    private readonly IContentQualityService _contentQualityService;
+    private readonly IDuplicatePreventionService _duplicatePreventionService;
 
     public UpdateQuestionHandler(
         IApplicationDbContext context,
-        IQAService qaService)
+        IQAService qaService,
+        IContentQualityService contentQualityService,
+        IDuplicatePreventionService duplicatePreventionService)
     {
         _context = context;
         _qaService = qaService;
+        _contentQualityService = contentQualityService;
+        _duplicatePreventionService = duplicatePreventionService;
     }
 
     public async Task<Result<QuestionDto>> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
@@ -224,18 +279,53 @@ public class UpdateQuestionHandler : IRequestHandler<UpdateQuestionCommand, Resu
             return Result<QuestionDto>.Failure("Question cannot be edited after 24 hours if it has answers");
         }
 
-        // Validate content quality
-        var isQualityContent = await _qaService.ValidateContentQualityAsync(request.Request.Content);
-        if (!isQualityContent)
+        // Enhanced content quality validation
+        var qualityScore = await _contentQualityService.EvaluateQuestionQualityAsync(request.Request.Title, request.Request.Content);
+        if (qualityScore < 0.5) // Minimum quality threshold
         {
-            return Result<QuestionDto>.Failure("Question content does not meet quality standards");
+            var assessment = await _contentQualityService.GetDetailedQualityAssessmentAsync(request.Request.Content, "Question");
+            var issues = assessment?.QualityIssues?.Any() == true 
+                ? string.Join(", ", assessment.QualityIssues) 
+                : "Content does not meet quality standards";
+            return Result<QuestionDto>.Failure($"Question does not meet quality standards: {issues}");
         }
 
-        // Check for duplicates (excluding current question)
-        var isDuplicate = await _qaService.IsQuestionDuplicateAsync(request.Request.Title, request.Request.Content);
-        if (isDuplicate)
+        // Check for spam
+        var isSpam = await _contentQualityService.IsSpamAsync(request.Request.Content);
+        if (isSpam)
         {
-            return Result<QuestionDto>.Failure("A similar question already exists");
+            return Result<QuestionDto>.Failure("Question content appears to be spam");
+        }
+
+        // Check for inappropriate content
+        var inappropriateContent = await _contentQualityService.DetectInappropriateContentAsync(request.Request.Content);
+        if (inappropriateContent.Any())
+        {
+            var issues = string.Join(", ", inappropriateContent);
+            return Result<QuestionDto>.Failure($"Question contains inappropriate content: {issues}");
+        }
+
+        // Enhanced duplicate prevention with semantic analysis (excluding current question)
+        var similarQuestions = await _duplicatePreventionService.FindSimilarQuestionsAsync(
+            request.Request.Title,
+            request.Request.Content,
+            "General", // TODO: Use actual category in later tasks
+            request.Request.Tags,
+            request.QuestionId, // Exclude current question from similarity check
+            5,
+            0.95, // High threshold for updates to prevent accidental duplicates
+            cancellationToken);
+
+        if (similarQuestions.IsSuccess && similarQuestions.Data.Any())
+        {
+            var highestSimilarity = similarQuestions.Data.Max(q => q.SimilarityScore);
+            if (highestSimilarity >= 0.95) // Very high similarity threshold for updates
+            {
+                var mostSimilar = similarQuestions.Data.First(q => q.SimilarityScore == highestSimilarity);
+                return Result<QuestionDto>.Failure(
+                    $"Updated question would be too similar to existing question: '{mostSimilar.Title}'. " +
+                    $"Similarity score: {highestSimilarity:P1}");
+            }
         }
 
         // Update the question

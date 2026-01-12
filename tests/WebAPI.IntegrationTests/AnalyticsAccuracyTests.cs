@@ -19,22 +19,17 @@ namespace WebAPI.IntegrationTests;
 /// Integration tests to verify that analytics data is collected accurately
 /// Tests the complete flow from tracking events to analytics aggregation
 /// </summary>
-public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Program>>
+public class AnalyticsAccuracyTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public AnalyticsAccuracyTests(WebApplicationFactory<Program> factory)
+    public AnalyticsAccuracyTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     [Fact]
     public async Task TrackVideoView_ShouldUpdateAnalyticsAccurately()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var analyticsService = scope.ServiceProvider.GetRequiredService<IMediaAnalyticsService>();
 
@@ -74,7 +69,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
         };
 
         // Act - Track video view
-        var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
+        var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
 
         // Assert
         Assert.True(response.IsSuccessStatusCode, $"Expected success but got {response.StatusCode}");
@@ -110,7 +105,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
     public async Task TrackPodcastPlay_ShouldUpdateAnalyticsAccurately()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var analyticsService = scope.ServiceProvider.GetRequiredService<IMediaAnalyticsService>();
 
@@ -151,7 +146,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
         };
 
         // Act - Track podcast play
-        var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/podcasts/{podcast.Id}/plays", trackingData);
+        var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/podcasts/{podcast.Id}/plays", trackingData);
 
         // Assert
         Assert.True(response.IsSuccessStatusCode, $"Expected success but got {response.StatusCode}");
@@ -187,7 +182,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
     public async Task TrackEngagement_ShouldUpdateAnalyticsAccurately()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var analyticsService = scope.ServiceProvider.GetRequiredService<IMediaAnalyticsService>();
 
@@ -220,7 +215,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
         };
 
         // Act - Track like engagement
-        var response = await _client.PostAsJsonAsync("/api/v7.0/media/analytics/engagement", engagementData);
+        var response = await Client.PostAsJsonAsync("/api/v7.0/media/analytics/engagement", engagementData);
 
         // Assert
         Assert.True(response.IsSuccessStatusCode, $"Expected success but got {response.StatusCode}");
@@ -251,7 +246,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
     public async Task MultipleViews_ShouldAggregateAnalyticsCorrectly()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var analyticsService = scope.ServiceProvider.GetRequiredService<IMediaAnalyticsService>();
 
@@ -294,7 +289,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
                 IsUnique = true
             };
 
-            var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
+            var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
             Assert.True(response.IsSuccessStatusCode, $"View {i + 1} should be tracked successfully");
         }
 
@@ -331,7 +326,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
     public async Task DuplicateViews_ShouldNotInflateAnalytics()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
         // Create a test video
@@ -375,7 +370,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
                 IsUnique = true // This should be validated by the system
             };
 
-            var response = await _client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
+            var response = await Client.PostAsJsonAsync($"/api/v7.0/media/analytics/videos/{video.Id}/views", trackingData);
             Assert.True(response.IsSuccessStatusCode, $"Duplicate view {i + 1} should be handled gracefully");
         }
 
@@ -402,7 +397,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
     public async Task GetAnalyticsDashboard_ShouldReturnAccurateData()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
         // Create test data with known metrics
@@ -478,7 +473,7 @@ public class AnalyticsAccuracyTests : IClassFixture<WebApplicationFactory<Progra
         await context.SaveChangesAsync();
 
         // Act - Get dashboard analytics
-        var response = await _client.GetAsync("/api/v7.0/media/analytics/dashboard?timeRange=30d");
+        var response = await Client.GetAsync("/api/v7.0/media/analytics/dashboard?timeRange=30d");
 
         // Assert
         Assert.True(response.IsSuccessStatusCode, $"Expected success but got {response.StatusCode}");

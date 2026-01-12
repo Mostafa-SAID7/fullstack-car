@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
 using Application.Features.Community.QA.Handlers;
@@ -24,6 +25,7 @@ public class QACQRSPropertyTests : IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly Mock<IQAService> _mockQAService;
+    private readonly Mock<IContentQualityService> _mockContentQualityService;
     private readonly Mock<IReputationService> _mockReputationService;
     private readonly Mock<ILogger<CreateQuestionHandler>> _mockQuestionLogger;
     private readonly Mock<ILogger<CreateVoteHandler>> _mockVoteLogger;
@@ -36,6 +38,7 @@ public class QACQRSPropertyTests : IDisposable
 
         _context = new ApplicationDbContext(options);
         _mockQAService = new Mock<IQAService>();
+        _mockContentQualityService = new Mock<IContentQualityService>();
         _mockReputationService = new Mock<IReputationService>();
         _mockQuestionLogger = new Mock<ILogger<CreateQuestionHandler>>();
         _mockVoteLogger = new Mock<ILogger<CreateVoteHandler>>();
@@ -45,6 +48,14 @@ public class QACQRSPropertyTests : IDisposable
             .ReturnsAsync(true);
         _mockQAService.Setup(x => x.IsQuestionDuplicateAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(false);
+        
+        _mockContentQualityService.Setup(x => x.EvaluateQuestionQualityAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(0.8);
+        _mockContentQualityService.Setup(x => x.IsSpamAsync(It.IsAny<string>()))
+            .ReturnsAsync(false);
+        _mockContentQualityService.Setup(x => x.DetectInappropriateContentAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<string>());
+        
         _mockReputationService.Setup(x => x.HasSufficientReputationAsync(It.IsAny<Guid>(), It.IsAny<string>()))
             .ReturnsAsync(true);
         _mockReputationService.Setup(x => x.CalculateReputationChangeAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
@@ -72,10 +83,19 @@ public class QACQRSPropertyTests : IDisposable
         _context.SaveChanges();
 
         // Setup mock to validate content quality - reject empty/short content
-        _mockQAService.Setup(x => x.ValidateContentQualityAsync(It.IsAny<string>()))
-            .ReturnsAsync((string c) => !string.IsNullOrWhiteSpace(c) && c.Length >= 20);
+        _mockContentQualityService.Setup(x => x.EvaluateQuestionQualityAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((string title, string c) => string.IsNullOrWhiteSpace(c) || c.Length < 20 ? 0.3 : 0.8);
+        _mockContentQualityService.Setup(x => x.IsSpamAsync(It.IsAny<string>()))
+            .ReturnsAsync(false);
+        _mockContentQualityService.Setup(x => x.DetectInappropriateContentAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<string>());
 
-        var handler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var mockDuplicatePreventionService = new Mock<IDuplicatePreventionService>();
+        mockDuplicatePreventionService.Setup(x => x.ValidateQuestionForDuplicatesAsync(
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<QuestionValidationResult>.Success(new QuestionValidationResult { IsValid = true, ValidationStatus = "Valid" }));
+
+        var handler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object, mockDuplicatePreventionService.Object);
         var command = new CreateQuestionCommand
         {
             UserId = user.Id,
@@ -90,7 +110,7 @@ public class QACQRSPropertyTests : IDisposable
         // Act
         var result = handler.Handle(command, CancellationToken.None).Result;
         
-        // Property: Invalid content should be rejected by the QA service validation
+        // Property: Invalid content should be rejected by the content quality service validation
         var hasValidContent = !string.IsNullOrWhiteSpace(content) && content.Length >= 20;
         
         if (!hasValidContent)
@@ -132,13 +152,23 @@ public class QACQRSPropertyTests : IDisposable
         _context.SaveChanges();
 
         // Setup mock to reject low quality content
-        _mockQAService.Setup(x => x.ValidateContentQualityAsync(content))
-            .ReturnsAsync(!string.IsNullOrWhiteSpace(content) && 
-                         content.Length >= 20 && 
-                         content.Length <= 10000 && 
-                         !content.Contains("spam"));
+        _mockContentQualityService.Setup(x => x.EvaluateQuestionQualityAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync((string t, string c) => {
+                if (string.IsNullOrWhiteSpace(c) || c.Length < 20 || c.Length > 10000 || c.Contains("spam"))
+                    return 0.3; // Below threshold
+                return 0.8; // Above threshold
+            });
+        _mockContentQualityService.Setup(x => x.IsSpamAsync(It.IsAny<string>()))
+            .ReturnsAsync((string c) => c.Contains("spam"));
+        _mockContentQualityService.Setup(x => x.DetectInappropriateContentAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<string>());
 
-        var handler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockReputationService.Object);
+        var mockDuplicatePreventionService = new Mock<IDuplicatePreventionService>();
+        mockDuplicatePreventionService.Setup(x => x.ValidateQuestionForDuplicatesAsync(
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<QuestionValidationResult>.Success(new QuestionValidationResult { IsValid = true, ValidationStatus = "Valid" }));
+
+        var handler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object, mockDuplicatePreventionService.Object);
         var command = new CreateQuestionCommand
         {
             UserId = user.Id,

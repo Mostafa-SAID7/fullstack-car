@@ -9,15 +9,10 @@ using Application.Common.Models;
 
 namespace WebAPI.IntegrationTests
 {
-    public class AuthenticationEndpointTests : IClassFixture<WebApplicationFactory<Program>>
+    public class AuthenticationEndpointTests : BaseIntegrationTest
     {
-        private readonly WebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
-
-        public AuthenticationEndpointTests(WebApplicationFactory<Program> factory)
+        public AuthenticationEndpointTests(WebApplicationFactory<Program> factory) : base(factory)
         {
-            _factory = factory;
-            _client = _factory.CreateClient();
         }
 
         [Fact]
@@ -34,7 +29,7 @@ namespace WebAPI.IntegrationTests
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/login", content);
+            var response = await Client.PostAsync("/api/v1/auth/login", content);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -72,7 +67,7 @@ namespace WebAPI.IntegrationTests
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/register", content);
+            var response = await Client.PostAsync("/api/v1/auth/register", content);
 
             // Assert - Should return BadRequest for validation errors
             Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.OK);
@@ -105,7 +100,7 @@ namespace WebAPI.IntegrationTests
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/refresh-token", content);
+            var response = await Client.PostAsync("/api/v1/auth/refresh-token", content);
 
             // Assert - Should return BadRequest for invalid token
             Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.OK);
@@ -129,7 +124,7 @@ namespace WebAPI.IntegrationTests
         public async Task Logout_WithoutAuthentication_ShouldReturnUnauthorized()
         {
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/logout", null);
+            var response = await Client.PostAsync("/api/v1/auth/logout", null);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -143,7 +138,7 @@ namespace WebAPI.IntegrationTests
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync("/api/v1/auth/revoke-token", content);
+            var response = await Client.PostAsync("/api/v1/auth/revoke-token", content);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);

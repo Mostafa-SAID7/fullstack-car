@@ -6,10 +6,12 @@ namespace Infrastructure.Services.QA;
 public class QAService : IQAService
 {
     private readonly IQASearchService _searchService;
+    private readonly IContentQualityService _contentQualityService;
 
-    public QAService(IQASearchService searchService)
+    public QAService(IQASearchService searchService, IContentQualityService contentQualityService)
     {
         _searchService = searchService;
+        _contentQualityService = contentQualityService;
     }
 
     public async Task<List<QuestionSimilarityDto>> FindSimilarQuestionsAsync(string title, string content, Guid? excludeQuestionId = null)
@@ -53,40 +55,7 @@ public class QAService : IQAService
 
     public async Task<bool> ValidateContentQualityAsync(string content)
     {
-        // Basic content quality validation
-        if (string.IsNullOrWhiteSpace(content) || content.Length < 20)
-            return false;
-
-        // Check for minimum word count (answers should be substantial)
-        var wordCount = content.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
-        if (wordCount < 10)
-            return false;
-
-        // Check for excessive repetition (spam indicator)
-        var words = content.ToLower().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-        var uniqueWords = words.Distinct().Count();
-        if (words.Length > 0 && (double)uniqueWords / words.Length < 0.3)
-            return false;
-
-        // Check for excessive capitalization (shouting)
-        var upperCaseCount = content.Count(char.IsUpper);
-        var letterCount = content.Count(char.IsLetter);
-        if (letterCount > 0 && (double)upperCaseCount / letterCount > 0.7)
-            return false;
-
-        // Check for common spam patterns
-        var spamPatterns = new[] { "click here", "buy now", "free money", "guaranteed", "act now" };
-        var lowerContent = content.ToLower();
-        if (spamPatterns.Any(pattern => lowerContent.Contains(pattern)))
-            return false;
-
-        // TODO: Implement advanced content quality checks
-        // This will be enhanced in later tasks with:
-        // - AI-based spam detection
-        // - Sentiment analysis
-        // - Technical accuracy assessment
-        // - Plagiarism detection
-        await Task.CompletedTask;
-        return true;
+        // Delegate to the comprehensive content quality service
+        return await _contentQualityService.ValidateContentQualityAsync(content);
     }
 }

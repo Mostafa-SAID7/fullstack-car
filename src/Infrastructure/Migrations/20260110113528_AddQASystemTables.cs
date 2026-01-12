@@ -22,6 +22,9 @@ namespace Infrastructure.Migrations
             migrationBuilder.EnsureSchema(
                 name: "Media");
 
+            // AdminSystemMetrics table already created in InitialCreate migration
+            // Commenting out duplicate creation to avoid conflict
+            /*
             migrationBuilder.CreateTable(
                 name: "AdminSystemMetrics",
                 schema: "Admin",
@@ -46,6 +49,7 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AdminSystemMetrics", x => x.Id);
                 });
+            */
 
             migrationBuilder.CreateTable(
                 name: "ApiUsageLogs",
@@ -5824,6 +5828,8 @@ namespace Infrastructure.Migrations
                 table: "AdminActions",
                 column: "TargetUserId");
 
+            // AdminSystemMetrics indexes commented out since table creation is commented out
+            /*
             migrationBuilder.CreateIndex(
                 name: "IX_AdminSystemMetrics_Category",
                 schema: "Admin",
@@ -5847,6 +5853,7 @@ namespace Infrastructure.Migrations
                 schema: "Admin",
                 table: "AdminSystemMetrics",
                 column: "Timestamp");
+            */
 
             migrationBuilder.CreateIndex(
                 name: "IX_AnswerComments_AnswerId",
@@ -8017,9 +8024,12 @@ namespace Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "AdminActions");
 
+            // AdminSystemMetrics drop commented out since it's managed by InitialCreate migration
+            /*
             migrationBuilder.DropTable(
                 name: "AdminSystemMetrics",
                 schema: "Admin");
+            */
 
             migrationBuilder.DropTable(
                 name: "AnswerComments");

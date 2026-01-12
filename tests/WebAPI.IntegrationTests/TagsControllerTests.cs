@@ -3,58 +3,22 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Application.Features.Community.QA.DTOs.Responses;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using WebAPI.Controllers.Community.QA;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
 
 namespace WebAPI.IntegrationTests;
 
-public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
+public class TagsControllerTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public TagsControllerTests(WebApplicationFactory<Program> factory)
+    public TagsControllerTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                // Remove existing authentication services
-                var authenticationService = services.FirstOrDefault(s => s.ServiceType == typeof(Microsoft.AspNetCore.Authentication.IAuthenticationService));
-                if (authenticationService != null)
-                    services.Remove(authenticationService);
-
-                var authenticationSchemeProvider = services.FirstOrDefault(s => s.ServiceType == typeof(Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider));
-                if (authenticationSchemeProvider != null)
-                    services.Remove(authenticationSchemeProvider);
-
-                // Add test authentication and set it as default
-                services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("Test", options => { });
-                
-                // Override the default authentication scheme
-                services.Configure<AuthenticationOptions>(options =>
-                {
-                    options.DefaultAuthenticateScheme = "Test";
-                    options.DefaultChallengeScheme = "Test";
-                    options.DefaultScheme = "Test";
-                });
-            });
-        });
-        _client = _factory.CreateClient();
     }
 
     [Fact]
     public async Task GetTags_WithoutAuthentication_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7/qa/tags");
+        var response = await UnauthenticatedClient.GetAsync("/api/v7/qa/tags");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -64,7 +28,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetTags_WithAuthentication_ReturnsTags()
     {
         // Act - No need to set authorization header as test auth is configured
-        var response = await _client.GetAsync("/api/v7/qa/tags");
+        var response = await Client.GetAsync("/api/v7/qa/tags");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -78,7 +42,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetTags_WithSearchTerm_ReturnsFilteredTags()
     {
         // Act - No need to set authorization header as test auth is configured
-        var response = await _client.GetAsync("/api/v7/qa/tags?searchTerm=javascript");
+        var response = await Client.GetAsync("/api/v7/qa/tags?searchTerm=javascript");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -92,7 +56,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetPopularTags_WithAuthentication_ReturnsPopularTags()
     {
         // Act - No need to set authorization header as test auth is configured
-        var response = await _client.GetAsync("/api/v7/qa/tags/popular?maxResults=10");
+        var response = await Client.GetAsync("/api/v7/qa/tags/popular?maxResults=10");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -106,7 +70,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task SearchTags_WithValidSearchTerm_ReturnsMatchingTags()
     {
         // Act - No need to set authorization header as test auth is configured
-        var response = await _client.GetAsync("/api/v7/qa/tags/search?searchTerm=react&maxResults=5");
+        var response = await Client.GetAsync("/api/v7/qa/tags/search?searchTerm=react&maxResults=5");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -120,7 +84,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetTagsByCategory_WithValidCategory_ReturnsCategoryTags()
     {
         // First get categories to find a valid category ID
-        var categoriesResponse = await _client.GetAsync("/api/v7/qa/categories");
+        var categoriesResponse = await Client.GetAsync("/api/v7/qa/categories");
         Assert.Equal(HttpStatusCode.OK, categoriesResponse.StatusCode);
 
         var categoriesContent = await categoriesResponse.Content.ReadAsStringAsync();
@@ -131,7 +95,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
             var categoryId = categoriesResult.Data.First().Id;
 
             // Act
-            var response = await _client.GetAsync($"/api/v7/qa/tags/category/{categoryId}?maxResults=10");
+            var response = await Client.GetAsync($"/api/v7/qa/tags/category/{categoryId}?maxResults=10");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -151,7 +115,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/v7/qa/tags/suggest", request);
+        var response = await Client.PostAsJsonAsync("/api/v7/qa/tags/suggest", request);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -170,7 +134,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/v7/qa/tags/suggest", request);
+        var response = await Client.PostAsJsonAsync("/api/v7/qa/tags/suggest", request);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -183,7 +147,7 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
         var invalidId = Guid.NewGuid();
 
         // Act
-        var response = await _client.GetAsync($"/api/v7/qa/tags/{invalidId}");
+        var response = await Client.GetAsync($"/api/v7/qa/tags/{invalidId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -195,29 +159,5 @@ public class TagsControllerTests : IClassFixture<WebApplicationFactory<Program>>
         public T? Data { get; set; }
         public string Message { get; set; } = string.Empty;
         public List<string> Errors { get; set; } = new();
-    }
-}
-
-public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
-{
-    public TestAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
-        : base(options, logger, encoder, clock)
-    {
-    }
-
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-    {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, "TestUser"),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
-        };
-
-        var identity = new ClaimsIdentity(claims, "Test");
-        var principal = new ClaimsPrincipal(identity);
-        var ticket = new AuthenticationTicket(principal, "Test");
-
-        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }

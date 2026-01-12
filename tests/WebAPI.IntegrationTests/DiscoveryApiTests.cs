@@ -6,15 +6,10 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests;
 
-public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class DiscoveryApiTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public DiscoveryApiTests(WebApplicationFactory<Program> factory)
+    public DiscoveryApiTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     [Fact]
@@ -24,7 +19,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         var searchQuery = "test";
 
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/discovery/search?searchTerm={searchQuery}&pageSize=10");
+        var response = await Client.GetAsync($"/api/v7.0/media/discovery/search?searchTerm={searchQuery}&pageSize=10");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -39,7 +34,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetTrending_WithDefaultParameters_ReturnsResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/discovery/trending");
+        var response = await Client.GetAsync("/api/v7.0/media/discovery/trending");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -54,7 +49,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetFeatured_WithDefaultParameters_ReturnsResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/discovery/featured");
+        var response = await Client.GetAsync("/api/v7.0/media/discovery/featured");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -69,7 +64,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetCategories_ReturnsResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/discovery/categories");
+        var response = await Client.GetAsync("/api/v7.0/media/discovery/categories");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -87,7 +82,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         var category = "technology";
 
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/discovery/categories/{category}");
+        var response = await Client.GetAsync($"/api/v7.0/media/discovery/categories/{category}");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -105,7 +100,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
         var query = "tech";
 
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/discovery/suggestions?query={query}");
+        var response = await Client.GetAsync($"/api/v7.0/media/discovery/suggestions?query={query}");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -120,7 +115,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetRecommendations_WithoutAuth_ReturnsGenericResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/discovery/recommendations");
+        var response = await Client.GetAsync("/api/v7.0/media/discovery/recommendations");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -137,7 +132,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task Search_WithMediaTypeFilter_ReturnsFilteredResults(string mediaType)
     {
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/discovery/search?mediaType={mediaType}");
+        var response = await Client.GetAsync($"/api/v7.0/media/discovery/search?mediaType={mediaType}");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -156,7 +151,7 @@ public class DiscoveryApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetTrending_WithDifferentAlgorithms_ReturnsResults(string algorithm)
     {
         // Act
-        var response = await _client.GetAsync($"/api/v7.0/media/discovery/trending?algorithm={algorithm}");
+        var response = await Client.GetAsync($"/api/v7.0/media/discovery/trending?algorithm={algorithm}");
 
         // Assert
         response.EnsureSuccessStatusCode();

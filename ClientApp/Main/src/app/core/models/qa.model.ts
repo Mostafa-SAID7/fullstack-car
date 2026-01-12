@@ -55,9 +55,10 @@ export interface Answer {
 export interface CreateQuestionRequest {
     title: string;
     content: string;
+    category: string;
     groupId?: string;
     categoryId?: string;
-    tags?: string[];
+    tags: string[];
 }
 
 export interface CreateAnswerRequest {

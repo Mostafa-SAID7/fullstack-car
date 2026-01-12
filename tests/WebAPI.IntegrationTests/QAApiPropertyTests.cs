@@ -16,15 +16,10 @@ namespace WebAPI.IntegrationTests;
 /// Property-based tests for unified QA API endpoints
 /// Tests universal properties that should hold across all valid inputs
 /// </summary>
-public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
+public class QAApiPropertyTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public QAApiPropertyTests(WebApplicationFactory<Program> factory)
+    public QAApiPropertyTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     #region Property 52: RESTful API Compliance
@@ -55,16 +50,16 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
             switch (method)
             {
                 case "GET":
-                    response = _client.GetAsync(endpoint).Result;
+                    response = Client.GetAsync(endpoint).Result;
                     break;
                 case "POST":
-                    response = _client.PostAsync(endpoint, null).Result;
+                    response = Client.PostAsync(endpoint, null).Result;
                     break;
                 case "PUT":
-                    response = _client.PutAsync(endpoint, null).Result;
+                    response = Client.PutAsync(endpoint, null).Result;
                     break;
                 case "DELETE":
-                    response = _client.DeleteAsync(endpoint).Result;
+                    response = Client.DeleteAsync(endpoint).Result;
                     break;
                 default:
                     return false;
@@ -102,7 +97,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
         
         try
         {
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
             
             // GET requests should return either success (200, 204) or client/server error (4xx, 5xx)
             // but not redirect (3xx) for API endpoints
@@ -140,7 +135,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
 
         try
         {
-            var response = _client.PostAsJsonAsync("/api/v7/qa/questions", invalidRequest).Result;
+            var response = Client.PostAsJsonAsync("/api/v7/qa/questions", invalidRequest).Result;
             
             // Invalid input should return 400 Bad Request, 401 Unauthorized, or 404 Not Found (if endpoint doesn't exist yet)
             var isExpectedErrorStatus = response.StatusCode == HttpStatusCode.BadRequest ||
@@ -176,7 +171,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
 
         try
         {
-            var response = _client.PostAsJsonAsync("/api/v7/qa/answers", invalidRequest).Result;
+            var response = Client.PostAsJsonAsync("/api/v7/qa/answers", invalidRequest).Result;
             
             // Invalid input should return 400 Bad Request, 401 Unauthorized, or 404 Not Found (if endpoint doesn't exist yet)
             var isExpectedErrorStatus = response.StatusCode == HttpStatusCode.BadRequest ||
@@ -219,9 +214,9 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
         try
         {
             // Clear any existing authorization headers
-            _client.DefaultRequestHeaders.Authorization = null;
+            Client.DefaultRequestHeaders.Authorization = null;
             
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
 
             // Protected endpoints should return 401 Unauthorized, 404 Not Found, or 405 Method Not Allowed
             // (depending on whether the endpoint exists and supports GET)
@@ -265,10 +260,10 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
         try
         {
             // Set invalid authorization header
-            _client.DefaultRequestHeaders.Authorization = 
+            Client.DefaultRequestHeaders.Authorization = 
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", invalidToken);
             
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
             
             // Invalid tokens should result in 401 Unauthorized, 404 Not Found, or 405 Method Not Allowed
             var isExpectedStatus = response.StatusCode == HttpStatusCode.Unauthorized ||
@@ -276,14 +271,14 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
                                  response.StatusCode == HttpStatusCode.MethodNotAllowed;
             
             // Clean up
-            _client.DefaultRequestHeaders.Authorization = null;
+            Client.DefaultRequestHeaders.Authorization = null;
             
             return isExpectedStatus;
         }
         catch
         {
             // Clean up on exception
-            _client.DefaultRequestHeaders.Authorization = null;
+            Client.DefaultRequestHeaders.Authorization = null;
             return false;
         }
     }
@@ -307,7 +302,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
         try
         {
             var endpoint = $"/api/v7/qa/questions?pageNumber={pageNumber}&pageSize={pageSize}";
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
             
             // Should handle pagination parameters without error
             // Either return data (200) or require auth (401), but not server error (500)
@@ -356,7 +351,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
             var queryString = queryParams.Any() ? "?" + string.Join("&", queryParams) : "";
             var endpoint = $"/api/v7/qa/questions/search{queryString}";
             
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
             
             // Should handle search parameters without server error
             var statusCode = (int)response.StatusCode;
@@ -393,7 +388,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
             var queryString = "?" + string.Join("&", queryParams);
             var endpoint = $"/api/v7/qa/questions{queryString}";
             
-            var response = _client.GetAsync(endpoint).Result;
+            var response = Client.GetAsync(endpoint).Result;
             
             // Should handle filter parameters without server error
             var statusCode = (int)response.StatusCode;
@@ -421,7 +416,7 @@ public class QAApiPropertyTests : IClassFixture<WebApplicationFactory<Program>>
                 Password = "TestPassword123!"
             };
 
-            var loginResponse = await _client.PostAsJsonAsync("/api/v7/auth/login", loginRequest);
+            var loginResponse = await Client.PostAsJsonAsync("/api/v7/auth/login", loginRequest);
             if (loginResponse.IsSuccessStatusCode)
             {
                 var loginContent = await loginResponse.Content.ReadAsStringAsync();

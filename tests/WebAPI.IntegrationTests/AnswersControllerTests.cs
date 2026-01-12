@@ -4,20 +4,14 @@ using System.Text.Json;
 using Application.Features.Community.QA.DTOs.Requests;
 using Application.Features.Community.QA.DTOs.Responses;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace WebAPI.IntegrationTests;
 
-public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Program>>
+public class AnswersControllerTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public AnswersControllerTests(WebApplicationFactory<Program> factory)
+    public AnswersControllerTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     [Fact]
@@ -27,7 +21,7 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
         var questionId = Guid.NewGuid();
 
         // Act
-        var response = await _client.GetAsync($"/api/v7/qa/answers/question/{questionId}");
+        var response = await UnauthenticatedClient.GetAsync($"/api/v7/qa/answers/question/{questionId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -37,12 +31,10 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
     public async Task GetAnswersByQuestion_WithAuthentication_ReturnsAnswers()
     {
         // Arrange
-        var token = await GetAuthTokenAsync();
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         var questionId = Guid.NewGuid();
 
-        // Act
-        var response = await _client.GetAsync($"/api/v7/qa/answers/question/{questionId}");
+        // Act - No need to set authorization header as test auth is configured
+        var response = await Client.GetAsync($"/api/v7/qa/answers/question/{questionId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -55,9 +47,6 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
     public async Task CreateAnswer_WithValidData_ReturnsCreated()
     {
         // Arrange
-        var token = await GetAuthTokenAsync();
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
         // First create a question to answer
         var questionRequest = new CreateQuestionRequest
         {
@@ -67,7 +56,7 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
             Tags = new List<string> { "test", "integration" }
         };
 
-        var questionResponse = await _client.PostAsJsonAsync("/api/v7/qa/questions", questionRequest);
+        var questionResponse = await Client.PostAsJsonAsync("/api/v7/qa/questions", questionRequest);
         Assert.Equal(HttpStatusCode.Created, questionResponse.StatusCode);
 
         var questionContent = await questionResponse.Content.ReadAsStringAsync();
@@ -79,8 +68,8 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
             Content = "This is a comprehensive answer to the test question with sufficient detail to meet the minimum content requirements."
         };
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/v7/qa/answers", answerRequest);
+        // Act - No need to set authorization header as test auth is configured
+        var response = await Client.PostAsJsonAsync("/api/v7/qa/answers", answerRequest);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -93,17 +82,14 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
     public async Task CreateAnswer_WithInvalidData_ReturnsBadRequest()
     {
         // Arrange
-        var token = await GetAuthTokenAsync();
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
         var request = new CreateAnswerRequest
         {
             QuestionId = Guid.NewGuid(),
             Content = "Short" // Too short, doesn't meet minimum requirements
         };
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/v7/qa/answers", request);
+        // Act - No need to set authorization header as test auth is configured
+        var response = await Client.PostAsJsonAsync("/api/v7/qa/answers", request);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -112,12 +98,8 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
     [Fact]
     public async Task GetMyAnswers_WithAuthentication_ReturnsUserAnswers()
     {
-        // Arrange
-        var token = await GetAuthTokenAsync();
-        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        // Act
-        var response = await _client.GetAsync("/api/v7/qa/answers/my-answers?pageSize=5");
+        // Act - No need to set authorization header as test auth is configured
+        var response = await Client.GetAsync("/api/v7/qa/answers/my-answers?pageSize=5");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -126,10 +108,4 @@ public class AnswersControllerTests : IClassFixture<WebApplicationFactory<Progra
         Assert.Contains("User answers retrieved successfully", content);
     }
 
-    private async Task<string> GetAuthTokenAsync()
-    {
-        // This is a simplified token generation for testing
-        // In a real scenario, you would authenticate with proper credentials
-        return "test-token-for-integration-testing";
-    }
 }

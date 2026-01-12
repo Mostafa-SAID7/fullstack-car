@@ -14,15 +14,18 @@ public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, Result<A
 {
     private readonly IApplicationDbContext _context;
     private readonly IQAService _qaService;
+    private readonly IContentQualityService _contentQualityService;
     private readonly IReputationService _reputationService;
 
     public CreateAnswerHandler(
         IApplicationDbContext context,
         IQAService qaService,
+        IContentQualityService contentQualityService,
         IReputationService reputationService)
     {
         _context = context;
         _qaService = qaService;
+        _contentQualityService = contentQualityService;
         _reputationService = reputationService;
     }
 
@@ -42,11 +45,28 @@ public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, Result<A
             return Result<AnswerDto>.Failure("Cannot answer a closed question");
         }
 
-        // Validate content quality
-        var isQualityContent = await _qaService.ValidateContentQualityAsync(request.Request.Content);
-        if (!isQualityContent)
+        // Enhanced content quality validation
+        var qualityScore = await _contentQualityService.EvaluateAnswerQualityAsync(request.Request.Content);
+        if (qualityScore < 0.5) // Minimum quality threshold
         {
-            return Result<AnswerDto>.Failure("Answer content does not meet quality standards");
+            var assessment = await _contentQualityService.GetDetailedQualityAssessmentAsync(request.Request.Content, "Answer");
+            var issues = string.Join(", ", assessment.QualityIssues);
+            return Result<AnswerDto>.Failure($"Answer does not meet quality standards: {issues}");
+        }
+
+        // Check for spam
+        var isSpam = await _contentQualityService.IsSpamAsync(request.Request.Content);
+        if (isSpam)
+        {
+            return Result<AnswerDto>.Failure("Answer content appears to be spam");
+        }
+
+        // Check for inappropriate content
+        var inappropriateContent = await _contentQualityService.DetectInappropriateContentAsync(request.Request.Content);
+        if (inappropriateContent.Any())
+        {
+            var issues = string.Join(", ", inappropriateContent);
+            return Result<AnswerDto>.Failure($"Answer contains inappropriate content: {issues}");
         }
 
         // Check for duplicate answers by the same user
@@ -119,13 +139,16 @@ public class UpdateAnswerHandler : IRequestHandler<UpdateAnswerCommand, Result<A
 {
     private readonly IApplicationDbContext _context;
     private readonly IQAService _qaService;
+    private readonly IContentQualityService _contentQualityService;
 
     public UpdateAnswerHandler(
         IApplicationDbContext context,
-        IQAService qaService)
+        IQAService qaService,
+        IContentQualityService contentQualityService)
     {
         _context = context;
         _qaService = qaService;
+        _contentQualityService = contentQualityService;
     }
 
     public async Task<Result<AnswerDto>> Handle(UpdateAnswerCommand request, CancellationToken cancellationToken)
@@ -156,11 +179,28 @@ public class UpdateAnswerHandler : IRequestHandler<UpdateAnswerCommand, Result<A
             return Result<AnswerDto>.Failure("Answer cannot be edited after 24 hours if it has votes");
         }
 
-        // Validate content quality
-        var isQualityContent = await _qaService.ValidateContentQualityAsync(request.Request.Content);
-        if (!isQualityContent)
+        // Enhanced content quality validation
+        var qualityScore = await _contentQualityService.EvaluateAnswerQualityAsync(request.Request.Content);
+        if (qualityScore < 0.5) // Minimum quality threshold
         {
-            return Result<AnswerDto>.Failure("Answer content does not meet quality standards");
+            var assessment = await _contentQualityService.GetDetailedQualityAssessmentAsync(request.Request.Content, "Answer");
+            var issues = string.Join(", ", assessment.QualityIssues);
+            return Result<AnswerDto>.Failure($"Answer does not meet quality standards: {issues}");
+        }
+
+        // Check for spam
+        var isSpam = await _contentQualityService.IsSpamAsync(request.Request.Content);
+        if (isSpam)
+        {
+            return Result<AnswerDto>.Failure("Answer content appears to be spam");
+        }
+
+        // Check for inappropriate content
+        var inappropriateContent = await _contentQualityService.DetectInappropriateContentAsync(request.Request.Content);
+        if (inappropriateContent.Any())
+        {
+            var issues = string.Join(", ", inappropriateContent);
+            return Result<AnswerDto>.Failure($"Answer contains inappropriate content: {issues}");
         }
 
         // Save current version to history before updating

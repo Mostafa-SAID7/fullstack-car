@@ -129,17 +129,20 @@ try
                 await seeder.SeedAsync();
                 logger.LogInformation("Database seeding completed successfully");
                 
-                // Exit after seeding if requested via command line
-                logger.LogInformation("Seeding completed. Exiting application.");
-                return;
+                // Exit after seeding if requested via command line (but not during testing)
+                if (!app.Environment.IsEnvironment("Testing"))
+                {
+                    logger.LogInformation("Seeding completed. Exiting application.");
+                    return;
+                }
             }
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error during database initialization and seeding");
             
-            // If seeding was specifically requested, exit with error
-            if (args.Contains("--seed-database"))
+            // If seeding was specifically requested, exit with error (but not during testing)
+            if (args.Contains("--seed-database") && !app.Environment.IsEnvironment("Testing"))
             {
                 logger.LogError("Database seeding failed. Exiting with error code 1.");
                 Environment.Exit(1);

@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
 using Application.Features.Community.QA.Handlers;
@@ -18,6 +19,7 @@ public class QuestionHandlersTests : IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly Mock<IQAService> _mockQAService;
+    private readonly Mock<IContentQualityService> _mockContentQualityService;
     private readonly Mock<IReputationService> _mockReputationService;
     private readonly CreateQuestionHandler _createHandler;
     private readonly UpdateQuestionHandler _updateHandler;
@@ -33,10 +35,12 @@ public class QuestionHandlersTests : IDisposable
 
         _context = new ApplicationDbContext(options);
         _mockQAService = new Mock<IQAService>();
+        _mockContentQualityService = new Mock<IContentQualityService>();
         _mockReputationService = new Mock<IReputationService>();
+        var _mockDuplicatePreventionService = new Mock<IDuplicatePreventionService>();
 
-        _createHandler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockReputationService.Object);
-        _updateHandler = new UpdateQuestionHandler(_context, _mockQAService.Object);
+        _createHandler = new CreateQuestionHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockReputationService.Object, _mockDuplicatePreventionService.Object);
+        _updateHandler = new UpdateQuestionHandler(_context, _mockQAService.Object, _mockContentQualityService.Object, _mockDuplicatePreventionService.Object);
         _deleteHandler = new DeleteQuestionHandler(_context, _mockReputationService.Object);
         _closeHandler = new CloseQuestionHandler(_context);
         _acceptHandler = new AcceptAnswerHandler(_context, _mockReputationService.Object);
@@ -46,6 +50,17 @@ public class QuestionHandlersTests : IDisposable
             .ReturnsAsync(true);
         _mockQAService.Setup(x => x.IsQuestionDuplicateAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(false);
+        _mockDuplicatePreventionService.Setup(x => x.ValidateQuestionForDuplicatesAsync(
+            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<QuestionValidationResult>.Success(new QuestionValidationResult { IsValid = true, ValidationStatus = "Valid" }));
+        
+        _mockContentQualityService.Setup(x => x.EvaluateQuestionQualityAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(0.8);
+        _mockContentQualityService.Setup(x => x.IsSpamAsync(It.IsAny<string>()))
+            .ReturnsAsync(false);
+        _mockContentQualityService.Setup(x => x.DetectInappropriateContentAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<string>());
+        
         _mockReputationService.Setup(x => x.UpdateUserReputationAsync(
             It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(Task.CompletedTask);

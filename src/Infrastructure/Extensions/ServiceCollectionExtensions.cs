@@ -18,6 +18,7 @@ using Application.Features.Admin.Analytics.Services;
 using Application.Features.Identity.Auth.Services;
 using Application.Features.Identity.OAuth.Interfaces;
 using Application.Features.Identity.Auth.Services;
+using Application.Features.Community.QA.Interfaces;
 using Application.Features.Media.Analytics.Services;
 using Application.Features.Community.QA.Services;
 using Infrastructure.Services.Analytics;
@@ -227,11 +228,36 @@ namespace Infrastructure.Extensions
 
             // QA Services
             services.Configure<QASearchOptions>(configuration.GetSection(QASearchOptions.SectionName));
+            services.Configure<DuplicatePreventionOptions>(configuration.GetSection(DuplicatePreventionOptions.SectionName));
+            services.AddScoped<IContentQualityService, ContentQualityService>();
             services.AddScoped<IQAService, QAService>();
             services.AddScoped<IQASearchService, QASearchService>();
+            services.AddScoped<IDuplicatePreventionService, DuplicatePreventionService>();
             services.AddScoped<IReputationService, ReputationService>();
-            services.AddScoped<IQAHubService, QAHubService>();
+            services.AddSingleton<IQAHubService, QAHubService>();
+            services.AddSingleton<IQAConnectionManager, QAConnectionManager>();
+            services.AddHostedService<QAConnectionManager>(provider => 
+                (QAConnectionManager)provider.GetRequiredService<IQAConnectionManager>());
             services.AddScoped<IExpertService, ExpertService>();
+            
+            // QA Health Monitoring Services
+            services.AddScoped<IQAHealthMonitoringService, QAHealthMonitoringService>();
+            services.AddScoped<IQAAlertService, QAAlertService>();
+            services.AddScoped<IQAUserSatisfactionService, QAUserSatisfactionService>();
+            services.AddHostedService<QAHealthMonitorBackgroundService>();
+            
+            // QA Performance Optimization Services
+            services.Configure<QAPerformanceOptions>(configuration.GetSection(QAPerformanceOptions.SectionName));
+            services.Configure<QAConnectionOptions>(configuration.GetSection(QAConnectionOptions.SectionName));
+            services.Configure<QASearchPerformanceOptions>(configuration.GetSection(QASearchPerformanceOptions.SectionName));
+            services.Configure<QACdnOptions>(configuration.GetSection(QACdnOptions.SectionName));
+            services.Configure<QAPerformanceMonitoringOptions>(configuration.GetSection(QAPerformanceMonitoringOptions.SectionName));
+            
+            services.AddScoped<IQAQueryOptimizationService, QAQueryOptimizationService>();
+            services.AddScoped<IQAConnectionOptimizationService, QAConnectionOptimizationService>();
+            services.AddScoped<IQASearchOptimizationService, QASearchOptimizationService>();
+            services.AddScoped<IQACdnOptimizationService, QACdnOptimizationService>();
+            services.AddHostedService<QAPerformanceMonitoringService>();
             
             // Domain Services
             services.AddScoped<Domain.Services.IExpertIdentificationService, Domain.Services.ExpertIdentificationService>();

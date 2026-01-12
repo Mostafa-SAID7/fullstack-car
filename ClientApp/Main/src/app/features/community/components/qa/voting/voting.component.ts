@@ -1,70 +1,116 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
+
+// Shared Components (reusing existing UI)
+import { LoadingSpinnerComponent } from '../../../../../shared/components/loading-spinner/loading-spinner.component';
+
+// Services
+import { NotificationService } from '../../../../../core/services/notification.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-voting',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    LoadingSpinnerComponent
   ],
   template: `
-    <div class="flex flex-col items-center gap-2 p-2">
+    <div class="flex flex-col items-center gap-2 p-2 relative">
+      <!-- Loading Overlay (reusing LoadingSpinnerComponent) -->
+      <app-loading-spinner
+        *ngIf="isVoting"
+        [overlay]="true"
+        size="sm"
+        variant="spinner">
+      </app-loading-spinner>
+
       <!-- Upvote Button -->
       <button 
-        class="w-12 h-12 rounded-full border-2 border-transparent transition-all duration-200 flex items-center justify-center hover:scale-110 disabled:opacity-60 disabled:cursor-not-allowed"
+        class="w-12 h-12 rounded-full border-2 border-transparent transition-all duration-200 flex items-center justify-center hover:scale-110 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2"
         [class.text-green-500]="userVote === 'Up'"
         [class.bg-green-100]="userVote === 'Up'"
         [class.border-green-500]="userVote === 'Up'"
+        [class.focus:ring-green-500]="userVote === 'Up'"
         [class.text-gray-500]="userVote !== 'Up'"
-        [class.hover:text-green-500]="userVote !== 'Up' && !isVoting"
-        [class.hover:border-green-500]="userVote !== 'Up' && !isVoting"
-        [class.hover:bg-green-50]="userVote !== 'Up' && !isVoting"
-        [disabled]="isVoting"
+        [class.hover:text-green-500]="userVote !== 'Up' && !isVoting && !disabled"
+        [class.hover:border-green-500]="userVote !== 'Up' && !isVoting && !disabled"
+        [class.hover:bg-green-50]="userVote !== 'Up' && !isVoting && !disabled"
+        [class.dark:hover:bg-green-900/20]="userVote !== 'Up' && !isVoting && !disabled"
+        [disabled]="isVoting || disabled"
         (click)="vote('Up')"
-        title="This question/answer is useful">
-        <i class="fas fa-chevron-up text-2xl"></i>
+        [title]="getUpvoteTooltip()"
+        [attr.aria-label]="'Upvote this ' + contentType.toLowerCase()">
+        <i class="fas fa-chevron-up text-2xl" [class.animate-pulse]="isVoting && lastVoteType === 'Up'"></i>
       </button>
 
       <!-- Vote Score -->
-      <div class="text-xl font-bold text-center min-w-8"
+      <div class="text-xl font-bold text-center min-w-8 px-2 py-1 rounded-lg transition-colors duration-200"
            [class.text-green-500]="voteScore > 0"
+           [class.bg-green-50]="voteScore > 0"
+           [class.dark:bg-green-900/20]="voteScore > 0"
            [class.text-red-500]="voteScore < 0"
-           [class.text-gray-700]="voteScore === 0">
-        {{ voteScore }}
+           [class.bg-red-50]="voteScore < 0"
+           [class.dark:bg-red-900/20]="voteScore < 0"
+           [class.text-gray-700]="voteScore === 0"
+           [class.dark:text-gray-300]="voteScore === 0"
+           [title]="getScoreTooltip()">
+        {{ formatVoteScore(voteScore) }}
       </div>
 
       <!-- Downvote Button -->
       <button 
-        class="w-12 h-12 rounded-full border-2 border-transparent transition-all duration-200 flex items-center justify-center hover:scale-110 disabled:opacity-60 disabled:cursor-not-allowed"
+        class="w-12 h-12 rounded-full border-2 border-transparent transition-all duration-200 flex items-center justify-center hover:scale-110 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2"
         [class.text-red-500]="userVote === 'Down'"
         [class.bg-red-100]="userVote === 'Down'"
         [class.border-red-500]="userVote === 'Down'"
+        [class.focus:ring-red-500]="userVote === 'Down'"
         [class.text-gray-500]="userVote !== 'Down'"
-        [class.hover:text-red-500]="userVote !== 'Down' && !isVoting"
-        [class.hover:border-red-500]="userVote !== 'Down' && !isVoting"
-        [class.hover:bg-red-50]="userVote !== 'Down' && !isVoting"
-        [disabled]="isVoting"
+        [class.hover:text-red-500]="userVote !== 'Down' && !isVoting && !disabled"
+        [class.hover:border-red-500]="userVote !== 'Down' && !isVoting && !disabled"
+        [class.hover:bg-red-50]="userVote !== 'Down' && !isVoting && !disabled"
+        [class.dark:hover:bg-red-900/20]="userVote !== 'Down' && !isVoting && !disabled"
+        [disabled]="isVoting || disabled"
         (click)="vote('Down')"
-        title="This question/answer is not useful">
-        <i class="fas fa-chevron-down text-2xl"></i>
+        [title]="getDownvoteTooltip()"
+        [attr.aria-label]="'Downvote this ' + contentType.toLowerCase()">
+        <i class="fas fa-chevron-down text-2xl" [class.animate-pulse]="isVoting && lastVoteType === 'Down'"></i>
+      </button>
       </button>
 
       <!-- Vote Breakdown (optional) -->
-      <div *ngIf="showBreakdown" class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border text-xs">
-        <div class="flex items-center gap-1 text-green-600 mb-1">
+      <div *ngIf="showBreakdown" class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg border text-xs min-w-16">
+        <div class="flex items-center justify-between gap-2 text-green-600 mb-1">
           <i class="fas fa-thumbs-up"></i>
-          <span>{{ upvotesCount }}</span>
+          <span class="font-bold">{{ upvotesCount }}</span>
         </div>
-        <div class="flex items-center gap-1 text-red-600">
+        <div class="flex items-center justify-between gap-2 text-red-600">
           <i class="fas fa-thumbs-down"></i>
-          <span>{{ downvotesCount }}</span>
+          <span class="font-bold">{{ downvotesCount }}</span>
         </div>
+      </div>
+
+      <!-- Vote Status Indicator -->
+      <div *ngIf="showStatus && (userVote || recentVoteChange)" class="mt-1 text-xs font-medium text-center">
+        <span *ngIf="userVote === 'Up'" class="text-green-600 dark:text-green-400">
+          <i class="fas fa-check-circle mr-1"></i>
+          Upvoted
+        </span>
+        <span *ngIf="userVote === 'Down'" class="text-red-600 dark:text-red-400">
+          <i class="fas fa-check-circle mr-1"></i>
+          Downvoted
+        </span>
+        <span *ngIf="recentVoteChange && !userVote" class="text-gray-600 dark:text-gray-400">
+          <i class="fas fa-undo mr-1"></i>
+          Vote removed
+        </span>
       </div>
     </div>
   `,
   styles: []
 })
-export class VotingComponent {
+export class VotingComponent implements OnInit, OnDestroy {
   @Input() contentId!: string;
   @Input() contentType: 'Question' | 'Answer' = 'Question';
   @Input() voteScore = 0;
@@ -72,15 +118,39 @@ export class VotingComponent {
   @Input() downvotesCount = 0;
   @Input() userVote?: 'Up' | 'Down';
   @Input() showBreakdown = false;
+  @Input() showStatus = true;
+  @Input() disabled = false;
 
   @Output() voted = new EventEmitter<{ contentId: string; voteType: 'Up' | 'Down' | null }>();
 
   isVoting = false;
+  lastVoteType: 'Up' | 'Down' | null = null;
+  recentVoteChange = false;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private notificationService: NotificationService,
+    private toastService: ToastService
+  ) {}
+
+  ngOnInit(): void {
+    // Clear recent vote change indicator after a delay
+    setTimeout(() => {
+      this.recentVoteChange = false;
+    }, 3000);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   vote(voteType: 'Up' | 'Down'): void {
-    if (this.isVoting) return;
+    if (this.isVoting || this.disabled) return;
 
     this.isVoting = true;
+    this.lastVoteType = voteType;
 
     // If user clicks the same vote type, remove the vote
     const newVoteType = this.userVote === voteType ? null : voteType;
@@ -88,13 +158,68 @@ export class VotingComponent {
     // Optimistic update
     this.updateVoteOptimistically(newVoteType);
 
+    // Show feedback
+    this.showVoteFeedback(newVoteType);
+
     // Emit the vote event
     this.voted.emit({ contentId: this.contentId, voteType: newVoteType });
 
     // Reset voting state after a short delay
     setTimeout(() => {
       this.isVoting = false;
+      this.lastVoteType = null;
     }, 500);
+  }
+
+  private showVoteFeedback(voteType: 'Up' | 'Down' | null): void {
+    let message = '';
+    
+    if (voteType === 'Up') {
+      message = `Upvoted this ${this.contentType.toLowerCase()}`;
+    } else if (voteType === 'Down') {
+      message = `Downvoted this ${this.contentType.toLowerCase()}`;
+    } else {
+      message = `Removed vote from this ${this.contentType.toLowerCase()}`;
+    }
+
+    // Show toast notification (reusing existing notification system)
+    this.toastService.success(message);
+    this.recentVoteChange = true;
+
+    // Clear the indicator after a delay
+    setTimeout(() => {
+      this.recentVoteChange = false;
+    }, 3000);
+  }
+
+  formatVoteScore(score: number): string {
+    if (Math.abs(score) >= 1000) {
+      return (score / 1000).toFixed(1) + 'k';
+    }
+    return score.toString();
+  }
+
+  getUpvoteTooltip(): string {
+    const baseText = `This ${this.contentType.toLowerCase()} is useful`;
+    if (this.userVote === 'Up') {
+      return `${baseText} (click to remove upvote)`;
+    }
+    return baseText;
+  }
+
+  getDownvoteTooltip(): string {
+    const baseText = `This ${this.contentType.toLowerCase()} is not useful`;
+    if (this.userVote === 'Down') {
+      return `${baseText} (click to remove downvote)`;
+    }
+    return baseText;
+  }
+
+  getScoreTooltip(): string {
+    if (this.showBreakdown) {
+      return `${this.upvotesCount} upvotes, ${this.downvotesCount} downvotes`;
+    }
+    return `Score: ${this.voteScore}`;
   }
 
   private updateVoteOptimistically(newVoteType: 'Up' | 'Down' | null): void {

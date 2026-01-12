@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Infrastructure.UnitTests.Seeds
 {
-    public class QASeedDataServiceTests
+    public class QASeedDataServiceTests : IDisposable
     {
         private readonly Mock<ILogger<QASeedDataService>> _mockLogger;
         private readonly ApplicationDbContext _context;

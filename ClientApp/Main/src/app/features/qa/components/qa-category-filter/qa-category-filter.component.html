@@ -1,0 +1,141 @@
+<div class="space-y-4">
+  <div class="flex items-center justify-between">
+    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Category</h4>
+    <button 
+      *ngIf="selectedCategory"
+      (click)="clearCategory()"
+      class="text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors">
+      Clear
+    </button>
+  </div>
+  
+  <!-- Category Dropdown -->
+  <div class="relative">
+    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-base">folder</mat-icon>
+    <select 
+      [value]="selectedCategory"
+      (change)="onCategoryChange($event)"
+      [disabled]="loading"
+      class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg pl-10 pr-10 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed appearance-none">
+      <option value="">All Categories</option>
+      <option 
+        *ngFor="let category of categories; trackBy: trackByCategory" 
+        [value]="category.name"
+        [disabled]="!category.isActive">
+        {{ category.name }} ({{ category.questionCount }})
+      </option>
+    </select>
+    <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-base">expand_more</mat-icon>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4">
+    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Loading categories...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-red-600 dark:text-red-400 text-base">error</mat-icon>
+      <span class="text-sm text-red-700 dark:text-red-300">{{ error }}</span>
+    </div>
+  </div>
+
+  <!-- Popular Categories -->
+  <div *ngIf="!loading && !error && popularCategories.length > 0" class="space-y-3">
+    <h5 class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Popular Categories</h5>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <button 
+        *ngFor="let category of popularCategories; trackBy: trackByCategory"
+        (click)="selectCategory(category.name)"
+        [class]="selectedCategory === category.name ? 
+          'bg-blue-600 text-white border-blue-600' : 
+          'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'"
+        class="p-3 border rounded-lg font-medium text-sm transition-all flex items-center gap-3 text-left group">
+        
+        <!-- Category Icon -->
+        <div 
+          class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+          [style.background-color]="selectedCategory === category.name ? 'rgba(255,255,255,0.2)' : category.color + '20'"
+          [style.color]="selectedCategory === category.name ? 'white' : category.color">
+          <mat-icon class="text-base">{{ getCategoryIcon(category.iconUrl) }}</mat-icon>
+        </div>
+        
+        <!-- Category Info -->
+        <div class="flex-grow min-w-0">
+          <div class="font-medium truncate">{{ category.name }}</div>
+          <div class="text-xs opacity-75 flex items-center gap-2">
+            <span>{{ category.questionCount }} questions</span>
+            <span>•</span>
+            <span>{{ category.expertCount }} experts</span>
+          </div>
+        </div>
+
+        <!-- Selection Indicator -->
+        <mat-icon 
+          *ngIf="selectedCategory === category.name"
+          class="text-white text-base flex-shrink-0">
+          check_circle
+        </mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- All Categories (Expandable) -->
+  <div *ngIf="!loading && !error && categories.length > popularCategories.length" class="space-y-3">
+    <details class="group">
+      <summary class="cursor-pointer text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider hover:text-gray-800 dark:hover:text-gray-200 transition-colors flex items-center gap-2">
+        <mat-icon class="text-sm group-open:rotate-90 transition-transform">chevron_right</mat-icon>
+        <span>All Categories ({{ categories.length }})</span>
+      </summary>
+      
+      <div class="mt-3 space-y-1 max-h-64 overflow-y-auto">
+        <button 
+          *ngFor="let category of categories; trackBy: trackByCategory"
+          (click)="selectCategory(category.name)"
+          [class]="selectedCategory === category.name ? 
+            'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800' : 
+            'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'"
+          [disabled]="!category.isActive"
+          class="w-full p-2 border rounded-lg text-sm transition-colors flex items-center justify-between text-left disabled:opacity-50 disabled:cursor-not-allowed">
+          
+          <div class="flex items-center gap-2">
+            <mat-icon 
+              class="text-base"
+              [style.color]="getCategoryColor(category.color)">
+              {{ getCategoryIcon(category.iconUrl) }}
+            </mat-icon>
+            <span>{{ category.name }}</span>
+          </div>
+          
+          <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <span>{{ category.questionCount }}</span>
+            <mat-icon 
+              *ngIf="selectedCategory === category.name"
+              class="text-blue-600 dark:text-blue-400 text-sm">
+              check
+            </mat-icon>
+          </div>
+        </button>
+      </div>
+    </details>
+  </div>
+
+  <!-- Selected Category Display -->
+  <div *ngIf="selectedCategory && !loading" class="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-blue-600 dark:text-blue-400 text-base">filter_list</mat-icon>
+        <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
+          Filtering by: {{ selectedCategory }}
+        </span>
+      </div>
+      <button 
+        (click)="clearCategory()"
+        class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+        <mat-icon class="text-base">close</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

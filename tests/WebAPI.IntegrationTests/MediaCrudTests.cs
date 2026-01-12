@@ -14,20 +14,15 @@ using Application.Features.Identity.Core.Interfaces;
 
 namespace WebAPI.IntegrationTests;
 
-public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
+public class MediaCrudTests : BaseIntegrationTest
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
-
-    public MediaCrudTests(WebApplicationFactory<Program> factory)
+    public MediaCrudTests(WebApplicationFactory<Program> factory) : base(factory)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
     }
 
     private string GetTestJwtToken()
     {
-        using var scope = _factory.Services.CreateScope();
+        using var scope = Factory.Services.CreateScope();
         var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
         
         var userId = Guid.NewGuid();
@@ -43,7 +38,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         var token = GetTestJwtToken();
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var createRequest = new CreateVideoRequest
         {
@@ -56,7 +51,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act & Assert - Create
-        var createResponse = await _client.PostAsJsonAsync("/api/v7.0/media/videos", createRequest);
+        var createResponse = await Client.PostAsJsonAsync("/api/v7.0/media/videos", createRequest);
         createResponse.EnsureSuccessStatusCode();
         
         var createContent = await createResponse.Content.ReadAsStringAsync();
@@ -70,7 +65,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         var videoId = createResult.Data.Id;
 
         // Act & Assert - Read
-        var getResponse = await _client.GetAsync($"/api/v7.0/media/videos/{videoId}");
+        var getResponse = await Client.GetAsync($"/api/v7.0/media/videos/{videoId}");
         getResponse.EnsureSuccessStatusCode();
         
         var getContent = await getResponse.Content.ReadAsStringAsync();
@@ -92,7 +87,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
             AllowComments = false
         };
 
-        var updateResponse = await _client.PutAsJsonAsync($"/api/v7.0/media/videos/{videoId}", updateRequest);
+        var updateResponse = await Client.PutAsJsonAsync($"/api/v7.0/media/videos/{videoId}", updateRequest);
         updateResponse.EnsureSuccessStatusCode();
         
         var updateContent = await updateResponse.Content.ReadAsStringAsync();
@@ -107,7 +102,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.False(updateResult.Data.AllowComments);
 
         // Act & Assert - Delete
-        var deleteResponse = await _client.DeleteAsync($"/api/v7.0/media/videos/{videoId}");
+        var deleteResponse = await Client.DeleteAsync($"/api/v7.0/media/videos/{videoId}");
         deleteResponse.EnsureSuccessStatusCode();
         
         var deleteContent = await deleteResponse.Content.ReadAsStringAsync();
@@ -117,7 +112,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.True(deleteResult.Success);
 
         // Verify deletion - should return 404
-        var verifyDeleteResponse = await _client.GetAsync($"/api/v7.0/media/videos/{videoId}");
+        var verifyDeleteResponse = await Client.GetAsync($"/api/v7.0/media/videos/{videoId}");
         Assert.Equal(HttpStatusCode.NotFound, verifyDeleteResponse.StatusCode);
     }
 
@@ -126,7 +121,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Arrange
         var token = GetTestJwtToken();
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var createRequest = new CreatePodcastRequest
         {
@@ -141,7 +136,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         // Act & Assert - Create
-        var createResponse = await _client.PostAsJsonAsync("/api/v7.0/media/podcasts", createRequest);
+        var createResponse = await Client.PostAsJsonAsync("/api/v7.0/media/podcasts", createRequest);
         createResponse.EnsureSuccessStatusCode();
         
         var createContent = await createResponse.Content.ReadAsStringAsync();
@@ -155,7 +150,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         var podcastId = createResult.Data.Id;
 
         // Act & Assert - Read
-        var getResponse = await _client.GetAsync($"/api/v7.0/media/podcasts/{podcastId}");
+        var getResponse = await Client.GetAsync($"/api/v7.0/media/podcasts/{podcastId}");
         getResponse.EnsureSuccessStatusCode();
         
         var getContent = await getResponse.Content.ReadAsStringAsync();
@@ -178,7 +173,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
             AllowDownload = true
         };
 
-        var updateResponse = await _client.PutAsJsonAsync($"/api/v7.0/media/podcasts/{podcastId}", updateRequest);
+        var updateResponse = await Client.PutAsJsonAsync($"/api/v7.0/media/podcasts/{podcastId}", updateRequest);
         updateResponse.EnsureSuccessStatusCode();
         
         var updateContent = await updateResponse.Content.ReadAsStringAsync();
@@ -194,7 +189,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.True(updateResult.Data.AllowDownload);
 
         // Act & Assert - Delete
-        var deleteResponse = await _client.DeleteAsync($"/api/v7.0/media/podcasts/{podcastId}");
+        var deleteResponse = await Client.DeleteAsync($"/api/v7.0/media/podcasts/{podcastId}");
         deleteResponse.EnsureSuccessStatusCode();
         
         var deleteContent = await deleteResponse.Content.ReadAsStringAsync();
@@ -204,7 +199,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.True(deleteResult.Success);
 
         // Verify deletion - should return 404
-        var verifyDeleteResponse = await _client.GetAsync($"/api/v7.0/media/podcasts/{podcastId}");
+        var verifyDeleteResponse = await Client.GetAsync($"/api/v7.0/media/podcasts/{podcastId}");
         Assert.Equal(HttpStatusCode.NotFound, verifyDeleteResponse.StatusCode);
     }
 
@@ -212,7 +207,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetVideos_ShouldReturnPaginatedResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/videos?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v7.0/media/videos?pageNumber=1&pageSize=10");
         response.EnsureSuccessStatusCode();
         
         var content = await response.Content.ReadAsStringAsync();
@@ -231,7 +226,7 @@ public class MediaCrudTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GetPodcasts_ShouldReturnPaginatedResults()
     {
         // Act
-        var response = await _client.GetAsync("/api/v7.0/media/podcasts?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v7.0/media/podcasts?pageNumber=1&pageSize=10");
         response.EnsureSuccessStatusCode();
         
         var content = await response.Content.ReadAsStringAsync();

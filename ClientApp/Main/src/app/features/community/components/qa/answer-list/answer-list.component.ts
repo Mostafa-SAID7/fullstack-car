@@ -1,6 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// Shared Components (reusing existing UI)
+import { LoadingSpinnerComponent } from '../../../../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorDisplayComponent } from '../../../../../shared/components/error-display/error-display.component';
+import { FormButtonComponent } from '../../../../../shared/components/form-button/form-button.component';
+
 // QA Types
 import { Answer } from '../../../../../shared/types/qa-api.types';
 
@@ -13,11 +18,59 @@ import { ReputationDisplayComponent } from '../reputation-display/reputation-dis
   standalone: true,
   imports: [
     CommonModule,
+    LoadingSpinnerComponent,
+    ErrorDisplayComponent,
+    FormButtonComponent,
     VotingComponent,
     ReputationDisplayComponent
   ],
   template: `
-    <div class="space-y-6">
+    <!-- Loading State (reusing LoadingSpinnerComponent) -->
+    <app-loading-spinner
+      *ngIf="loading"
+      [overlay]="true"
+      size="md"
+      text="Loading answers...">
+    </app-loading-spinner>
+
+    <!-- Error State (reusing ErrorDisplayComponent) -->
+    <app-error-display
+      *ngIf="error && !loading"
+      type="server"
+      [title]="'Failed to Load Answers'"
+      [message]="error"
+      [showRetry]="true"
+      [showHome]="false"
+      size="md"
+      (retry)="onRetry()">
+    </app-error-display>
+
+    <!-- Answers List -->
+    <div *ngIf="!loading && !error" class="space-y-6">
+      <!-- Answers Header -->
+      <div *ngIf="answers.length > 0" class="flex items-center justify-between">
+        <h3 class="text-lg font-black text-foreground uppercase tracking-widest">
+          {{ answers.length }} {{ answers.length === 1 ? 'Answer' : 'Answers' }}
+        </h3>
+        <div class="flex gap-2">
+          <app-form-button
+            variant="ghost"
+            size="sm"
+            (clicked)="sortBy('votes')">
+            <i class="fas fa-sort-amount-down mr-2"></i>
+            Sort by Votes
+          </app-form-button>
+          <app-form-button
+            variant="ghost"
+            size="sm"
+            (clicked)="sortBy('date')">
+            <i class="fas fa-clock mr-2"></i>
+            Sort by Date
+          </app-form-button>
+        </div>
+      </div>
+
+      <!-- Individual Answers -->
       <div *ngFor="let answer of sortedAnswers; trackBy: trackByAnswerId" class="bg-secondary/20 dark:bg-white/5 rounded-3xl p-6">
         
         <!-- Answer Header -->
@@ -83,38 +136,61 @@ import { ReputationDisplayComponent } from '../reputation-display/reputation-dis
                 </div>
               </div>
 
-              <!-- Answer Actions -->
+              <!-- Answer Actions (reusing FormButtonComponent) -->
               <div class="flex gap-2">
-                <button 
+                <app-form-button
                   *ngIf="!answer.isAccepted && canAcceptAnswer"
-                  (click)="acceptAnswer(answer.id)"
-                  class="px-4 py-2 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-green-200 dark:hover:bg-green-900/30 transition-all flex items-center gap-2">
-                  <i class="fas fa-check-circle"></i>
-                  <span>Accept Answer</span>
-                </button>
+                  variant="success"
+                  size="sm"
+                  (clicked)="acceptAnswer(answer.id)">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  Accept Answer
+                </app-form-button>
                 
-                <button class="px-4 py-2 bg-secondary/50 dark:bg-white/5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-secondary transition-all flex items-center gap-2">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
+                <app-form-button
+                  variant="ghost"
+                  size="sm"
+                  (clicked)="editAnswer(answer.id)">
+                  <i class="fas fa-edit mr-2"></i>
+                  Edit
+                </app-form-button>
                 
-                <button class="px-4 py-2 bg-secondary/50 dark:bg-white/5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-secondary transition-all flex items-center gap-2">
-                  <i class="fas fa-share"></i>
-                  <span>Share</span>
-                </button>
+                <app-form-button
+                  variant="ghost"
+                  size="sm"
+                  (clicked)="shareAnswer(answer.id)">
+                  <i class="fas fa-share mr-2"></i>
+                  Share
+                </app-form-button>
+
+                <app-form-button
+                  variant="ghost"
+                  size="sm"
+                  (clicked)="reportAnswer(answer.id)">
+                  <i class="fas fa-flag mr-2"></i>
+                  Report
+                </app-form-button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- No Answers State -->
+      <!-- No Answers State (reusing existing empty state pattern) -->
       <div *ngIf="answers.length === 0" class="py-24 text-center">
         <div class="w-20 h-20 bg-secondary/30 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8">
-          <i class="fas fa-question-answer text-3xl text-muted-foreground/30"></i>
+          <i class="fas fa-question-circle text-3xl text-muted-foreground/30"></i>
         </div>
         <h3 class="text-xl font-black text-foreground uppercase tracking-widest mb-2">No answers yet</h3>
-        <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest">Be the first to answer this question!</p>
+        <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest mb-6">Be the first to answer this question!</p>
+        
+        <app-form-button
+          variant="primary"
+          size="md"
+          (clicked)="onStartAnswering()">
+          <i class="fas fa-edit mr-2"></i>
+          Write an Answer
+        </app-form-button>
       </div>
     </div>
   `,
@@ -125,9 +201,18 @@ export class AnswerListComponent {
   @Input() questionId!: string;
   @Input() acceptedAnswerId?: string;
   @Input() canAcceptAnswer = false; // Should be true if current user is question author
+  @Input() loading = false;
+  @Input() error: string | null = null;
 
   @Output() answerVoted = new EventEmitter<string>();
   @Output() answerAccepted = new EventEmitter<string>();
+  @Output() answerEdited = new EventEmitter<string>();
+  @Output() answerShared = new EventEmitter<string>();
+  @Output() answerReported = new EventEmitter<string>();
+  @Output() startAnswering = new EventEmitter<void>();
+  @Output() retry = new EventEmitter<void>();
+
+  private sortOrder: 'votes' | 'date' = 'votes';
 
   get sortedAnswers(): Answer[] {
     return [...this.answers].sort((a, b) => {
@@ -135,11 +220,16 @@ export class AnswerListComponent {
       if (a.isAccepted && !b.isAccepted) return -1;
       if (!a.isAccepted && b.isAccepted) return 1;
       
-      // Then by vote score
-      if (a.voteScore !== b.voteScore) return b.voteScore - a.voteScore;
-      
-      // Finally by creation date
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      // Then by sort order preference
+      if (this.sortOrder === 'votes') {
+        // Sort by vote score
+        if (a.voteScore !== b.voteScore) return b.voteScore - a.voteScore;
+        // Then by creation date
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else {
+        // Sort by creation date (newest first)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
     });
   }
 
@@ -172,5 +262,29 @@ export class AnswerListComponent {
 
   acceptAnswer(answerId: string): void {
     this.answerAccepted.emit(answerId);
+  }
+
+  sortBy(order: 'votes' | 'date'): void {
+    this.sortOrder = order;
+  }
+
+  editAnswer(answerId: string): void {
+    this.answerEdited.emit(answerId);
+  }
+
+  shareAnswer(answerId: string): void {
+    this.answerShared.emit(answerId);
+  }
+
+  reportAnswer(answerId: string): void {
+    this.answerReported.emit(answerId);
+  }
+
+  onStartAnswering(): void {
+    this.startAnswering.emit();
+  }
+
+  onRetry(): void {
+    this.retry.emit();
   }
 }

@@ -8,7 +8,7 @@ export type ModalType = 'user' | 'customer' | 'product' | 'service' | 'custom';
 export interface FormField {
   key: string;
   label: string;
-  type: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'number' | 'date' | 'checkbox';
+  type: 'text' | 'email' | 'password' | 'select' | 'textarea' | 'number' | 'date' | 'checkbox' | 'multiselect';
   placeholder?: string;
   required?: boolean;
   options?: { value: string; label: string }[];
@@ -239,6 +239,43 @@ export const DynamicModal: React.FC<DynamicModalProps> = ({
             </label>
             {error && (
               <div className="flex items-center gap-1 text-sm text-destructive ml-2">
+                <AlertCircle className="w-4 h-4" />
+                {error}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'multiselect':
+        return (
+          <div key={field.key} className="space-y-2">
+            <label className="block text-sm font-medium text-foreground">
+              {field.label}
+              {field.required && <span className="text-destructive ml-1">*</span>}
+            </label>
+            <select
+              multiple
+              value={Array.isArray(value) ? value : []}
+              onChange={(e) => {
+                const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
+                handleInputChange(field.key, selectedValues);
+              }}
+              className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary ${
+                error ? 'border-destructive' : 'border-border'
+              }`}
+              size={Math.min(field.options?.length || 5, 5)}
+            >
+              {field.options?.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <div className="text-xs text-muted-foreground">
+              Hold Ctrl/Cmd to select multiple options
+            </div>
+            {error && (
+              <div className="flex items-center gap-1 text-sm text-destructive">
                 <AlertCircle className="w-4 h-4" />
                 {error}
               </div>

@@ -1,0 +1,180 @@
+<div class="space-y-4">
+  <div class="flex items-center justify-between">
+    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Tags</h4>
+    <button 
+      *ngIf="selectedTags.length > 0"
+      (click)="clearAllTags()"
+      class="text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors flex items-center gap-1">
+      <mat-icon class="text-sm">clear_all</mat-icon>
+      <span>Clear All</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4">
+    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Loading tags...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-red-600 dark:text-red-400 text-base">error</mat-icon>
+      <span class="text-sm text-red-700 dark:text-red-300">{{ error }}</span>
+    </div>
+  </div>
+
+  <!-- Selected Tags -->
+  <div *ngIf="selectedTags.length > 0 && !loading" class="space-y-2">
+    <h5 class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Selected Tags</h5>
+    <div class="flex flex-wrap gap-2">
+      <button 
+        *ngFor="let tag of selectedTags"
+        (click)="removeTag(tag)"
+        [class]="getSelectedTagColor()"
+        class="px-3 py-1 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group">
+        <span>{{ tag }}</span>
+        <mat-icon class="text-sm group-hover:rotate-90 transition-transform">close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Popular Tags -->
+  <div *ngIf="!loading && !error && popularTags.length > 0" class="space-y-3">
+    <h5 class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
+      <mat-icon class="text-sm">trending_up</mat-icon>
+      <span>Popular Tags</span>
+    </h5>
+    <div class="flex flex-wrap gap-2">
+      <button 
+        *ngFor="let tag of popularTags; trackBy: trackByTag"
+        (click)="toggleTag(tag.name)"
+        [class]="isTagSelected(tag.name) ? getSelectedTagColor() : getTagColor(tag.name)"
+        [ngClass]="getTagSize(tag.usageCount)"
+        class="rounded-full font-medium transition-all hover:scale-105 active:scale-95 flex items-center gap-2 group relative">
+        
+        <!-- Tag Content -->
+        <span>{{ tag.name }}</span>
+        <span class="opacity-75 text-xs">({{ tag.usageCount }})</span>
+        
+        <!-- Trending Indicator -->
+        <mat-icon 
+          [class]="getTrendingColor(tag.trendingScore)"
+          class="text-xs opacity-60 group-hover:opacity-100 transition-opacity"
+          [title]="'Trending score: ' + tag.trendingScore">
+          {{ getTrendingIcon(tag.trendingScore) }}
+        </mat-icon>
+
+        <!-- Selection Indicator -->
+        <mat-icon 
+          *ngIf="isTagSelected(tag.name)"
+          class="text-sm">
+          check_circle
+        </mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Show More Tags Toggle -->
+  <div *ngIf="!loading && !error && additionalTags.length > 0" class="space-y-3">
+    <button 
+      (click)="toggleShowAllTags()"
+      class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-2">
+      <mat-icon class="text-sm transition-transform" [class.rotate-90]="showAllTags">chevron_right</mat-icon>
+      <span>{{ showAllTags ? 'Show Less' : 'Show More Tags' }} ({{ additionalTags.length }})</span>
+    </button>
+
+    <!-- Additional Tags -->
+    <div *ngIf="showAllTags" class="space-y-3 animate-fade-in">
+      <h5 class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">All Tags</h5>
+      
+      <!-- Search within tags -->
+      <div class="relative">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base">search</mat-icon>
+        <input 
+          #tagSearch
+          type="text"
+          placeholder="Search tags..."
+          (input)="onTagSearch(tagSearch.value)"
+          class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- Tag Grid -->
+      <div class="max-h-64 overflow-y-auto space-y-2">
+        <div class="flex flex-wrap gap-2">
+          <button 
+            *ngFor="let tag of getFilteredAdditionalTags(tagSearch?.value || ''); trackBy: trackByTag"
+            (click)="toggleTag(tag.name)"
+            [class]="isTagSelected(tag.name) ? getSelectedTagColor() : getTagColor(tag.name)"
+            [ngClass]="getTagSize(tag.usageCount)"
+            class="rounded-full font-medium transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
+            
+            <span>{{ tag.name }}</span>
+            <span class="opacity-75 text-xs">({{ tag.usageCount }})</span>
+            
+            <mat-icon 
+              *ngIf="isTagSelected(tag.name)"
+              class="text-sm">
+              check_circle
+            </mat-icon>
+          </button>
+        </div>
+        
+        <!-- No matching tags -->
+        <div *ngIf="getFilteredAdditionalTags(tagSearch?.value || '').length === 0 && tagSearch?.value" 
+             class="text-center py-4">
+          <mat-icon class="text-gray-400 text-2xl mb-2">search_off</mat-icon>
+          <p class="text-sm text-gray-500 dark:text-gray-400">No tags found matching "{{ tagSearch.value }}"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tag Statistics -->
+  <div *ngIf="!loading && !error && (popularTags.length > 0 || allTags.length > 0)" 
+       class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+    <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1">
+          <mat-icon class="text-sm">local_offer</mat-icon>
+          {{ popularTags.length + additionalTags.length }} total tags
+        </span>
+        <span class="flex items-center gap-1">
+          <mat-icon class="text-sm">filter_list</mat-icon>
+          {{ selectedTags.length }} selected
+        </span>
+      </div>
+      
+      <!-- Tag Legend -->
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1">
+          <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+          <span>Selected</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <mat-icon class="text-green-500 text-sm">trending_up</mat-icon>
+          <span>Trending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Tag Suggestions -->
+  <div *ngIf="!loading && !error && selectedTags.length === 0" class="space-y-3">
+    <h5 class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Quick Suggestions</h5>
+    <div class="grid grid-cols-2 gap-2">
+      <button 
+        *ngFor="let suggestion of getQuickSuggestions()"
+        (click)="toggleTag(suggestion.tag)"
+        class="p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-blue-600 dark:text-blue-400 text-base">{{ suggestion.icon }}</mat-icon>
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ suggestion.tag }}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">{{ suggestion.description }}</div>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

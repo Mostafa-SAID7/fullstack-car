@@ -7,6 +7,13 @@ export { analyticsService } from './analytics';
 export { notificationService } from './notification';
 export { apiClient } from './api';
 
+// QA Services
+export { qaService } from './qa/QAService';
+export { qaAnalyticsService } from './qa/QAAnalyticsService';
+export { reputationService } from './qa/ReputationService';
+export { QASignalRService, createQASignalRService } from './qa/QASignalRService';
+export { bulkOperationsService } from './qa/BulkOperationsService';
+
 // Re-export types for backward compatibility
 // Note: We use domain-specific exports to avoid duplicates
 export * from './api';
