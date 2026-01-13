@@ -46,6 +46,7 @@ export class HeaderComponent implements OnInit {
     supportedLanguages = this.translationService.supportedLanguages;
     currentLanguage$ = this.translationService.currentLanguage$;
     isRTL$ = this.translationService.isRTL$;
+    isLoading$ = this.translationService.isLoading$;
 
     notifications$ = this.notificationService.notifications$;
     unreadCount$ = this.notificationService.unreadCount$;
@@ -89,15 +90,39 @@ export class HeaderComponent implements OnInit {
     }
 
     /**
-     * Switch application language
+     * Switch application language with enhanced error handling and user feedback
      */
     async switchLanguage(languageCode: string): Promise<void> {
+        if (this.isLanguageSelected(languageCode)) {
+            console.log(`Language ${languageCode} is already selected`);
+            return;
+        }
+
         try {
+            console.log(`Switching to language: ${languageCode}`);
             await this.translationService.changeLanguage(languageCode);
-            console.log(`Language switched to ${languageCode}`);
+            
+            // Show success feedback (optional - could be a toast notification)
+            console.log(`Successfully switched to ${languageCode}`);
+            
+            // Update document title if needed
+            this.updateDocumentTitle();
+            
         } catch (error) {
             console.error(`Failed to switch language to ${languageCode}:`, error);
+            
+            // Show error feedback (optional - could be a toast notification)
+            // For now, just log the error
         }
+    }
+
+    /**
+     * Update document title based on current language
+     */
+    private updateDocumentTitle(): void {
+        // This could be enhanced to translate the document title
+        const currentLang = this.getCurrentLanguage();
+        document.documentElement.setAttribute('lang', currentLang.code);
     }
 
     /**

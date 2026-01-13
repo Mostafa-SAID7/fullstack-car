@@ -232,7 +232,7 @@ const QAContext = createContext<QAContextType | undefined>(undefined);
 // QA Provider Component following existing auth provider patterns
 export const QAProvider: React.FC<QAProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(qaReducer, initialState);
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   
   // Initialize SignalR service following existing patterns
   const signalRService = React.useMemo(() => {
@@ -583,7 +583,7 @@ export const QAProvider: React.FC<QAProviderProps> = ({ children }) => {
   }, [handleApiError, state.questions.currentQuestion, loadQuestion]);
 
   // Search Actions following existing service patterns
-  const search = useCallback(async (filter: SearchFilter) => {
+  const performSearch = useCallback(async (filter: SearchFilter) => {
     dispatch({ type: 'SET_LOADING', payload: { section: 'search', loading: true } });
     
     try {
@@ -664,7 +664,7 @@ export const QAProvider: React.FC<QAProviderProps> = ({ children }) => {
     vote,
     removeVote,
     changeVote,
-    search,
+    performSearch,
     clearSearch,
     setLoading,
     setError,

@@ -17,6 +17,15 @@ import { FormButtonComponent } from './components/form-button/form-button.compon
 import { FormInputComponent } from './components/form-input/form-input.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { ErrorDisplayComponent } from './components/error-display/error-display.component';
+import { RtlLayoutComponent } from './components/rtl-layout/rtl-layout.component';
+
+// Import standalone directives
+import { RtlDirective } from './directives/rtl.directive';
+import { BidiTextDirective } from './directives/bidi-text.directive';
+
+// Import standalone pipes
+import { RtlClassPipe } from './pipes/rtl-class.pipe';
+import { RtlStylePipe } from './pipes/rtl-style.pipe';
 
 @NgModule({
     declarations: [
@@ -39,7 +48,14 @@ import { ErrorDisplayComponent } from './components/error-display/error-display.
         FormButtonComponent,
         FormInputComponent,
         LoadingSpinnerComponent,
-        ErrorDisplayComponent
+        ErrorDisplayComponent,
+        RtlLayoutComponent,
+        // Import standalone directives
+        RtlDirective,
+        BidiTextDirective,
+        // Import standalone pipes
+        RtlClassPipe,
+        RtlStylePipe
     ],
     exports: [
         CommonModule,
@@ -58,7 +74,14 @@ import { ErrorDisplayComponent } from './components/error-display/error-display.
         FormButtonComponent,
         FormInputComponent,
         LoadingSpinnerComponent,
-        ErrorDisplayComponent
+        ErrorDisplayComponent,
+        RtlLayoutComponent,
+        // Export standalone directives
+        RtlDirective,
+        BidiTextDirective,
+        // Export standalone pipes
+        RtlClassPipe,
+        RtlStylePipe
     ]
 })
 export class SharedModule { }

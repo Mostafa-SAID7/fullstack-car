@@ -48,6 +48,10 @@ export const routes: Routes = [
         path: 'debug-auth',
         loadComponent: () => import('./debug-auth.component').then(m => m.DebugAuthComponent)
       },
+      {
+        path: 'rtl-demo',
+        loadComponent: () => import('./shared/components/rtl-demo/rtl-demo.component').then(m => m.RtlDemoComponent)
+      },
       // Error pages
       {
         path: '404',

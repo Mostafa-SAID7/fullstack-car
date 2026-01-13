@@ -1,10 +1,16 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute, MainLayout, ErrorBoundary, ToastProvider, LoginForm, AuthDebug } from './components';
 import { AuthLayout, RegisterForm, ForgotPasswordForm, ResetPasswordForm } from './components/auth';
+import { RTLLayout } from './components/RTLLayout';
+import RTLErrorBoundary from './components/RTLErrorBoundary';
 import { ThemeProvider } from './contexts';
 import { authService } from './services/auth';
 import { DebugPage } from './components/debug/DebugPage';
+import { preloadTranslations } from './i18n';
+
+// Import i18n configuration to initialize it
+import './i18n';
 
 // Lazy load all page components for better performance
 const DashboardOverview = React.lazy(() => import('./pages').then(module => ({ default: module.DashboardOverview })));
@@ -440,17 +446,42 @@ const AppRoutes = () => {
 };
 
 function App() {
+  // Preload critical translations on app start
+  useEffect(() => {
+    const initializeTranslations = async () => {
+      try {
+        await preloadTranslations(['en-US']);
+      } catch (error) {
+        console.warn('Failed to preload translations:', error);
+      }
+    };
+
+    initializeTranslations();
+  }, []);
+
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <ToastProvider>
-          <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-              <AppRoutes />
-            </Suspense>
-          </BrowserRouter>
-        </ToastProvider>
-      </ThemeProvider>
+      <RTLErrorBoundary 
+        fallbackToLTR={true}
+        resetOnLanguageChange={true}
+        showErrorDetails={process.env.NODE_ENV === 'development'}
+        onError={(error, errorInfo) => {
+          console.error('RTL Layout Error:', error, errorInfo);
+          // Could integrate with error reporting service here
+        }}
+      >
+        <ThemeProvider>
+          <ToastProvider>
+            <BrowserRouter>
+              <RTLLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <AppRoutes />
+                </Suspense>
+              </RTLLayout>
+            </BrowserRouter>
+          </ToastProvider>
+        </ThemeProvider>
+      </RTLErrorBoundary>
     </ErrorBoundary>
   );
 }

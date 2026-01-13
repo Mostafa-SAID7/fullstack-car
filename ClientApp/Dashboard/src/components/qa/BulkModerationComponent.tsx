@@ -21,6 +21,7 @@ import { DataTable } from '../shared/DataTable';
 import { Badge } from '../data-display/badges/Badge';
 import { DynamicModal } from '../shared/DynamicModal';
 import { cn } from '../../lib/utils';
+import { useTranslation, useRTL } from '../../hooks/useTranslation';
 import { qaService } from '../../services/qa/QAService';
 import type { 
   UserModerationInfo,
@@ -42,6 +43,9 @@ interface BulkOperationResult {
 }
 
 export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = ({ className }) => {
+  const { t, ready: translationsReady } = useTranslation('qa');
+  const { isRTL, getRTLClass } = useRTL();
+  
   const [loading, setLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -603,31 +607,40 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
   ];
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn('space-y-6', className)} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className={cn(
+        'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4',
+        getRTLClass('', 'flex-row-reverse')
+      )}>
         <div>
-          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className={cn(
+            'text-2xl font-bold text-foreground flex items-center gap-2',
+            getRTLClass('', 'flex-row-reverse')
+          )}>
             <Shield className="w-6 h-6" />
-            Bulk Operations
+            {t('bulk_operations.title', 'Bulk Operations')}
           </h2>
           <p className="text-muted-foreground">
-            Manage content and users efficiently with bulk operations
+            {t('bulk_operations.description', 'Manage content and users efficiently with bulk operations')}
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className={cn(
+          'flex items-center gap-3',
+          getRTLClass('', 'flex-row-reverse')
+        )}>
           <Button
             variant="outline"
             onClick={() => setShowBulkActions(!showBulkActions)}
           >
-            <Filter className="w-4 h-4 mr-2" />
-            {showBulkActions ? 'Hide' : 'Show'} Actions
+            <Filter className={cn('w-4 h-4', getRTLClass('mr-2', 'ml-2'))} />
+            {showBulkActions ? t('bulk_operations.actions.hide_actions', 'Hide Actions') : t('bulk_operations.actions.show_actions', 'Show Actions')}
           </Button>
           
           <Button onClick={() => setShowExportModal(true)}>
-            <Download className="w-4 h-4 mr-2" />
-            Export Data
+            <Download className={cn('w-4 h-4', getRTLClass('mr-2', 'ml-2'))} />
+            {t('bulk_operations.actions.export_data', 'Export Data')}
           </Button>
         </div>
       </div>

@@ -1,0 +1,11 @@
+{
+  "common": {
+    "search": "بحث",
+    "notifications": "الإشعارات",
+    "language": {
+      "switch": "تغيير اللغة",
+      "select": "اختر اللغة",
+      "current": "اللغة الحالية"
+    }
+  }
+}

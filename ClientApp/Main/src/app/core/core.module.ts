@@ -14,6 +14,8 @@ import { ThemeService } from './services/theme.service';
 import { NotificationService } from './services/notification.service';
 import { SignalRService } from './services/signalr.service';
 import { TranslationService } from './services/translation.service';
+import { TranslationPerformanceService } from './services/translation-performance.service';
+import { RtlService } from './services/rtl.service';
 
 // Guards
 import { AuthGuard, GuestGuard, RoleGuard, ContentCreatorGuard, AdminGuard } from './guards/auth.guard';
@@ -37,6 +39,8 @@ import { AuthGuard, GuestGuard, RoleGuard, ContentCreatorGuard, AdminGuard } fro
     NotificationService,
     SignalRService,
     TranslationService,
+    TranslationPerformanceService,
+    RtlService,
     
     // Guards
     AuthGuard,

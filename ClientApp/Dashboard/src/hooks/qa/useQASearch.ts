@@ -14,7 +14,7 @@ import type {
 export const useQASearch = (): UseQASearch => {
   const {
     search: searchState,
-    search,
+    performSearch,
     clearSearch
   } = useQA();
 
@@ -71,7 +71,7 @@ export const useQASearch = (): UseQASearch => {
     lastQuery: searchState.lastQuery,
     
     // Actions
-    search,
+    performSearch,
     searchQuestions,
     searchAnswers,
     getSuggestions,

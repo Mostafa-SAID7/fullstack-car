@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 // QA Types
 import type {
@@ -17,10 +18,12 @@ import { QA_API_ENDPOINTS } from '../../../shared/types/qa-api.types';
   providedIn: 'root'
 })
 export class QAVotingService {
-  constructor(private http: HttpClient) {}
+  private readonly apiBase = environment.apiUrl.replace(/\/api\/?$/, '');
+
+  constructor(private http: HttpClient) { }
 
   createVote(request: CreateVoteRequest): Observable<ApiResponse<Vote>> {
-    return this.http.post<ApiResponse<Vote>>(QA_API_ENDPOINTS.VOTES.BASE, request)
+    return this.http.post<ApiResponse<Vote>>(`${this.apiBase}${QA_API_ENDPOINTS.VOTES.BASE}`, request)
       .pipe(
         catchError(this.handleError<ApiResponse<Vote>>())
       );
@@ -31,7 +34,7 @@ export class QAVotingService {
       .set('contentId', contentId)
       .set('contentType', contentType);
 
-    return this.http.delete<ApiResponse<void>>(QA_API_ENDPOINTS.VOTES.BASE, { params })
+    return this.http.delete<ApiResponse<void>>(`${this.apiBase}${QA_API_ENDPOINTS.VOTES.BASE}`, { params })
       .pipe(
         catchError(this.handleError<ApiResponse<void>>())
       );
@@ -39,7 +42,7 @@ export class QAVotingService {
 
   getUserVotes(filter?: VoteFilter): Observable<PaginatedApiResponse<Vote>> {
     let params = new HttpParams();
-    
+
     if (filter) {
       if (filter.pageNumber) params = params.set('pageNumber', filter.pageNumber.toString());
       if (filter.pageSize) params = params.set('pageSize', filter.pageSize.toString());
@@ -51,7 +54,7 @@ export class QAVotingService {
       if (filter.dateTo) params = params.set('dateTo', filter.dateTo);
     }
 
-    return this.http.get<PaginatedApiResponse<Vote>>(QA_API_ENDPOINTS.VOTES.MY_VOTES, { params })
+    return this.http.get<PaginatedApiResponse<Vote>>(`${this.apiBase}${QA_API_ENDPOINTS.VOTES.MY_VOTES}`, { params })
       .pipe(
         catchError(this.handleError<PaginatedApiResponse<Vote>>())
       );
@@ -76,7 +79,7 @@ export class QAVotingService {
   private handleError<T>() {
     return (error: any): Observable<T> => {
       console.error('QA Voting Service Error:', error);
-      
+
       const errorResponse = {
         succeeded: false,
         data: undefined,

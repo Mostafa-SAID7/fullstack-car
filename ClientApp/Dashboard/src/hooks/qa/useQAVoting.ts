@@ -3,8 +3,7 @@ import { useQA } from '../../contexts/qa';
 import { qaService } from '../../services/qa/QAService';
 import type { 
   UseQAVoting,
-  VoteFilter,
-  CreateVoteRequest
+  VoteFilter
 } from '../../types/qa/api';
 
 /**

@@ -28,6 +28,34 @@ import type {
   CloseQuestionRequest
 } from './api-types';
 
+// Re-export all types for easier importing
+export type {
+  ApiResponse,
+  PaginatedApiResponse,
+  Question,
+  QuestionList,
+  QuestionDetail,
+  Answer,
+  Vote,
+  UserReputation,
+  ReputationHistory,
+  Expert,
+  Category,
+  Tag,
+  PopularTag,
+  QuestionSimilarity,
+  QuestionFilter,
+  AnswerFilter,
+  VoteFilter,
+  SearchFilter,
+  CreateQuestionRequest,
+  UpdateQuestionRequest,
+  CreateAnswerRequest,
+  UpdateAnswerRequest,
+  CreateVoteRequest,
+  CloseQuestionRequest
+};
+
 // React-specific service interfaces using Promises
 export interface QAQuestionService {
   // Question CRUD operations
@@ -180,7 +208,7 @@ export interface QAActions {
   changeVote: (contentId: string, contentType: 'Question' | 'Answer', voteType: 'Up' | 'Down') => Promise<void>;
   
   // Search actions
-  search: (filter: SearchFilter) => Promise<void>;
+  performSearch: (filter: SearchFilter) => Promise<void>;
   clearSearch: () => void;
   
   // UI actions
@@ -254,7 +282,7 @@ export interface UseQASearch {
   error: string | null;
   lastQuery: string;
   
-  search: (filter: SearchFilter) => Promise<void>;
+  performSearch: (filter: SearchFilter) => Promise<void>;
   searchQuestions: (filter: SearchFilter) => Promise<void>;
   searchAnswers: (filter: SearchFilter) => Promise<void>;
   getSuggestions: (query: string) => Promise<void>;

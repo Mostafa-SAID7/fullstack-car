@@ -2,10 +2,7 @@ import { useCallback } from 'react';
 import { useQA } from '../../contexts/qa';
 import type { 
   UseQAQuestions,
-  QuestionFilter,
-  CreateQuestionRequest,
-  UpdateQuestionRequest,
-  CloseQuestionRequest
+  QuestionFilter
 } from '../../types/qa/api';
 
 /**

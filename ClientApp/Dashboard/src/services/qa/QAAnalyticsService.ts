@@ -18,6 +18,7 @@ import type {
  * Follows existing AnalyticsService architecture and patterns
  */
 export class QAAnalyticsService extends ApiService {
+  private readonly baseUrl = '/api/v7/qa/analytics';
   private static instance: QAAnalyticsService;
 
   static getInstance(): QAAnalyticsService {
@@ -308,7 +309,7 @@ export class QAAnalyticsService extends ApiService {
     }
   ): Promise<ApiResult<Blob>> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v7/qa/analytics/export`, {
+      const response = await fetch(`${this.baseUrl}/export`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -380,28 +381,153 @@ export class QAAnalyticsService extends ApiService {
       expertParticipationRate: Math.random() * 0.4 + 0.6, // 60-100%
       userSatisfactionScore: Math.random() * 1.5 + 3.5, // 3.5-5.0
       topCategories: [
-        { name: 'Technical Support', count: Math.floor(Math.random() * 500) + 200, percentage: 35 },
-        { name: 'Product Features', count: Math.floor(Math.random() * 400) + 150, percentage: 25 },
-        { name: 'Troubleshooting', count: Math.floor(Math.random() * 300) + 100, percentage: 20 },
-        { name: 'General Questions', count: Math.floor(Math.random() * 200) + 80, percentage: 15 },
-        { name: 'Bug Reports', count: Math.floor(Math.random() * 100) + 50, percentage: 5 }
+        { 
+          id: '1',
+          name: 'Technical Support', 
+          count: Math.floor(Math.random() * 500) + 200, 
+          percentage: 35,
+          averageResponseTime: 2.5,
+          responseRate: 0.85,
+          expertCount: 12,
+          averageVoteScore: 4.2,
+          growthRate: 0.15,
+          trending: true,
+          dailyQuestions: Array.from({length: 7}, () => Math.floor(Math.random() * 50) + 10),
+          dailyAnswers: Array.from({length: 7}, () => Math.floor(Math.random() * 40) + 8),
+          dates: Array.from({length: 7}, (_, i) => new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        },
+        { 
+          id: '2',
+          name: 'Product Features', 
+          count: Math.floor(Math.random() * 400) + 150, 
+          percentage: 25,
+          averageResponseTime: 3.1,
+          responseRate: 0.78,
+          expertCount: 8,
+          averageVoteScore: 3.9,
+          growthRate: 0.08,
+          trending: false,
+          dailyQuestions: Array.from({length: 7}, () => Math.floor(Math.random() * 40) + 8),
+          dailyAnswers: Array.from({length: 7}, () => Math.floor(Math.random() * 35) + 6),
+          dates: Array.from({length: 7}, (_, i) => new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        },
+        { 
+          id: '3',
+          name: 'Troubleshooting', 
+          count: Math.floor(Math.random() * 300) + 100, 
+          percentage: 20,
+          averageResponseTime: 1.8,
+          responseRate: 0.92,
+          expertCount: 15,
+          averageVoteScore: 4.5,
+          growthRate: 0.22,
+          trending: true,
+          dailyQuestions: Array.from({length: 7}, () => Math.floor(Math.random() * 30) + 5),
+          dailyAnswers: Array.from({length: 7}, () => Math.floor(Math.random() * 28) + 5),
+          dates: Array.from({length: 7}, (_, i) => new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        },
+        { 
+          id: '4',
+          name: 'General Questions', 
+          count: Math.floor(Math.random() * 200) + 80, 
+          percentage: 15,
+          averageResponseTime: 4.2,
+          responseRate: 0.65,
+          expertCount: 5,
+          averageVoteScore: 3.4,
+          growthRate: -0.05,
+          trending: false,
+          dailyQuestions: Array.from({length: 7}, () => Math.floor(Math.random() * 20) + 3),
+          dailyAnswers: Array.from({length: 7}, () => Math.floor(Math.random() * 15) + 2),
+          dates: Array.from({length: 7}, (_, i) => new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        },
+        { 
+          id: '5',
+          name: 'Bug Reports', 
+          count: Math.floor(Math.random() * 100) + 50, 
+          percentage: 5,
+          averageResponseTime: 6.1,
+          responseRate: 0.45,
+          expertCount: 3,
+          averageVoteScore: 2.8,
+          growthRate: 0.35,
+          trending: true,
+          dailyQuestions: Array.from({length: 7}, () => Math.floor(Math.random() * 10) + 1),
+          dailyAnswers: Array.from({length: 7}, () => Math.floor(Math.random() * 8) + 1),
+          dates: Array.from({length: 7}, (_, i) => new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        }
       ],
       topTags: [
-        { name: 'javascript', count: Math.floor(Math.random() * 200) + 100, trending: true },
-        { name: 'react', count: Math.floor(Math.random() * 180) + 90, trending: true },
-        { name: 'api', count: Math.floor(Math.random() * 150) + 70, trending: false },
-        { name: 'database', count: Math.floor(Math.random() * 120) + 60, trending: false },
-        { name: 'authentication', count: Math.floor(Math.random() * 100) + 50, trending: true }
+        { 
+          name: 'javascript', 
+          count: Math.floor(Math.random() * 200) + 100, 
+          trending: true,
+          growthRate: 0.25,
+          questionsCount: Math.floor(Math.random() * 150) + 80,
+          answersCount: Math.floor(Math.random() * 300) + 150,
+          averageVoteScore: 4.1,
+          topExperts: ['john_doe', 'jane_smith', 'dev_expert']
+        },
+        { 
+          name: 'react', 
+          count: Math.floor(Math.random() * 180) + 90, 
+          trending: true,
+          growthRate: 0.18,
+          questionsCount: Math.floor(Math.random() * 120) + 70,
+          answersCount: Math.floor(Math.random() * 250) + 120,
+          averageVoteScore: 4.3,
+          topExperts: ['react_guru', 'frontend_dev', 'ui_expert']
+        },
+        { 
+          name: 'api', 
+          count: Math.floor(Math.random() * 150) + 70, 
+          trending: false,
+          growthRate: -0.05,
+          questionsCount: Math.floor(Math.random() * 100) + 50,
+          answersCount: Math.floor(Math.random() * 200) + 100,
+          averageVoteScore: 3.8,
+          topExperts: ['api_master', 'backend_dev']
+        },
+        { 
+          name: 'database', 
+          count: Math.floor(Math.random() * 120) + 60, 
+          trending: false,
+          growthRate: 0.02,
+          questionsCount: Math.floor(Math.random() * 80) + 40,
+          answersCount: Math.floor(Math.random() * 160) + 80,
+          averageVoteScore: 3.9,
+          topExperts: ['db_admin', 'sql_expert']
+        },
+        { 
+          name: 'authentication', 
+          count: Math.floor(Math.random() * 100) + 50, 
+          trending: true,
+          growthRate: 0.32,
+          questionsCount: Math.floor(Math.random() * 70) + 30,
+          answersCount: Math.floor(Math.random() * 140) + 70,
+          averageVoteScore: 4.0,
+          topExperts: ['security_pro', 'auth_specialist']
+        }
       ],
       trendingQuestions: [],
       expertPerformance: [],
       recentActivity: [],
       systemHealth: {
         overallScore: Math.random() * 20 + 80, // 80-100%
+        status: 'healthy' as const,
         responseTime: Math.random() * 500 + 200, // 200-700ms
         uptime: Math.random() * 2 + 98, // 98-100%
         errorRate: Math.random() * 2, // 0-2%
-        activeConnections: Math.floor(Math.random() * 500) + 100
+        activeConnections: Math.floor(Math.random() * 500) + 100,
+        unansweredQuestionRate: Math.random() * 15 + 5, // 5-20%
+        flaggedContentRate: Math.random() * 3, // 0-3%
+        duplicateQuestionRate: Math.random() * 5, // 0-5%
+        spamDetectionRate: Math.random() * 2, // 0-2%
+        expertParticipationRate: Math.random() * 20 + 70, // 70-90%
+        userRetentionRate: Math.random() * 15 + 80, // 80-95%
+        averageSessionDuration: Math.random() * 30 + 15, // 15-45 minutes
+        activeAlerts: [],
+        recentIssues: []
       }
     };
   }

@@ -5,8 +5,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app-routing.module';
 
-import { importProvidersFrom } from '@angular/core';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { importProvidersFrom, APP_INITIALIZER } from '@angular/core';
+import { TranslateModule, TranslateLoader, TranslateService, MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 import { HttpClient, HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 
 import { environment } from './environments/environment';
 import { CustomTranslationLoader } from './app/core/services/translation-loader.service';
+import { TranslationService } from './app/core/services/translation.service';
 
 // Functional Auth Interceptor
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -38,7 +39,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 // Functional Error Interceptor
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-  
+
   return next(req).pipe(
     retry({
       count: 2,
@@ -54,7 +55,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     }),
     catchError((error: HttpErrorResponse) => {
       console.error(`[Error Interceptor] HTTP Error ${req.method} ${req.url}:`, error);
-      
+
       // Handle specific error cases
       if (error.status === 401) {
         console.log('[Error Interceptor] Unauthorized - clearing auth and redirecting to login');
@@ -66,14 +67,44 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         console.log('[Error Interceptor] Forbidden - redirecting to error page');
         router.navigate(['/errors/forbidden']);
       }
-      
+
       return throwError(() => error);
     })
   );
 };
 
+// Enhanced Translation Loader Factory
 export function createTranslateLoader(http: HttpClient) {
   return new CustomTranslationLoader();
+}
+
+// Translation Initialization Factory
+export function initializeTranslations(translationService: TranslationService) {
+  return () => {
+    console.log('Initializing translations...');
+    return translationService.initializeTranslations().then(() => {
+      console.log('Translation initialization completed');
+    }).catch(error => {
+      console.error('Translation initialization failed:', error);
+      // Don't block app startup on translation failure
+    });
+  };
+}
+
+// Browser Language Detection Factory
+export function detectBrowserLanguage(): string {
+  const translationService = inject(TranslationService);
+  const detectionResult = translationService.getLanguageDetectionInfo();
+  console.log('Browser language detection:', detectionResult);
+  return detectionResult.detectedLanguage;
+}
+
+// Custom Missing Translation Handler
+export class CustomMissingTranslationHandler implements MissingTranslationHandler {
+  handle(params: MissingTranslationHandlerParams) {
+    console.warn(`Missing translation for key: ${params.key}`);
+    return `[${params.key}]`;
+  }
 }
 
 bootstrapApplication(AppComponent, {
@@ -88,8 +119,26 @@ bootstrapApplication(AppComponent, {
           useFactory: createTranslateLoader,
           deps: [HttpClient]
         },
-        defaultLanguage: 'en-US'
+        defaultLanguage: 'en-US',
+        useDefaultLang: true,
+        isolate: false,
+        extend: true,
+        missingTranslationHandler: {
+          provide: MissingTranslationHandler,
+          useClass: CustomMissingTranslationHandler
+        }
       })
-    )
+    ),
+    // Initialize translations on app startup
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeTranslations,
+      deps: [TranslationService],
+      multi: true
+    }
   ]
-}).catch(err => console.error(err));
+}).then(() => {
+  console.log('Angular application bootstrapped successfully');
+}).catch(err => {
+  console.error('Failed to bootstrap Angular application:', err);
+});

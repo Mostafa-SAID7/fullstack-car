@@ -13,12 +13,16 @@ import {
 import { VideoManagement } from './components/VideoManagement';
 import { PodcastManagement } from './components/PodcastManagement';
 import { mediaService } from '../../services/media/MediaService';
+import { FormattedNumber, FormattedDate } from '../../components/formatting/CultureAwareFormatting';
+import { useCultureFormatting } from '../../utils/cultureFormatting';
 import type { MediaDashboardStats, MediaType } from '../../services/media/types';
 
 export const MediaOverview = () => {
   const [dashboardStats, setDashboardStats] = useState<MediaDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<MediaType>('video');
+
+  const { isRTL } = useCultureFormatting();
 
   useEffect(() => {
     loadDashboardStats();
@@ -69,16 +73,6 @@ export const MediaOverview = () => {
     }
   };
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K';
-    }
-    return num.toString();
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -112,57 +106,67 @@ export const MediaOverview = () => {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${isRTL ? 'rtl' : 'ltr'}`}>
         <div className="bg-card rounded-lg p-6 border">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={isRTL ? 'text-right' : 'text-left'}>
               <p className="text-sm font-medium text-muted-foreground">Total Videos</p>
-              <p className="text-2xl font-bold">{formatNumber(dashboardStats?.videos.total || 0)}</p>
+              <p className="text-2xl font-bold">
+                <FormattedNumber value={dashboardStats?.videos.total || 0} compact />
+              </p>
             </div>
             <Video className="h-8 w-8 text-blue-500" />
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className={`text-xs text-muted-foreground mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
             <TrendingUp className="w-3 h-3 inline mr-1" />
             +12% from last month
           </p>
         </div>
 
         <div className="bg-card rounded-lg p-6 border">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={isRTL ? 'text-right' : 'text-left'}>
               <p className="text-sm font-medium text-muted-foreground">Total Podcasts</p>
-              <p className="text-2xl font-bold">{formatNumber(dashboardStats?.podcasts.total || 0)}</p>
+              <p className="text-2xl font-bold">
+                <FormattedNumber value={dashboardStats?.podcasts.total || 0} compact />
+              </p>
             </div>
             <Mic className="h-8 w-8 text-green-500" />
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className={`text-xs text-muted-foreground mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
             <TrendingUp className="w-3 h-3 inline mr-1" />
             +8% from last month
           </p>
         </div>
 
         <div className="bg-card rounded-lg p-6 border">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={isRTL ? 'text-right' : 'text-left'}>
               <p className="text-sm font-medium text-muted-foreground">Total Views/Plays</p>
               <p className="text-2xl font-bold">
-                {formatNumber((dashboardStats?.videos.totalViews || 0) + (dashboardStats?.podcasts.totalPlays || 0))}
+                <FormattedNumber 
+                  value={(dashboardStats?.videos.totalViews || 0) + (dashboardStats?.podcasts.totalPlays || 0)} 
+                  compact 
+                />
               </p>
             </div>
             <Eye className="h-8 w-8 text-purple-500" />
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className={`text-xs text-muted-foreground mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
             <TrendingUp className="w-3 h-3 inline mr-1" />
             +15% from last month
           </p>
         </div>
 
         <div className="bg-card rounded-lg p-6 border">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={isRTL ? 'text-right' : 'text-left'}>
               <p className="text-sm font-medium text-muted-foreground">Total Engagement</p>
               <p className="text-2xl font-bold">
-                {formatNumber((dashboardStats?.videos.totalLikes || 0) + (dashboardStats?.podcasts.totalLikes || 0))}
+                <FormattedNumber 
+                  value={(dashboardStats?.videos.totalLikes || 0) + (dashboardStats?.podcasts.totalLikes || 0)} 
+                  compact 
+                />
               </p>
             </div>
             <Heart className="h-8 w-8 text-red-500" />
@@ -200,7 +204,7 @@ export const MediaOverview = () => {
           <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
           <div className="space-y-3">
             {dashboardStats?.recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+              <div key={index} className={`flex items-center gap-3 p-3 bg-muted/50 rounded-lg ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                   {activity.type === 'video' ? (
                     <Video className="w-4 h-4 text-primary" />
@@ -208,10 +212,10 @@ export const MediaOverview = () => {
                     <Mic className="w-4 h-4 text-primary" />
                   )}
                 </div>
-                <div className="flex-1">
+                <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                   <p className="font-medium">{activity.title}</p>
                   <p className="text-sm text-muted-foreground">
-                    {activity.action} • {new Date(activity.timestamp).toLocaleDateString()}
+                    {activity.action} • <FormattedDate date={activity.timestamp} format="short" />
                   </p>
                 </div>
               </div>

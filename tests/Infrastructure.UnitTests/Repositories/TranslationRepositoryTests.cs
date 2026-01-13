@@ -15,6 +15,7 @@ public class TranslationRepositoryTests : IDisposable
     private readonly Mock<IDistributedCache> _distributedCacheMock;
     private readonly Mock<IWebHostEnvironment> _environmentMock;
     private readonly Mock<ILogger<TranslationRepository>> _loggerMock;
+    private readonly Mock<ITranslationCacheMetricsService> _metricsServiceMock;
     private readonly IMemoryCache _memoryCache;
     private readonly TranslationRepository _repository;
     private readonly string _testContentRoot;
@@ -24,6 +25,7 @@ public class TranslationRepositoryTests : IDisposable
         _distributedCacheMock = new Mock<IDistributedCache>();
         _environmentMock = new Mock<IWebHostEnvironment>();
         _loggerMock = new Mock<ILogger<TranslationRepository>>();
+        _metricsServiceMock = new Mock<ITranslationCacheMetricsService>();
         
         // Use real MemoryCache for testing
         _memoryCache = new MemoryCache(new MemoryCacheOptions());
@@ -38,7 +40,8 @@ public class TranslationRepositoryTests : IDisposable
             _memoryCache,
             _distributedCacheMock.Object,
             _environmentMock.Object,
-            _loggerMock.Object);
+            _loggerMock.Object,
+            _metricsServiceMock.Object);
     }
 
     [Fact]

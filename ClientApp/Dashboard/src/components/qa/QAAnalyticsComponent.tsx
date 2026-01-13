@@ -27,6 +27,7 @@ import { Button } from '../forms';
 import { StatsCards } from '../shared';
 import { Card } from '../layout/cards/Card';
 import { cn } from '../../lib/utils';
+import { useTranslation, useRTL } from '../../hooks/useTranslation';
 import { qaAnalyticsService } from '../../services/qa/QAAnalyticsService';
 import QAReportGeneratorComponent from './QAReportGeneratorComponent';
 import type { 
@@ -41,6 +42,9 @@ interface QAAnalyticsComponentProps {
 }
 
 export const QAAnalyticsComponent: React.FC<QAAnalyticsComponentProps> = ({ className }) => {
+  const { t, ready: translationsReady } = useTranslation('qa');
+  const { isRTL, getRTLClass } = useRTL();
+  
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<QAAnalytics | null>(null);
   const [realtimeMetrics, setRealtimeMetrics] = useState<QAMetrics | null>(null);
@@ -326,11 +330,14 @@ export const QAAnalyticsComponent: React.FC<QAAnalyticsComponentProps> = ({ clas
   return (
     <div className={cn('space-y-6', className)}>
       {/* Enhanced Header with Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className={cn(
+        'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4',
+        getRTLClass('', 'flex-row-reverse')
+      )}>
         <div>
-          <h2 className="text-2xl font-bold text-foreground">QA Analytics Dashboard</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t('analytics.title', 'QA Analytics Dashboard')}</h2>
           <p className="text-muted-foreground">
-            Comprehensive insights into question and answer activity across your platform
+            {t('analytics.description', 'Comprehensive insights into question and answer activity across your platform')}
           </p>
         </div>
         

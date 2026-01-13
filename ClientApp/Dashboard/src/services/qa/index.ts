@@ -9,7 +9,7 @@ export { QASignalRService, createQASignalRService } from './QASignalRService';
 export { BulkOperationsService, bulkOperationsService } from './BulkOperationsService';
 
 // Question-specific services
-export { QAQuestionService, qaQuestionService } from './QAQuestionService';
+export { QAQuestionService } from './QAQuestionService';
 
 // Re-export types for convenience
 export type {
@@ -27,9 +27,9 @@ export type {
 export type {
   Question,
   Answer,
-  QAVote,
+  Vote as QAVote,
   UserReputation,
-  QACategory,
-  QATag,
-  ExpertProfile
-} from '../../types/qa/api';
+  Category as QACategory,
+  Tag as QATag,
+  Expert as ExpertProfile
+} from '../../types/qa/api-types';

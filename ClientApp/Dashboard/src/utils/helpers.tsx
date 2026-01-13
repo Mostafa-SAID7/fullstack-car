@@ -173,70 +173,32 @@ export const generateMockPerformanceData = () => {
     };
 };
 
-// Date and Time Utilities
-export const formatDate = (date: string | Date, format: string = 'MMM dd, yyyy'): string => {
-    const d = new Date(date);
+// Import culture-aware formatting utilities
+import { 
+    legacyFormatDate, 
+    legacyFormatNumber, 
+    legacyFormatCurrency,
+    formatRelativeTime as cultureAwareRelativeTime,
+    formatPercentage as cultureAwarePercentage,
+    getCurrentCulture
+} from './cultureFormatting';
 
-    const formats: Record<string, string> = {
-        'MMM dd, yyyy': d.toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric'
-        }),
-        'MMMM dd, yyyy': d.toLocaleDateString('en-US', {
-            month: 'long',
-            day: '2-digit',
-            year: 'numeric'
-        }),
-        'MMM dd, yyyy HH:mm': d.toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
-        'HH:mm': d.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
-        'yyyy-MM-dd': d.toISOString().split('T')[0]
-    };
-
-    return formats[format] || d.toLocaleDateString();
-};
+// Date and Time Utilities - Now culture-aware
+export const formatDate = legacyFormatDate;
 
 export const getRelativeTime = (date: string | Date): string => {
-    const now = new Date();
-    const target = new Date(date);
-    const diffInSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return 'just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`;
-
-    return formatDate(date);
+    return cultureAwareRelativeTime(date, getCurrentCulture());
 };
 
-// Number Utilities
-export const formatNumber = (num: number, decimals: number = 0): string => {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-    }).format(num);
-};
+// Number Utilities - Now culture-aware
+export const formatNumber = legacyFormatNumber;
 
 export const formatPercentage = (value: number, total: number): string => {
-    if (total === 0) return '0%';
-    return `${((value / total) * 100).toFixed(1)}%`;
+    if (total === 0) return cultureAwarePercentage(0, undefined, getCurrentCulture());
+    return cultureAwarePercentage(value, total, getCurrentCulture());
 };
 
-export const formatCurrency = (amount: number, currency: string = 'USD'): string => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency
-    }).format(amount);
-};
+export const formatCurrency = legacyFormatCurrency;
 
 // String Utilities
 export const truncateText = (text: string, maxLength: number): string => {

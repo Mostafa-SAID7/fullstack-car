@@ -1,0 +1,163 @@
+{
+  "moderation": {
+    "title": "Content Moderation",
+    "description": "Review and moderate flagged content across your platform",
+    "stats": {
+      "pending_reviews": "Pending Reviews",
+      "resolved_today": "Resolved Today",
+      "flagged_content": "Flagged Content",
+      "active_moderators": "Active Moderators",
+      "today_change": "+{{count}} today",
+      "increase": "+{{count}}",
+      "decrease": "-{{count}}",
+      "response_rate": "{{rate}}% response rate",
+      "acceptance_rate": "{{rate}}% acceptance rate",
+      "total_flags": "Total flags this week",
+      "online_now": "Online now"
+    },
+    "search": {
+      "placeholder": "Search flagged content..."
+    },
+    "filters": {
+      "all_status": "All Status",
+      "all_types": "All Types"
+    },
+    "status": {
+      "pending": "Pending",
+      "reviewed": "Reviewed",
+      "resolved": "Resolved"
+    },
+    "table": {
+      "content": "Content",
+      "reason": "Reason",
+      "flagged_by": "Flagged By",
+      "flagged_at": "Flagged At",
+      "status": "Status"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "flag_content": "Flag Content",
+      "view_content": "View Content",
+      "approve": "Approve",
+      "delete": "Delete",
+      "ban_user": "Ban User"
+    },
+    "bulk": {
+      "items_selected": "{{count}} item{{s}} selected"
+    },
+    "quick_actions": {
+      "high_priority": {
+        "title": "High Priority",
+        "description": "Content flagged multiple times or containing severe violations",
+        "action": "View High Priority ({{count}})"
+      },
+      "pending_review": {
+        "title": "Pending Review",
+        "description": "Recently flagged content awaiting moderation",
+        "action": "Review Pending ({{count}})"
+      },
+      "user_management": {
+        "title": "User Management",
+        "description": "Manage user bans and reputation adjustments",
+        "action": "Manage Users"
+      }
+    },
+    "reasons": {
+      "inappropriate_content": "Inappropriate content",
+      "spam_duplicate": "Spam/Duplicate",
+      "inappropriate_language": "Inappropriate language"
+    },
+    "examples": {
+      "inappropriate_question": "How to hack into systems?",
+      "duplicate_answer": "Copy-pasted answer from Stack Overflow",
+      "offensive_language": "Offensive language in question"
+    },
+    "notes": {
+      "confirmed_duplicate": "Confirmed as duplicate content"
+    }
+  },
+  "content": {
+    "questions": "Questions",
+    "answers": "Answers",
+    "question": "Question",
+    "answer": "Answer"
+  },
+  "analytics": {
+    "title": "QA Analytics Dashboard",
+    "description": "Comprehensive insights into question and answer activity across your platform",
+    "stats": {
+      "total_questions": "Total Questions",
+      "total_answers": "Total Answers",
+      "total_votes": "Total Votes",
+      "active_users": "Active Users",
+      "today_suffix": " today",
+      "online_suffix": " online",
+      "response_rate": "{{rate}}% response rate",
+      "acceptance_rate": "{{rate}}% acceptance rate",
+      "avg_score": "Avg score: {{score}}/5.0",
+      "expert_participation": "{{rate}}% expert participation"
+    },
+    "charts": {
+      "activity_trends": "{{metric}} Trends",
+      "questions_by_category": "Questions by Category",
+      "expert_performance": "Top Expert Performance",
+      "trending_questions": "Trending Questions"
+    },
+    "system_health": {
+      "title": "System Health",
+      "response_time": "Response Time",
+      "system_uptime": "System Uptime",
+      "error_rate": "Error Rate",
+      "active_connections": "Active Connections"
+    },
+    "time_ranges": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "90d": "Last 90 days",
+      "1y": "Last year"
+    },
+    "metrics": {
+      "questions": "Questions",
+      "answers": "Answers",
+      "votes": "Votes",
+      "users": "Users"
+    },
+    "actions": {
+      "generate_report": "Generate Report",
+      "refresh": "Refresh",
+      "export": "Export",
+      "view_all_experts": "View All Experts",
+      "filter": "Filter",
+      "share": "Share"
+    },
+    "expert_table": {
+      "expert": "Expert",
+      "category": "Category",
+      "reputation": "Reputation",
+      "response_rate": "Response Rate",
+      "avg_response_time": "Avg Response Time",
+      "quality_score": "Quality Score",
+      "trend": "Trend"
+    },
+    "trending_table": {
+      "question": "Question",
+      "category": "Category",
+      "views": "Views",
+      "votes": "Votes",
+      "answers": "Answers",
+      "engagement": "Engagement",
+      "status": "Status",
+      "answered": "Answered",
+      "open": "Open"
+    }
+  },
+  "bulk_operations": {
+    "title": "Bulk Operations",
+    "description": "Manage content and users efficiently with bulk operations",
+    "actions": {
+      "show_actions": "Show Actions",
+      "hide_actions": "Hide Actions",
+      "export_data": "Export Data"
+    }
+  }
+}

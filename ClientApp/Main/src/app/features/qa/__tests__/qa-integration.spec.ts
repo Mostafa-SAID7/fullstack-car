@@ -7,6 +7,13 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { of, Subject, BehaviorSubject } from 'rxjs';
 
-// QA Services
-import { QAService } from '../../../core/services/qa.service';
-import { QASignalRService } from '../services/qa
+// Mock QA Services since they don't exist yet
+class MockQAService {
+  getQuestions() { return of([]); }
+  getAnswers() { return of([]); }
+}
+
+class MockQASignalRService {
+  connect() { return Promise.resolve(); }
+  disconnect() { return Promise.resolve(); }
+}

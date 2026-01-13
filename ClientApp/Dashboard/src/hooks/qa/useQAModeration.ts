@@ -10,7 +10,7 @@ import { useAuth } from '../auth/useAuth';
 export const useQAModeration = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { user, canModerateContent, isAdmin } = useAuth();
+  const { canModerateContent, isAdmin } = useAuth();
 
   // Clear error
   const clearError = useCallback(() => {

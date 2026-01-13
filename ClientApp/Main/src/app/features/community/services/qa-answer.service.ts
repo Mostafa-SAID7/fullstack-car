@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 // QA Types
 import type {
@@ -18,11 +19,13 @@ import { QA_API_ENDPOINTS } from '../../../shared/types/qa-api.types';
   providedIn: 'root'
 })
 export class QAAnswerService {
-  constructor(private http: HttpClient) {}
+  private readonly apiBase = environment.apiUrl.replace(/\/api\/?$/, '');
+
+  constructor(private http: HttpClient) { }
 
   getAnswersByQuestion(questionId: string, filter?: AnswerFilter): Observable<PaginatedApiResponse<Answer>> {
     let params = new HttpParams();
-    
+
     if (filter) {
       if (filter.pageNumber) params = params.set('pageNumber', filter.pageNumber.toString());
       if (filter.pageSize) params = params.set('pageSize', filter.pageSize.toString());
@@ -36,7 +39,7 @@ export class QAAnswerService {
     }
 
     return this.http.get<PaginatedApiResponse<Answer>>(
-      QA_API_ENDPOINTS.ANSWERS.BY_QUESTION(questionId), 
+      `${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.BY_QUESTION(questionId)}`,
       { params }
     ).pipe(
       catchError(this.handleError<PaginatedApiResponse<Answer>>())
@@ -44,35 +47,35 @@ export class QAAnswerService {
   }
 
   getAnswer(id: string): Observable<ApiResponse<Answer>> {
-    return this.http.get<ApiResponse<Answer>>(`${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`)
+    return this.http.get<ApiResponse<Answer>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`)
       .pipe(
         catchError(this.handleError<ApiResponse<Answer>>())
       );
   }
 
   createAnswer(request: CreateAnswerRequest): Observable<ApiResponse<Answer>> {
-    return this.http.post<ApiResponse<Answer>>(QA_API_ENDPOINTS.ANSWERS.BASE, request)
+    return this.http.post<ApiResponse<Answer>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.BASE}`, request)
       .pipe(
         catchError(this.handleError<ApiResponse<Answer>>())
       );
   }
 
   updateAnswer(id: string, request: UpdateAnswerRequest): Observable<ApiResponse<Answer>> {
-    return this.http.put<ApiResponse<Answer>>(`${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`, request)
+    return this.http.put<ApiResponse<Answer>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`, request)
       .pipe(
         catchError(this.handleError<ApiResponse<Answer>>())
       );
   }
 
   deleteAnswer(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`)
+    return this.http.delete<ApiResponse<void>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.BASE}/${id}`)
       .pipe(
         catchError(this.handleError<ApiResponse<void>>())
       );
   }
 
   acceptAnswer(id: string): Observable<ApiResponse<void>> {
-    return this.http.post<ApiResponse<void>>(QA_API_ENDPOINTS.ANSWERS.ACCEPT(id), {})
+    return this.http.post<ApiResponse<void>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.ACCEPT(id)}`, {})
       .pipe(
         catchError(this.handleError<ApiResponse<void>>())
       );
@@ -80,7 +83,7 @@ export class QAAnswerService {
 
   getMyAnswers(filter?: AnswerFilter): Observable<PaginatedApiResponse<Answer>> {
     let params = new HttpParams();
-    
+
     if (filter) {
       if (filter.pageNumber) params = params.set('pageNumber', filter.pageNumber.toString());
       if (filter.pageSize) params = params.set('pageSize', filter.pageSize.toString());
@@ -91,7 +94,7 @@ export class QAAnswerService {
       if (filter.dateTo) params = params.set('dateTo', filter.dateTo);
     }
 
-    return this.http.get<PaginatedApiResponse<Answer>>(QA_API_ENDPOINTS.ANSWERS.MY_ANSWERS, { params })
+    return this.http.get<PaginatedApiResponse<Answer>>(`${this.apiBase}${QA_API_ENDPOINTS.ANSWERS.MY_ANSWERS}`, { params })
       .pipe(
         catchError(this.handleError<PaginatedApiResponse<Answer>>())
       );
@@ -100,7 +103,7 @@ export class QAAnswerService {
   private handleError<T>() {
     return (error: any): Observable<T> => {
       console.error('QA Answer Service Error:', error);
-      
+
       const errorResponse = {
         succeeded: false,
         data: undefined,

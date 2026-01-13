@@ -122,6 +122,16 @@ export const API_ENDPOINTS = {
     PAGES: '/v4/content/pages'
   },
 
+  // Localization (v7 API)
+  LOCALIZATION: {
+    BASE: '/v7/localization',
+    TRANSLATIONS: '/v7/localization/translations',
+    BATCH_TRANSLATIONS: '/v7/localization/translations/batch',
+    SUPPORTED_CULTURES: '/v7/localization/cultures/supported',
+    TRANSLATION_BY_CULTURE_FEATURE: '/v7/localization/translations/{culture}/{feature}',
+    CACHE_INVALIDATION: '/v7/localization/cache/invalidate'
+  },
+
   // AI Agent
   AI_AGENT: {
     CHAT: '/v4/ai-agent/chat',

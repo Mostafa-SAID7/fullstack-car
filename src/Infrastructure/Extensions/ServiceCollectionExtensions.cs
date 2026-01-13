@@ -83,6 +83,9 @@ namespace Infrastructure.Extensions
             // Configure translation cache warmup options
             services.Configure<TranslationCacheWarmupOptions>(configuration.GetSection(TranslationCacheWarmupOptions.SectionName));
             services.AddHostedService<TranslationCacheWarmupService>();
+            
+            // Configure translation validation options
+            services.Configure<TranslationValidationSettings>(configuration.GetSection(TranslationValidationSettings.SectionName));
 
             // Add Media Repositories
             services.AddScoped<IVideoRepository, VideoRepository>();
@@ -125,6 +128,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<ILocalizationProvider, LocalizationProvider>();
             services.AddScoped<ILanguageDetector, LanguageDetector>();
             services.AddScoped<ICultureInfoProvider, CultureInfoProvider>();
+            services.AddScoped<ITranslationValidationService, TranslationValidationService>();
 
             services.AddScoped<Application.Features.Shared.Email.Interfaces.IEmailService, EmailService>();
             services.AddScoped<IFileService, FileService>();
@@ -342,6 +346,7 @@ namespace Infrastructure.Extensions
             services.AddHostedService<RefreshTokenCleanupService>();
             services.AddHostedService<AnalyticsAggregationService>();
             services.AddHostedService<AnalyticsValidationService>();
+            services.AddHostedService<TranslationValidationBackgroundService>();
 
             return services;
         }

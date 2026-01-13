@@ -1,8 +1,6 @@
 // QA Analytics Types for React Dashboard
 // Extends existing analytics patterns with QA-specific metrics
 
-import type { Expert, Question, Answer } from './api-types';
-
 // ============================================================================
 // CORE ANALYTICS TYPES
 // ============================================================================

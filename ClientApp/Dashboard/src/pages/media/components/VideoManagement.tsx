@@ -16,6 +16,8 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { videoService } from '../../../services/media/VideoService';
+import { FormattedNumber, FormattedDate, FormattedFileSize } from '../../../components/formatting/CultureAwareFormatting';
+import { useCultureFormatting } from '../../../utils/cultureFormatting';
 import type { Video as VideoType, MediaFilters } from '../../../services/media/types';
 
 export const VideoManagement = () => {
@@ -29,6 +31,8 @@ export const VideoManagement = () => {
     sortOrder: 'desc'
   });
   const [totalCount, setTotalCount] = useState(0);
+
+  const { isRTL } = useCultureFormatting();
 
   useEffect(() => {
     loadVideos();
@@ -174,30 +178,30 @@ export const VideoManagement = () => {
               <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{video.description}</p>
               
               {/* Stats */}
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+              <div className={`flex items-center gap-4 text-sm text-muted-foreground mb-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="flex items-center gap-1">
                   <Eye className="w-4 h-4" />
-                  {video.viewCount.toLocaleString()}
+                  <FormattedNumber value={video.viewCount} compact />
                 </div>
                 <div className="flex items-center gap-1">
                   <Heart className="w-4 h-4" />
-                  {video.likeCount.toLocaleString()}
+                  <FormattedNumber value={video.likeCount} compact />
                 </div>
                 <div className="flex items-center gap-1">
                   <MessageCircle className="w-4 h-4" />
-                  {video.commentCount.toLocaleString()}
+                  <FormattedNumber value={video.commentCount} compact />
                 </div>
               </div>
 
               {/* Meta Info */}
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+              <div className={`flex items-center justify-between text-xs text-muted-foreground mb-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  {new Date(video.createdAt).toLocaleDateString()}
+                  <FormattedDate date={video.createdAt} format="short" />
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {formatFileSize(video.fileSize)}
+                  <FormattedFileSize bytes={video.fileSize} />
                 </div>
               </div>
 

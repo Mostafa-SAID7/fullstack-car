@@ -1,0 +1,11 @@
+{
+  "common": {
+    "search": "Search",
+    "notifications": "Notifications",
+    "language": {
+      "switch": "Switch Language",
+      "select": "Select Language",
+      "current": "Current Language"
+    }
+  }
+}

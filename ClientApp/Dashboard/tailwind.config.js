@@ -663,7 +663,11 @@ module.exports = {
         require("@tailwindcss/forms"),
         require("@tailwindcss/aspect-ratio"),
         require("@tailwindcss/container-queries"),
-        function ({ addUtilities, addComponents, theme }) {
+        function ({ addUtilities, addComponents, theme, addVariant }) {
+            // Add RTL variant
+            addVariant('rtl', '[dir="rtl"] &');
+            addVariant('ltr', '[dir="ltr"] &');
+            
             // Custom Scrollbar Utilities
             const scrollbarUtilities = {
                 ".custom-scroll": {
@@ -1114,12 +1118,160 @@ module.exports = {
                 }
             };
 
+            // RTL-specific utilities
+            const rtlUtilities = {
+                // RTL Layout utilities
+                ".rtl-container": {
+                    "&[data-rtl=\"true\"]": {
+                        "direction": "rtl",
+                        "text-align": "right",
+                    },
+                    "&[data-rtl=\"false\"]": {
+                        "direction": "ltr",
+                        "text-align": "left",
+                    }
+                },
+                
+                // RTL Flexbox utilities
+                ".rtl-flex": {
+                    "&[data-rtl=\"true\"]": {
+                        "flex-direction": "row-reverse",
+                    }
+                },
+                
+                // RTL Grid utilities
+                ".rtl-grid": {
+                    "&[data-rtl=\"true\"]": {
+                        "direction": "rtl",
+                    }
+                },
+                
+                // RTL Text utilities
+                ".rtl-text": {
+                    "&[data-rtl=\"true\"]": {
+                        "text-align": "right",
+                    },
+                    "&[data-rtl=\"false\"]": {
+                        "text-align": "left",
+                    }
+                },
+                
+                // RTL Sidebar utilities
+                ".rtl-sidebar": {
+                    "transition": "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    "&[data-position=\"right\"]": {
+                        "right": "0",
+                        "left": "auto",
+                        "border-left": "1px solid rgba(0, 0, 0, 0.05)",
+                        "border-right": "none",
+                    },
+                    "&[data-position=\"left\"]": {
+                        "left": "0",
+                        "right": "auto",
+                        "border-right": "1px solid rgba(0, 0, 0, 0.05)",
+                        "border-left": "none",
+                    }
+                },
+                
+                // RTL Navigation utilities
+                ".rtl-nav": {
+                    "&.horizontal[data-rtl=\"true\"]": {
+                        "flex-direction": "row-reverse",
+                    }
+                },
+                
+                // RTL Button utilities
+                ".rtl-button": {
+                    "&[data-rtl=\"true\"]": {
+                        "flex-direction": "row-reverse",
+                    }
+                },
+                
+                // RTL Card utilities
+                ".rtl-card": {
+                    "&[data-rtl=\"true\"]": {
+                        "text-align": "right",
+                        "& .card-header": {
+                            "text-align": "right",
+                        },
+                        "& .card-footer": {
+                            "text-align": "right",
+                            "flex-direction": "row-reverse",
+                        }
+                    }
+                },
+                
+                // RTL Form utilities
+                ".rtl-form-field": {
+                    "&[data-rtl=\"true\"]": {
+                        "& label": {
+                            "text-align": "right",
+                        },
+                        "& input, & textarea, & select": {
+                            "text-align": "right",
+                        },
+                        "& .form-error, & .form-help": {
+                            "text-align": "right",
+                        }
+                    }
+                },
+                
+                // RTL spacing utilities
+                ".rtl-space-x-reverse": {
+                    "&[data-rtl=\"true\"] > * + *": {
+                        "margin-left": "0",
+                        "margin-right": "var(--tw-space-x-reverse, 0.5rem)",
+                    }
+                },
+                
+                // RTL positioning utilities
+                ".rtl-position": {
+                    "&[data-rtl=\"true\"]": {
+                        "&.left-0": {
+                            "left": "auto",
+                            "right": "0",
+                        },
+                        "&.right-0": {
+                            "right": "auto",
+                            "left": "0",
+                        }
+                    }
+                },
+                
+                // RTL border utilities
+                ".rtl-border": {
+                    "&[data-rtl=\"true\"]": {
+                        "&.border-l": {
+                            "border-left": "none",
+                            "border-right": "1px solid hsl(var(--border))",
+                        },
+                        "&.border-r": {
+                            "border-right": "none",
+                            "border-left": "1px solid hsl(var(--border))",
+                        }
+                    }
+                },
+                
+                // RTL animation utilities
+                ".rtl-animate": {
+                    "&[data-rtl=\"true\"]": {
+                        "&.slide-in-left": {
+                            "animation": "slide-in-right 0.3s ease-out",
+                        },
+                        "&.slide-in-right": {
+                            "animation": "slide-in-left 0.3s ease-out",
+                        }
+                    }
+                }
+            };
+
             addUtilities({ 
                 ...scrollbarUtilities, 
                 ...glassUtilities, 
                 ...textUtilities, 
-                ...layoutUtilities 
-            }, ["responsive", "hover", "dark"]);
+                ...layoutUtilities,
+                ...rtlUtilities
+            }, ["responsive", "hover", "dark", "rtl", "ltr"]);
             
             addComponents({ 
                 ...buttonComponents, 

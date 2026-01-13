@@ -1,0 +1,163 @@
+{
+  "moderation": {
+    "title": "إدارة المحتوى",
+    "description": "مراجعة وإدارة المحتوى المبلغ عنه عبر منصتك",
+    "stats": {
+      "pending_reviews": "المراجعات المعلقة",
+      "resolved_today": "تم حلها اليوم",
+      "flagged_content": "المحتوى المبلغ عنه",
+      "active_moderators": "المشرفون النشطون",
+      "today_change": "+{{count}} اليوم",
+      "increase": "+{{count}}",
+      "decrease": "-{{count}}",
+      "response_rate": "معدل الاستجابة {{rate}}%",
+      "acceptance_rate": "معدل القبول {{rate}}%",
+      "total_flags": "إجمالي البلاغات هذا الأسبوع",
+      "online_now": "متصل الآن"
+    },
+    "search": {
+      "placeholder": "البحث في المحتوى المبلغ عنه..."
+    },
+    "filters": {
+      "all_status": "جميع الحالات",
+      "all_types": "جميع الأنواع"
+    },
+    "status": {
+      "pending": "معلق",
+      "reviewed": "تمت المراجعة",
+      "resolved": "تم الحل"
+    },
+    "table": {
+      "content": "المحتوى",
+      "reason": "السبب",
+      "flagged_by": "أبلغ عنه",
+      "flagged_at": "تاريخ البلاغ",
+      "status": "الحالة"
+    },
+    "actions": {
+      "refresh": "تحديث",
+      "flag_content": "الإبلاغ عن المحتوى",
+      "view_content": "عرض المحتوى",
+      "approve": "موافقة",
+      "delete": "حذف",
+      "ban_user": "حظر المستخدم"
+    },
+    "bulk": {
+      "items_selected": "تم تحديد {{count}} عنصر{{s}}"
+    },
+    "quick_actions": {
+      "high_priority": {
+        "title": "أولوية عالية",
+        "description": "المحتوى المبلغ عنه عدة مرات أو الذي يحتوي على انتهاكات خطيرة",
+        "action": "عرض الأولوية العالية ({{count}})"
+      },
+      "pending_review": {
+        "title": "في انتظار المراجعة",
+        "description": "المحتوى المبلغ عنه مؤخراً في انتظار الإشراف",
+        "action": "مراجعة المعلق ({{count}})"
+      },
+      "user_management": {
+        "title": "إدارة المستخدمين",
+        "description": "إدارة حظر المستخدمين وتعديلات السمعة",
+        "action": "إدارة المستخدمين"
+      }
+    },
+    "reasons": {
+      "inappropriate_content": "محتوى غير مناسب",
+      "spam_duplicate": "رسائل مزعجة/مكررة",
+      "inappropriate_language": "لغة غير مناسبة"
+    },
+    "examples": {
+      "inappropriate_question": "كيفية اختراق الأنظمة؟",
+      "duplicate_answer": "إجابة منسوخة من Stack Overflow",
+      "offensive_language": "لغة مسيئة في السؤال"
+    },
+    "notes": {
+      "confirmed_duplicate": "تأكيد كمحتوى مكرر"
+    }
+  },
+  "content": {
+    "questions": "الأسئلة",
+    "answers": "الإجابات",
+    "question": "سؤال",
+    "answer": "إجابة"
+  },
+  "analytics": {
+    "title": "لوحة تحليلات الأسئلة والأجوبة",
+    "description": "رؤى شاملة حول نشاط الأسئلة والأجوبة عبر منصتك",
+    "stats": {
+      "total_questions": "إجمالي الأسئلة",
+      "total_answers": "إجمالي الإجابات",
+      "total_votes": "إجمالي الأصوات",
+      "active_users": "المستخدمون النشطون",
+      "today_suffix": " اليوم",
+      "online_suffix": " متصل",
+      "response_rate": "معدل الاستجابة {{rate}}%",
+      "acceptance_rate": "معدل القبول {{rate}}%",
+      "avg_score": "متوسط النقاط: {{score}}/5.0",
+      "expert_participation": "مشاركة الخبراء {{rate}}%"
+    },
+    "charts": {
+      "activity_trends": "اتجاهات {{metric}}",
+      "questions_by_category": "الأسئلة حسب الفئة",
+      "expert_performance": "أداء أفضل الخبراء",
+      "trending_questions": "الأسئلة الرائجة"
+    },
+    "system_health": {
+      "title": "صحة النظام",
+      "response_time": "وقت الاستجابة",
+      "system_uptime": "وقت تشغيل النظام",
+      "error_rate": "معدل الأخطاء",
+      "active_connections": "الاتصالات النشطة"
+    },
+    "time_ranges": {
+      "7d": "آخر 7 أيام",
+      "30d": "آخر 30 يوماً",
+      "90d": "آخر 90 يوماً",
+      "1y": "العام الماضي"
+    },
+    "metrics": {
+      "questions": "الأسئلة",
+      "answers": "الإجابات",
+      "votes": "الأصوات",
+      "users": "المستخدمون"
+    },
+    "actions": {
+      "generate_report": "إنشاء تقرير",
+      "refresh": "تحديث",
+      "export": "تصدير",
+      "view_all_experts": "عرض جميع الخبراء",
+      "filter": "تصفية",
+      "share": "مشاركة"
+    },
+    "expert_table": {
+      "expert": "الخبير",
+      "category": "الفئة",
+      "reputation": "السمعة",
+      "response_rate": "معدل الاستجابة",
+      "avg_response_time": "متوسط وقت الاستجابة",
+      "quality_score": "نقاط الجودة",
+      "trend": "الاتجاه"
+    },
+    "trending_table": {
+      "question": "السؤال",
+      "category": "الفئة",
+      "views": "المشاهدات",
+      "votes": "الأصوات",
+      "answers": "الإجابات",
+      "engagement": "التفاعل",
+      "status": "الحالة",
+      "answered": "تمت الإجابة",
+      "open": "مفتوح"
+    }
+  },
+  "bulk_operations": {
+    "title": "العمليات المجمعة",
+    "description": "إدارة المحتوى والمستخدمين بكفاءة من خلال العمليات المجمعة",
+    "actions": {
+      "show_actions": "إظهار الإجراءات",
+      "hide_actions": "إخفاء الإجراءات",
+      "export_data": "تصدير البيانات"
+    }
+  }
+}

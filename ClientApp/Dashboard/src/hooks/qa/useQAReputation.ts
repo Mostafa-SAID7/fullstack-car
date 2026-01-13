@@ -57,7 +57,7 @@ export const useQAReputation = (): UseQAReputation => {
   }, []);
 
   // Update expertise areas
-  const updateExpertiseAreas = useCallback(async (areas: string[]) => {
+  const updateExpertiseAreas = useCallback(async (_areas: string[]) => {
     try {
       const response = await reputationService.adjustUserReputation('', 0, 'Expertise areas updated');
       if (response.succeeded) {
