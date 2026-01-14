@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { TranslateModule } from '@ngx-translate/core';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Review } from '../../../../../core/models/review.model';
 import { ReviewService } from '../../../services/review.service';
 import { ReviewItemComponent } from '../review-item/review-item.component';
 import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { TranslationService } from '../../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-review-list',
@@ -21,7 +23,7 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
           <!-- Search Input -->
           <div class="relative flex-grow group">
             <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300"></i>
-            <input formControlName="searchTerm" type="text" placeholder="Search reviews..."
+            <input formControlName="searchTerm" type="text" [placeholder]="'reviews.filters.filterReviews' | translate"
               class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-full pl-12 pr-6 py-4 outline-none transition-all text-foreground font-bold">
           </div>
 
@@ -31,13 +33,13 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
               [ngClass]="showFilters ? 'bg-primary text-white' : 'bg-secondary dark:bg-white/5'"
               class="px-8 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-3 whitespace-nowrap">
               <i class="fas fa-sliders-h"></i>
-              <span>Filters</span>
+              <span>{{ 'reviews.filters.filterReviews' | translate }}</span>
             </button>
 
             <button type="button"
               class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 flex items-center gap-3 whitespace-nowrap">
               <i class="fas fa-plus"></i>
-              <span>Write Review</span>
+              <span>{{ 'reviews.writeReview' | translate }}</span>
             </button>
           </div>
         </form>
@@ -46,13 +48,32 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
         <div *ngIf="showFilters" class="pt-6 animate-fade-in">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex flex-col">
-              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Sort By</label>
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'reviews.filters.sortBy' | translate }}</label>
               <div class="relative">
                 <i class="fas fa-sort absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 <select formControlName="sortBy"
                   class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                  <option value="createdAt">Newest First</option>
-                  <option value="rating">Highest Rated</option>
+                  <option value="createdAt">{{ 'reviews.filters.mostRecent' | translate }}</option>
+                  <option value="rating">{{ 'reviews.filters.highestRated' | translate }}</option>
+                  <option value="helpful">{{ 'reviews.filters.mostHelpful' | translate }}</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+              </div>
+            </div>
+            
+            <!-- Rating Filter -->
+            <div class="flex flex-col">
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'reviews.filters.filterByRating' | translate }}</label>
+              <div class="relative">
+                <i class="fas fa-star absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                <select formControlName="ratingFilter"
+                  class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
+                  <option value="">{{ 'reviews.filters.allReviews' | translate }}</option>
+                  <option value="5">{{ 'stars.fiveStars' | translate }} ({{ 'stars.fiveStarsDesc' | translate }})</option>
+                  <option value="4">{{ 'stars.fourStars' | translate }} ({{ 'stars.fourStarsDesc' | translate }})</option>
+                  <option value="3">{{ 'stars.threeStars' | translate }} ({{ 'stars.threeStarsDesc' | translate }})</option>
+                  <option value="2">{{ 'stars.twoStars' | translate }} ({{ 'stars.twoStarsDesc' | translate }})</option>
+                  <option value="1">{{ 'stars.oneStar' | translate }} ({{ 'stars.oneStarDesc' | translate }})</option>
                 </select>
                 <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
               </div>
@@ -78,8 +99,8 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
           <div class="w-20 h-20 bg-secondary/30 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8">
             <i class="fas fa-star-half-stroke text-3xl text-muted-foreground/30"></i>
           </div>
-          <h3 class="text-xl font-black text-foreground uppercase tracking-widest mb-2">No reviews found</h3>
-          <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest">Be the first to share your experience!</p>
+          <h3 class="text-xl font-black text-foreground uppercase tracking-widest mb-2">{{ 'reviews.noReviewsFound' | translate }}</h3>
+          <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest">{{ 'reviews.noReviews' | translate }}</p>
         </div>
       </div>
 
@@ -92,7 +113,7 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
     </div>
   `
 })
-export class ReviewListComponent implements OnInit {
+export class ReviewListComponent implements OnInit, OnDestroy {
   reviews: Review[] = [];
   loading = true;
   currentPage = 1;
@@ -101,25 +122,62 @@ export class ReviewListComponent implements OnInit {
   totalPages = 0;
   showFilters = false;
   searchForm: FormGroup;
+  private destroy$ = new Subject<void>();
 
-  constructor(private reviewService: ReviewService, private fb: FormBuilder) {
+  constructor(
+    private reviewService: ReviewService, 
+    private fb: FormBuilder,
+    private translationService: TranslationService,
+    private translateService: TranslateService
+  ) {
     this.searchForm = this.fb.group({
       searchTerm: [''],
-      sortBy: ['createdAt']
+      sortBy: ['createdAt'],
+      ratingFilter: ['']
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    // Initialize review translations from backend API
+    await this.reviewService.initializeReviewTranslations();
+    
+    // Subscribe to language changes and reload translations
+    this.translationService.currentLanguage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (language) => {
+        console.log(`Language changed to ${language}, reloading review translations`);
+        await this.reviewService.initializeReviewTranslations();
+        
+        // Reload reviews to ensure proper localization
+        this.loadReviews();
+      });
+
+    // Load initial reviews
     this.loadReviews();
     this.setupSearch();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private setupSearch(): void {
     this.searchForm.get('searchTerm')?.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(
+        debounceTime(500), 
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => this.onSearch());
 
-    this.searchForm.get('sortBy')?.valueChanges.subscribe(() => this.onSearch());
+    this.searchForm.get('sortBy')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onSearch());
+
+    this.searchForm.get('ratingFilter')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onSearch());
   }
 
   onSearch(): void {
@@ -153,5 +211,40 @@ export class ReviewListComponent implements OnInit {
     this.currentPage = page;
     this.loadReviews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Get localized filter text
+   */
+  getFilterText(): string {
+    return this.translateService.instant('reviews.filters.filterReviews');
+  }
+
+  /**
+   * Get localized write review text
+   */
+  getWriteReviewText(): string {
+    return this.translateService.instant('reviews.writeReview');
+  }
+
+  /**
+   * Get localized no reviews text
+   */
+  getNoReviewsText(): string {
+    return this.translateService.instant('reviews.noReviews');
+  }
+
+  /**
+   * Get localized no reviews found text
+   */
+  getNoReviewsFoundText(): string {
+    return this.translateService.instant('reviews.noReviewsFound');
+  }
+
+  /**
+   * Check if current language is RTL
+   */
+  isRTL(): boolean {
+    return this.translationService.isCurrentLanguageRTL();
   }
 }

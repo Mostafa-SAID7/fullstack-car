@@ -4,6 +4,8 @@ import { By } from '@angular/platform-browser';
 import { RtlDirective } from './rtl.directive';
 import { TranslationService } from '../../core/services/translation.service';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   template: `
@@ -28,7 +30,12 @@ describe('RtlDirective', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [TestComponent, RtlDirective],
+      imports: [
+        TestComponent, 
+        RtlDirective,
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
         { provide: TranslationService, useValue: translationServiceSpy }
       ]

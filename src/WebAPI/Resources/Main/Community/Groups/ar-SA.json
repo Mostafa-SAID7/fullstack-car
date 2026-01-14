@@ -13,8 +13,28 @@
     "privacy": "إعدادات الخصوصية",
     "public": "مجموعة عامة",
     "private": "مجموعة خاصة",
-    "secret": "مجموعة سرية"
+    "secret": "مجموعة سرية",
+    "searchPlaceholder": "البحث في المجموعات...",
+    "filters": "المرشحات",
+    "sortBy": "ترتيب حسب",
+    "newestFirst": "الأحدث أولاً",
+    "mostMembers": "الأكثر أعضاءً",
+    "createGroup": "إنشاء مجموعة",
+    "noGroupsFound": "لم يتم العثور على مجموعات",
+    "noGroupsDescription": "كن أول من ينشئ مجموعة مجتمعية!",
+    "loading": "جاري تحميل المجموعات..."
   },
+  "privacy": {
+    "public": "عامة",
+    "private": "خاصة",
+    "secret": "سرية"
+  },
+  "publicLabel": "عامة",
+  "privateLabel": "خاصة",
+  "membersLabel": "الأعضاء",
+  "joinLabel": "انضمام",
+  "suggested": "مقترحة",
+  "noGroups": "لم يتم العثور على مجموعات",
   "members": {
     "title": "الأعضاء",
     "admins": "المديرون",
@@ -29,6 +49,24 @@
     "unban": "إلغاء حظر العضو",
     "memberCount": "عدد الأعضاء"
   },
+  "roles": {
+    "owner": "المالك",
+    "ownerDescription": "تحكم كامل في المجموعة",
+    "adminDescription": "يمكنه إدارة الأعضاء ومراقبة المحتوى",
+    "moderatorDescription": "يمكنه مراقبة المحتوى والمناقشات",
+    "memberDescription": "يمكنه المشاركة وإنشاء المنشورات",
+    "permissions": "الصلاحيات"
+  },
+  "permissions": {
+    "manageGroup": "إدارة المجموعة",
+    "manageMembers": "إدارة الأعضاء",
+    "deleteGroup": "حذف المجموعة",
+    "moderateContent": "مراقبة المحتوى",
+    "manageEvents": "إدارة الأحداث",
+    "manageDiscussions": "إدارة المناقشات",
+    "createPosts": "إنشاء المنشورات",
+    "participate": "المشاركة"
+  },
   "activities": {
     "recentPosts": "المنشورات الأخيرة",
     "events": "الأحداث",
@@ -36,5 +74,13 @@
     "announcements": "الإعلانات",
     "files": "الملفات المشتركة",
     "photos": "الصور"
+  },
+  "invitations": {
+    "title": "دعوة للمجموعة",
+    "message": "تم دعوتك للانضمام إلى {{groupName}}",
+    "accept": "قبول الدعوة",
+    "decline": "رفض الدعوة",
+    "expired": "انتهت صلاحية هذه الدعوة",
+    "alreadyMember": "أنت عضو في هذه المجموعة بالفعل"
   }
 }

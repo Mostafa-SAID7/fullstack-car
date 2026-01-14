@@ -13,8 +13,28 @@
     "privacy": "إعدادات الخصوصية",
     "public": "مجموعة عامة",
     "private": "مجموعة خاصة",
-    "secret": "مجموعة سرية"
+    "secret": "مجموعة سرية",
+    "searchPlaceholder": "البحث في الجروبات...",
+    "filters": "الفلاتر",
+    "sortBy": "ترتيب حسب",
+    "newestFirst": "الأحدث الأول",
+    "mostMembers": "الأكثر أعضاء",
+    "createGroup": "اعمل جروب",
+    "noGroupsFound": "مافيش جروبات",
+    "noGroupsDescription": "كن أول واحد يعمل جروب!",
+    "loading": "بيحمل الجروبات..."
   },
+  "privacy": {
+    "public": "عام",
+    "private": "خاص",
+    "secret": "سري"
+  },
+  "publicLabel": "عام",
+  "privateLabel": "خاص",
+  "membersLabel": "الأعضاء",
+  "joinLabel": "ادخل",
+  "suggested": "مقترح",
+  "noGroups": "مافيش جروبات",
   "members": {
     "title": "الأعضاء",
     "admins": "المديرون",
@@ -29,6 +49,24 @@
     "unban": "إلغاء حظر العضو",
     "memberCount": "عدد الأعضاء"
   },
+  "roles": {
+    "owner": "المالك",
+    "ownerDescription": "تحكم كامل في الجروب",
+    "adminDescription": "يقدر يدير الأعضاء ويراقب المحتوى",
+    "moderatorDescription": "يقدر يراقب المحتوى والمناقشات",
+    "memberDescription": "يقدر يشارك وينشر بوستات",
+    "permissions": "الصلاحيات"
+  },
+  "permissions": {
+    "manageGroup": "إدارة الجروب",
+    "manageMembers": "إدارة الأعضاء",
+    "deleteGroup": "حذف الجروب",
+    "moderateContent": "مراقبة المحتوى",
+    "manageEvents": "إدارة الأحداث",
+    "manageDiscussions": "إدارة المناقشات",
+    "createPosts": "إنشاء بوستات",
+    "participate": "المشاركة"
+  },
   "activities": {
     "recentPosts": "المنشورات الأخيرة",
     "events": "الأحداث",
@@ -36,5 +74,13 @@
     "announcements": "الإعلانات",
     "files": "الملفات المشتركة",
     "photos": "الصور"
+  },
+  "invitations": {
+    "title": "دعوة للجروب",
+    "message": "تم دعوتك للانضمام إلى {{groupName}}",
+    "accept": "قبول الدعوة",
+    "decline": "رفض الدعوة",
+    "expired": "انتهت صلاحية الدعوة دي",
+    "alreadyMember": "إنت عضو في الجروب ده خلاص"
   }
 }

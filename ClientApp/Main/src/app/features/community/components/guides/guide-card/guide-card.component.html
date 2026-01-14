@@ -2,7 +2,7 @@
     <!-- Featured Badge -->
     <div class="guide-card__featured" *ngIf="guide.isFeatured">
         <i class="fa-solid fa-star"></i>
-        <span>Featured</span>
+        <span>{{ 'guides.status.featured' | translate }}</span>
     </div>
 
     <!-- Thumbnail -->
@@ -14,7 +14,7 @@
 
         <!-- Difficulty Badge -->
         <div class="guide-card__difficulty" [ngClass]="getDifficultyColor(guide.difficulty)">
-            {{ guide.difficultyName }}
+            {{ getDifficultyTranslationKey(guide.difficulty) | translate }}
         </div>
     </div>
 
@@ -44,26 +44,27 @@
             <!-- Meta -->
             <div class="guide-card__meta">
                 <!-- Read Time -->
-                <span class="meta-item">
+                <span class="meta-item" [title]="'guides.duration.estimatedTime' | translate">
                     <i class="fa-regular fa-clock"></i>
                     {{ formatReadTime(guide.estimatedReadTime) }}
                 </span>
 
                 <!-- Rating -->
-                <span class="meta-item" *ngIf="guide.averageRating > 0">
+                <span class="meta-item" *ngIf="guide.averageRating > 0" [title]="'guides.rating.averageRating' | translate">
                     <i class="fa-solid fa-star"></i>
                     {{ guide.averageRating.toFixed(1) }}
                 </span>
 
                 <!-- Views -->
-                <span class="meta-item">
+                <span class="meta-item" [title]="'guides.stats.totalViews' | translate">
                     <i class="fa-regular fa-eye"></i>
                     {{ guide.viewCount }}
                 </span>
 
                 <!-- Bookmark -->
                 <button class="meta-item bookmark-btn" [class.bookmarked]="guide.isBookmarked"
-                    (click)="onBookmarkClick($event)">
+                    (click)="onBookmarkClick($event)"
+                    [title]="guide.isBookmarked ? ('guides.creation.unbookmarkGuide' | translate) : ('guides.creation.bookmarkGuide' | translate)">
                     <i [class]="guide.isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'"></i>
                     {{ guide.bookmarkCount }}
                 </button>

@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { RtlService } from './rtl.service';
 import { TranslationService } from './translation.service';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('RtlService', () => {
   let service: RtlService;
@@ -14,6 +16,10 @@ describe('RtlService', () => {
     });
 
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
         RtlService,
         { provide: TranslationService, useValue: translationServiceSpy }

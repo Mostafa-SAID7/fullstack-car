@@ -1,6 +1,6 @@
-<div class="list-view">
+<div class="space-y-6">
     <!-- Filters Slot -->
-    <div class="list-view__filters" *ngIf="hasFilters">
+    <div *ngIf="hasFilters" class="w-full">
         <ng-content select="[filters]"></ng-content>
     </div>
 
@@ -9,11 +9,13 @@
     </app-loading-state>
 
     <!-- Error State -->
-    <div class="list-view__error" *ngIf="error && !loading">
-        <div class="error-card">
-            <i class="fa-solid fa-exclamation-triangle"></i>
-            <h3>{{ error }}</h3>
-            <button (click)="onRetry()" class="btn btn-primary">
+    <div *ngIf="error && !loading" class="flex justify-center py-12">
+        <div
+            class="text-center space-y-4 max-w-sm mx-auto p-6 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-200 dark:border-red-900/20">
+            <i class="fa-solid fa-exclamation-triangle text-3xl text-red-500"></i>
+            <h3 class="text-lg font-medium text-red-700 dark:text-red-400">{{ error }}</h3>
+            <button (click)="onRetry()"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md text-sm font-medium transition-colors">
                 <i class="fa-solid fa-rotate-right"></i> Try Again
             </button>
         </div>
@@ -25,14 +27,16 @@
     </app-empty-state>
 
     <!-- Items Grid -->
-    <div class="list-view__grid" *ngIf="!loading && !error && items.length > 0" [ngStyle]="gridStyle">
+    <div *ngIf="!loading && !error && items.length > 0" class="grid gap-6"
+        [style.grid-template-columns]="'repeat(' + config.gridCols + ', minmax(0, 1fr))'">
+        <!-- Note: gap is handled by Tailwind class, items are handled by grid-cols style -->
         <ng-container *ngFor="let item of items; trackBy: trackByFn">
             <ng-container *ngTemplateOutlet="itemTemplate || null; context: { $implicit: item }"></ng-container>
         </ng-container>
     </div>
 
     <!-- Pagination -->
-    <div class="list-view__pagination" *ngIf="config.showPagination && pagination && items.length > 0">
+    <div *ngIf="config.showPagination && pagination && items.length > 0" class="flex justify-center pt-8">
         <app-pagination [currentPage]="pagination.currentPage" [pageSize]="pagination.pageSize"
             [totalItems]="pagination.totalItems" [totalPages]="pagination.totalPages"
             (pageChange)="onPageChange($event)">

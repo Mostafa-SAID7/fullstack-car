@@ -8,7 +8,7 @@ export type LoadingType = 'spinner' | 'skeleton' | 'grid' | 'list';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './loading-state.component.html',
-    styleUrls: ['./loading-state.component.scss']
+
 })
 export class LoadingStateComponent {
     @Input() type: LoadingType = 'spinner';

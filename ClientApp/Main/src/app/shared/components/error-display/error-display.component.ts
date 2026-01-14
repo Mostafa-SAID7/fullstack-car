@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+
 
 export type ErrorType = 'network' | 'server' | 'notFound' | 'unauthorized' | 'forbidden' | 'timeout' | 'validation' | 'generic';
 export type ErrorSize = 'sm' | 'md' | 'lg';
@@ -8,7 +8,7 @@ export type ErrorSize = 'sm' | 'md' | 'lg';
 @Component({
   selector: 'app-error-display',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule],
   templateUrl: './error-display.component.html',
   styleUrls: ['./error-display.component.scss']
 })
@@ -28,49 +28,49 @@ export class ErrorDisplayComponent {
   get errorConfig() {
     const configs = {
       network: {
-        icon: 'wifi_off',
+        icon: 'fas fa-wifi-slash',
         title: 'Connection Error',
         message: 'Unable to connect to the server. Please check your internet connection.',
         color: 'text-orange-500'
       },
       server: {
-        icon: 'dns',
+        icon: 'fas fa-server',
         title: 'Server Error',
         message: 'Something went wrong on our end. Please try again later.',
         color: 'text-red-500'
       },
       notFound: {
-        icon: 'search_off',
+        icon: 'fas fa-search',
         title: 'Not Found',
         message: 'The content you\'re looking for doesn\'t exist or has been moved.',
         color: 'text-blue-500'
       },
       unauthorized: {
-        icon: 'lock',
+        icon: 'fas fa-lock',
         title: 'Access Denied',
         message: 'You need to sign in to access this content.',
         color: 'text-yellow-500'
       },
       forbidden: {
-        icon: 'block',
+        icon: 'fas fa-ban',
         title: 'Forbidden',
         message: 'You don\'t have permission to access this content.',
         color: 'text-red-500'
       },
       timeout: {
-        icon: 'schedule',
+        icon: 'fas fa-clock',
         title: 'Request Timeout',
         message: 'The request took too long to complete. Please try again.',
         color: 'text-orange-500'
       },
       validation: {
-        icon: 'warning',
+        icon: 'fas fa-exclamation-triangle',
         title: 'Validation Error',
         message: 'Please check your input and try again.',
         color: 'text-yellow-500'
       },
       generic: {
-        icon: 'error',
+        icon: 'fas fa-exclamation-circle',
         title: 'Something went wrong',
         message: 'An unexpected error occurred. Please try again.',
         color: 'text-red-500'

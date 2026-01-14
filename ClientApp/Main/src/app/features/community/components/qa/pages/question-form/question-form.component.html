@@ -1,0 +1,144 @@
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
+
+  <!-- Card: Question Form -->
+  <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+    <div class="space-y-6">
+
+      <!-- Header -->
+      <div class="text-center space-y-2">
+        <h1
+          class="text-3xl lg:text-4xl font-black text-foreground uppercase tracking-widest flex items-center justify-center gap-4">
+          <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-question-circle text-primary text-xl"></i>
+          </div>
+          {{ isEditing ? 'Edit Question' : 'Ask a Question' }}
+        </h1>
+        <p class="text-muted-foreground font-bold text-sm uppercase tracking-widest">
+          Get help from the community by asking a clear, detailed question
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <!-- Question Title -->
+        <div class="space-y-3">
+          <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-4 opacity-70">
+            Question Title *
+          </label>
+          <div class="relative">
+            <input formControlName="title" type="text" placeholder="What's your programming question? Be specific."
+              class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl px-6 py-4 outline-none transition-all text-foreground font-bold focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background">
+          </div>
+          <div *ngIf="questionForm.get('title')?.invalid && questionForm.get('title')?.touched"
+            class="flex items-center gap-2 text-red-500 text-xs font-bold ml-4">
+            <i class="fas fa-exclamation-circle"></i>
+            <span *ngIf="questionForm.get('title')?.errors?.['required']">Question title is required</span>
+            <span *ngIf="questionForm.get('title')?.errors?.['minlength']">Title must be at least 10 characters
+              long</span>
+          </div>
+          <div class="text-xs text-muted-foreground font-bold ml-4 opacity-70">
+            Make your title specific and descriptive. Good titles get better answers.
+          </div>
+        </div>
+
+        <!-- Question Content -->
+        <div class="space-y-3">
+          <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-4 opacity-70">
+            Question Details *
+          </label>
+          <div class="relative">
+            <textarea formControlName="content"
+              placeholder="Provide all the details someone would need to answer your question..." rows="10"
+              class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl p-6 outline-none transition-all text-foreground font-bold resize-vertical min-h-[250px] custom-scroll focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background">
+            </textarea>
+          </div>
+          <div *ngIf="questionForm.get('content')?.invalid && questionForm.get('content')?.touched"
+            class="flex items-center gap-2 text-red-500 text-xs font-bold ml-4">
+            <i class="fas fa-exclamation-circle"></i>
+            <span *ngIf="questionForm.get('content')?.errors?.['required']">Question details are required</span>
+            <span *ngIf="questionForm.get('content')?.errors?.['minlength']">Question must be at least 50 characters
+              long</span>
+          </div>
+          <div class="text-xs text-muted-foreground font-bold ml-4 opacity-70">
+            Include code samples, error messages, and what you've already tried.
+          </div>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="space-y-3">
+          <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-4 opacity-70">
+            Category *
+          </label>
+          <div class="relative group">
+            <i
+              class="fas fa-folder absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300 pointer-events-none"></i>
+            <select formControlName="category"
+              class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl pl-12 pr-12 py-4 outline-none transition-all duration-300 text-foreground font-bold cursor-pointer appearance-none hover:bg-secondary/50 dark:hover:bg-white/10 focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background focus:scale-[1.01] shadow-sm hover:shadow-md">
+              <option value="" disabled selected class="text-muted-foreground">Select a category</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+            <i
+              class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300 pointer-events-none"></i>
+          </div>
+          <div class="text-xs text-muted-foreground font-bold ml-4 opacity-70">
+            Choose the most relevant category to help experts find your question.
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="space-y-3">
+          <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-4 opacity-70">
+            Tags
+          </label>
+          <div class="space-y-3">
+            <div class="relative">
+              <input #tagInput type="text" placeholder="Add tags (press Enter to add)"
+                (keydown)="onTagInputKeydown($event, tagInput)"
+                class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-2xl px-6 py-4 outline-none text-foreground font-bold transition-all duration-200 focus:shadow-lg focus:shadow-primary/10 focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background">
+            </div>
+
+            <div *ngIf="selectedTags.length > 0" class="flex flex-wrap gap-2 ml-4">
+              <button *ngFor="let tag of selectedTags" type="button" (click)="removeTag(tag)"
+                class="px-3 py-1 bg-primary text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-1 animate-fade-in-up hover:scale-105">
+                {{ tag }}
+                <i class="fas fa-times text-xs"></i>
+              </button>
+            </div>
+          </div>
+          <div class="text-xs text-muted-foreground font-bold ml-4 opacity-70">
+            Add up to 5 relevant tags to help categorize your question.
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex flex-col md:flex-row gap-4 justify-end pt-6 border-t border-border/50">
+          <button type="button" (click)="onCancel()" [disabled]="isSubmitting"
+            class="px-8 py-4 bg-secondary/50 dark:bg-white/5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-secondary transition-all flex items-center justify-center gap-3">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+
+          <button type="submit" [disabled]="questionForm.invalid || isSubmitting"
+            class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
+            <div *ngIf="isSubmitting" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin">
+            </div>
+            <i *ngIf="!isSubmitting" class="fas" [ngClass]="isEditing ? 'fa-save' : 'fa-question-circle'"></i>
+            <span>{{ isSubmitting ? 'Submitting...' : (isEditing ? 'Update Question' : 'Ask Question') }}</span>
+          </button>
+        </div>
+
+      </form>
+
+      <!-- Loading Overlay -->
+      <div *ngIf="isLoading"
+        class="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-[2.5rem]">
+        <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
+        <p class="font-bold text-lg text-primary animate-pulse">Loading Question...</p>
+      </div>
+    </div>
+  </div>
+
+</div>

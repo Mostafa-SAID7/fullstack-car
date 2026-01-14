@@ -13,7 +13,21 @@
     "privacy": "Privacy Settings",
     "public": "Public Group",
     "private": "Private Group",
-    "secret": "Secret Group"
+    "secret": "Secret Group",
+    "searchPlaceholder": "Search groups...",
+    "filters": "Filters",
+    "sortBy": "Sort By",
+    "newestFirst": "Newest First",
+    "mostMembers": "Most Members",
+    "createGroup": "Create Group",
+    "noGroupsFound": "No groups found",
+    "noGroupsDescription": "Be the first to create a community group!",
+    "loading": "Loading groups..."
+  },
+  "privacy": {
+    "public": "Public",
+    "private": "Private",
+    "secret": "Secret"
   },
   "publicLabel": "Public",
   "privateLabel": "Private",
@@ -35,6 +49,24 @@
     "unban": "Unban Member",
     "memberCount": "Member Count"
   },
+  "roles": {
+    "owner": "Owner",
+    "ownerDescription": "Full control over the group",
+    "adminDescription": "Can manage members and moderate content",
+    "moderatorDescription": "Can moderate content and discussions",
+    "memberDescription": "Can participate and create posts",
+    "permissions": "Permissions"
+  },
+  "permissions": {
+    "manageGroup": "Manage Group",
+    "manageMembers": "Manage Members",
+    "deleteGroup": "Delete Group",
+    "moderateContent": "Moderate Content",
+    "manageEvents": "Manage Events",
+    "manageDiscussions": "Manage Discussions",
+    "createPosts": "Create Posts",
+    "participate": "Participate"
+  },
   "activities": {
     "recentPosts": "Recent Posts",
     "events": "Events",
@@ -42,5 +74,13 @@
     "announcements": "Announcements",
     "files": "Shared Files",
     "photos": "Photos"
+  },
+  "invitations": {
+    "title": "Group Invitation",
+    "message": "You have been invited to join {{groupName}}",
+    "accept": "Accept Invitation",
+    "decline": "Decline Invitation",
+    "expired": "This invitation has expired",
+    "alreadyMember": "You are already a member of this group"
   }
 }

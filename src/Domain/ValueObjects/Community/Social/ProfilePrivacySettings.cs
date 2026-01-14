@@ -18,7 +18,21 @@ namespace Domain.ValueObjects.Community.Social
         public bool AllowSearchByEmail { get; private set; }
         public bool AllowSearchByPhone { get; private set; }
 
-        private ProfilePrivacySettings() { }
+        private ProfilePrivacySettings()
+        {
+            ProfileVisibility = PrivacyLevel.Public;
+            PostsVisibility = PrivacyLevel.Public;
+            FriendsListVisibility = PrivacyLevel.Friends;
+            EmailVisibility = PrivacyLevel.Private;
+            PhoneVisibility = PrivacyLevel.Private;
+            LocationVisibility = PrivacyLevel.Friends;
+            DateOfBirthVisibility = PrivacyLevel.Friends;
+            AllowDirectMessages = true;
+            ShowOnlineStatus = true;
+            AllowTagging = true;
+            AllowSearchByEmail = false;
+            AllowSearchByPhone = false;
+        }
 
         public ProfilePrivacySettings(
             PrivacyLevel profileVisibility = PrivacyLevel.Public,

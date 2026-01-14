@@ -12,7 +12,10 @@ namespace Domain.ValueObjects.Community
         public Guid? ContentId { get; private set; }
         public string? Category { get; private set; }
 
-        private ReputationChange() { } // For EF Core
+        private ReputationChange()
+    {
+        Description = string.Empty;
+    } // For EF Core
 
         public ReputationChange(
             int points, 

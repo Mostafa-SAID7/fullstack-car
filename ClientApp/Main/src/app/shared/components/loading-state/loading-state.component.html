@@ -1,40 +1,45 @@
-<div class="loading-state" [ngClass]="'loading-state--' + type">
+<div class="w-full">
     <!-- Spinner -->
-    <div *ngIf="type === 'spinner'" class="loading-spinner">
-        <div class="spinner"></div>
-        <p>{{ message }}</p>
+    <div *ngIf="type === 'spinner'" class="flex flex-col items-center justify-center p-8 space-y-4">
+        <div class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent"></div>
+        <p class="text-sm text-muted-foreground animate-pulse">{{ message }}</p>
     </div>
 
     <!-- Skeleton Cards -->
-    <div *ngIf="type === 'skeleton'" class="loading-skeleton">
-        <div *ngFor="let item of items" class="skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="skeleton-content">
-                <div class="skeleton-line skeleton-line--title"></div>
-                <div class="skeleton-line skeleton-line--text"></div>
-                <div class="skeleton-line skeleton-line--text"></div>
+    <div *ngIf="type === 'skeleton'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let item of items"
+            class="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
+            <div class="h-48 bg-muted animate-pulse"></div>
+            <div class="p-6 space-y-4">
+                <div class="h-6 w-3/4 bg-muted animate-pulse rounded"></div>
+                <div class="space-y-2">
+                    <div class="h-4 w-full bg-muted animate-pulse rounded"></div>
+                    <div class="h-4 w-5/6 bg-muted animate-pulse rounded"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Grid Skeletons -->
-    <div *ngIf="type === 'grid'" class="loading-grid">
-        <div *ngFor="let item of items" class="skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="skeleton-content">
-                <div class="skeleton-line skeleton-line--title"></div>
-                <div class="skeleton-line skeleton-line--text"></div>
+    <div *ngIf="type === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div *ngFor="let item of items"
+            class="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
+            <div class="aspect-square bg-muted animate-pulse"></div>
+            <div class="p-4 space-y-3">
+                <div class="h-5 w-2/3 bg-muted animate-pulse rounded"></div>
+                <div class="h-4 w-1/2 bg-muted animate-pulse rounded"></div>
             </div>
         </div>
     </div>
 
     <!-- List Skeletons -->
-    <div *ngIf="type === 'list'" class="loading-list">
-        <div *ngFor="let item of items" class="skeleton-list-item">
-            <div class="skeleton-avatar"></div>
-            <div class="skeleton-content">
-                <div class="skeleton-line skeleton-line--title"></div>
-                <div class="skeleton-line skeleton-line--text"></div>
+    <div *ngIf="type === 'list'" class="space-y-4">
+        <div *ngFor="let item of items"
+            class="flex items-center gap-4 p-4 rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div class="h-12 w-12 rounded-full bg-muted animate-pulse"></div>
+            <div class="flex-1 space-y-2">
+                <div class="h-5 w-1/4 bg-muted animate-pulse rounded"></div>
+                <div class="h-4 w-3/4 bg-muted animate-pulse rounded"></div>
             </div>
         </div>
     </div>

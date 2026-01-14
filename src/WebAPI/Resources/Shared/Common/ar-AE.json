@@ -29,7 +29,34 @@
     "update": "تحديث",
     "create": "إنشاء",
     "add": "إضافة",
-    "remove": "إزالة"
+    "remove": "إزالة",
+    "retry": "إعادة المحاولة"
+  },
+  "community": {
+    "questions": {
+      "title": "أسئلة"
+    },
+    "posts": {
+      "title": "منشورات"
+    },
+    "guides": {
+      "title": "أدلة"
+    },
+    "friends": {
+      "title": "أصدقاء"
+    },
+    "groups": {
+      "title": "مجموعات"
+    },
+    "pages": {
+      "title": "صفحات"
+    },
+    "reviews": {
+      "title": "تقييمات"
+    },
+    "maps": {
+      "title": "خرائط"
+    }
   },
   "validation": {
     "required": "هالحقل مطلوب",

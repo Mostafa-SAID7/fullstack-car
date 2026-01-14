@@ -1,0 +1,57 @@
+<div class="fixed top-24 right-6 z-[100] flex flex-col gap-4 w-full max-w-sm pointer-events-none">
+    <!-- Toasts Loop -->
+    <div *ngFor="let toast of toasts; trackBy: trackById"
+        class="pointer-events-auto w-full transform transition-all duration-300 ease-out animate-fade-in-left group">
+
+        <!-- Toast Card -->
+        <div
+            class="relative overflow-hidden bg-white/90 dark:bg-[#1a1a1a]/95 backdrop-blur-xl border border-white/20 dark:border-white/10 p-4 rounded-2xl shadow-2xl shadow-black/5 flex items-start gap-4">
+
+            <!-- Colored Accent Bar -->
+            <div class="absolute left-0 top-0 bottom-0 w-1.5" [ngClass]="{
+          'bg-green-500': toast.type === 'success',
+          'bg-red-500': toast.type === 'error',
+          'bg-amber-500': toast.type === 'warning',
+          'bg-blue-500': toast.type === 'info'
+        }">
+            </div>
+
+            <!-- Icon Container -->
+            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" [ngClass]="{
+          'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400': toast.type === 'success',
+          'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400': toast.type === 'error',
+          'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400': toast.type === 'warning',
+          'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': toast.type === 'info'
+        }">
+                <i [class]="getIconClass(toast.type)" class="text-lg"></i>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0 pt-0.5">
+                <h4 *ngIf="toast.title" class="font-bold text-sm text-foreground mb-0.5 leading-tight">
+                    {{ toast.title }}
+                </h4>
+                <p class="text-sm font-medium text-muted-foreground leading-relaxed break-words">
+                    {{ toast.message }}
+                </p>
+            </div>
+
+            <!-- Close Button -->
+            <button (click)="removeToast(toast.id)"
+                class="flex-shrink-0 -mr-2 -mt-2 p-2 text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-black/5 dark:hover:bg-white/10 opacity-0 group-hover:opacity-100 focus:opacity-100">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+
+            <!-- Progress Bar (optional, for auto-dismiss) -->
+            <div *ngIf="!toast.persistent && toast.duration"
+                class="absolute bottom-0 left-0 h-0.5 bg-current opacity-20" [style.width.%]="100" [ngClass]="{
+          'text-green-500': toast.type === 'success',
+          'text-red-500': toast.type === 'error',
+          'text-amber-500': toast.type === 'warning',
+          'text-blue-500': toast.type === 'info'
+        }">
+                <!-- Note: Real progress animation would require CSS variable or JS -->
+            </div>
+        </div>
+    </div>
+</div>

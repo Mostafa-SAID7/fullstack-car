@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { Post } from '../../../../../core/models/post.model';
 import { PostService } from '../../../services/post.service';
+import { TranslationService } from '../../../../../core/services/translation.service';
 
 @Component({
     selector: 'app-post-item',
@@ -12,19 +14,40 @@ import { PostService } from '../../../services/post.service';
     templateUrl: './post-item.component.html',
     host: { 'class': 'block' }
 })
-export class PostItemComponent implements OnInit {
+export class PostItemComponent implements OnInit, OnDestroy {
     @Input() post!: Post;
 
     isLiked = false;
     showComments = false;
     commentContent = '';
     isSubmittingComment = false;
+    
+    private destroy$ = new Subject<void>();
 
-    constructor(private postService: PostService) { }
+    constructor(
+        private postService: PostService,
+        private translationService: TranslationService
+    ) { }
 
     ngOnInit(): void {
+        this.initializeTranslations();
         // In a real app, we'd check if the current user has liked this post
         // For now, we'll initialize based on backend data if available
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    private async initializeTranslations(): Promise<void> {
+        try {
+            // Ensure posts translations are loaded
+            const currentLanguage = this.translationService.getCurrentLanguage().code;
+            await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'posts');
+        } catch (error) {
+            console.error('Failed to load posts translations:', error);
+        }
     }
 
     toggleLike(): void {

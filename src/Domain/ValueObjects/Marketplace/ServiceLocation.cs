@@ -10,7 +10,14 @@ public class ServiceLocation : ValueObject
     public double Latitude { get; private set; }
     public double Longitude { get; private set; }
 
-    private ServiceLocation() { } // For EF Core
+    private ServiceLocation()
+    {
+        Address = string.Empty;
+        City = string.Empty;
+        State = string.Empty;
+        ZipCode = string.Empty;
+        Country = string.Empty;
+    } // For EF Core
 
     public ServiceLocation(string address, string city, string state, string zipCode, 
         string country, double latitude, double longitude)

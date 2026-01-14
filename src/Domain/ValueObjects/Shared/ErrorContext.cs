@@ -10,8 +10,9 @@ public class ErrorContext : ValueObject
     public string? CorrelationId { get; private set; }
     public Dictionary<string, object> AdditionalData { get; private set; }
 
-    private ErrorContext() 
-    { 
+    private ErrorContext()
+    {
+        Source = string.Empty;
         AdditionalData = new Dictionary<string, object>();
     } // For EF Core
 

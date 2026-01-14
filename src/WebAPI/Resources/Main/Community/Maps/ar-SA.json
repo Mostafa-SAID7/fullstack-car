@@ -17,7 +17,8 @@
     "getDirections": "الحصول على الاتجاهات",
     "noLocationFound": "لم يتم العثور على موقع",
     "locationPermissionDenied": "تم رفض إذن الموقع",
-    "locationUnavailable": "الموقع غير متاح"
+    "locationUnavailable": "الموقع غير متاح",
+    "addLocation": "إضافة موقع"
   },
   "locations": {
     "categories": {
@@ -44,6 +45,10 @@
       "busStation": "محطة حافلات",
       "trainStation": "محطة قطار",
       "carRental": "تأجير سيارات",
+      "showroom": "معرض سيارات",
+      "serviceCenter": "مركز خدمة",
+      "spareParts": "قطع غيار",
+      "chargingStation": "محطة شحن",
       "other": "أخرى"
     },
     "details": {
@@ -111,7 +116,8 @@
     "hasPhotos": "يحتوي على صور",
     "hasReviews": "يحتوي على مراجعات",
     "clearFilters": "مسح المرشحات",
-    "showMore": "عرض المزيد من النتائج"
+    "showMore": "عرض المزيد من النتائج",
+    "tryAdjustingFilters": "جرب تعديل المرشحات أو مصطلحات البحث"
   },
   "privacy": {
     "title": "خصوصية الموقع",

@@ -7,19 +7,38 @@
     "publish": "Publish",
     "draft": "Save as Draft",
     "preview": "Preview",
-    "postTitle": "Post Title",
-    "postContent": "Post Content",
+    "postTitle": "What's the title of your post?",
+    "postContent": "Share your thoughts...",
+    "imageUrl": "Add an image URL (optional)",
     "tags": "Tags",
     "category": "Category",
     "visibility": "Visibility",
     "public": "Public",
     "private": "Private",
     "friends": "Friends Only",
-    "whatsOnYourMind": "What's on your mind, {0}?",
+    "whatsOnYourMind": "What's on your mind, {{value}}?",
     "liveVideo": "Live video",
     "photoVideo": "Photo/video",
     "feelingActivity": "Feeling/activity",
-    "noPosts": "No posts found. Be the first to share something!"
+    "noPosts": "No posts available",
+    "beFirstToShare": "Be the first to share something with the community!",
+    "searchPlaceholder": "Search posts...",
+    "filters": "Filters",
+    "sortBy": "Sort By",
+    "sortNewest": "Newest First",
+    "sortMostViewed": "Most Viewed",
+    "sortMostLiked": "Most Liked",
+    "performanceView": "Performance View",
+    "posting": "Posting...",
+    "validation": {
+      "titleRequired": "Post title is required",
+      "titleMinLength": "Title must be at least 3 characters long",
+      "titleMaxLength": "Title cannot exceed 200 characters",
+      "contentRequired": "Post content is required",
+      "contentMinLength": "Content must be at least 10 characters long",
+      "contentMaxLength": "Content cannot exceed 5000 characters",
+      "imageUrlInvalid": "Please enter a valid image URL (jpg, jpeg, png, gif, webp)"
+    }
   },
   "stories": {
     "create": "Create Story"
@@ -32,9 +51,9 @@
     "report": "Report",
     "bookmark": "Bookmark",
     "unbookmark": "Remove Bookmark",
-    "likeCount": "Likes",
-    "commentCount": "Comments",
-    "shareCount": "Shares"
+    "likeCount": "likes",
+    "commentCount": "comments",
+    "shareCount": "shares"
   },
   "comments": {
     "addComment": "Add Comment",

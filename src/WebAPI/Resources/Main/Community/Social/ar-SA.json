@@ -36,7 +36,20 @@
     "friendsSince": "أصدقاء منذ {0}",
     "totalFriends": "إجمالي الأصدقاء",
     "onlineFriends": "الأصدقاء المتصلون",
-    "recentActivity": "النشاط الحديث"
+    "recentActivity": "النشاط الحديث",
+    "findFriends": "البحث عن أصدقاء",
+    "searchPlaceholder": "البحث عن أصدقاء...",
+    "sortByName": "الاسم أ-ي",
+    "sortByRecent": "المضافون حديثاً",
+    "sortByOnline": "المتصلون حديثاً",
+    "connectWithCommunity": "تواصل مع عشاق السيارات الآخرين في المجتمع!",
+    "confirmRemove": "هل أنت متأكد من إزالة هذا الصديق؟",
+    "friendRemoved": "تم إزالة الصديق",
+    "removeFriendError": "فشل في إزالة الصديق",
+    "requestAccepted": "تم قبول طلب الصداقة",
+    "requestDeclined": "تم رفض طلب الصداقة",
+    "requestAcceptError": "فشل في قبول طلب الصداقة",
+    "requestDeclineError": "فشل في رفض طلب الصداقة"
   },
   "status": {
     "pending": "معلق",
@@ -276,5 +289,18 @@
     "yearsAgo": "منذ {0} سنة",
     "online": "متصل",
     "lastActive": "آخر نشاط {0}"
+  },
+  "common": {
+    "filters": "المرشحات",
+    "sortBy": "ترتيب حسب",
+    "search": "بحث",
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "close": "إغلاق"
   }
 }

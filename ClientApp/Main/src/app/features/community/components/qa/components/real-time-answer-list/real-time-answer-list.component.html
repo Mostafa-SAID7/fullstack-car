@@ -1,0 +1,103 @@
+<div class="space-y-4">
+    <!-- Loading State -->
+    <app-loading-spinner *ngIf="loading" text="Loading answers..." size="md">
+    </app-loading-spinner>
+
+    <!-- Error State -->
+    <app-error-display *ngIf="error && !loading" [message]="error" type="generic" [showRetry]="true"
+        (retry)="onRetry()">
+    </app-error-display>
+
+    <!-- Answers List -->
+    <div class="space-y-6" *ngIf="!loading && !error">
+
+        <!-- No Answers State -->
+        <div *ngIf="answers.length === 0" class="py-12 text-center bg-gray-50 dark:bg-white/5 rounded-2xl">
+            <div
+                class="w-16 h-16 bg-secondary/30 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-comments text-2xl text-muted-foreground/50"></i>
+            </div>
+            <h3 class="text-lg font-bold text-foreground">No answers yet</h3>
+            <p class="text-sm text-muted-foreground">Be the first to answer this question!</p>
+        </div>
+
+        <!-- Answer Items -->
+        <div class="group relative bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg"
+            *ngFor="let answer of sortedAnswers; trackBy: trackByAnswerId" [ngClass]="{
+                'border-green-500': answer.isAccepted,
+                'bg-green-50': answer.isAccepted,
+                'dark:bg-green-900/10': answer.isAccepted,
+                'ring-2': isNewAnswer(answer.id),
+                'ring-blue-500': isNewAnswer(answer.id)
+            }">
+
+            <!-- New Answer Indicator Badge -->
+            <div *ngIf="isNewAnswer(answer.id)"
+                class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-2 animate-bounce">
+                <i class="fas fa-bolt"></i> New Answer
+            </div>
+
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <!-- Avatar -->
+                    <div
+                        class="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center overflow-hidden">
+                        <img *ngIf="answer.userAvatar" [src]="answer.userAvatar" [alt]="answer.userName"
+                            class="w-full h-full object-cover">
+                        <span *ngIf="!answer.userAvatar" class="font-bold text-sm text-primary">{{
+                            getInitials(answer.userName) }}</span>
+                    </div>
+
+                    <div>
+                        <div class="font-bold text-foreground flex items-center gap-2">
+                            {{ answer.userName }}
+                            <i *ngIf="answer.isAccepted" class="fas fa-check-circle text-green-500"
+                                title="Accepted Answer"></i>
+                        </div>
+                        <div class="text-xs text-muted-foreground font-medium flex items-center gap-2">
+                            <span>{{ answer.createdAt | relativeTime }}</span>
+                            <span *ngIf="answer.updatedAt && answer.updatedAt > answer.createdAt"
+                                class="flex items-center gap-1">
+                                • <i class="fas fa-pencil-alt text-[10px]"></i> edited {{ answer.updatedAt |
+                                relativeTime }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-1">
+                    <app-form-button *ngIf="canAcceptAnswer(answer)" (clicked)="onAcceptAnswer(answer)" variant="ghost"
+                        size="sm" [disabled]="acceptingAnswer === answer.id" title="Accept this answer">
+                        <i class="fas fa-check" [class.text-green-500]="answer.isAccepted"></i>
+                    </app-form-button>
+
+                    <app-form-button (clicked)="onShareAnswer(answer)" variant="ghost" size="sm" title="Share">
+                        <i class="fas fa-share-alt"></i>
+                    </app-form-button>
+
+                    <app-form-button *ngIf="canEditAnswer(answer)" (clicked)="onEditAnswer(answer)" variant="ghost"
+                        size="sm" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </app-form-button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="grid grid-cols-[auto_1fr] gap-4">
+                <!-- Voting -->
+                <div class="pt-1">
+                    <app-real-time-vote-display [contentId]="answer.id" contentType="Answer"
+                        [initialVoteScore]="answer.voteScore" [initialUserVote]="answer.userVote || null">
+                    </app-real-time-vote-display>
+                </div>
+
+                <!-- Text -->
+                <div class="prose prose-sm max-w-none text-foreground break-words"
+                    [innerHTML]="formatAnswerContent(answer.content)"></div>
+            </div>
+
+        </div>
+    </div>
+</div>

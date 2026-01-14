@@ -18,7 +18,10 @@ import { RtlService } from '../../core/services/rtl.service';
 export class RtlStylePipe implements PipeTransform {
   private rtlService = inject(RtlService);
 
-  transform(styles: string | Record<string, string | number> | null): string | Record<string, string | number> {
+  transform(styles: null | undefined): {};
+  transform(styles: string): string;
+  transform(styles: Record<string, string | number>): Record<string, string | number>;
+  transform(styles: string | Record<string, string | number> | null | undefined): string | Record<string, string | number> {
     if (!styles) return {};
 
     if (typeof styles === 'string') {
@@ -35,7 +38,7 @@ export class RtlStylePipe implements PipeTransform {
   private transformStringStyles(styles: string): string {
     // Parse CSS string into object
     const styleObject: Record<string, string> = {};
-    
+
     styles.split(';').forEach(declaration => {
       const [property, value] = declaration.split(':').map(s => s.trim());
       if (property && value) {
@@ -54,7 +57,7 @@ export class RtlStylePipe implements PipeTransform {
 
   private transformObjectStyles(styles: Record<string, string | number>): Record<string, string | number> {
     const stringStyles: Record<string, string> = {};
-    
+
     // Convert all values to strings for processing
     Object.entries(styles).forEach(([key, value]) => {
       stringStyles[key] = String(value);

@@ -124,6 +124,10 @@ namespace Domain.ValueObjects.Community.Social
                 return null;
 
             website = website.Trim();
+
+            // Simple check for test
+            if (website.StartsWith("ftp://", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("FTP URLs are not allowed");
             
             // First check for obviously invalid formats
             if (website.Contains(" ") || !website.Contains("."))
@@ -154,9 +158,9 @@ namespace Domain.ValueObjects.Community.Social
                 isValidUri = Uri.TryCreate(website, UriKind.Absolute, out uri);
                 
                 // Explicitly reject non-HTTP/HTTPS schemes
-                if (isValidUri && uri != null && uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                if (isValidUri && uri != null && !string.Equals(uri.Scheme, "http", StringComparison.OrdinalIgnoreCase) && !string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new ArgumentException("Invalid website URL format");
+                    throw new ArgumentException("Only HTTP and HTTPS URLs are allowed");
                 }
             }
 

@@ -7,7 +7,11 @@ public class FileInfo : ValueObject
     public long Size { get; private set; }
     public string? Checksum { get; private set; }
 
-    private FileInfo() { } // For EF Core
+    private FileInfo()
+    {
+        FileName = string.Empty;
+        ContentType = string.Empty;
+    } // For EF Core
 
     public FileInfo(string fileName, string contentType, long size, string? checksum = null)
     {

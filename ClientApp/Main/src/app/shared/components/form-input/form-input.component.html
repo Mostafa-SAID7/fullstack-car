@@ -1,59 +1,48 @@
 <div [class]="containerClasses">
   <!-- Label -->
   @if (label) {
-    <label 
-      [for]="inputId"
-      class="text-sm font-medium text-gray-900 flex items-center gap-1">
-      {{ label }}
-      @if (required) {
-        <span class="text-red-500">*</span>
-      }
-    </label>
+  <label [for]="inputId" class="text-sm font-medium text-gray-900 flex items-center gap-1">
+    {{ label }}
+    @if (required) {
+    <span class="text-red-500">*</span>
+    }
+  </label>
   }
 
   <!-- Input Container -->
   <div class="relative">
     <!-- Start Icon -->
     @if (startIcon) {
-      <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-        <mat-icon class="text-base">{{ startIcon }}</mat-icon>
-      </div>
+    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+      <i [class]="'fas fa-' + startIcon + ' text-base'"></i>
+    </div>
     }
 
     <!-- Input -->
-    <input
-      [id]="inputId"
-      [type]="type"
-      [placeholder]="placeholder"
-      [value]="value"
-      [disabled]="disabled"
-      [required]="required"
-      [class]="inputClasses"
-      (input)="onInput($event)"
-      (blur)="onBlur($event)"
-      (focus)="onFocus($event)"
-    />
+    <input [id]="inputId" [type]="type" [placeholder]="placeholder" [value]="value" [disabled]="disabled"
+      [required]="required" [class]="inputClasses" (input)="onInput($event)" (blur)="onBlur($event)"
+      (focus)="onFocus($event)" />
 
     <!-- End Icon -->
     @if (endIcon) {
-      <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-        <mat-icon class="text-base">{{ endIcon }}</mat-icon>
-      </div>
+    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+      <i [class]="'fas fa-' + endIcon + ' text-base'"></i>
+    </div>
     }
   </div>
 
   <!-- Error Message -->
   @if (error) {
-    <p class="text-sm text-red-600 flex items-center gap-1">
-      <span class="w-1 h-1 bg-red-600 rounded-full flex-shrink-0"></span>
-      {{ error }}
-    </p>
+  <p class="text-sm text-red-600 flex items-center gap-1">
+    <span class="w-1 h-1 bg-red-600 rounded-full flex-shrink-0"></span>
+    {{ error }}
+  </p>
   }
 
   <!-- Helper Text -->
   @if (helperText && !error) {
-    <p class="text-sm text-gray-500">
-      {{ helperText }}
-    </p>
+  <p class="text-sm text-gray-500">
+    {{ helperText }}
+  </p>
   }
 </div>

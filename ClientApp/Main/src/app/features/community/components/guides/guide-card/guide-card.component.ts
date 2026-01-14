@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GuideListItem, GuideDifficulty } from '../../../models/guide.model';
 
 @Component({
@@ -14,6 +14,8 @@ import { GuideListItem, GuideDifficulty } from '../../../models/guide.model';
 export class GuideCardComponent {
     @Input() guide!: GuideListItem;
     @Output() bookmarkClick = new EventEmitter<GuideListItem>();
+
+    constructor(private translate: TranslateService) {}
 
     getDifficultyColor(difficulty: GuideDifficulty): string {
         switch (difficulty) {
@@ -30,13 +32,32 @@ export class GuideCardComponent {
         }
     }
 
+    getDifficultyTranslationKey(difficulty: GuideDifficulty): string {
+        switch (difficulty) {
+            case GuideDifficulty.Beginner:
+                return 'guides.difficulty.beginner';
+            case GuideDifficulty.Intermediate:
+                return 'guides.difficulty.intermediate';
+            case GuideDifficulty.Advanced:
+                return 'guides.difficulty.advanced';
+            case GuideDifficulty.Expert:
+                return 'guides.difficulty.expert';
+            default:
+                return 'guides.difficulty.beginner';
+        }
+    }
+
     formatReadTime(minutes: number): string {
         if (minutes < 60) {
-            return `${minutes} min read`;
+            return `${minutes} ${this.translate.instant('guides.duration.minutes')}`;
         }
         const hours = Math.floor(minutes / 60);
         const remainingMinutes = minutes % 60;
-        return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+        
+        if (remainingMinutes > 0) {
+            return `${hours}${this.translate.instant('guides.duration.hours')} ${remainingMinutes}${this.translate.instant('guides.duration.minutes')}`;
+        }
+        return `${hours}${this.translate.instant('guides.duration.hours')}`;
     }
 
     onBookmarkClick(event: Event) {

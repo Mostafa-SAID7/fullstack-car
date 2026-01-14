@@ -7,14 +7,38 @@
     "publish": "انشر",
     "draft": "احفظ مسودة",
     "preview": "معاينة",
-    "postTitle": "العنوان",
+    "postTitle": "وش عنوان المشاركة؟",
     "postContent": "وش تفكر فيه؟",
+    "imageUrl": "أضف رابط صورة (اختياري)",
     "tags": "وسوم",
     "category": "التصنيف",
     "visibility": "الظهور",
     "public": "الكل",
     "private": "خاص",
-    "friends": "الأصدقاء"
+    "friends": "الأصدقاء",
+    "whatsOnYourMind": "وش تفكر فيه يا {{value}}؟",
+    "liveVideo": "بث مباشر",
+    "photoVideo": "صور وفيديوهات",
+    "feelingActivity": "مشاعر ونشاطات",
+    "noPosts": "ما فيه مشاركات",
+    "beFirstToShare": "كن أول واحد يشارك شيء مع المجتمع!",
+    "searchPlaceholder": "دور في المشاركات...",
+    "filters": "فلاتر",
+    "sortBy": "رتب حسب",
+    "sortNewest": "الأحدث أولاً",
+    "sortMostViewed": "الأكثر مشاهدة",
+    "sortMostLiked": "الأكثر إعجاباً",
+    "performanceView": "عرض الأداء",
+    "posting": "ينشر...",
+    "validation": {
+      "titleRequired": "عنوان المشاركة مطلوب",
+      "titleMinLength": "العنوان لازم يكون على الأقل 3 أحرف",
+      "titleMaxLength": "العنوان ما يقدر يزيد عن 200 حرف",
+      "contentRequired": "محتوى المشاركة مطلوب",
+      "contentMinLength": "المحتوى لازم يكون على الأقل 10 أحرف",
+      "contentMaxLength": "المحتوى ما يقدر يزيد عن 5000 حرف",
+      "imageUrlInvalid": "اكتب رابط صورة صحيح (jpg, jpeg, png, gif, webp)"
+    }
   },
   "interactions": {
     "like": "إعجاب",
@@ -24,9 +48,9 @@
     "report": "إبلاغ",
     "bookmark": "حفظ",
     "unbookmark": "إلغاء الحفظ",
-    "likeCount": "الإعجابات",
-    "commentCount": "التعليقات",
-    "shareCount": "المشاركات"
+    "likeCount": "إعجاب",
+    "commentCount": "تعليق",
+    "shareCount": "مشاركة"
   },
   "comments": {
     "addComment": "أضف تعليق",

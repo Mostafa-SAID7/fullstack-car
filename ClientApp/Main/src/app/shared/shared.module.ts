@@ -26,6 +26,8 @@ import { BidiTextDirective } from './directives/bidi-text.directive';
 // Import standalone pipes
 import { RtlClassPipe } from './pipes/rtl-class.pipe';
 import { RtlStylePipe } from './pipes/rtl-style.pipe';
+import { CultureDatePipe } from './pipes/culture-date.pipe';
+import { RelativeTimePipe } from './pipes/relative-time.pipe';
 
 @NgModule({
     declarations: [
@@ -55,7 +57,9 @@ import { RtlStylePipe } from './pipes/rtl-style.pipe';
         BidiTextDirective,
         // Import standalone pipes
         RtlClassPipe,
-        RtlStylePipe
+        RtlStylePipe,
+        CultureDatePipe,
+        RelativeTimePipe
     ],
     exports: [
         CommonModule,
@@ -81,7 +85,9 @@ import { RtlStylePipe } from './pipes/rtl-style.pipe';
         BidiTextDirective,
         // Export standalone pipes
         RtlClassPipe,
-        RtlStylePipe
+        RtlStylePipe,
+        CultureDatePipe,
+        RelativeTimePipe
     ]
 })
 export class SharedModule { }

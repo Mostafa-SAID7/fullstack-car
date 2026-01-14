@@ -1,16 +1,15 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+
 
 export type InputVariant = 'default' | 'filled' | 'outlined' | 'glass';
 
 @Component({
   selector: 'app-form-input',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule],
   templateUrl: './form-input.component.html',
-  styleUrls: ['./form-input.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -31,7 +30,7 @@ export class FormInputComponent implements ControlValueAccessor {
   @Input() variant: InputVariant = 'default';
   @Input() required = false;
   @Input() disabled = false;
-  
+
   @Output() valueChange = new EventEmitter<string>();
   @Output() blurEvent = new EventEmitter<Event>();
   @Output() focusEvent = new EventEmitter<Event>();
@@ -77,7 +76,7 @@ export class FormInputComponent implements ControlValueAccessor {
 
   get inputClasses(): string {
     const baseClasses = 'flex h-10 w-full rounded-lg border px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors';
-    
+
     const variantClasses = {
       default: 'border-gray-300 bg-white',
       filled: 'border-transparent bg-gray-100',

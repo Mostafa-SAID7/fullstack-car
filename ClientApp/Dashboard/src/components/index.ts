@@ -36,6 +36,10 @@ export * from './auth';
 export * from './RTLLayout';
 export * from './RTLUtils';
 
+// Language Switcher Component
+export { LanguageSwitcher } from './LanguageSwitcher';
+export { default as LanguageSwitcherDefault } from './LanguageSwitcher';
+
 // QA Components
 export * from './qa';
 

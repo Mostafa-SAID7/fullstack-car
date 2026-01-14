@@ -33,7 +33,34 @@
     "memories": "Memories",
     "saved": "Saved",
     "shortcuts": "Shortcuts",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "retry": "Retry"
+  },
+  "community": {
+    "questions": {
+      "title": "Questions"
+    },
+    "posts": {
+      "title": "Posts"
+    },
+    "guides": {
+      "title": "Guides"
+    },
+    "friends": {
+      "title": "Friends"
+    },
+    "groups": {
+      "title": "Groups"
+    },
+    "pages": {
+      "title": "Pages"
+    },
+    "reviews": {
+      "title": "Reviews"
+    },
+    "maps": {
+      "title": "Maps"
+    }
   },
   "validation": {
     "required": "This field is required",

@@ -5,7 +5,10 @@ public class CacheKey : ValueObject
     public string Key { get; private set; }
     public string? Region { get; private set; }
 
-    private CacheKey() { } // For EF Core
+    private CacheKey()
+    {
+        Key = string.Empty;
+    } // For EF Core
 
     public CacheKey(string key, string? region = null)
     {

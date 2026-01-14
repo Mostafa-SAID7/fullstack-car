@@ -7,14 +7,38 @@
     "publish": "انشر",
     "draft": "شيله مسودة",
     "preview": "وريني",
-    "postTitle": "عنوان البوست",
+    "postTitle": "إيه عنوان البوست؟",
     "postContent": "إيه اللي في دماغك؟",
+    "imageUrl": "حط رابط صورة (اختياري)",
     "tags": "تاجز",
     "category": "تصنيف",
     "visibility": "مين يشوفه",
     "public": "كله يشوف",
     "private": "أنا بس",
-    "friends": "صحابي"
+    "friends": "صحابي",
+    "whatsOnYourMind": "إيه اللي في دماغك يا {{value}}؟",
+    "liveVideo": "لايف",
+    "photoVideo": "صور وفيديوهات",
+    "feelingActivity": "مشاعر ونشاطات",
+    "noPosts": "مفيش بوستات",
+    "beFirstToShare": "كن أول واحد يشارك حاجة مع الكوميونيتي!",
+    "searchPlaceholder": "دور في البوستات...",
+    "filters": "فلاتر",
+    "sortBy": "رتب حسب",
+    "sortNewest": "الأحدث الأول",
+    "sortMostViewed": "الأكثر مشاهدة",
+    "sortMostLiked": "الأكثر إعجاباً",
+    "performanceView": "عرض الأداء",
+    "posting": "بينشر...",
+    "validation": {
+      "titleRequired": "عنوان البوست مطلوب",
+      "titleMinLength": "العنوان لازم يكون على الأقل 3 حروف",
+      "titleMaxLength": "العنوان ميقدرش يزيد عن 200 حرف",
+      "contentRequired": "محتوى البوست مطلوب",
+      "contentMinLength": "المحتوى لازم يكون على الأقل 10 حروف",
+      "contentMaxLength": "المحتوى ميقدرش يزيد عن 5000 حرف",
+      "imageUrlInvalid": "اكتب رابط صورة صحيح (jpg, jpeg, png, gif, webp)"
+    }
   },
   "interactions": {
     "like": "لايك",
@@ -24,9 +48,9 @@
     "report": "بلغ عنه",
     "bookmark": "سيفه",
     "unbookmark": "شيل التسييف",
-    "likeCount": "اللايكات",
-    "commentCount": "الكومنتات",
-    "shareCount": "الشيرات"
+    "likeCount": "لايك",
+    "commentCount": "كومنت",
+    "shareCount": "شير"
   },
   "comments": {
     "addComment": "اكتب كومنت",

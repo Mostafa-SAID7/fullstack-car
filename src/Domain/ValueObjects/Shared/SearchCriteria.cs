@@ -2,7 +2,7 @@ namespace Domain.ValueObjects.Shared;
 
 public class SearchCriteria : ValueObject
 {
-    public string Query { get; private set; }
+    public string Query { get; private set; } = string.Empty;
     public SearchType SearchType { get; private set; }
     public Dictionary<string, object> Filters { get; private set; }
     public string? SortBy { get; private set; }

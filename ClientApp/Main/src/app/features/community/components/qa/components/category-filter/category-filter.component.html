@@ -1,0 +1,16 @@
+<div class="space-y-4">
+  <h4 class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Filter by Category</h4>
+
+  <!-- Category Dropdown -->
+  <app-filter-select [ngModel]="selectedCategory" (selectionChange)="onFilterSelectChange($event)"
+    [options]="categoryOptions" icon="fa-folder" placeholder="All Categories">
+  </app-filter-select>
+
+  <!-- Popular Categories -->
+  <div class="space-y-3">
+    <h5 class="text-xs font-bold uppercase tracking-widest text-muted-foreground opacity-70">Popular Categories</h5>
+    <app-filter-chips [options]="popularCategoryOptions" [selectedValue]="selectedCategory"
+      (selectionChange)="onChipSelect($event)">
+    </app-filter-chips>
+  </div>
+</div>

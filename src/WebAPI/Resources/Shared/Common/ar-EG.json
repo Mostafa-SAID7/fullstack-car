@@ -29,7 +29,34 @@
     "update": "حدث",
     "create": "اعمل جديد",
     "add": "زود",
-    "remove": "شيل"
+    "remove": "شيل",
+    "retry": "حاول تاني"
+  },
+  "community": {
+    "questions": {
+      "title": "أسئلة"
+    },
+    "posts": {
+      "title": "بوستات"
+    },
+    "guides": {
+      "title": "أدلة"
+    },
+    "friends": {
+      "title": "صحاب"
+    },
+    "groups": {
+      "title": "جروبات"
+    },
+    "pages": {
+      "title": "صفحات"
+    },
+    "reviews": {
+      "title": "تقييمات"
+    },
+    "maps": {
+      "title": "خرائط"
+    }
   },
   "validation": {
     "required": "الحقل ده مطلوب",

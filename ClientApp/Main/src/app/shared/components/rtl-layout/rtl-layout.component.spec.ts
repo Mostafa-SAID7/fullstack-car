@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
+
 import { RtlLayoutComponent } from './rtl-layout.component';
 import { RtlService } from '../../../core/services/rtl.service';
 import { TranslationService } from '../../../core/services/translation.service';
-import { BehaviorSubject } from 'rxjs';
 
 describe('RtlLayoutComponent', () => {
   let component: RtlLayoutComponent;
@@ -32,7 +35,11 @@ describe('RtlLayoutComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [RtlLayoutComponent],
+      imports: [
+        RtlLayoutComponent,
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
         { provide: RtlService, useValue: rtlServiceSpy },
         { provide: TranslationService, useValue: translationServiceSpy }

@@ -1,10 +1,12 @@
-<div class="empty-state">
-    <div class="empty-state__icon">
-        <i [class]="'fa-solid ' + icon"></i>
+<div
+    class="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 min-h-[300px]">
+    <div class="mb-4 text-gray-400 dark:text-gray-500">
+        <i [class]="'fa-solid text-4xl ' + icon"></i>
     </div>
-    <h3 class="empty-state__message">{{ message }}</h3>
-    <p class="empty-state__description">{{ description }}</p>
-    <button *ngIf="actionText" class="empty-state__action">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ message }}</h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6">{{ description }}</p>
+    <button *ngIf="actionText"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md text-sm font-medium transition-colors">
         <i *ngIf="actionIcon" [class]="'fa-solid ' + actionIcon"></i>
         {{ actionText }}
     </button>

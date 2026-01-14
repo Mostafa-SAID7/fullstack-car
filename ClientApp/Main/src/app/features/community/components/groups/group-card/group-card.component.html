@@ -1,15 +1,17 @@
 <div class="fb-card group/card overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
     <div class="relative h-32 overflow-hidden bg-secondary/20">
         <img *ngIf="group.imageUrl" [src]="group.imageUrl"
-            class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110">
+            class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+            [alt]="group.name">
         <div *ngIf="!group.imageUrl"
             class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
             <i class="fa-solid fa-users text-4xl text-primary/20"></i>
         </div>
         <div class="absolute top-3 right-3">
             <span
-                class="mica-effect px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary border border-primary/20">
-                {{ group.privacy === 0 ? 'Public' : 'Private' }}
+                class="mica-effect px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary border border-primary/20"
+                [title]="getPrivacyDescription(group.privacy)">
+                {{ getPrivacyLabel(group.privacy) }}
             </span>
         </div>
     </div>
@@ -20,12 +22,13 @@
 
         <div class="flex items-center justify-between pt-4 border-t border-border/10">
             <div class="flex flex-col">
-                <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Members</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{{ 'membersLabel' | translate }}</span>
                 <span class="text-sm font-black">{{ group.membersCount }}</span>
             </div>
             <button (click)="joinGroup()"
-                class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-6 py-2 rounded-xl transition-all duration-300 font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/5 hover:shadow-primary/20">
-                Join
+                class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-6 py-2 rounded-xl transition-all duration-300 font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/5 hover:shadow-primary/20"
+                [attr.aria-label]="('joinLabel' | translate) + ' ' + group.name">
+                {{ 'joinLabel' | translate }}
             </button>
         </div>
     </div>

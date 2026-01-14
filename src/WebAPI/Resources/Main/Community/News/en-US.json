@@ -6,13 +6,15 @@
     "trending": "Trending",
     "following": "Following",
     "saved": "Saved Articles",
+    "related": "Related Articles",
     "readMore": "Read More",
     "readLess": "Read Less",
+    "readTime": "5 min read",
     "fullArticle": "Read Full Article",
     "summary": "Summary",
     "noNews": "No news articles found",
     "loadMore": "Load More Articles",
-    "refresh": "Refresh Feed"
+    "refresh": "Check back later for more updates!"
   },
   "categories": {
     "title": "News Categories",

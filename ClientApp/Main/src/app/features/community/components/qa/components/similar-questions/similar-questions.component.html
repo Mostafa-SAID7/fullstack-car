@@ -1,0 +1,54 @@
+<div *ngIf="similarQuestions.length > 0" class="space-y-4">
+    <div *ngFor="let question of similarQuestions" (click)="navigateToQuestion(question)"
+        class="group bg-secondary/10 dark:bg-white/5 rounded-2xl p-4 cursor-pointer hover:bg-secondary/20 dark:hover:bg-white/10 transition-all border border-transparent hover:border-primary/20">
+
+        <div class="flex items-start gap-4">
+            <!-- Stats Column -->
+            <div class="flex flex-col gap-2 text-xs font-bold text-muted-foreground min-w-[60px]">
+                <div class="text-center" title="Votes">
+                    <div class="text-lg font-black text-foreground">{{ question.voteScore }}</div>
+                    <div class="uppercase tracking-widest text-[10px]">votes</div>
+                </div>
+                <div class="text-center" title="Answers">
+                    <div class="text-lg font-black text-foreground">{{ question.answerCount }}</div>
+                    <div class="uppercase tracking-widest text-[10px]">ans</div>
+                </div>
+            </div>
+
+            <!-- Content Column -->
+            <div class="flex-1 min-w-0">
+                <h4
+                    class="font-bold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 leading-tight">
+                    {{ question.title }}
+                </h4>
+
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground font-medium">
+                    <span class="flex items-center gap-1" [ngClass]="getRelevanceColor(question.relevanceLevel)">
+                        <i class="fas" [ngClass]="getRelevanceIcon(question.relevanceLevel)"></i>
+                        {{ (question.similarityScore * 100).toFixed(0) }}% match
+                    </span>
+                    <span *ngIf="question.category" class="flex items-center gap-1">
+                        <i class="fas fa-folder text-muted-foreground/70"></i>
+                        {{ question.category }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <i class="fas fa-clock text-muted-foreground/70"></i>
+                        {{ question.createdAt | relativeTime }}
+                    </span>
+                </div>
+
+                <div class="mt-2 text-xs text-muted-foreground/80 italic truncate">
+                    Match due to: {{ question.matchReason }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="similarQuestions.length === 0 && loading" class="py-8 text-center text-muted-foreground text-sm">
+    <i class="fas fa-spinner fa-spin mr-2"></i> Finding similar questions...
+</div>
+
+<div *ngIf="similarQuestions.length === 0 && !loading" class="py-8 text-center text-muted-foreground text-sm italic">
+    No similar questions found.
+</div>

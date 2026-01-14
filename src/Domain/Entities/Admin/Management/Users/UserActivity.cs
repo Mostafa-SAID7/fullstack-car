@@ -12,7 +12,7 @@ public class UserActivity : BaseEntity
     public string? IpAddress { get; set; }
     public string? UserAgent { get; set; }
     public string? Metadata { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public new DateTime CreatedAt { get; set; }
 
     // Navigation Properties
     public ApplicationUser User { get; set; } = null!;

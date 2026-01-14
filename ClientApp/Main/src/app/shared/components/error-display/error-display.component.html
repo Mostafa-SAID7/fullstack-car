@@ -2,16 +2,14 @@
   <div class="mb-6">
     <!-- Error Icon -->
     <div [class]="'bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 ' + sizeConfig.iconContainer">
-      <mat-icon [class]="errorConfig.color + ' ' + sizeConfig.icon">
-        {{ errorConfig.icon }}
-      </mat-icon>
+      <i [class]="errorConfig.icon + ' ' + errorConfig.color + ' ' + sizeConfig.icon"></i>
     </div>
-    
+
     <!-- Title -->
     <h2 [class]="'font-semibold text-gray-900 mb-2 ' + sizeConfig.title">
       {{ displayTitle }}
     </h2>
-    
+
     <!-- Message -->
     <p [class]="'text-gray-600 ' + sizeConfig.message">
       {{ displayMessage }}
@@ -21,34 +19,34 @@
   <!-- Action Buttons -->
   <div class="flex flex-col sm:flex-row gap-3 justify-center">
     @if (showRetry) {
-      <button
-        [class]="'inline-flex items-center gap-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ' + sizeConfig.button"
-        (click)="onRetry()">
-        <mat-icon class="text-base">refresh</mat-icon>
-        Try Again
-      </button>
+    <button
+      [class]="'inline-flex items-center gap-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ' + sizeConfig.button"
+      (click)="onRetry()">
+      <i class="fas fa-redo text-base"></i>
+      Try Again
+    </button>
     }
-    
+
     @if (showHome) {
-      <button
-        [class]="'inline-flex items-center gap-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors ' + sizeConfig.button"
-        (click)="onGoHome()">
-        <mat-icon class="text-base">home</mat-icon>
-        Go Home
-      </button>
+    <button
+      [class]="'inline-flex items-center gap-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors ' + sizeConfig.button"
+      (click)="onGoHome()">
+      <i class="fas fa-home text-base"></i>
+      Go Home
+    </button>
     }
   </div>
 
   <!-- Error Details -->
   @if (showDetails && details) {
-    <details class="mt-6 text-left">
-      <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 flex items-center gap-2 justify-center">
-        <mat-icon class="text-base">help_outline</mat-icon>
-        Error Details
-      </summary>
-      <div class="mt-2 p-3 bg-gray-100 rounded-md text-xs font-mono overflow-auto max-h-32 text-left">
-        {{ details }}
-      </div>
-    </details>
+  <details class="mt-6 text-left">
+    <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 flex items-center gap-2 justify-center">
+      <i class="fas fa-question-circle text-base"></i>
+      Error Details
+    </summary>
+    <div class="mt-2 p-3 bg-gray-100 rounded-md text-xs font-mono overflow-auto max-h-32 text-left">
+      {{ details }}
+    </div>
+  </details>
   }
 </div>

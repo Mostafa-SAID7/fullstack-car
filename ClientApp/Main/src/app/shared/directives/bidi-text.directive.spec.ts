@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BidiTextDirective } from './bidi-text.directive';
 import { RtlService } from '../../core/services/rtl.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   template: `
@@ -24,7 +26,12 @@ describe('BidiTextDirective', () => {
     const rtlServiceSpy = jasmine.createSpyObj('RtlService', ['detectTextDirection', 'applyBidirectionalText']);
 
     await TestBed.configureTestingModule({
-      imports: [TestComponent, BidiTextDirective],
+      imports: [
+        TestComponent, 
+        BidiTextDirective,
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
         { provide: RtlService, useValue: rtlServiceSpy }
       ]

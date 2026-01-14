@@ -13,7 +13,11 @@ namespace Domain.ValueObjects.Community
         public DateTime LastActivity { get; private set; }
         public bool IsVerified { get; private set; }
 
-        private ExpertiseArea() { } // For EF Core
+        private ExpertiseArea()
+        {
+            Category = string.Empty;
+            DisplayName = string.Empty;
+        } // For EF Core
 
         public ExpertiseArea(
             string category, 

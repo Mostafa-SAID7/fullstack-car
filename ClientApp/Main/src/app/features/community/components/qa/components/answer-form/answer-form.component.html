@@ -1,0 +1,163 @@
+<div class="bg-secondary/20 dark:bg-white/5 rounded-3xl p-6">
+    <!-- Form Header -->
+    <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-edit text-primary"></i>
+        </div>
+        <div>
+            <h3 class="text-base md:text-lg font-black text-foreground uppercase tracking-widest">{{ 'answers.writeAnswer' | translate }}</h3>
+            <p class="text-xs text-muted-foreground font-bold uppercase tracking-widest">{{ 'answers.answerGuidelines' | translate }}</p>
+        </div>
+    </div>
+
+    <!-- Answer Form -->
+    <form [formGroup]="answerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <!-- Rich Text Content Area -->
+        <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-1">
+                {{ 'answers.answerContent' | translate }}
+                <span class="text-red-500">*</span>
+            </label>
+
+            <!-- Rich Text Editor Toolbar -->
+            <div class="flex flex-wrap gap-2 p-3 bg-secondary/30 dark:bg-white/5 rounded-t-2xl border border-border/50">
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Bold">
+                    <i class="fas fa-bold"></i>
+                </button>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Italic">
+                    <i class="fas fa-italic"></i>
+                </button>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Code">
+                    <i class="fas fa-code"></i>
+                </button>
+                <div class="w-px bg-border/50 mx-1"></div>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Link">
+                    <i class="fas fa-link"></i>
+                </button>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Image">
+                    <i class="fas fa-image"></i>
+                </button>
+                <div class="w-px bg-border/50 mx-1"></div>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Bulleted List">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button type="button"
+                    class="p-2 hover:bg-secondary/50 dark:hover:bg-white/10 rounded-xl text-sm transition-colors"
+                    title="Numbered List">
+                    <i class="fas fa-list-ol"></i>
+                </button>
+            </div>
+
+            <!-- Content Textarea -->
+            <textarea formControlName="content"
+                class="w-full min-h-48 p-4 border-2 border-transparent rounded-b-2xl bg-secondary/30 dark:bg-white/5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background focus:border-primary/20 resize-y transition-all duration-300 custom-scroll"
+                placeholder="{{ 'answers.answerPlaceholder' | translate }}"
+                [class.border-red-500]="answerForm.get('content')?.invalid && answerForm.get('content')?.touched"
+                (input)="onContentChange($event)"></textarea>
+
+            <!-- Character Count and Validation -->
+            <div class="flex justify-between items-center text-xs">
+                <div class="text-muted-foreground">
+                    <span [class.text-red-500]="contentLength < minContentLength || contentLength > maxContentLength">
+                        {{ contentLength }}
+                    </span>
+                    <span class="text-muted-foreground"> / {{ maxContentLength }} characters</span>
+                    <span *ngIf="contentLength < minContentLength" class="text-red-500 ml-2">
+                        ({{ 'validation.answerTooShort' | translate:{minLength: minContentLength} }})
+                    </span>
+                </div>
+                <div class="text-muted-foreground">
+                    Markdown supported
+                </div>
+            </div>
+
+            <!-- Content Error -->
+            <div *ngIf="answerForm.get('content')?.invalid && answerForm.get('content')?.touched"
+                class="text-sm text-red-600">
+                <span *ngIf="answerForm.get('content')?.errors?.['required']">{{ 'validation.answerRequired' | translate }}</span>
+                <span *ngIf="answerForm.get('content')?.errors?.['minlength']">{{ 'validation.answerTooShort' | translate:{minLength: minContentLength} }}</span>
+                <span *ngIf="answerForm.get('content')?.errors?.['maxlength']">{{ 'validation.answerTooLong' | translate:{maxLength: maxContentLength} }}</span>
+            </div>
+        </div>
+
+        <!-- Preview Section (if enabled) -->
+        <div *ngIf="showPreview" class="space-y-2">
+            <div class="flex items-center justify-between">
+                <label class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ 'actions.preview' | translate }}</label>
+                <button type="button" (click)="togglePreview()" class="text-xs text-blue-600 hover:text-blue-800">
+                    {{ 'actions.showLess' | translate }}
+                </button>
+            </div>
+            <div class="p-4 bg-secondary/20 dark:bg-white/5 rounded-2xl border border-border/50">
+                <div class="prose prose-sm max-w-none text-foreground [&>h1]:text-inherit [&>h2]:text-inherit [&>h3]:text-inherit [&>h4]:text-inherit [&>h5]:text-inherit [&>h6]:text-inherit [&>code]:bg-black/10 [&>code]:dark:bg-white/10 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-sm [&>pre]:bg-black/5 [&>pre]:dark:bg-white/5 [&>pre]:rounded-lg [&>pre]:p-4"
+                    [innerHTML]="previewContent"></div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-border/50">
+            <div class="flex gap-3 flex-1">
+                <!-- Submit Button (reusing FormButtonComponent) -->
+                <app-form-button variant="primary" size="md" type="submit" [loading]="isSubmitting"
+                    [disabled]="answerForm.invalid || isSubmitting" class="flex-1 sm:flex-none">
+                    <span *ngIf="!isSubmitting">{{ 'answers.submitAnswer' | translate }}</span>
+                    <span *ngIf="isSubmitting">{{ 'actions.save' | translate }}...</span>
+                </app-form-button>
+
+                <!-- Preview Toggle Button -->
+                <app-form-button variant="outline" size="md" type="button" (clicked)="togglePreview()">
+                    {{ showPreview ? ('actions.showLess' | translate) : ('actions.preview' | translate) }}
+                </app-form-button>
+            </div>
+
+            <!-- Secondary Actions -->
+            <div class="flex gap-2">
+                <app-form-button variant="ghost" size="md" type="button" (clicked)="onCancel()">
+                    {{ 'actions.cancel' | translate }}
+                </app-form-button>
+
+                <app-form-button variant="ghost" size="md" type="button" (clicked)="saveDraft()"
+                    [disabled]="answerForm.get('content')?.value?.length < 10">
+                    {{ 'questions.saveAsDraft' | translate }}
+                </app-form-button>
+            </div>
+        </div>
+
+        <!-- Form Guidelines -->
+        <div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl p-4">
+            <h4 class="text-sm font-bold text-primary mb-2 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i>
+                Tips for a Great Answer
+            </h4>
+            <ul class="text-xs text-foreground/80 space-y-1">
+                <li>• Be specific and provide detailed explanations</li>
+                <li>• Include code examples when relevant</li>
+                <li>• Reference reliable sources when possible</li>
+                <li>• Use proper formatting to improve readability</li>
+                <li>• Stay focused on answering the question asked</li>
+            </ul>
+        </div>
+    </form>
+
+    <!-- Error Display (reusing ErrorDisplayComponent) -->
+    <app-error-display *ngIf="error" type="validation" [title]="'Submission Error'" [message]="error" [showRetry]="true"
+        [showHome]="false" size="sm" (retry)="onSubmit()">
+    </app-error-display>
+
+    <!-- Loading Overlay (reusing LoadingSpinnerComponent) -->
+    <app-loading-spinner *ngIf="isSubmitting" [overlay]="true" size="md" text="Posting your answer...">
+    </app-loading-spinner>
+</div>

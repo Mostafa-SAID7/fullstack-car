@@ -10,7 +10,7 @@ namespace Domain.Entities.Shared.Localization
         public string TranslationKey { get; set; } = string.Empty;
         public string? OldValue { get; set; }
         public string? NewValue { get; set; }
-        public Guid? UpdatedBy { get; set; }
+        public new Guid? UpdatedBy { get; set; }
         
         // Navigation Properties
         public virtual ApplicationUser? UpdatedByUser { get; set; }

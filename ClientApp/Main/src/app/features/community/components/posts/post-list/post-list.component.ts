@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { PostService } from '../../../services/post.service';
+import { TranslationService } from '../../../../../core/services/translation.service';
 import { Post } from '../../../../../core/models/post.model';
 import { PostItemComponent } from '../post-item/post-item.component';
 import { PaginationComponent } from '@shared/components/pagination/pagination.component';
@@ -15,7 +17,7 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
   templateUrl: './post-list.component.html',
   host: { 'class': 'block' }
 })
-export class PostListComponent implements OnInit {
+export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   loading = true;
   currentPage = 1;
@@ -24,8 +26,14 @@ export class PostListComponent implements OnInit {
   totalPages = 0;
   showFilters = false;
   searchForm: FormGroup;
+  
+  private destroy$ = new Subject<void>();
 
-  constructor(private postService: PostService, private fb: FormBuilder) {
+  constructor(
+    private postService: PostService, 
+    private fb: FormBuilder,
+    private translationService: TranslationService
+  ) {
     this.searchForm = this.fb.group({
       searchTerm: [''],
       sortBy: ['createdAt']
@@ -33,16 +41,38 @@ export class PostListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeTranslations();
     this.loadPosts();
     this.setupSearch();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private async initializeTranslations(): Promise<void> {
+    try {
+      // Load posts feature translations for the current language
+      const currentLanguage = this.translationService.getCurrentLanguage().code;
+      await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'posts');
+    } catch (error) {
+      console.error('Failed to load posts translations:', error);
+    }
+  }
+
   private setupSearch(): void {
     this.searchForm.get('searchTerm')?.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(
+        debounceTime(500), 
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => this.onSearch());
 
-    this.searchForm.get('sortBy')?.valueChanges.subscribe(() => this.onSearch());
+    this.searchForm.get('sortBy')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onSearch());
   }
 
   onSearch(): void {

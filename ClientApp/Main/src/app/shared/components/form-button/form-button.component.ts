@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'success' | 'warning';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -8,7 +8,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 @Component({
   selector: 'app-form-button',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule],
   templateUrl: './form-button.component.html',
   styleUrls: ['./form-button.component.scss']
 })
@@ -21,7 +21,7 @@ export class FormButtonComponent {
   @Input() fullWidth = false;
   @Input() rounded = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  
+
   @Output() clicked = new EventEmitter<Event>();
 
   onClick(event: Event): void {
@@ -32,7 +32,7 @@ export class FormButtonComponent {
 
   get buttonClasses(): string {
     const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden';
-    
+
     const variantClasses = {
       primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md',
       secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 shadow-sm hover:shadow-md',

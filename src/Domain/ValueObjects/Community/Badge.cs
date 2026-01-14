@@ -12,7 +12,12 @@ namespace Domain.ValueObjects.Community
         public DateTime EarnedAt { get; private set; }
         public string? Category { get; private set; }
 
-        private Badge() { } // For EF Core
+        private Badge()
+        {
+            Name = string.Empty;
+            Description = string.Empty;
+            IconUrl = string.Empty;
+        } // For EF Core
 
         public Badge(BadgeType type, string name, string description, string iconUrl, string? category = null)
         {

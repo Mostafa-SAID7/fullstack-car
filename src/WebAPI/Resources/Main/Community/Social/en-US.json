@@ -36,7 +36,20 @@
     "friendsSince": "Friends since {0}",
     "totalFriends": "Total Friends",
     "onlineFriends": "Online Friends",
-    "recentActivity": "Recent Activity"
+    "recentActivity": "Recent Activity",
+    "findFriends": "Find Friends",
+    "searchPlaceholder": "Search friends...",
+    "sortByName": "Name A-Z",
+    "sortByRecent": "Recently Added",
+    "sortByOnline": "Recently Online",
+    "connectWithCommunity": "Connect with other enthusiasts in the community!",
+    "confirmRemove": "Are you sure you want to remove this friend?",
+    "friendRemoved": "Friend has been removed",
+    "removeFriendError": "Failed to remove friend",
+    "requestAccepted": "Friend request accepted",
+    "requestDeclined": "Friend request declined",
+    "requestAcceptError": "Failed to accept friend request",
+    "requestDeclineError": "Failed to decline friend request"
   },
   "status": {
     "pending": "Pending",
@@ -84,12 +97,19 @@
     "failed": "Failed to send",
     "messageDelivered": "Message delivered",
     "messageRead": "Message read",
+    "messageSent": "Message sent successfully",
     "attachFile": "Attach File",
     "attachPhoto": "Attach Photo",
     "attachVideo": "Attach Video",
     "voiceMessage": "Voice Message",
     "recordVoice": "Record Voice Message",
-    "stopRecording": "Stop Recording"
+    "stopRecording": "Stop Recording",
+    "sampleMessage1": "Hello! How are you doing?",
+    "sampleMessage2": "Hi! I'm doing great, thanks for asking!",
+    "sampleMessage3": "That's wonderful to hear! Are you free to chat about cars?",
+    "autoReply1": "Thanks for your message! I'll get back to you soon.",
+    "autoReply2": "Great to hear from you! Let me think about that.",
+    "autoReply3": "Interesting point! I'd love to discuss this further."
   },
   "notifications": {
     "title": "Notifications",
@@ -276,5 +296,18 @@
     "yearsAgo": "{0} years ago",
     "online": "Online",
     "lastActive": "Last active {0}"
+  },
+  "common": {
+    "filters": "Filters",
+    "sortBy": "Sort By",
+    "search": "Search",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close"
   }
 }

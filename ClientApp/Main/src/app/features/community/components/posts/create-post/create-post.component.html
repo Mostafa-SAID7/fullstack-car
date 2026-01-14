@@ -11,7 +11,7 @@
         <div (click)="toggleExpand()"
             class="flex-1 bg-secondary/40 rounded-xl px-4 flex items-center cursor-pointer hover:bg-secondary/60 hover:shadow-inner transition-all duration-300 group border border-transparent hover:border-border/20">
             <span class="text-sm text-muted-foreground/80 group-hover:text-foreground transition-colors">
-                What's on your mind, {{ currentUser?.firstName || 'User' }}?
+                {{ 'posts.whatsOnYourMind' | translate: { '0': currentUser?.firstName || 'User' } }}
             </span>
         </div>
     </div>
@@ -19,7 +19,7 @@
     <!-- Expanded Form State -->
     <form *ngIf="isExpanded" [formGroup]="postForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-black uppercase tracking-widest text-primary">Create Post</h3>
+            <h3 class="text-sm font-black uppercase tracking-widest text-primary">{{ 'posts.create' | translate }}</h3>
             <button type="button" (click)="toggleExpand()"
                 class="text-muted-foreground hover:text-primary transition-colors">
                 <i class="fa-solid fa-xmark"></i>
@@ -27,24 +27,40 @@
         </div>
 
         <div class="space-y-3">
-            <input formControlName="title" type="text"
-                placeholder="What's the title of your post?"
-                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+            <div>
+                <input formControlName="title" type="text" [placeholder]="'posts.postTitle' | translate"
+                    [class.border-red-500]="isFieldInvalid('title')"
+                    class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+                <div *ngIf="isFieldInvalid('title')" class="mt-1 text-xs text-red-500">
+                    <div *ngFor="let error of getFieldErrors('title')">{{ error }}</div>
+                </div>
+            </div>
 
-            <textarea formControlName="content" rows="4"
-                placeholder="Share your thoughts..."
-                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all resize-none"></textarea>
+            <div>
+                <textarea formControlName="content" rows="4" [placeholder]="'posts.postContent' | translate"
+                    [class.border-red-500]="isFieldInvalid('content')"
+                    class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all resize-none"></textarea>
+                <div *ngIf="isFieldInvalid('content')" class="mt-1 text-xs text-red-500">
+                    <div *ngFor="let error of getFieldErrors('content')">{{ error }}</div>
+                </div>
+            </div>
 
-            <input formControlName="imageUrl" type="text"
-                placeholder="Add an image URL (optional)"
-                class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+            <div>
+                <input formControlName="imageUrl" type="text" [placeholder]="'posts.imageUrl' | translate"
+                    [class.border-red-500]="isFieldInvalid('imageUrl')"
+                    class="w-full bg-secondary/20 border-border/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/30 outline-none transition-all">
+                <div *ngIf="isFieldInvalid('imageUrl')" class="mt-1 text-xs text-red-500">
+                    <div *ngFor="let error of getFieldErrors('imageUrl')">{{ error }}</div>
+                </div>
+            </div>
         </div>
 
         <div class="flex gap-3 pt-2">
             <button type="submit" [disabled]="postForm.invalid || isSubmitting"
                 class="flex-1 bg-primary text-white font-black py-3 rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 uppercase tracking-widest text-[11px]">
-                <span *ngIf="!isSubmitting">Post</span>
-                <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Posting...</span>
+                <span *ngIf="!isSubmitting">{{ 'posts.publish' | translate }}</span>
+                <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>{{ 'posts.posting' |
+                    translate }}</span>
             </button>
         </div>
     </form>
@@ -55,18 +71,18 @@
             <button (click)="toggleExpand()"
                 class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-red-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-red-500 group">
                 <i class="fa-solid fa-video text-red-500 scale-110 group-hover:scale-125 transition-transform"></i>
-                Live Video
+                {{ 'posts.liveVideo' | translate }}
             </button>
             <button (click)="toggleExpand()"
                 class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-emerald-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-emerald-500 group">
                 <i class="fa-solid fa-images text-emerald-500 scale-110 group-hover:scale-125 transition-transform"></i>
-                Photo/Video
+                {{ 'posts.photoVideo' | translate }}
             </button>
             <button (click)="toggleExpand()"
                 class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-amber-500/5 transition-all text-[11px] font-black uppercase tracking-widest text-muted-foreground/70 hover:text-amber-500 group">
                 <i
                     class="fa-solid fa-face-smile text-amber-500 scale-110 group-hover:scale-125 transition-transform"></i>
-                Feeling/Activity
+                {{ 'posts.feelingActivity' | translate }}
             </button>
         </div>
     </div>

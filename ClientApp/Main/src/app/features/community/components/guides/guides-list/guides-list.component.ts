@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { GuidesService } from '../../../services/guides.service';
 import {
   GuideListItem,
@@ -17,7 +18,7 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
 @Component({
   selector: 'app-guides-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, PaginationComponent, GuideCardComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, TranslateModule, PaginationComponent, GuideCardComponent],
   template: `
     <div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
       
@@ -27,7 +28,7 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
           <!-- Search Input -->
           <div class="relative flex-grow group">
             <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300"></i>
-            <input formControlName="searchTerm" type="text" placeholder="Search guides..."
+            <input formControlName="searchTerm" type="text" [placeholder]="'guides.search.searchGuides' | translate"
               class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-full pl-12 pr-6 py-4 outline-none transition-all text-foreground font-bold">
           </div>
 
@@ -37,13 +38,13 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
               [ngClass]="showFilters ? 'bg-primary text-white' : 'bg-secondary dark:bg-white/5'"
               class="px-8 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-3 whitespace-nowrap">
               <i class="fas fa-sliders-h"></i>
-              <span>Filters</span>
+              <span>{{ 'guides.search.searchFilters' | translate }}</span>
             </button>
 
             <button type="button" routerLink="/community/guides/create"
               class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 flex items-center gap-3 whitespace-nowrap">
               <i class="fas fa-plus"></i>
-              <span>Create Guide</span>
+              <span>{{ 'guides.creation.createGuide' | translate }}</span>
             </button>
           </div>
         </form>
@@ -53,12 +54,12 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Category -->
             <div class="flex flex-col">
-              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Category</label>
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'guides.creation.category' | translate }}</label>
               <div class="relative">
                 <i class="fas fa-layer-group absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 <select formControlName="category"
                   class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                  <option [ngValue]="undefined">All Categories</option>
+                  <option [ngValue]="undefined">{{ 'guides.categories.allCategories' | translate }}</option>
                   <option *ngFor="let category of categories" [ngValue]="category.value">{{ category.name }}</option>
                 </select>
                 <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
@@ -67,12 +68,12 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
 
             <!-- Difficulty -->
             <div class="flex flex-col">
-              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Difficulty</label>
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'guides.creation.difficulty' | translate }}</label>
               <div class="relative">
                 <i class="fas fa-gauge-high absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 <select formControlName="difficulty"
                   class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                  <option [ngValue]="undefined">All Levels</option>
+                  <option [ngValue]="undefined">{{ 'guides.difficulty.selectDifficulty' | translate }}</option>
                   <option *ngFor="let difficulty of difficulties" [ngValue]="difficulty.value">{{ difficulty.name }}</option>
                 </select>
                 <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-none"></i>
@@ -81,12 +82,12 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
 
             <!-- Sort By -->
             <div class="flex flex-col">
-              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Sort By</label>
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'guides.search.sortBy' | translate }}</label>
               <div class="relative">
                 <i class="fas fa-sort absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 <select formControlName="sortBy"
                   class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                  <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
+                  <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label | translate }}</option>
                 </select>
                 <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
               </div>
@@ -100,11 +101,54 @@ import { GuideCardComponent } from '../guide-card/guide-card.component';
                   <div class="w-10 h-6 bg-slate-200 dark:bg-white/10 rounded-full peer-checked:bg-primary transition-all"></div>
                   <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:translate-x-4"></div>
                 </div>
-                <span class="text-[10px] font-black uppercase tracking-widest text-foreground opacity-70 group-hover:opacity-100 transition-opacity">Featured Only</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-foreground opacity-70 group-hover:opacity-100 transition-opacity">{{ 'guides.search.featured' | translate }}</span>
               </label>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-12">
+        <i class="fas fa-spinner fa-spin text-4xl text-primary"></i>
+        <p class="mt-4 text-foreground/60">{{ 'common.loading' | translate }}</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 text-center">
+        <i class="fas fa-exclamation-circle text-3xl text-red-600 dark:text-red-400 mb-3"></i>
+        <p class="text-red-800 dark:text-red-200">{{ error }}</p>
+        <button (click)="loadGuides()" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors">
+          {{ 'common.retry' | translate }}
+        </button>
+      </div>
+
+      <!-- Guides Grid -->
+      <div *ngIf="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <app-guide-card 
+          *ngFor="let guide of guides" 
+          [guide]="guide"
+          (bookmarkClick)="onBookmarkGuide($event)">
+        </app-guide-card>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && guides.length === 0" class="text-center py-12">
+        <i class="fas fa-book-open text-6xl text-slate-300 dark:text-slate-700 mb-4"></i>
+        <h3 class="text-xl font-bold text-foreground mb-2">{{ 'guides.guides.noGuidesFound' | translate }}</h3>
+        <button routerLink="/community/guides/create" class="mt-4 px-6 py-3 bg-primary text-white rounded-full hover:scale-105 transition-transform">
+          {{ 'guides.creation.createGuide' | translate }}
+        </button>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!loading && !error && guides.length > 0" class="flex justify-center mt-8">
+        <app-pagination
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          [totalItems]="totalCount"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
       </div>
     </div>
   `,
@@ -127,11 +171,11 @@ export class GuidesListComponent implements OnInit, OnDestroy {
   categories: { value: number; name: string }[] = [];
   difficulties: { value: number; name: string }[] = [];
   sortOptions = [
-    { value: 'CreatedAt', label: 'Newest First' },
-    { value: 'Title', label: 'Title A-Z' },
-    { value: 'ViewCount', label: 'Most Viewed' },
-    { value: 'Rating', label: 'Highest Rated' },
-    { value: 'LikeCount', label: 'Most Liked' }
+    { value: 'CreatedAt', label: 'guides.search.newest' },
+    { value: 'Title', label: 'guides.search.relevance' },
+    { value: 'ViewCount', label: 'guides.search.mostPopular' },
+    { value: 'Rating', label: 'guides.search.highestRated' },
+    { value: 'LikeCount', label: 'guides.search.mostCompleted' }
   ];
 
   constructor(

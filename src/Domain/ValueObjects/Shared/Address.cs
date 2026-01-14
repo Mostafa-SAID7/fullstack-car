@@ -10,7 +10,14 @@ public class Address : ValueObject
     public string PostalCode { get; private set; }
     public string Country { get; private set; }
 
-    private Address() { } // For EF Core
+    private Address()
+    {
+        Street = string.Empty;
+        City = string.Empty;
+        State = string.Empty;
+        PostalCode = string.Empty;
+        Country = string.Empty;
+    } // For EF Core
 
     public Address(string street, string city, string state, string postalCode, string country)
     {

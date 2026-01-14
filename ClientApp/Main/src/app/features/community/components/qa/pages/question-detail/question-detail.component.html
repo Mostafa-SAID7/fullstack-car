@@ -1,0 +1,451 @@
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
+
+  <!-- Loading State - Skeleton -->
+  <div *ngIf="loading" class="space-y-6 animate-pulse">
+
+    <!-- Skeleton: Breadcrumb Navigation -->
+    <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-32"></div>
+    </div>
+
+    <!-- Skeleton: Question Header -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <div class="flex-1 space-y-4">
+          <!-- Title skeleton -->
+          <div class="space-y-3">
+            <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-3/4"></div>
+            <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-1/2"></div>
+          </div>
+
+          <!-- Meta info skeleton -->
+          <div class="flex flex-wrap gap-4">
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-24"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-28"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+          </div>
+
+          <!-- Status badges skeleton -->
+          <div class="flex gap-2">
+            <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-16"></div>
+            <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+          </div>
+        </div>
+
+        <!-- Actions skeleton -->
+        <div class="flex gap-2">
+          <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
+          <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
+          <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton: Main Question Content -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-8">
+
+        <!-- Voting sidebar skeleton -->
+        <div class="flex lg:flex-col items-center lg:items-start gap-4">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+            <div class="w-8 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+            <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+          </div>
+          <div class="text-center lg:text-left">
+            <div class="w-8 h-8 bg-secondary/30 dark:bg-white/5 rounded-xl mx-auto lg:mx-0 mb-2"></div>
+            <div class="w-12 h-3 bg-secondary/30 dark:bg-white/5 rounded-full mx-auto lg:mx-0"></div>
+          </div>
+        </div>
+
+        <!-- Question body skeleton -->
+        <div class="space-y-6">
+          <!-- Content skeleton -->
+          <div class="space-y-4">
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-full"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-5/6"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-4/5"></div>
+            <div class="h-20 bg-secondary/30 dark:bg-white/5 rounded-2xl w-full"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-3/4"></div>
+            <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-2/3"></div>
+          </div>
+
+          <!-- Tags skeleton -->
+          <div class="flex flex-wrap gap-2">
+            <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-16"></div>
+            <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+            <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-14"></div>
+          </div>
+
+          <!-- Category skeleton -->
+          <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-32"></div>
+
+          <!-- Author info skeleton -->
+          <div class="flex items-center justify-between pt-4 border-t border-border/50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+                <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-16"></div>
+              </div>
+            </div>
+            <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-24"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton: Similar Questions -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+        <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-2xl w-40"></div>
+      </div>
+
+      <div class="space-y-4">
+        <div *ngFor="let i of [1,2,3]" class="bg-secondary/20 dark:bg-white/5 rounded-3xl p-4">
+          <div class="flex items-start gap-4">
+            <div class="flex gap-3 text-xs">
+              <div class="text-center space-y-1">
+                <div class="w-6 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+                <div class="w-8 h-3 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+              </div>
+              <div class="text-center space-y-1">
+                <div class="w-6 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+                <div class="w-8 h-3 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+              </div>
+            </div>
+
+            <div class="flex-1 space-y-3">
+              <div class="h-5 bg-secondary/30 dark:bg-white/5 rounded-2xl w-4/5"></div>
+              <div class="flex gap-4">
+                <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+                <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-16"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton: Answers Section -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+          <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-2xl w-32"></div>
+        </div>
+        <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-full w-32"></div>
+      </div>
+
+      <!-- Answer skeletons -->
+      <div class="space-y-6">
+        <div *ngFor="let i of [1,2]" class="bg-secondary/20 dark:bg-white/5 rounded-3xl p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+            <div class="flex items-center gap-4">
+              <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-full w-24"></div>
+              <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-8"></div>
+            </div>
+            <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6">
+            <!-- Voting skeleton -->
+            <div class="flex lg:flex-col items-center lg:items-start">
+              <div class="flex flex-col items-center gap-2">
+                <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+                <div class="w-8 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
+                <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Answer content skeleton -->
+            <div class="space-y-6">
+              <div class="space-y-3">
+                <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-full"></div>
+                <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-4/5"></div>
+                <div class="h-16 bg-secondary/30 dark:bg-white/5 rounded-2xl w-full"></div>
+                <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-3/4"></div>
+              </div>
+
+              <div
+                class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pt-4 border-t border-border/50">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
+                  <div class="space-y-2">
+                    <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-20"></div>
+                    <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-16"></div>
+                  </div>
+                  <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-24"></div>
+                </div>
+
+                <div class="flex gap-2">
+                  <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-20"></div>
+                  <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
+                  <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading"
+    class="bg-white dark:bg-[#111] rounded-[2.5rem] p-8 shadow-xl border border-black/5 dark:border-white/5 min-h-[500px] flex items-center justify-center">
+    <div class="text-center space-y-6">
+      <div class="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto">
+        <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+      </div>
+      <div class="space-y-2">
+        <h3 class="text-lg md:text-xl font-black text-foreground uppercase tracking-widest break-words">Error Loading
+          Question</h3>
+        <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest">{{ error }}</p>
+      </div>
+      <button (click)="onRetry()"
+        class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25">
+        Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Question Content -->
+  <div *ngIf="question && !loading" class="space-y-6">
+
+    <!-- Card 1: Breadcrumb Navigation -->
+    <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 shadow-xl border border-black/5 dark:border-white/5">
+      <button routerLink="/community/qa"
+        class="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors font-bold text-sm uppercase tracking-widest">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Questions</span>
+      </button>
+    </div>
+
+    <!-- Card 2: Question Header -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <div class="flex-1 space-y-4">
+          <h1 class="text-2xl lg:text-3xl font-black text-foreground leading-tight break-words">{{ question.title }}
+          </h1>
+
+          <div class="flex flex-wrap gap-4 text-sm text-muted-foreground font-bold">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-clock"></i>
+              <span>Asked {{ getRelativeTime(question.createdAt) }}</span>
+            </div>
+
+            <div *ngIf="question.updatedAt" class="flex items-center gap-2">
+              <i class="fas fa-edit"></i>
+              <span>Modified {{ getRelativeTime(question.updatedAt) }}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <i class="fas fa-eye"></i>
+              <span>{{ question.viewCount }} views</span>
+            </div>
+          </div>
+
+          <!-- Status Indicators -->
+          <div class="flex flex-wrap gap-2" *ngIf="question.isClosed || question.acceptedAnswerId">
+            <div *ngIf="question.isClosed"
+              class="px-4 py-2 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+              <i class="fas fa-lock"></i>
+              <span>Closed</span>
+              <span *ngIf="question.closedReason">: {{ question.closedReason }}</span>
+            </div>
+
+            <div *ngIf="question.acceptedAnswerId"
+              class="px-4 py-2 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+              <i class="fas fa-check-circle"></i>
+              <span>Has Accepted Answer</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Actions -->
+        <div class="flex gap-2">
+          <button (click)="editQuestion()"
+            class="px-6 py-3 bg-secondary/50 dark:bg-white/5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-secondary transition-all flex items-center gap-2">
+            <i class="fas fa-edit"></i>
+            <span>Edit</span>
+          </button>
+
+          <button (click)="shareQuestion()"
+            class="px-6 py-3 bg-secondary/50 dark:bg-white/5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-secondary transition-all flex items-center gap-2">
+            <i class="fas fa-share"></i>
+            <span>Share</span>
+          </button>
+
+          <button *ngIf="!question.isClosed" (click)="closeQuestion()"
+            class="px-6 py-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-red-200 dark:hover:bg-red-900/30 transition-all flex items-center gap-2">
+            <i class="fas fa-lock"></i>
+            <span>Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Main Question Content -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-8">
+
+        <!-- Real-time Voting Sidebar -->
+        <div class="flex lg:flex-col items-center lg:items-start gap-4">
+          <app-real-time-vote-display [contentId]="question.id" contentType="Question"
+            [initialVoteScore]="question.voteScore" [initialUserVote]="question.userVote || null">
+          </app-real-time-vote-display>
+
+          <!-- Question Stats -->
+          <div class="text-center lg:text-left">
+            <div class="text-2xl font-black text-foreground">{{ question.answerCount }}</div>
+            <div class="text-xs font-bold uppercase tracking-widest text-muted-foreground">answers</div>
+          </div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="space-y-6">
+          <!-- Question Content -->
+          <div class="prose prose-lg max-w-none text-foreground" [innerHTML]="question.content"></div>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2" *ngIf="question.tags.length > 0">
+            <button *ngFor="let tag of question.tags" (click)="navigateToTag(tag)"
+              class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary/20 transition-colors">
+              {{ tag }}
+            </button>
+          </div>
+
+          <!-- Category -->
+          <div>
+            <button (click)="navigateToCategory(question.category)"
+              class="px-4 py-2 bg-secondary/30 dark:bg-white/5 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-secondary/50 transition-colors flex items-center gap-2">
+              <i class="fas fa-folder"></i>
+              <span>{{ question.category }}</span>
+            </button>
+          </div>
+
+          <!-- Author Information -->
+          <div class="flex items-center justify-between pt-4 border-t border-border/50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-primary"></i>
+              </div>
+              <div>
+                <div class="font-bold text-foreground">{{ question.userName }}</div>
+                <app-reputation-display [reputation]="question.userReputation" [compact]="true">
+                </app-reputation-display>
+              </div>
+            </div>
+            <div class="text-xs text-muted-foreground font-bold">
+              asked {{ formatDate(question.createdAt) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Similar Questions -->
+    <div *ngIf="question.similarQuestions.length > 0"
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+      <h3
+        class="text-lg md:text-xl font-black text-foreground uppercase tracking-widest mb-6 flex items-center gap-3 break-words">
+        <div class="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center">
+          <i class="fas fa-lightbulb text-yellow-600"></i>
+        </div>
+        Similar Questions
+      </h3>
+
+      <div class="space-y-4">
+        <div *ngFor="let similar of question.similarQuestions" (click)="navigateToSimilarQuestion(similar.id)"
+          class="bg-secondary/20 dark:bg-white/5 rounded-3xl p-4 hover:bg-secondary/30 dark:hover:bg-white/10 transition-all cursor-pointer group">
+
+          <div class="flex items-start gap-4">
+            <div class="flex gap-3 text-xs font-bold text-muted-foreground">
+              <div class="text-center">
+                <div class="text-lg font-black text-foreground">{{ similar.voteScore }}</div>
+                <div class="uppercase tracking-widest">votes</div>
+              </div>
+              <div class="text-center">
+                <div class="text-lg font-black text-foreground">{{ similar.answerCount }}</div>
+                <div class="uppercase tracking-widest">answers</div>
+              </div>
+              <div *ngIf="similar.hasAcceptedAnswer" class="text-center">
+                <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                <div class="uppercase tracking-widest">accepted</div>
+              </div>
+            </div>
+
+            <div class="flex-1">
+              <h4
+                class="font-bold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2 break-words">
+                {{
+                similar.title }}</h4>
+              <div class="flex items-center gap-4 text-xs text-muted-foreground font-bold">
+                <span class="flex items-center gap-1">
+                  <i class="fas fa-folder"></i>
+                  {{ similar.category }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <i class="fas fa-percentage"></i>
+                  {{ similar.similarityScore }}% similar
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Answers Section with Real-time Features -->
+    <div
+      class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
+
+      <!-- Connection Status -->
+      <div class="mb-4">
+        <app-connection-status></app-connection-status>
+      </div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+        <h2 class="text-lg md:text-xl font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-question-answer text-blue-600"></i>
+          </div>
+          {{ question.answerCount }}
+          {{ question.answerCount === 1 ? 'Answer' : 'Answers' }}
+        </h2>
+
+        <button *ngIf="!question.isClosed" (click)="toggleAnswerForm()"
+          class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 flex items-center gap-3 whitespace-nowrap">
+          <i class="fas" [ngClass]="showAnswerForm ? 'fa-times' : 'fa-plus'"></i>
+          <span>{{ showAnswerForm ? 'Cancel' : 'Write Answer' }}</span>
+        </button>
+      </div>
+
+      <!-- Answer Form -->
+      <div *ngIf="showAnswerForm" class="mb-8">
+        <app-answer-form [questionId]="question.id" (answerSubmitted)="onAnswerSubmitted($event)"
+          (cancelled)="toggleAnswerForm()">
+        </app-answer-form>
+      </div>
+
+      <!-- Typing Indicators -->
+      <app-qa-typing-indicator [questionId]="question.id" class="mb-6">
+      </app-qa-typing-indicator>
+
+      <!-- Real-time Answers List -->
+      <app-real-time-answer-list [questionId]="question.id" [questionAuthorId]="question.userId"
+        [currentUserId]="currentUserId || undefined"
+        [initialAnswers]="convertAnswersForRealTime(question.answers || [])" (answerAccepted)="onAnswerAccepted()"
+        (answerShared)="onAnswerShared($event)" (answerEdit)="onAnswerEdit($event)" (retryLoad)="onRetry()">
+      </app-real-time-answer-list>
+    </div>
+  </div>
+</div>

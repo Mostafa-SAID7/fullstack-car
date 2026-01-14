@@ -22,8 +22,7 @@ export interface PaginationConfig {
     selector: 'app-list-view',
     standalone: true,
     imports: [CommonModule, LoadingStateComponent, EmptyStateComponent, PaginationComponent],
-    templateUrl: './list-view.component.html',
-    styleUrls: ['./list-view.component.scss']
+    templateUrl: './list-view.component.html'
 })
 export class ListViewComponent {
     /**

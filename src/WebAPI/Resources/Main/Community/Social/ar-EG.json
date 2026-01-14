@@ -36,7 +36,20 @@
     "friendsSince": "أصدقاء منذ {0}",
     "totalFriends": "إجمالي الأصدقاء",
     "onlineFriends": "الأصدقاء المتصلون",
-    "recentActivity": "النشاط الحديث"
+    "recentActivity": "النشاط الحديث",
+    "findFriends": "البحث عن أصدقاء",
+    "searchPlaceholder": "البحث عن أصدقاء...",
+    "sortByName": "الاسم أ-ي",
+    "sortByRecent": "المضافون حديثاً",
+    "sortByOnline": "المتصلون حديثاً",
+    "connectWithCommunity": "تواصل مع عشاق السيارات الآخرين في المجتمع!",
+    "confirmRemove": "هل أنت متأكد من إزالة هذا الصديق؟",
+    "friendRemoved": "تم إزالة الصديق",
+    "removeFriendError": "فشل في إزالة الصديق",
+    "requestAccepted": "تم قبول طلب الصداقة",
+    "requestDeclined": "تم رفض طلب الصداقة",
+    "requestAcceptError": "فشل في قبول طلب الصداقة",
+    "requestDeclineError": "فشل في رفض طلب الصداقة"
   },
   "status": {
     "pending": "معلق",
@@ -84,12 +97,19 @@
     "failed": "فشل الإرسال",
     "messageDelivered": "تم تسليم الرسالة",
     "messageRead": "تم قراءة الرسالة",
+    "messageSent": "تم إرسال الرسالة بنجاح",
     "attachFile": "إرفاق ملف",
     "attachPhoto": "إرفاق صورة",
     "attachVideo": "إرفاق فيديو",
     "voiceMessage": "رسالة صوتية",
     "recordVoice": "تسجيل رسالة صوتية",
-    "stopRecording": "إيقاف التسجيل"
+    "stopRecording": "إيقاف التسجيل",
+    "sampleMessage1": "مرحباً! كيف حالك؟",
+    "sampleMessage2": "أهلاً! أنا بخير، شكراً لسؤالك!",
+    "sampleMessage3": "هذا رائع! هل أنت متفرغ للحديث عن السيارات؟",
+    "autoReply1": "شكراً لرسالتك! سأرد عليك قريباً.",
+    "autoReply2": "سعيد بسماع أخبارك! دعني أفكر في هذا.",
+    "autoReply3": "نقطة مثيرة للاهتمام! أود مناقشة هذا أكثر."
   },
   "notifications": {
     "title": "الإشعارات",
@@ -276,5 +296,18 @@
     "yearsAgo": "منذ {0} سنة",
     "online": "متصل",
     "lastActive": "آخر نشاط {0}"
+  },
+  "common": {
+    "filters": "المرشحات",
+    "sortBy": "ترتيب حسب",
+    "search": "بحث",
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "close": "إغلاق"
   }
 }

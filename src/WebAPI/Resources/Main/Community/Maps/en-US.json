@@ -17,10 +17,12 @@
     "getDirections": "Get Directions",
     "noLocationFound": "No location found",
     "locationPermissionDenied": "Location permission denied",
-    "locationUnavailable": "Location unavailable"
+    "locationUnavailable": "Location unavailable",
+    "addLocation": "Add Location"
   },
   "locations": {
     "categories": {
+      "all": "All Types",
       "restaurant": "Restaurant",
       "cafe": "Cafe",
       "hotel": "Hotel",
@@ -44,6 +46,10 @@
       "busStation": "Bus Station",
       "trainStation": "Train Station",
       "carRental": "Car Rental",
+      "showroom": "Showroom",
+      "serviceCenter": "Service Center",
+      "spareParts": "Spare Parts",
+      "chargingStation": "Charging Station",
       "other": "Other"
     },
     "details": {
@@ -111,7 +117,8 @@
     "hasPhotos": "Has photos",
     "hasReviews": "Has reviews",
     "clearFilters": "Clear filters",
-    "showMore": "Show more results"
+    "showMore": "Show more results",
+    "tryAdjustingFilters": "Try adjusting your filters or search terms"
   },
   "privacy": {
     "title": "Location Privacy",
