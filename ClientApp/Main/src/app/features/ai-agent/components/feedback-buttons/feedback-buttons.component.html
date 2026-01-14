@@ -1,0 +1,52 @@
+<div class="feedback-buttons" [class.compact]="compact">
+  <!-- Thumbs Up -->
+  <button 
+    class="feedback-btn thumbs-up"
+    [class.active]="isPositive()"
+    [disabled]="isPositive()"
+    (click)="onThumbsUp()"
+    title="This response was helpful"
+  >
+    <i class="fa fa-thumbs-up"></i>
+    <span *ngIf="!compact">Helpful</span>
+  </button>
+
+  <!-- Thumbs Down -->
+  <button 
+    class="feedback-btn thumbs-down"
+    [class.active]="isNegative()"
+    [disabled]="isNegative()"
+    (click)="onThumbsDown()"
+    title="This response was not helpful"
+  >
+    <i class="fa fa-thumbs-down"></i>
+    <span *ngIf="!compact">Not Helpful</span>
+  </button>
+
+  <!-- Correction -->
+  <button 
+    class="feedback-btn correction"
+    [class.active]="isCorrection()"
+    (click)="onCorrection()"
+    title="Suggest a correction"
+  >
+    <i class="fa fa-edit"></i>
+    <span *ngIf="!compact">Correct</span>
+  </button>
+
+  <!-- Feedback Status -->
+  <div class="feedback-status" *ngIf="feedbackGiven">
+    <span class="status-text" *ngIf="isPositive()">
+      <i class="fa fa-check-circle"></i>
+      Thanks for your feedback!
+    </span>
+    <span class="status-text" *ngIf="isNegative()">
+      <i class="fa fa-info-circle"></i>
+      We'll work on improving this
+    </span>
+    <span class="status-text" *ngIf="isCorrection()">
+      <i class="fa fa-check-circle"></i>
+      Correction submitted
+    </span>
+  </div>
+</div>

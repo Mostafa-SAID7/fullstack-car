@@ -1,4 +1,8 @@
 import { ApiService } from '../api/ApiService';
+import { CampaignService } from './CampaignService';
+import { AnalyticsService } from './AnalyticsService';
+import { ContentService } from './ContentService';
+import { SocialPlatformService } from './SocialPlatformService';
 import type { PaginatedResult } from '../../types/api';
 import type { ApiResult } from '../api';
 import type {
@@ -19,73 +23,84 @@ import type {
 } from './types';
 
 export class MarketingService extends ApiService {
-  private readonly baseUrl = '/marketing';
+  private readonly campaignService: CampaignService;
+  private readonly analyticsService: AnalyticsService;
+  private readonly contentService: ContentService;
+  private readonly socialPlatformService: SocialPlatformService;
+
+  constructor() {
+    super();
+    this.campaignService = new CampaignService();
+    this.analyticsService = new AnalyticsService();
+    this.contentService = new ContentService();
+    this.socialPlatformService = new SocialPlatformService();
+  }
 
   // Campaigns
   async getCampaigns(params?: CampaignQueryParams): Promise<ApiResult<PaginatedResult<Campaign>>> {
-    return this.get<PaginatedResult<Campaign>>(`${this.baseUrl}/campaigns`, { params });
+    return this.campaignService.getCampaigns(params);
   }
 
   async getCampaign(id: string): Promise<ApiResult<Campaign>> {
-    return this.get<Campaign>(`${this.baseUrl}/campaigns/${id}`);
+    return this.campaignService.getCampaign(id);
   }
 
   async createCampaign(request: CreateCampaignRequest): Promise<ApiResult<Campaign>> {
-    return this.post<Campaign>(`${this.baseUrl}/campaigns`, request);
+    return this.campaignService.createCampaign(request);
   }
 
   async updateCampaign(id: string, request: UpdateCampaignRequest): Promise<ApiResult<Campaign>> {
-    return this.put<Campaign>(`${this.baseUrl}/campaigns/${id}`, request);
+    return this.campaignService.updateCampaign(id, request);
   }
 
   async deleteCampaign(id: string): Promise<ApiResult<boolean>> {
-    return this.delete<boolean>(`${this.baseUrl}/campaigns/${id}`);
+    return this.campaignService.deleteCampaign(id);
   }
 
   // Campaign Content
   async getCampaignContents(campaignId: string, params?: { pageNumber?: number; pageSize?: number; status?: string; type?: string }): Promise<ApiResult<PaginatedResult<CampaignContent>>> {
-    return this.get<PaginatedResult<CampaignContent>>(`${this.baseUrl}/campaigns/${campaignId}/contents`, { params });
+    return this.contentService.getContents({ ...params, campaignId });
   }
 
   async createCampaignContent(request: CreateCampaignContentRequest): Promise<ApiResult<CampaignContent>> {
-    return this.post<CampaignContent>(`${this.baseUrl}/campaigns/contents`, request);
+    return this.contentService.createContent(request);
   }
 
   async updateCampaignContent(id: string, request: UpdateCampaignContentRequest): Promise<ApiResult<CampaignContent>> {
-    return this.put<CampaignContent>(`${this.baseUrl}/campaigns/contents/${id}`, request);
+    return this.contentService.updateContent(id, request);
   }
 
   async deleteCampaignContent(id: string): Promise<ApiResult<boolean>> {
-    return this.delete<boolean>(`${this.baseUrl}/campaigns/contents/${id}`);
+    return this.contentService.deleteContent(id);
   }
 
   // Analytics
   async getMarketingOverview(params?: AnalyticsQueryParams): Promise<ApiResult<MarketingOverview>> {
-    return this.get<MarketingOverview>(`${this.baseUrl}/analytics/overview`, { params });
+    return this.analyticsService.getMarketingOverview(params);
   }
 
   async getPlatformAnalytics(params?: AnalyticsQueryParams): Promise<ApiResult<PlatformAnalytics[]>> {
-    return this.get<PlatformAnalytics[]>(`${this.baseUrl}/analytics/platforms`, { params });
+    return this.analyticsService.getPlatformAnalytics(params);
   }
 
   async getCampaignAnalytics(params?: AnalyticsQueryParams): Promise<ApiResult<CampaignAnalytics[]>> {
-    return this.get<CampaignAnalytics[]>(`${this.baseUrl}/analytics/campaigns`, { params });
+    return this.analyticsService.getCampaignAnalytics(params);
   }
 
   async getMarketingPerformance(params?: AnalyticsQueryParams): Promise<ApiResult<MarketingPerformance>> {
-    return this.get<MarketingPerformance>(`${this.baseUrl}/analytics/performance`, { params });
+    return this.analyticsService.getMarketingPerformance(params);
   }
 
   async getTopPerformingContent(params?: AnalyticsQueryParams & { limit?: number }): Promise<ApiResult<TopPerformingContent[]>> {
-    return this.get<TopPerformingContent[]>(`${this.baseUrl}/analytics/top-content`, { params });
+    return this.analyticsService.getTopPerformingContent(params);
   }
 
   // Social Platforms
   async getSocialPlatforms(): Promise<ApiResult<SocialPlatform[]>> {
-    return this.get<SocialPlatform[]>(`${this.baseUrl}/platforms`);
+    return this.socialPlatformService.getPlatforms();
   }
 
-  // Utility Methods
+  // Aggregate/Utility Methods
   async getMarketingStats(timeRange: string = '30d'): Promise<ApiResult<{
     totalReach: number;
     engagementRate: number;
@@ -93,7 +108,7 @@ export class MarketingService extends ApiService {
     newFollowers: number;
   }>> {
     const overview = await this.getMarketingOverview({ timeRange: timeRange as any });
-    
+
     if (!overview.succeeded || !overview.data) {
       return { succeeded: false, errors: ['Failed to fetch marketing stats'] };
     }
@@ -129,7 +144,7 @@ export class MarketingService extends ApiService {
     color: string;
   }[]>> {
     const platformsResult = await this.getPlatformAnalytics();
-    
+
     if (!platformsResult.succeeded || !platformsResult.data) {
       return { succeeded: false, errors: ['Failed to fetch social media performance'] };
     }

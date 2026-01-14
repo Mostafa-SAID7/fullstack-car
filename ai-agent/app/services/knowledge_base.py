@@ -1,8 +1,15 @@
 """
 Vector-based knowledge base for automotive information using ChromaDB.
 """
-import chromadb
-from chromadb.config import Settings
+try:
+    import chromadb
+    from chromadb.config import Settings
+    CHROMADB_AVAILABLE = True
+except ImportError:
+    CHROMADB_AVAILABLE = False
+    chromadb = None
+    Settings = None
+
 from typing import List, Optional, Dict, Any
 from app.core.config import settings
 from app.models.schemas import KnowledgeEntry, KnowledgeCategory, Document
@@ -15,14 +22,22 @@ logger = logging.getLogger(__name__)
 class KnowledgeBase:
     """Vector-based knowledge base for automotive information"""
     
-    def __init__(self):
-        self.client: Optional[chromadb.Client] = None
+    def __init__(self, embedding_service: Optional[EmbeddingService] = None):
+        self.client: Optional[Any] = None
         self.collection = None
-        self.embedding_service = EmbeddingService()
+        self.embedding_service = embedding_service or EmbeddingService()
         self.initialized = False
+        
+        if not CHROMADB_AVAILABLE:
+            logger.warning("ChromaDB not available. Knowledge base will use fallback mode.")
     
     async def initialize(self):
         """Initialize ChromaDB client and collection"""
+        if not CHROMADB_AVAILABLE:
+            logger.warning("ChromaDB not installed. Knowledge base features disabled.")
+            self.initialized = False
+            return
+            
         try:
             # Initialize ChromaDB client with persistent storage
             self.client = chromadb.Client(Settings(
@@ -44,10 +59,12 @@ class KnowledgeBase:
             logger.error(f"Error initializing knowledge base: {e}")
             self.initialized = False
     
-    async def add_knowledge(
+    def add_knowledge(
         self, 
         content: str, 
-        metadata: Dict[str, Any],
+        category: KnowledgeCategory,
+        metadata: Optional[Dict[str, Any]] = None,
+        source: str = "manual",
         entry_id: Optional[str] = None
     ) -> str:
         """
@@ -55,29 +72,39 @@ class KnowledgeBase:
         
         Args:
             content: The text content to store
-            metadata: Metadata about the entry (category, source, etc.)
+            category: Knowledge category
+            metadata: Optional metadata about the entry
+            source: Source of the knowledge
             entry_id: Optional custom ID, will generate UUID if not provided
             
         Returns:
             The ID of the stored entry
         """
-        if not self.initialized:
-            await self.initialize()
+        if not CHROMADB_AVAILABLE or not self.initialized:
+            logger.warning("Knowledge base not available. Entry not stored.")
+            return str(uuid.uuid4())
         
         try:
             # Generate ID if not provided
             if not entry_id:
                 entry_id = str(uuid.uuid4())
             
+            # Prepare metadata
+            full_metadata = metadata or {}
+            full_metadata.update({
+                "category": category.value if isinstance(category, KnowledgeCategory) else category,
+                "source": source
+            })
+            
             # Generate embedding
-            embedding = await self.embedding_service.generate_embedding(content)
+            embedding = self.embedding_service.generate_embedding(content)
             
             # Store in ChromaDB
             self.collection.add(
                 ids=[entry_id],
                 embeddings=[embedding],
                 documents=[content],
-                metadatas=[metadata]
+                metadatas=[full_metadata]
             )
             
             logger.info(f"Added knowledge entry: {entry_id}")

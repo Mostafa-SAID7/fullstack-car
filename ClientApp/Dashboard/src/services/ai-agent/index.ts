@@ -6,14 +6,20 @@ import { AIAgentModelsService } from './models';
 import { AIAgentKnowledgeService } from './knowledge';
 import { AIAgentManagementService } from './agents';
 import { AIConversationsService } from './conversations';
+import { KnowledgeService } from './knowledge';
+import { AIAgentAnalyticsService } from './analytics';
+import { AIAgentFeedbackService } from './feedback';
 
 // Re-export sub-services
 export { AIAgentChatService } from './chat';
-export { AIAgentTrainingService } from './training';
+export { AIAgentTrainingService, trainingService } from './training';
 export { AIAgentModelsService } from './models';
 export { AIAgentKnowledgeService } from './knowledge';
 export { AIAgentManagementService, agentManagementService } from './agents';
 export { AIConversationsService, conversationsService } from './conversations';
+export { KnowledgeService, knowledgeService } from './knowledge';
+export { AIAgentAnalyticsService, analyticsService } from './analytics';
+export { AIAgentFeedbackService, feedbackService } from './feedback';
 
 // Type definitions
 export interface ChatMessage {

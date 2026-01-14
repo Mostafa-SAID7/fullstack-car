@@ -5,6 +5,7 @@ export { useAnalytics, useCustomers } from './admin';
 export { useProducts } from './products';
 export { useSettings } from './settings';
 export { useAIAgent } from './ai-agent';
+export { useMultiAgentOverview } from './ai-agent/useMultiAgentOverview';
 export { useToast } from '../components/feedback/toasts/ToastProvider';
 export { useModal } from './useModal';
 

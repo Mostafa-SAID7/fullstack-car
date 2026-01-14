@@ -1,0 +1,165 @@
+// Chat Widget Animations
+.chat-widget {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// FAB Container
+.fab-container {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
+
+// FAB Buttons
+.fab-button {
+  position: relative;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  // Pulse animation for unread badge
+  .unread-badge {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// Fade in animation
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Slide up animation
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+// Custom scrollbar
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// Dark mode scrollbar
+@media (prefers-color-scheme: dark) {
+  .custom-scroll {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .fab-container {
+    width: calc(100vw - 3rem) !important;
+    max-width: 380px;
+  }
+  
+  .chat-widget {
+    width: 100% !important;
+    max-height: calc(100vh - 150px) !important;
+  }
+}
+
+// Keyboard shortcut hint
+.keyboard-hint {
+  font-size: 10px;
+  opacity: 0.4;
+  margin-top: 2px;
+}
+
+// Position menu styling
+.position-menu {
+  min-width: 180px;
+}
+
+// Widget positioning classes
+.widget-bottom-right {
+  bottom: 1.5rem;
+  right: 1.5rem;
+}
+
+.widget-bottom-left {
+  bottom: 1.5rem;
+  left: 1.5rem;
+}
+
+.widget-top-right {
+  top: 5rem;
+  right: 1.5rem;
+}
+
+.widget-top-left {
+  top: 5rem;
+  left: 1.5rem;
+}
+
+// Accessibility improvements
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+// Print styles
+@media print {
+  .fab-container,
+  .chat-widget {
+    display: none !important;
+  }
+}

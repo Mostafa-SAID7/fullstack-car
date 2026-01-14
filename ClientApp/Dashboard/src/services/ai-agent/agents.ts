@@ -11,7 +11,7 @@ export class AIAgentManagementService {
    */
   async listAgents(): Promise<{ agents: AgentStatus[] }> {
     const response = await apiClient.get(BASE_URL);
-    return response.data;
+    return response.data as { agents: AgentStatus[] };
   }
 
   /**
@@ -19,7 +19,7 @@ export class AIAgentManagementService {
    */
   async getAgentStatus(agentType: AgentType): Promise<AgentStatus> {
     const response = await apiClient.get(`${BASE_URL}/${agentType}/status`);
-    return response.data;
+    return response.data as AgentStatus;
   }
 
   /**
@@ -38,7 +38,7 @@ export class AIAgentManagementService {
    */
   async getAgentConfig(agentType: AgentType): Promise<{ agent_type: string; config: Record<string, any> }> {
     const response = await apiClient.get(`${BASE_URL}/${agentType}/config`);
-    return response.data;
+    return response.data as { agent_type: string; config: Record<string, any> };
   }
 
   /**
@@ -46,7 +46,7 @@ export class AIAgentManagementService {
    */
   async testAgent(agentType: AgentType, testRequest: ChatRequest): Promise<AgentResponse> {
     const response = await apiClient.post(`${BASE_URL}/${agentType}/test`, testRequest);
-    return response.data;
+    return response.data as AgentResponse;
   }
 
   /**

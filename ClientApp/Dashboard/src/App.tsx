@@ -45,9 +45,9 @@ const PagesManagement = React.lazy(() => import('./pages').then(module => ({ def
 
 // Marketing Pages
 const MarketingOverview = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingOverview })));
-const SocialMedia = React.lazy(() => import('./pages').then(module => ({ default: module.SocialMedia })));
-const Campaigns = React.lazy(() => import('./pages').then(module => ({ default: module.Campaigns })));
-const MarketingAnalytics = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingAnalytics })));
+const SocialMediaManagement = React.lazy(() => import('./pages').then(module => ({ default: module.SocialMediaManagement })));
+const CampaignsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.CampaignsManagement })));
+const AnalyticsDashboard = React.lazy(() => import('./pages').then(module => ({ default: module.AnalyticsDashboard })));
 const ContentPlanning = React.lazy(() => import('./pages').then(module => ({ default: module.ContentPlanning })));
 
 // Marketplace Pages
@@ -500,7 +500,7 @@ const AppRoutes = () => {
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
-                  <SocialMedia />
+                  <SocialMediaManagement />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -512,7 +512,7 @@ const AppRoutes = () => {
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
-                  <Campaigns />
+                  <CampaignsManagement />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -524,7 +524,7 @@ const AppRoutes = () => {
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
-                  <MarketingAnalytics />
+                  <AnalyticsDashboard />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>

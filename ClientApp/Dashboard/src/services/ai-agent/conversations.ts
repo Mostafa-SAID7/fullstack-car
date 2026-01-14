@@ -1,6 +1,6 @@
 // Conversations Service - For managing AI conversations
 
-import { apiClient } from '../api/client';
+import { apiClient } from '../api';
 import type { AIConversation, AIMessage } from '../../types/ai-agent';
 
 const BASE_URL = '/api/conversations';

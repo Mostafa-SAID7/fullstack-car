@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { Save, Key, Zap, Shield, DollarSign, Bell, Database, Settings as SettingsIcon } from 'lucide-react';
 import type { AIAgentConfig } from '../../../types/config';
 
 interface AIAgentSettingsProps {
@@ -10,284 +11,577 @@ export const AIAgentSettings: React.FC<AIAgentSettingsProps> = ({
   config,
   onConfigUpdate
 }) => {
+  const [activeSection, setActiveSection] = useState<'general' | 'llm' | 'api' | 'cache' | 'cost' | 'notifications'>('general');
+  const [showApiKey, setShowApiKey] = useState(false);
+
   const toggleSetting = (key: keyof AIAgentConfig) => {
     onConfigUpdate({ [key]: !config[key] });
   };
 
-  return (
-    <div className="space-y-8">
-      {/* General Settings */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-card border border-border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
-      >
-        {/* Background decoration */}
+  const handleSave = () => {
+    // Save settings logic
+    console.log('Saving settings:', config);
+  };
 
-        <div className="relative">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
+  const sections = [
+    { id: 'general', label: 'General', icon: <SettingsIcon className="w-4 h-4" /> },
+    { id: 'llm', label: 'LLM Provider', icon: <Database className="w-4 h-4" /> },
+    { id: 'api', label: 'API & Rate Limiting', icon: <Zap className="w-4 h-4" /> },
+    { id: 'cache', label: 'Caching', icon: <Shield className="w-4 h-4" /> },
+    { id: 'cost', label: 'Cost Limits', icon: <DollarSign className="w-4 h-4" /> },
+    { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" /> }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-card-foreground">AI Agent Settings</h2>
+          <p className="text-muted-foreground mt-1">
+            Configure global AI agent behavior and preferences
+          </p>
+        </div>
+        <button
+          onClick={handleSave}
+          className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-medium hover:bg-primary/90 flex items-center gap-2 transition-colors"
+        >
+          <Save className="w-4 h-4" />
+          Save Changes
+        </button>
+      </div>
+
+      {/* Section Navigation */}
+      <div className="bg-card border border-border rounded-2xl p-2">
+        <div className="flex gap-2 overflow-x-auto">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id as any)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium whitespace-nowrap transition-colors ${
+                activeSection === section.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              {section.icon}
+              {section.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* General Settings */}
+      {activeSection === 'general' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">General Settings</h3>
+            <div className="space-y-4">
+              {/* Enable AI Agent */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Enable AI Agent</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Turn the AI agent on or off globally
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('isEnabled')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.isEnabled ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.isEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
               </div>
-              <div>
-                <h3 className="font-bold text-2xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">General Settings</h3>
-                <p className="text-muted-foreground mt-1">Configure core AI agent behavior and preferences</p>
+
+              {/* Auto-Learning */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Auto-Learning</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Automatically improve responses based on user feedback
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('autoLearning')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.autoLearning ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.autoLearning ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Debug Mode */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Debug Mode</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Enable detailed logging for troubleshooting
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('debugMode')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.debugMode ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.debugMode ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
               </div>
             </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-200 font-semibold"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add Setting
-            </motion.button>
-          </div>
-
-          <div className="space-y-8">
-            {/* Enable AI Agent */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="flex items-center justify-between p-6 bg-muted/30 rounded-2xl border border-border/30 hover:bg-muted/50 transition-colors group"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg text-foreground mb-1">Enable AI Agent</h4>
-                  <p className="text-muted-foreground leading-relaxed">Turn the AI agent on or off globally. When disabled, all AI features will be suspended.</p>
-                  <div className="flex items-center gap-2 mt-3">
-                    <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      config.isEnabled
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${config.isEnabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                      {config.isEnabled ? 'Active' : 'Inactive'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleSetting('isEnabled')}
-                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-300 shadow-lg ${
-                  config.isEnabled
-                    ? 'bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/25'
-                    : 'bg-muted hover:bg-muted/80'
-                }`}
-              >
-                <motion.span
-                  layout
-                  transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-all ${
-                    config.isEnabled ? 'translate-x-8' : 'translate-x-1'
-                  }`}
-                />
-              </motion.button>
-            </motion.div>
-
-            {/* Auto-Learning */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-between p-6 bg-muted/30 rounded-2xl border border-border/30 hover:bg-muted/50 transition-colors group"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg text-foreground mb-1">Auto-Learning</h4>
-                  <p className="text-muted-foreground leading-relaxed">Automatically improve responses based on user feedback and interaction patterns.</p>
-                  <div className="flex items-center gap-2 mt-3">
-                    <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      config.autoLearning
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${config.autoLearning ? 'bg-blue-500 animate-pulse' : 'bg-gray-400'}`} />
-                      {config.autoLearning ? 'Learning Enabled' : 'Learning Disabled'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleSetting('autoLearning')}
-                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-300 shadow-lg ${
-                  config.autoLearning
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 shadow-blue-500/25'
-                    : 'bg-muted hover:bg-muted/80'
-                }`}
-              >
-                <motion.span
-                  layout
-                  transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-all ${
-                    config.autoLearning ? 'translate-x-8' : 'translate-x-1'
-                  }`}
-                />
-              </motion.button>
-            </motion.div>
-
-            {/* Debug Mode */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-between p-6 bg-muted/30 rounded-2xl border border-border/30 hover:bg-muted/50 transition-colors group"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg text-foreground mb-1">Debug Mode</h4>
-                  <p className="text-muted-foreground leading-relaxed">Enable detailed logging for troubleshooting and performance monitoring.</p>
-                  <div className="flex items-center gap-2 mt-3">
-                    <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      config.debugMode
-                        ? 'bg-orange-100 text-orange-700'
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${config.debugMode ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`} />
-                      {config.debugMode ? 'Debug Active' : 'Debug Inactive'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleSetting('debugMode')}
-                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-300 shadow-lg ${
-                  config.debugMode
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-orange-500/25'
-                    : 'bg-muted hover:bg-muted/80'
-                }`}
-              >
-                <motion.span
-                  layout
-                  transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-all ${
-                    config.debugMode ? 'translate-x-8' : 'translate-x-1'
-                  }`}
-                />
-              </motion.button>
-            </motion.div>
           </div>
         </div>
-      </motion.div>
+      )}
 
-      {/* API Configuration */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="relative overflow-hidden bg-card border border-border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl p-8"
-      >
-        {/* Background decoration */}
+      {/* LLM Provider Settings */}
+      {activeSection === 'llm' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">LLM Provider Configuration</h3>
+            <div className="space-y-4">
+              {/* Primary Provider */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Primary Provider</label>
+                <select
+                  value={config.llmProvider || 'openai'}
+                  onChange={(e) => onConfigUpdate({ llmProvider: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="openai">OpenAI (GPT-4)</option>
+                  <option value="anthropic">Anthropic (Claude)</option>
+                  <option value="local">Local Model</option>
+                  <option value="huggingface">HuggingFace</option>
+                </select>
+              </div>
 
-        <div className="relative">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-bold text-2xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">API Configuration</h3>
-              <p className="text-muted-foreground mt-1">Configure external API connections and performance settings</p>
+              {/* Model Selection */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Model</label>
+                <select
+                  value={config.model || 'gpt-4'}
+                  onChange={(e) => onConfigUpdate({ model: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="gpt-4">GPT-4</option>
+                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                  <option value="claude-3-opus">Claude 3 Opus</option>
+                  <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                </select>
+              </div>
+
+              {/* Temperature */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Temperature: {config.temperature || 0.7}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.1"
+                  value={config.temperature || 0.7}
+                  onChange={(e) => onConfigUpdate({ temperature: parseFloat(e.target.value) })}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Lower values make responses more focused, higher values more creative
+                </p>
+              </div>
+
+              {/* Max Tokens */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Max Tokens</label>
+                <input
+                  type="number"
+                  value={config.maxTokens || 2000}
+                  onChange={(e) => onConfigUpdate({ maxTokens: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="100"
+                  max="8000"
+                />
+              </div>
+
+              {/* Fallback Provider */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Fallback Provider</label>
+                <select
+                  value={config.fallbackProvider || 'local'}
+                  onChange={(e) => onConfigUpdate({ fallbackProvider: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="none">None</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="anthropic">Anthropic</option>
+                  <option value="local">Local Model</option>
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  Used when primary provider is unavailable
+                </p>
+              </div>
             </div>
           </div>
+        </div>
+      )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="space-y-3"
-              >
-                <label className="block text-sm font-semibold text-foreground">API Endpoint</label>
+      {/* API & Rate Limiting */}
+      {activeSection === 'api' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">API Configuration</h3>
+            <div className="space-y-4">
+              {/* API Endpoint */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">API Endpoint</label>
                 <input
                   type="url"
                   value={config.apiEndpoint}
                   onChange={(e) => onConfigUpdate({ apiEndpoint: e.target.value })}
-                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200 placeholder:text-muted-foreground/50"
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="https://api.example.com/v1"
                 />
-              </motion.div>
+              </div>
 
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="space-y-3"
-              >
-                <label className="block text-sm font-semibold text-foreground">API Key</label>
-                <input
-                  type="password"
-                  defaultValue="••••••••••••••••"
-                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200 placeholder:text-muted-foreground/50"
-                  placeholder="Enter your API key"
-                />
-              </motion.div>
-            </div>
+              {/* API Key */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground flex items-center gap-2">
+                  <Key className="w-4 h-4" />
+                  API Key
+                </label>
+                <div className="relative">
+                  <input
+                    type={showApiKey ? 'text' : 'password'}
+                    defaultValue="sk-••••••••••••••••••••••••"
+                    className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary pr-20"
+                    placeholder="Enter your API key"
+                  />
+                  <button
+                    onClick={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs bg-card border border-border rounded-lg hover:bg-muted transition-colors"
+                  >
+                    {showApiKey ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Your API key is encrypted and stored securely
+                </p>
+              </div>
 
-            <div className="space-y-6">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="space-y-3"
-              >
-                <label className="block text-sm font-semibold text-foreground">Rate Limit (requests/min)</label>
+              {/* Rate Limit */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Rate Limit (requests/minute)
+                </label>
                 <input
                   type="number"
                   value={config.rateLimit}
                   onChange={(e) => onConfigUpdate({ rateLimit: parseInt(e.target.value) })}
-                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200"
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   min="1"
                   max="1000"
                 />
-              </motion.div>
+                <p className="text-xs text-muted-foreground">
+                  Maximum number of API requests per minute
+                </p>
+              </div>
 
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="space-y-3"
-              >
-                <label className="block text-sm font-semibold text-foreground">Timeout (seconds)</label>
+              {/* Timeout */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Timeout (seconds)</label>
                 <input
                   type="number"
                   value={config.timeout}
                   onChange={(e) => onConfigUpdate({ timeout: parseInt(e.target.value) })}
-                  className="w-full bg-background border border-border/50 rounded-xl px-4 py-3 outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 transition-all duration-200"
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   min="1"
                   max="300"
                 />
-              </motion.div>
+              </div>
+
+              {/* Retry Logic */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Max Retries</label>
+                <input
+                  type="number"
+                  value={config.maxRetries || 3}
+                  onChange={(e) => onConfigUpdate({ maxRetries: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="0"
+                  max="10"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Number of retry attempts on API failure
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      )}
+
+      {/* Caching Settings */}
+      {activeSection === 'cache' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">Caching Configuration</h3>
+            <div className="space-y-4">
+              {/* Enable Caching */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Enable Response Caching</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Cache identical prompts for faster responses
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('enableCaching')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.enableCaching ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.enableCaching ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Cache TTL */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Cache TTL (Time To Live)
+                </label>
+                <select
+                  value={config.cacheTTL || 3600}
+                  onChange={(e) => onConfigUpdate({ cacheTTL: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="300">5 minutes</option>
+                  <option value="900">15 minutes</option>
+                  <option value="1800">30 minutes</option>
+                  <option value="3600">1 hour</option>
+                  <option value="7200">2 hours</option>
+                  <option value="86400">24 hours</option>
+                  <option value="604800">7 days</option>
+                </select>
+              </div>
+
+              {/* Cache Strategy */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">Cache Strategy</label>
+                <select
+                  value={config.cacheStrategy || 'lru'}
+                  onChange={(e) => onConfigUpdate({ cacheStrategy: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="lru">LRU (Least Recently Used)</option>
+                  <option value="lfu">LFU (Least Frequently Used)</option>
+                  <option value="fifo">FIFO (First In First Out)</option>
+                </select>
+              </div>
+
+              {/* Max Cache Size */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Max Cache Size (MB)
+                </label>
+                <input
+                  type="number"
+                  value={config.maxCacheSize || 100}
+                  onChange={(e) => onConfigUpdate({ maxCacheSize: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="10"
+                  max="1000"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cost Limits */}
+      {activeSection === 'cost' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">Cost Management</h3>
+            <div className="space-y-4">
+              {/* Enable Cost Limits */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Enable Cost Limits</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Prevent excessive API usage costs
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('enableCostLimits')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.enableCostLimits ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.enableCostLimits ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Daily Cost Limit */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Daily Cost Limit ($)
+                </label>
+                <input
+                  type="number"
+                  value={config.dailyCostLimit || 100}
+                  onChange={(e) => onConfigUpdate({ dailyCostLimit: parseFloat(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="1"
+                  step="0.01"
+                />
+              </div>
+
+              {/* Monthly Cost Limit */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Monthly Cost Limit ($)
+                </label>
+                <input
+                  type="number"
+                  value={config.monthlyCostLimit || 1000}
+                  onChange={(e) => onConfigUpdate({ monthlyCostLimit: parseFloat(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="1"
+                  step="0.01"
+                />
+              </div>
+
+              {/* Cost Alert Threshold */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Alert Threshold (%)
+                </label>
+                <input
+                  type="number"
+                  value={config.costAlertThreshold || 80}
+                  onChange={(e) => onConfigUpdate({ costAlertThreshold: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  min="1"
+                  max="100"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Send alert when reaching this percentage of limit
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notifications */}
+      {activeSection === 'notifications' && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-card-foreground mb-4">Notification Preferences</h3>
+            <div className="space-y-4">
+              {/* Error Notifications */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Error Notifications</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Get notified when errors occur
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('notifyOnError')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.notifyOnError ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.notifyOnError ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Cost Limit Notifications */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Cost Limit Alerts</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Get notified when approaching cost limits
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('notifyOnCostLimit')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.notifyOnCostLimit ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.notifyOnCostLimit ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Training Complete Notifications */}
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+                <div>
+                  <h4 className="font-medium text-card-foreground">Training Complete</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Get notified when training sessions complete
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleSetting('notifyOnTrainingComplete')}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    config.notifyOnTrainingComplete ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      config.notifyOnTrainingComplete ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Notification Email */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-card-foreground">
+                  Notification Email
+                </label>
+                <input
+                  type="email"
+                  value={config.notificationEmail || ''}
+                  onChange={(e) => onConfigUpdate({ notificationEmail: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-muted border border-border rounded-xl text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="admin@example.com"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

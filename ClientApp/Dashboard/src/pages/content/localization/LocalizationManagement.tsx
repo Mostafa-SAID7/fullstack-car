@@ -286,6 +286,20 @@ export const LocalizationManagement: React.FC = () => {
             Import / Export
           </div>
         </button>
+        <button
+          onClick={() => setActiveTab('activity')}
+          className={cn(
+            "px-6 py-3 text-sm font-medium transition-colors border-b-2 relative",
+            activeTab === 'activity'
+              ? "text-primary border-primary"
+              : "text-muted-foreground border-transparent hover:text-foreground"
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <History className="w-4 h-4" />
+            Activity
+          </div>
+        </button>
       </div>
 
       <AnimatePresence mode="wait">

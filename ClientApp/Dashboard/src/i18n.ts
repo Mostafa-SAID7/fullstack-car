@@ -181,7 +181,7 @@ const initConfig = {
   },
 
   // Namespace configuration for feature-based loading
-  ns: ['common', 'dashboard', 'community', 'management', 'analytics', 'moderation', 'posts', 'groups', 'qa', 'reviews', 'social', 'maps', 'news', 'guides', 'marketplace', 'media'],
+  ns: ['common', 'dashboard', 'community', 'management', 'analytics', 'moderation', 'posts', 'groups', 'qa', 'reviews', 'social', 'maps', 'news', 'guides', 'marketplace', 'media', 'marketing', 'system', 'settings', 'errors', 'ai', 'navigation', 'auth'],
   defaultNS: 'common',
 
   // Preload critical languages for better performance

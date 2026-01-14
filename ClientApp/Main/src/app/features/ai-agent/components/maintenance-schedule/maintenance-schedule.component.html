@@ -1,0 +1,280 @@
+<div class="maintenance-schedule">
+  <!-- Header -->
+  <div class="schedule-header">
+    <div class="car-info">
+      <i class="fas fa-car"></i>
+      <h2>{{ carYear }} {{ carMake }} {{ carModel }}</h2>
+      <span class="mileage">{{ currentMileage | number }} miles</span>
+    </div>
+    
+    <div class="view-tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="selectedView === 'schedule'"
+        (click)="selectView('schedule')">
+        <i class="fas fa-calendar-alt"></i>
+        Schedule
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="selectedView === 'timeline'"
+        (click)="selectView('timeline')">
+        <i class="fas fa-history"></i>
+        Timeline
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="selectedView === 'reminders'"
+        (click)="selectView('reminders')">
+        <i class="fas fa-bell"></i>
+        Reminders
+      </button>
+    </div>
+  </div>
+
+  <!-- Schedule View -->
+  <div class="schedule-view" *ngIf="selectedView === 'schedule'">
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Status:</label>
+        <select [(ngModel)]="filterStatus" (change)="setFilterStatus(filterStatus)">
+          <option value="all">All</option>
+          <option value="overdue">Overdue</option>
+          <option value="due-soon">Due Soon</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label>Priority:</label>
+        <select [(ngModel)]="filterPriority" (change)="setFilterPriority(filterPriority)">
+          <option value="all">All</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card overdue">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="card-content">
+          <span class="count">{{ overdueItems.length }}</span>
+          <span class="label">Overdue</span>
+        </div>
+      </div>
+      
+      <div class="summary-card due-soon">
+        <i class="fas fa-clock"></i>
+        <div class="card-content">
+          <span class="count">{{ dueSoonItems.length }}</span>
+          <span class="label">Due Soon</span>
+        </div>
+      </div>
+      
+      <div class="summary-card upcoming">
+        <i class="fas fa-calendar"></i>
+        <div class="card-content">
+          <span class="count">{{ upcomingItems.length }}</span>
+          <span class="label">Upcoming</span>
+        </div>
+      </div>
+      
+      <div class="summary-card completed">
+        <i class="fas fa-check-circle"></i>
+        <div class="card-content">
+          <span class="count">{{ completedItems.length }}</span>
+          <span class="label">Completed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance Items -->
+    <div class="maintenance-items">
+      <div 
+        class="maintenance-item" 
+        *ngFor="let item of filteredItems"
+        [class]="getStatusClass(item.status)">
+        <div class="item-header">
+          <div class="item-icon" [class]="getPriorityClass(item.priority)">
+            <i class="fas" [class]="getCategoryIcon(item.category)"></i>
+          </div>
+          
+          <div class="item-info">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+          
+          <div class="item-badges">
+            <span class="badge priority" [class]="getPriorityClass(item.priority)">
+              {{ item.priority }}
+            </span>
+            <span class="badge status" [class]="getStatusClass(item.status)">
+              {{ item.status }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="item-details">
+          <div class="detail">
+            <i class="fas fa-calendar"></i>
+            <span>Due: {{ formatDate(item.dueDate) }}</span>
+            <span class="days-until" *ngIf="!item.completed">
+              ({{ getDaysUntilDue(item.dueDate) }} days)
+            </span>
+          </div>
+          
+          <div class="detail" *ngIf="item.dueMileage">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>{{ item.dueMileage | number }} miles</span>
+          </div>
+          
+          <div class="detail" *ngIf="item.estimatedCost">
+            <i class="fas fa-dollar-sign"></i>
+            <span>{{ item.estimatedCost }}</span>
+          </div>
+        </div>
+        
+        <div class="item-actions">
+          <button 
+            class="btn-action" 
+            *ngIf="!item.completed"
+            (click)="markAsComplete(item)">
+            <i class="fas fa-check"></i>
+            Mark Complete
+          </button>
+          <button 
+            class="btn-action" 
+            *ngIf="!item.completed"
+            (click)="openReminderModal(item)">
+            <i class="fas fa-bell"></i>
+            Set Reminder
+          </button>
+          <span class="completed-badge" *ngIf="item.completed">
+            <i class="fas fa-check-circle"></i>
+            Completed {{ formatDate(item.completedDate!) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="empty-state" *ngIf="filteredItems.length === 0">
+        <i class="fas fa-calendar-check"></i>
+        <p>No maintenance items found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline View -->
+  <div class="timeline-view" *ngIf="selectedView === 'timeline'">
+    <div class="timeline-header">
+      <h3>Service History</h3>
+      <button class="btn-add" (click)="addService()">
+        <i class="fas fa-plus"></i>
+        Add Service
+      </button>
+    </div>
+    
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      
+      <div 
+        class="timeline-item" 
+        *ngFor="let service of sortedHistory"
+        [style.left.%]="getTimelinePosition(service.date)">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <div class="timeline-date">{{ formatDate(service.date) }}</div>
+          <div class="timeline-service">{{ service.service }}</div>
+          <div class="timeline-details">
+            <span><i class="fas fa-tachometer-alt"></i> {{ service.mileage | number }} mi</span>
+            <span><i class="fas fa-dollar-sign"></i> {{ service.cost }}</span>
+          </div>
+          <div class="timeline-provider">{{ service.provider }}</div>
+          <div class="timeline-notes" *ngIf="service.notes">{{ service.notes }}</div>
+        </div>
+      </div>
+      
+      <div class="empty-state" *ngIf="sortedHistory.length === 0">
+        <i class="fas fa-history"></i>
+        <p>No service history available</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminders View -->
+  <div class="reminders-view" *ngIf="selectedView === 'reminders'">
+    <div class="reminders-header">
+      <h3>Active Reminders</h3>
+      <p>You'll receive notifications for upcoming maintenance</p>
+    </div>
+    
+    <div class="reminders-list">
+      <div class="reminder-item" *ngFor="let item of dueSoonItems">
+        <div class="reminder-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="reminder-info">
+          <h4>{{ item.title }}</h4>
+          <p>Due: {{ formatDate(item.dueDate) }}</p>
+        </div>
+        <button class="btn-reminder" (click)="openReminderModal(item)">
+          <i class="fas fa-cog"></i>
+          Configure
+        </button>
+      </div>
+      
+      <div class="empty-state" *ngIf="dueSoonItems.length === 0">
+        <i class="fas fa-bell-slash"></i>
+        <p>No active reminders</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder Modal -->
+  <div class="modal-overlay" *ngIf="showReminderModal" (click)="closeReminderModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Set Reminder</h3>
+        <button class="btn-close" (click)="closeReminderModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body" *ngIf="selectedItem">
+        <div class="form-group">
+          <label>Maintenance Item</label>
+          <p class="item-name">{{ selectedItem.title }}</p>
+        </div>
+        
+        <div class="form-group">
+          <label>Reminder Date</label>
+          <input 
+            type="date" 
+            [(ngModel)]="reminderDate"
+            class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label>Notification Type</label>
+          <select [(ngModel)]="reminderType" class="form-control">
+            <option value="email">Email</option>
+            <option value="sms">SMS</option>
+            <option value="push">Push Notification</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeReminderModal()">Cancel</button>
+        <button class="btn-save" (click)="saveReminder()">
+          <i class="fas fa-bell"></i>
+          Save Reminder
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

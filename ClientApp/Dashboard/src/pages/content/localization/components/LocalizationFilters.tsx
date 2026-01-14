@@ -51,21 +51,28 @@ export const LocalizationFilters: React.FC<{
                     >
                         <option value="">All Categories</option>
                         <option value="common">Common</option>
-                        <option value="auth">Authentication</option>
+                        <option value="dashboard">Dashboard</option>
                         <option value="navigation">Navigation</option>
+                        <option value="auth">Authentication</option>
+                        <option value="community">Community</option>
+                        <option value="management">Management</option>
+                        <option value="analytics">Analytics</option>
+                        <option value="moderation">Moderation</option>
                         <option value="posts">Posts</option>
                         <option value="groups">Groups</option>
                         <option value="qa">Q&A</option>
                         <option value="reviews">Reviews</option>
-                        <option value="social">Social</option>
+                        <option value="social">Social Media</option>
                         <option value="marketplace">Marketplace</option>
-                        <option value="media">Media</option>
-                        <option value="administration">Administration</option>
-                        <option value="ai">AI Agent</option>
+                        <option value="media">Media / Studio</option>
                         <option value="marketing">Marketing</option>
                         <option value="system">System</option>
                         <option value="settings">Settings</option>
                         <option value="errors">Errors</option>
+                        <option value="ai">AI Agent</option>
+                        <option value="maps">Maps</option>
+                        <option value="news">News</option>
+                        <option value="guides">Guides</option>
                     </select>
                 </div>
             </div>

@@ -7,16 +7,28 @@ import {
   Database,
   Activity,
   FileText,
-  Settings
+  Settings,
+  Sliders,
+  BookOpen,
+  MessageSquare,
+  TrendingUp,
+  AlertCircle,
+  TestTube
 } from 'lucide-react';
 import { useAIAgent } from '../../hooks';
 import type { TabConfig } from '../../types/common';
-import { AIAgentOverview } from './components/AIAgentOverview';
-import { AIAgentTraining } from './components/AIAgentTraining';
+import { MultiAgentOverview } from './components/MultiAgentOverview';
+import { AgentConfiguration } from './components/AgentConfiguration';
+import { KnowledgeBase } from './components/KnowledgeBase';
+import { ConversationMonitor } from './components/ConversationMonitor';
+import { Training } from './components/Training';
+import { Analytics } from './components/Analytics';
+import { FeedbackReview } from './components/FeedbackReview';
 import { AIAgentModels } from './components/AIAgentModels';
 import { AIAgentMonitoring } from './components/AIAgentMonitoring';
 import { AIAgentDatasets } from './components/AIAgentDatasets';
 import { AIAgentSettings } from './components/AIAgentSettings';
+import { AgentTesting } from './components/AgentTesting';
 
 export const AIAgentManagement: React.FC = () => {
   const {
@@ -33,7 +45,13 @@ export const AIAgentManagement: React.FC = () => {
 
   const tabs: TabConfig[] = [
     { id: 'overview', label: 'Overview', icon: <BarChart3 /> },
+    { id: 'configuration', label: 'Configuration', icon: <Sliders /> },
+    { id: 'knowledge', label: 'Knowledge Base', icon: <BookOpen /> },
+    { id: 'conversations', label: 'Conversations', icon: <MessageSquare /> },
     { id: 'training', label: 'Training', icon: <Brain /> },
+    { id: 'analytics', label: 'Analytics', icon: <TrendingUp /> },
+    { id: 'feedback', label: 'Feedback', icon: <AlertCircle /> },
+    { id: 'testing', label: 'Testing', icon: <TestTube /> },
     { id: 'models', label: 'Models', icon: <Database /> },
     { id: 'monitoring', label: 'Monitoring', icon: <Activity /> },
     { id: 'datasets', label: 'Datasets', icon: <FileText /> },
@@ -43,21 +61,21 @@ export const AIAgentManagement: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
-        return (
-          <AIAgentOverview
-            isAIEnabled={config.isEnabled}
-            metrics={metrics}
-          />
-        );
+        return <MultiAgentOverview />;
+      case 'configuration':
+        return <AgentConfiguration />;
+      case 'knowledge':
+        return <KnowledgeBase />;
+      case 'conversations':
+        return <ConversationMonitor />;
       case 'training':
-        return (
-          <AIAgentTraining
-            trainingSessions={trainingSessions}
-            isTraining={isTraining}
-            onStartTraining={startTraining}
-            onStopTraining={stopTraining}
-          />
-        );
+        return <Training />;
+      case 'analytics':
+        return <Analytics />;
+      case 'feedback':
+        return <FeedbackReview />;
+      case 'testing':
+        return <AgentTesting />;
       case 'models':
         return (
           <AIAgentModels

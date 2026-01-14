@@ -50,30 +50,36 @@ export interface ChatRequest {
 
 // Multi-Agent System Types
 
-export enum AgentType {
-  GENERAL = 'general',
-  MECHANIC = 'mechanic',
-  BUYER_GUIDE = 'buyer_guide',
-  SELLER_ASSISTANT = 'seller_assistant',
-  MODIFICATION_EXPERT = 'modification_expert',
-  COMMUNITY_HELPER = 'community_helper'
-}
+export const AgentType = {
+  GENERAL: 'general',
+  MECHANIC: 'mechanic',
+  BUYER_GUIDE: 'buyer_guide',
+  SELLER_ASSISTANT: 'seller_assistant',
+  MODIFICATION_EXPERT: 'modification_expert',
+  COMMUNITY_HELPER: 'community_helper'
+} as const;
 
-export enum KnowledgeCategory {
-  MAINTENANCE = 'maintenance',
-  DIAGNOSTICS = 'diagnostics',
-  BUYING_GUIDE = 'buying_guide',
-  SELLING_TIPS = 'selling_tips',
-  MODIFICATIONS = 'modifications',
-  CAR_SPECS = 'car_specs',
-  COMMUNITY_HELP = 'community_help'
-}
+export type AgentType = typeof AgentType[keyof typeof AgentType];
 
-export enum FeedbackType {
-  POSITIVE = 'positive',
-  NEGATIVE = 'negative',
-  CORRECTION = 'correction'
-}
+export const KnowledgeCategory = {
+  MAINTENANCE: 'maintenance',
+  DIAGNOSTICS: 'diagnostics',
+  BUYING_GUIDE: 'buying_guide',
+  SELLING_TIPS: 'selling_tips',
+  MODIFICATIONS: 'modifications',
+  CAR_SPECS: 'car_specs',
+  COMMUNITY_HELP: 'community_help'
+} as const;
+
+export type KnowledgeCategory = typeof KnowledgeCategory[keyof typeof KnowledgeCategory];
+
+export const FeedbackType = {
+  POSITIVE: 'positive',
+  NEGATIVE: 'negative',
+  CORRECTION: 'correction'
+} as const;
+
+export type FeedbackType = typeof FeedbackType[keyof typeof FeedbackType];
 
 export interface QuickAction {
   label: string;

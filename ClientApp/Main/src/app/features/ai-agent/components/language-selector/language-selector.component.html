@@ -1,0 +1,45 @@
+<div class="language-selector">
+  <button 
+    class="language-button"
+    (click)="toggleDropdown()"
+    [attr.aria-label]="'Select Language'"
+  >
+    <span class="language-flag">{{ getLanguageFlag(currentLanguage?.code || 'en-US') }}</span>
+    <span class="language-name">{{ currentLanguage?.nativeName }}</span>
+    <i class="fa fa-chevron-down" [class.rotated]="showDropdown"></i>
+  </button>
+
+  <div 
+    class="language-dropdown"
+    *ngIf="showDropdown"
+    (clickOutside)="closeDropdown()"
+  >
+    <div class="dropdown-header">
+      <i class="fa fa-globe"></i>
+      <span>Select Language</span>
+    </div>
+
+    <div class="language-list">
+      <button
+        *ngFor="let language of languages"
+        class="language-option"
+        [class.active]="language.code === currentLanguage?.code"
+        (click)="selectLanguage(language)"
+      >
+        <span class="option-flag">{{ getLanguageFlag(language.code) }}</span>
+        <div class="option-details">
+          <span class="option-native">{{ language.nativeName }}</span>
+          <span class="option-name">{{ language.name }}</span>
+        </div>
+        <i class="fa fa-check" *ngIf="language.code === currentLanguage?.code"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div 
+    class="dropdown-backdrop"
+    *ngIf="showDropdown"
+    (click)="closeDropdown()"
+  ></div>
+</div>

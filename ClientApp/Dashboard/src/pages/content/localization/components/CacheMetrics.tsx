@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Activity, Globe, EyeOff, Flame, RefreshCw } from 'lucide-react';
 import { cn } from '../../../../lib/utils';
-import type { TranslationCacheMetrics } from '../../../../services/localization';
+import type { TranslationCacheMetrics } from '../../../../components/services/localization';
 
 const StatCard = ({ title, value, icon: Icon, color = 'blue' }: {
     title: string;

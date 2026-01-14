@@ -1,0 +1,273 @@
+<div class="diagnostic-wizard">
+  <!-- Header -->
+  <div class="wizard-header">
+    <h2>
+      <i class="fas fa-stethoscope"></i>
+      Diagnostic Wizard
+    </h2>
+    <p>Let's diagnose your car's issue step by step</p>
+    <button class="btn-close" (click)="cancelDiagnostic()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+    </div>
+    <div class="progress-steps">
+      <div 
+        class="progress-step" 
+        *ngFor="let step of steps"
+        [class.active]="step.id === currentStep"
+        [class.completed]="step.completed"
+        (click)="goToStep(step.id)">
+        <div class="step-circle">
+          <i class="fas fa-check" *ngIf="step.completed"></i>
+          <span *ngIf="!step.completed">{{ step.id }}</span>
+        </div>
+        <div class="step-label">{{ step.title }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="wizard-content">
+    <!-- Step 1: Symptoms -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      <div class="step-header">
+        <h3>{{ currentStepData.title }}</h3>
+        <p>{{ currentStepData.description }}</p>
+      </div>
+
+      <div class="symptom-categories">
+        <div class="symptom-category" *ngFor="let category of symptomCategories">
+          <h4>
+            <i class="fas fa-cog"></i>
+            {{ category.name }}
+          </h4>
+          <div class="symptom-options">
+            <button
+              class="symptom-btn"
+              *ngFor="let symptom of category.symptoms"
+              [class.selected]="isSymptomSelected(symptom)"
+              (click)="toggleSymptom(symptom)">
+              <i class="fas" [class.fa-check-circle]="isSymptomSelected(symptom)" [class.fa-circle]="!isSymptomSelected(symptom)"></i>
+              {{ symptom }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="selected-symptoms" *ngIf="selectedSymptoms.length > 0">
+        <h4>Selected Symptoms ({{ selectedSymptoms.length }})</h4>
+        <div class="symptom-tags">
+          <span class="symptom-tag" *ngFor="let symptom of selectedSymptoms">
+            {{ symptom }}
+            <i class="fas fa-times" (click)="toggleSymptom(symptom)"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Questions -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <div class="step-header">
+        <h3>{{ currentStepData.title }}</h3>
+        <p>{{ currentStepData.description }}</p>
+      </div>
+
+      <div class="questions-list">
+        <div class="question-item" *ngFor="let question of questions">
+          <label class="question-label">{{ question.question }}</label>
+
+          <!-- Single Choice -->
+          <div class="question-options" *ngIf="question.type === 'single'">
+            <button
+              class="option-btn"
+              *ngFor="let option of question.options"
+              [class.selected]="question.answer === option"
+              (click)="answerQuestion(question.id, option)">
+              <i class="fas" [class.fa-dot-circle]="question.answer === option" [class.fa-circle]="question.answer !== option"></i>
+              {{ option }}
+            </button>
+          </div>
+
+          <!-- Multiple Choice -->
+          <div class="question-options" *ngIf="question.type === 'multiple'">
+            <button
+              class="option-btn"
+              *ngFor="let option of question.options"
+              [class.selected]="isMultipleAnswerSelected(question.id, option)"
+              (click)="toggleMultipleAnswer(question.id, option)">
+              <i class="fas" [class.fa-check-square]="isMultipleAnswerSelected(question.id, option)" [class.fa-square]="!isMultipleAnswerSelected(question.id, option)"></i>
+              {{ option }}
+            </button>
+          </div>
+
+          <!-- Text Input -->
+          <textarea
+            *ngIf="question.type === 'text'"
+            class="question-textarea"
+            [(ngModel)]="question.answer"
+            placeholder="Enter details here..."
+            rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Inspection -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <div class="step-header">
+        <h3>{{ currentStepData.title }}</h3>
+        <p>{{ currentStepData.description }}</p>
+      </div>
+
+      <div class="inspection-categories">
+        <div class="inspection-category" *ngFor="let category of inspectionItems">
+          <h4>
+            <i class="fas fa-clipboard-check"></i>
+            {{ category.category }}
+          </h4>
+          <div class="inspection-items">
+            <label class="inspection-item" *ngFor="let item of category.items">
+              <input
+                type="checkbox"
+                [(ngModel)]="item.checked">
+              <span class="checkbox-custom"></span>
+              <span class="item-label">{{ item.label }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="inspection-note">
+        <i class="fas fa-info-circle"></i>
+        <p>Check the items you've inspected. This helps us provide more accurate diagnosis.</p>
+      </div>
+    </div>
+
+    <!-- Step 4: Results -->
+    <div class="step-content" *ngIf="currentStep === 4 && diagnosticResult">
+      <div class="step-header">
+        <h3>{{ currentStepData.title }}</h3>
+        <p>{{ currentStepData.description }}</p>
+      </div>
+
+      <div class="diagnostic-result">
+        <!-- Diagnosis Header -->
+        <div class="result-header" [class]="getSeverityClass(diagnosticResult.severity)">
+          <div class="severity-badge">
+            <i class="fas" [class]="getSeverityIcon(diagnosticResult.severity)"></i>
+            <span>{{ diagnosticResult.severity | uppercase }}</span>
+          </div>
+          <h3>{{ diagnosticResult.diagnosis }}</h3>
+          <p>{{ diagnosticResult.description }}</p>
+        </div>
+
+        <!-- Urgency & Cost -->
+        <div class="result-info">
+          <div class="info-card">
+            <i class="fas fa-clock"></i>
+            <div>
+              <span class="info-label">Urgency</span>
+              <span class="info-value">{{ diagnosticResult.urgency }}</span>
+            </div>
+          </div>
+          <div class="info-card" *ngIf="diagnosticResult.estimatedCost">
+            <i class="fas fa-dollar-sign"></i>
+            <div>
+              <span class="info-label">Estimated Cost</span>
+              <span class="info-value">{{ diagnosticResult.estimatedCost }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Possible Causes -->
+        <div class="result-section">
+          <h4>
+            <i class="fas fa-search"></i>
+            Possible Causes
+          </h4>
+          <ul class="result-list">
+            <li *ngFor="let cause of diagnosticResult.possibleCauses">{{ cause }}</li>
+          </ul>
+        </div>
+
+        <!-- Recommended Actions -->
+        <div class="result-section">
+          <h4>
+            <i class="fas fa-tasks"></i>
+            Recommended Actions
+          </h4>
+          <ul class="result-list">
+            <li *ngFor="let action of diagnosticResult.recommendedActions">{{ action }}</li>
+          </ul>
+        </div>
+
+        <!-- DIY Instructions -->
+        <div class="result-section" *ngIf="diagnosticResult.diyPossible && diagnosticResult.diyInstructions && diagnosticResult.diyInstructions.length > 0">
+          <h4>
+            <i class="fas fa-tools"></i>
+            DIY Inspection Steps
+          </h4>
+          <div class="diy-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>DIY Possible</span>
+          </div>
+          <ol class="result-list numbered">
+            <li *ngFor="let instruction of diagnosticResult.diyInstructions">{{ instruction }}</li>
+          </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="result-actions">
+          <button class="btn-primary" (click)="findMechanic()">
+            <i class="fas fa-map-marker-alt"></i>
+            Find Mechanic
+          </button>
+          <button 
+            class="btn-secondary" 
+            *ngIf="diagnosticResult.diyPossible"
+            (click)="viewDIYGuide()">
+            <i class="fas fa-book"></i>
+            View DIY Guide
+          </button>
+          <button class="btn-secondary" (click)="completeDiagnostic()">
+            <i class="fas fa-save"></i>
+            Save Results
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="wizard-navigation">
+    <button 
+      class="btn-nav btn-back" 
+      *ngIf="currentStep > 1 && currentStep < totalSteps"
+      (click)="previousStep()">
+      <i class="fas fa-arrow-left"></i>
+      Back
+    </button>
+
+    <button 
+      class="btn-nav btn-next" 
+      *ngIf="currentStep < totalSteps"
+      [disabled]="!canProceed"
+      (click)="nextStep()">
+      Next
+      <i class="fas fa-arrow-right"></i>
+    </button>
+
+    <button 
+      class="btn-nav btn-restart" 
+      *ngIf="currentStep === totalSteps"
+      (click)="restartDiagnostic()">
+      <i class="fas fa-redo"></i>
+      Start New Diagnostic
+    </button>
+  </div>
+</div>

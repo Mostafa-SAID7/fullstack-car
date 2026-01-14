@@ -12,6 +12,7 @@ export const ROUTES = {
   PRODUCTS: '/products',
   SETTINGS: '/settings',
   SYSTEM: '/system',
+  MARKETING: '/marketing',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',

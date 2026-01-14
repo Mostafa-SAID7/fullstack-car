@@ -27,8 +27,13 @@ export { Users, Analytics, System, AuditLogs, HealthMonitor } from './administra
 export { NotificationManagement } from './administration/notifications';
 
 // Marketing Pages
-export { MarketingOverview, SocialMedia, Campaigns, ContentPlanning } from './marketing';
-export { Analytics as MarketingAnalytics } from './marketing';
+export {
+    MarketingOverview,
+    SocialMediaManagement,
+    CampaignsManagement,
+    AnalyticsDashboard,
+    ContentPlanning
+} from './marketing';
 
 // Error Pages
 export { NotFound, Forbidden, ServerError } from './errors';

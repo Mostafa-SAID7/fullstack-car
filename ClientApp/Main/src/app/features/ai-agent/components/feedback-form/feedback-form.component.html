@@ -1,0 +1,113 @@
+<div class="feedback-form">
+  <div class="form-header">
+    <h3>{{ getFormTitle() }}</h3>
+    <p class="form-description">{{ getFormDescription() }}</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="form-body">
+    <!-- Positive Feedback Form -->
+    <div *ngIf="feedbackType === FeedbackType.POSITIVE" class="form-section">
+      <label class="form-label">How would you rate this response?</label>
+      <div class="rating-selector">
+        <button
+          *ngFor="let option of ratingOptions"
+          type="button"
+          class="rating-option"
+          [class.selected]="rating === option.value"
+          [style.border-color]="rating === option.value ? option.color : '#dee2e6'"
+          (click)="selectRating(option.value)"
+        >
+          <i class="fa {{ option.icon }}" [style.color]="option.color"></i>
+          <span class="rating-label">{{ option.label }}</span>
+        </button>
+      </div>
+
+      <label class="form-label optional">Additional comments (optional)</label>
+      <textarea
+        [(ngModel)]="comment"
+        name="comment"
+        class="form-textarea"
+        rows="3"
+        placeholder="What did you find helpful about this response?"
+      ></textarea>
+    </div>
+
+    <!-- Negative Feedback Form -->
+    <div *ngIf="feedbackType === FeedbackType.NEGATIVE" class="form-section">
+      <label class="form-label">What went wrong?</label>
+      <textarea
+        [(ngModel)]="comment"
+        name="comment"
+        class="form-textarea"
+        rows="4"
+        placeholder="Please describe what could be improved..."
+      ></textarea>
+      <p class="form-hint">
+        <i class="fa fa-info-circle"></i>
+        Your feedback helps us improve the AI agent's responses
+      </p>
+    </div>
+
+    <!-- Correction Form -->
+    <div *ngIf="feedbackType === FeedbackType.CORRECTION" class="form-section">
+      <label class="form-label required">Your question</label>
+      <textarea
+        [(ngModel)]="query"
+        name="query"
+        class="form-textarea"
+        rows="2"
+        placeholder="What was your original question?"
+        required
+      ></textarea>
+
+      <label class="form-label required">Correct answer</label>
+      <textarea
+        [(ngModel)]="correction"
+        name="correction"
+        class="form-textarea"
+        rows="4"
+        placeholder="Please provide the correct information..."
+        required
+      ></textarea>
+
+      <p class="form-hint">
+        <i class="fa fa-lightbulb"></i>
+        Your correction will help the AI learn and improve future responses
+      </p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="form-error">
+      <i class="fa fa-exclamation-circle"></i>
+      {{ error }}
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="onCancel()"
+        [disabled]="submitting"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="submitting"
+      >
+        <i class="fa fa-paper-plane" *ngIf="!submitting"></i>
+        <i class="fa fa-spinner fa-spin" *ngIf="submitting"></i>
+        {{ getSubmitButtonText() }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Success Message -->
+  <div *ngIf="submitted" class="success-message">
+    <i class="fa fa-check-circle"></i>
+    <h4>Thank you for your feedback!</h4>
+    <p>Your input helps us improve the AI agent.</p>
+  </div>
+</div>

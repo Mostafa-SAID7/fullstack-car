@@ -1,0 +1,101 @@
+<div class="quick-actions">
+  <div class="actions-header">
+    <h3>Quick Actions</h3>
+    <p>Get started with common tasks</p>
+  </div>
+
+  <!-- Popular Actions -->
+  <div class="actions-section">
+    <h4 class="section-title">
+      <i class="fa fa-star"></i>
+      Popular
+    </h4>
+    <div class="actions-grid">
+      <button 
+        *ngFor="let action of getActionsByCategory().popular"
+        class="action-card"
+        [style.border-left-color]="action.color"
+        (click)="onActionClick(action)"
+      >
+        <div class="action-icon" [style.background-color]="action.color + '20'" [style.color]="action.color">
+          <i class="fa {{ action.icon }}"></i>
+        </div>
+        <div class="action-content">
+          <h5 class="action-label">{{ action.label }}</h5>
+          <p class="action-description">{{ action.description }}</p>
+        </div>
+        <div class="action-arrow">
+          <i class="fa fa-chevron-right"></i>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Community Actions -->
+  <div class="actions-section">
+    <h4 class="section-title">
+      <i class="fa fa-users"></i>
+      Community
+    </h4>
+    <div class="actions-grid">
+      <button 
+        *ngFor="let action of getActionsByCategory().community"
+        class="action-card"
+        [style.border-left-color]="action.color"
+        (click)="onActionClick(action)"
+      >
+        <div class="action-icon" [style.background-color]="action.color + '20'" [style.color]="action.color">
+          <i class="fa {{ action.icon }}"></i>
+        </div>
+        <div class="action-content">
+          <h5 class="action-label">{{ action.label }}</h5>
+          <p class="action-description">{{ action.description }}</p>
+        </div>
+        <div class="action-arrow">
+          <i class="fa fa-chevron-right"></i>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Services Actions -->
+  <div class="actions-section">
+    <h4 class="section-title">
+      <i class="fa fa-cog"></i>
+      Services
+    </h4>
+    <div class="actions-grid">
+      <button 
+        *ngFor="let action of getActionsByCategory().services"
+        class="action-card"
+        [style.border-left-color]="action.color"
+        (click)="onActionClick(action)"
+      >
+        <div class="action-icon" [style.background-color]="action.color + '20'" [style.color]="action.color">
+          <i class="fa {{ action.icon }}"></i>
+        </div>
+        <div class="action-content">
+          <h5 class="action-label">{{ action.label }}</h5>
+          <p class="action-description">{{ action.description }}</p>
+        </div>
+        <div class="action-arrow">
+          <i class="fa fa-chevron-right"></i>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Compact Grid View (Alternative) -->
+  <div class="actions-compact" style="display: none;">
+    <button 
+      *ngFor="let action of quickActions"
+      class="action-button"
+      [style.background-color]="action.color"
+      (click)="onActionClick(action)"
+      [title]="action.description"
+    >
+      <i class="fa {{ action.icon }}"></i>
+      <span>{{ action.label }}</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div 
+  class="recommendation-card"
+  [class.compact]="compact"
+  [class.selected]="selected"
+  [class.saved]="saved"
+>
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="car-info">
+      <h3 class="car-title">{{ recommendation.year }} {{ recommendation.make }} {{ recommendation.model }}</h3>
+      <span class="price-range">{{ formatPrice(recommendation.priceRange) }}</span>
+    </div>
+    <div class="confidence-badge" [style.background-color]="getConfidenceColor()">
+      <i class="fa fa-star"></i>
+      <span>{{ (recommendation.confidenceScore * 100).toFixed(0) }}%</span>
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <div class="confidence-label" [style.color]="getConfidenceColor()">
+      <i class="fa fa-check-circle"></i>
+      {{ getConfidenceLabel() }}
+    </div>
+
+    <p class="recommendation-reason" *ngIf="recommendation.reason">
+      {{ recommendation.reason }}
+    </p>
+
+    <div class="car-details" *ngIf="!compact">
+      <div class="detail-item">
+        <i class="fa fa-calendar"></i>
+        <span>{{ recommendation.year }}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fa fa-car"></i>
+        <span>{{ recommendation.make }}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fa fa-cog"></i>
+        <span>{{ recommendation.model }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Actions -->
+  <div class="card-actions">
+    <button class="action-btn primary" (click)="onView()" title="View Details">
+      <i class="fa fa-eye"></i>
+      <span>View</span>
+    </button>
+    <button 
+      class="action-btn" 
+      [class.active]="saved"
+      (click)="onSave()" 
+      [title]="saved ? 'Saved' : 'Save'"
+    >
+      <i class="fa" [class.fa-bookmark]="!saved" [class.fa-bookmark-o]="saved"></i>
+      <span>{{ saved ? 'Saved' : 'Save' }}</span>
+    </button>
+    <button class="action-btn" (click)="onShare()" title="Share">
+      <i class="fa fa-share-alt"></i>
+      <span>Share</span>
+    </button>
+    <button class="action-btn" (click)="onCompare()" title="Compare">
+      <i class="fa fa-exchange"></i>
+      <span>Compare</span>
+    </button>
+  </div>
+
+  <!-- Saved Indicator -->
+  <div class="saved-indicator" *ngIf="saved">
+    <i class="fa fa-bookmark"></i>
+  </div>
+
+  <!-- Selected Indicator -->
+  <div class="selected-indicator" *ngIf="selected">
+    <i class="fa fa-check-circle"></i>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import { cn } from '../../../../lib/utils';
-import { TranslationDto } from '../../../services/localization';
+import type { TranslationDto } from '../../../../components/services/localization';
 import { Pagination } from '../../../../components/shared/Pagination';
 
 export const TranslationsTable: React.FC<{

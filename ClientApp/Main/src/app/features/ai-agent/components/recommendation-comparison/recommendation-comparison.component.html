@@ -1,0 +1,159 @@
+<div class="recommendation-comparison">
+  <!-- Header -->
+  <div class="comparison-header">
+    <div class="header-content">
+      <h2>
+        <i class="fa fa-exchange"></i>
+        Compare Recommendations
+      </h2>
+      <p>Side-by-side comparison of {{ recommendations.length }} car{{ recommendations.length !== 1 ? 's' : '' }}</p>
+    </div>
+    <button 
+      class="btn-clear"
+      *ngIf="recommendations.length > 0"
+      (click)="onClearAll()"
+    >
+      <i class="fa fa-times"></i>
+      Clear All
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="recommendations.length === 0">
+    <i class="fa fa-exchange fa-3x"></i>
+    <h3>No cars to compare</h3>
+    <p>Select cars from recommendations to compare them side-by-side</p>
+  </div>
+
+  <!-- Comparison Grid -->
+  <div class="comparison-grid" *ngIf="recommendations.length > 0">
+    <!-- Comparison Cards -->
+    <div 
+      *ngFor="let recommendation of recommendations"
+      class="comparison-card"
+      [class.best-match]="isBestMatch(recommendation)"
+    >
+      <!-- Best Match Badge -->
+      <div class="best-match-badge" *ngIf="isBestMatch(recommendation)">
+        <i class="fa fa-trophy"></i>
+        Best Match
+      </div>
+
+      <!-- Remove Button -->
+      <button 
+        class="btn-remove"
+        (click)="onRemove(recommendation)"
+        title="Remove from comparison"
+      >
+        <i class="fa fa-times"></i>
+      </button>
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <h3>{{ recommendation.year }} {{ recommendation.make }}</h3>
+        <h4>{{ recommendation.model }}</h4>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <!-- Price -->
+        <div class="comparison-row">
+          <span class="row-label">
+            <i class="fa fa-dollar"></i>
+            Price Range
+          </span>
+          <span class="row-value">{{ recommendation.priceRange || 'N/A' }}</span>
+        </div>
+
+        <!-- Year -->
+        <div class="comparison-row">
+          <span class="row-label">
+            <i class="fa fa-calendar"></i>
+            Year
+          </span>
+          <span class="row-value">{{ recommendation.year }}</span>
+        </div>
+
+        <!-- Confidence Score -->
+        <div class="comparison-row">
+          <span class="row-label">
+            <i class="fa fa-star"></i>
+            Match Score
+          </span>
+          <span class="row-value">
+            <span 
+              class="confidence-badge"
+              [style.background-color]="getConfidenceColor(recommendation.confidenceScore)"
+            >
+              {{ (recommendation.confidenceScore * 100).toFixed(0) }}%
+            </span>
+            <span class="confidence-label">{{ getConfidenceLabel(recommendation.confidenceScore) }}</span>
+          </span>
+        </div>
+
+        <!-- Reason -->
+        <div class="comparison-row reason-row" *ngIf="recommendation.reason">
+          <span class="row-label">
+            <i class="fa fa-info-circle"></i>
+            Why This Car?
+          </span>
+          <p class="row-value reason-text">{{ recommendation.reason }}</p>
+        </div>
+      </div>
+
+      <!-- Card Footer -->
+      <div class="card-footer">
+        <button 
+          class="btn-select"
+          (click)="onSelect(recommendation)"
+        >
+          <i class="fa fa-check"></i>
+          Select This Car
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty Slots -->
+    <div 
+      *ngFor="let slot of getEmptySlots()"
+      class="comparison-card empty-slot"
+    >
+      <div class="empty-slot-content">
+        <i class="fa fa-plus-circle"></i>
+        <p>Add another car to compare</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Summary -->
+  <div class="comparison-summary" *ngIf="recommendations.length > 1">
+    <h3>Quick Summary</h3>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <i class="fa fa-trophy"></i>
+        <div class="summary-content">
+          <span class="summary-label">Best Match</span>
+          <span class="summary-value">
+            {{ getBestMatch()?.year }} {{ getBestMatch()?.make }} {{ getBestMatch()?.model }}
+          </span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <i class="fa fa-star"></i>
+        <div class="summary-content">
+          <span class="summary-label">Highest Score</span>
+          <span class="summary-value">
+            {{ (getBestMatch()?.confidenceScore || 0) * 100 | number:'1.0-0' }}%
+          </span>
+        </div>
+      </div>
+      <div class="summary-item">
+        <i class="fa fa-exchange"></i>
+        <div class="summary-content">
+          <span class="summary-label">Comparing</span>
+          <span class="summary-value">{{ recommendations.length }} Cars</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
