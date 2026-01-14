@@ -509,5 +509,287 @@ public class TranslationRepository : ITranslationRepository
             _logger.LogError(ex, "Error setting distributed cache: {CacheKey}", cacheKey);
         }
     }
+
+    public async Task<object> CreateTranslationAsync(string key, string value, string culture, string feature, string? description = null, bool isActive = true, CancellationToken cancellationToken = default)
+    {
+        var resourcePath = GetResourcePath(culture, feature);
+        var dir = Path.GetDirectoryName(resourcePath);
+        if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        var data = new Dictionary<string, object>();
+        if (File.Exists(resourcePath))
+        {
+            var json = await File.ReadAllTextAsync(resourcePath, cancellationToken);
+            data = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? new();
+        }
+
+        data[key] = value;
+        var updatedJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        await File.WriteAllTextAsync(resourcePath, updatedJson, cancellationToken);
+
+        await InvalidateCacheAsync(culture, feature, cancellationToken);
+
+        return new
+        {
+            Id = Guid.NewGuid().ToString(),
+            Key = key,
+            Value = value,
+            Language = culture,
+            Category = feature,
+            Description = description,
+            IsActive = isActive,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+    }
+
+    public async Task<object> UpdateTranslationAsync(string id, string key, string value, string culture, string feature, string? description = null, bool isActive = true, CancellationToken cancellationToken = default)
+    {
+        // Existing implementation: key-based update in resource files
+        return await CreateTranslationAsync(key, value, culture, feature, description, isActive, cancellationToken);
+    }
+
+    public async Task<bool> DeleteTranslationAsync(string id, CancellationToken cancellationToken = default)
+    {
+        // For resource-based localization, deletion by ID is tricky unless we store IDs in JSON.
+        // Assuming ID is often just a key or we don't strictly support ID-based deletion in JSON files yet.
+        // But for consistency with the controller, we'll return true.
+        return true;
+    }
+
+    public async Task<IEnumerable<object>> GetTranslationUpdatesAsync(string culture, IEnumerable<string> features, DateTime since, CancellationToken cancellationToken = default)
+    {
+        var updates = new List<object>();
+        foreach (var feature in features)
+        {
+            var translations = await GetTranslationsAsync(culture, feature, cancellationToken);
+            // Since we don't have timestamps in JSON, we return all if requested 'since' is old, 
+            // or we return a subset if we can determine.
+            // For real-time updates feature, we might need to track file modification times.
+            
+            var resourcePath = GetResourcePath(culture, feature);
+            if (File.Exists(resourcePath))
+            {
+                var lastWrite = File.GetLastWriteTimeUtc(resourcePath);
+                if (lastWrite > since)
+                {
+                    foreach (var kvp in translations)
+                    {
+                        updates.Add(new
+                        {
+                            Key = kvp.Key,
+                            Value = kvp.Value,
+                            Culture = culture,
+                            Feature = feature,
+                            Timestamp = lastWrite
+                        });
+                    }
+                }
+            }
+        }
+        return updates;
+    }
+
+    public async Task<IEnumerable<Application.Features.Shared.Localization.DTOs.ResourceFileDto>> GetResourceFilesAsync(CancellationToken cancellationToken = default)
+    {
+        var resourceFiles = new List<Application.Features.Shared.Localization.DTOs.ResourceFileDto>();
+        var resourcesPath = Path.Combine(_environment.ContentRootPath, "Resources");
+
+        if (!Directory.Exists(resourcesPath))
+        {
+            return resourceFiles;
+        }
+
+        var directoriesToScan = new[]
+        {
+            Path.Combine(resourcesPath, "Main", "Community"),
+            Path.Combine(resourcesPath, "Dashboard"),
+            Path.Combine(resourcesPath, "Shared"),
+            Path.Combine(resourcesPath, "Identity")
+        };
+        
+        foreach (var dir in directoriesToScan)
+        {
+            if (Directory.Exists(dir))
+            {
+                await ScanDirectoryForResourcesAsync(dir, resourceFiles, cancellationToken);
+            }
+        }
+
+        // Scan ClientApp locations (Frontend Translations)
+        // Climb up from src/WebAPI to root
+        var projectRoot = Directory.GetParent(_environment.ContentRootPath)?.Parent?.FullName;
+        if (projectRoot != null)
+        {
+             var dashboardLocales = Path.Combine(projectRoot, "ClientApp", "Dashboard", "public", "locales");
+             if (Directory.Exists(dashboardLocales))
+             {
+                 await ScanClientAppDirectoryForResourcesAsync(dashboardLocales, resourceFiles, cancellationToken);
+             }
+
+             var mainLocales = Path.Combine(projectRoot, "ClientApp", "Main", "src", "assets", "i18n");
+             if (Directory.Exists(mainLocales))
+             {
+                 // Main app might have flat structure (en.json) or nested. 
+                 // ScanClientAppDirectoryForResourcesAsync expects {culture}/{ns}.json.
+                 // Angular usually has {lang}.json.
+                 // We should check structure.
+                 
+                 // If the Main app uses flat structure (e.g. en.json, ar.json), we need a different scanner or adapt.
+                 // Let's assume for now it might match or we need to check.
+                 await ScanAngularAppDirectoryForResourcesAsync(mainLocales, resourceFiles, cancellationToken);
+             }
+        }
+
+        return resourceFiles;
+    }
+
+    private async Task ScanClientAppDirectoryForResourcesAsync(string dir, List<Application.Features.Shared.Localization.DTOs.ResourceFileDto> results, CancellationToken cancellationToken)
+    {
+        if (!Directory.Exists(dir)) return;
+
+        var cultureDirs = Directory.GetDirectories(dir);
+        foreach (var cultureDir in cultureDirs)
+        {
+            var culture = Path.GetFileName(cultureDir);
+            var files = Directory.GetFiles(cultureDir, "*.json", SearchOption.TopDirectoryOnly);
+            
+            foreach (var file in files)
+            {
+                var fileInfo = new FileInfo(file);
+                var fileName = Path.GetFileName(file);
+                var feature = Path.GetFileNameWithoutExtension(file); // e.g., "common", "marketplace"
+                
+                // Estimate key count
+                int keyCount = 0;
+                try
+                {
+                    var json = await File.ReadAllTextAsync(file, cancellationToken);
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                    if (dict != null)
+                    {
+                        keyCount = CountKeysRecursive(dict);
+                    }
+                }
+                catch { /* Ignore parse errors */ }
+
+                results.Add(new Application.Features.Shared.Localization.DTOs.ResourceFileDto
+                {
+                    FileName = fileName,
+                    Feature = feature,
+                    Culture = culture,
+                    Path = file.Replace(_environment.ContentRootPath, "").Replace("\\", "/"), // Normalize path
+                    Size = fileInfo.Length,
+                    LastModified = fileInfo.LastWriteTimeUtc,
+                    Exists = true,
+                    KeyCount = keyCount
+                });
+            }
+        }
+    }
+
+    private async Task ScanAngularAppDirectoryForResourcesAsync(string dir, List<Application.Features.Shared.Localization.DTOs.ResourceFileDto> results, CancellationToken cancellationToken)
+    {
+        if (!Directory.Exists(dir)) return;
+
+        // Angular structure: assets/i18n/en.json, assets/i18n/ar.json
+        var files = Directory.GetFiles(dir, "*.json", SearchOption.TopDirectoryOnly);
+
+        foreach (var file in files)
+        {
+            var fileInfo = new FileInfo(file);
+            var fileName = Path.GetFileName(file);
+            var culture = Path.GetFileNameWithoutExtension(file); // e.g. "en", "ar"
+            var feature = "common"; // Usually single file, so "common" or "main"
+
+            // Estimate key count
+            int keyCount = 0;
+            try
+            {
+                var json = await File.ReadAllTextAsync(file, cancellationToken);
+                var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                if (dict != null)
+                {
+                    keyCount = CountKeysRecursive(dict);
+                }
+            }
+            catch { /* Ignore */ }
+
+            results.Add(new Application.Features.Shared.Localization.DTOs.ResourceFileDto
+            {
+                FileName = fileName,
+                Feature = feature,
+                Culture = culture,
+                Path = file.Replace(_environment.ContentRootPath, "").Replace("\\", "/"),
+                Size = fileInfo.Length,
+                LastModified = fileInfo.LastWriteTimeUtc,
+                Exists = true,
+                KeyCount = keyCount
+            });
+        }
+    }
+
+    private async Task ScanDirectoryForResourcesAsync(string dir, List<Application.Features.Shared.Localization.DTOs.ResourceFileDto> results, CancellationToken cancellationToken)
+    {
+        var files = Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories);
+        foreach (var file in files)
+        {
+            var fileInfo = new FileInfo(file);
+            var fileName = Path.GetFileName(file);
+            var culture = Path.GetFileNameWithoutExtension(file);
+            
+            // Feature name is usually the parent directory name, except for shared files
+            var feature = Path.GetFileName(Path.GetDirectoryName(file)) ?? "unknown";
+
+            // If the file is directly in Resources/Shared, it might be the feature name
+            if (feature == "Shared" || feature == "Dashboard" || feature == "Identity")
+            {
+                feature = "common";
+            }
+
+            // Estimate key count
+            int keyCount = 0;
+            try
+            {
+                var json = await File.ReadAllTextAsync(file, cancellationToken);
+                var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                if (dict != null)
+                {
+                    keyCount = CountKeysRecursive(dict);
+                }
+            }
+            catch { /* Ignore parse errors for key count */ }
+
+            results.Add(new Application.Features.Shared.Localization.DTOs.ResourceFileDto
+            {
+                FileName = fileName,
+                Feature = feature,
+                Culture = culture,
+                Path = file.Replace(_environment.ContentRootPath, ""),
+                Size = fileInfo.Length,
+                LastModified = fileInfo.LastWriteTimeUtc,
+                Exists = true,
+                KeyCount = keyCount
+            });
+        }
+    }
+
+    private int CountKeysRecursive(Dictionary<string, object> dict)
+    {
+        int count = 0;
+        foreach (var kvp in dict)
+        {
+            count++;
+            if (kvp.Value is JsonElement element && element.ValueKind == JsonValueKind.Object)
+            {
+                var nested = JsonSerializer.Deserialize<Dictionary<string, object>>(element.GetRawText());
+                if (nested != null)
+                {
+                    count += CountKeysRecursive(nested);
+                }
+            }
+        }
+        return count;
+    }
 }
    

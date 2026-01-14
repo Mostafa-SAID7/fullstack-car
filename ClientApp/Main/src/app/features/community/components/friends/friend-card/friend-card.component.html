@@ -9,16 +9,16 @@
                     {{ friend.firstName[0] }}{{ friend.lastName[0] }}
                 </div>
             </div>
-            <div
-                class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
                 [title]="'status.online' | translate">
             </div>
         </div>
         <div>
             <h4 class="text-sm font-black group-hover/friend:text-primary transition-colors">{{ friend.firstName }} {{
                 friend.lastName }}</h4>
-            <span class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
-                {{ 'friends.friendsSince' | translate: { date: (friend.friendsSince | date:'MMM yyyy') } }}
+            <span class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest"
+                [translate]="'friends.friendsSince'"
+                [translateParams]="{ date: (friend.friendsSince | date:'MMM yyyy') }">
             </span>
         </div>
     </div>

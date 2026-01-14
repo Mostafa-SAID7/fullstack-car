@@ -54,10 +54,10 @@ export class TranslationService {
   private http = inject(HttpClient);
   private translateService = inject(TranslateService);
   private translationLoader = inject(CustomTranslationLoader);
-  
+
   private currentLanguageSubject = new BehaviorSubject<string>('en-US');
   public currentLanguage$ = this.currentLanguageSubject.asObservable();
-  
+
   private isRTLSubject = new BehaviorSubject<boolean>(false);
   public isRTL$ = this.isRTLSubject.asObservable();
 
@@ -90,8 +90,8 @@ export class TranslationService {
   ];
 
   private readonly communityFeatures = [
-    'posts', 'groups', 'qa', 'reviews', 'social', 
-    'maps', 'news', 'guides', 'common'
+    'posts', 'groups', 'qa', 'reviews', 'social',
+    'maps', 'news', 'guides', 'common', 'marketplace', 'media'
   ];
 
   constructor() {
@@ -138,7 +138,7 @@ export class TranslationService {
    */
   async loadFeatureTranslations(culture: string, features: string[]): Promise<Record<string, any>> {
     console.log(`Loading translations for features: ${features.join(', ')} in culture: ${culture}`);
-    
+
     // Update status to loading
     features.forEach(feature => {
       this.updateFeatureStatus(feature, culture, { loading: true, error: undefined });
@@ -146,13 +146,13 @@ export class TranslationService {
 
     try {
       const translations = await this.loadBatchTranslations(culture, features).toPromise();
-      
+
       // Update status to loaded
       features.forEach(feature => {
-        this.updateFeatureStatus(feature, culture, { 
-          loading: false, 
-          loaded: true, 
-          lastUpdated: new Date() 
+        this.updateFeatureStatus(feature, culture, {
+          loading: false,
+          loaded: true,
+          lastUpdated: new Date()
         });
       });
 
@@ -160,13 +160,13 @@ export class TranslationService {
       return translations || {};
     } catch (error) {
       console.error(`Failed to load feature translations for ${culture}:`, error);
-      
+
       // Update status with error
       features.forEach(feature => {
-        this.updateFeatureStatus(feature, culture, { 
-          loading: false, 
-          loaded: false, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
+        this.updateFeatureStatus(feature, culture, {
+          loading: false,
+          loaded: false,
+          error: error instanceof Error ? error.message : 'Unknown error'
         });
       });
 
@@ -192,18 +192,18 @@ export class TranslationService {
    */
   async reloadFeatureTranslations(features: string[], culture?: string): Promise<void> {
     const targetCulture = culture || this.currentLanguageSubject.value;
-    
+
     console.log(`Reloading translations for features: ${features.join(', ')} in culture: ${targetCulture}`);
-    
+
     // Clear cache for these features
     this.translationLoader.clearCache(targetCulture);
-    
+
     // Load fresh translations
     const translations = await this.loadFeatureTranslations(targetCulture, features);
-    
+
     // Update ngx-translate with new translations
     this.translateService.setTranslation(targetCulture, translations, true);
-    
+
     // Emit translation updates
     features.forEach(feature => {
       this.translationUpdatesSubject.next({
@@ -258,10 +258,10 @@ export class TranslationService {
    */
   private detectBrowserLanguageWithConfidence(): LanguageDetectionResult {
     const browserLanguages = this.getBrowserLanguages();
-    
+
     for (const browserLang of browserLanguages) {
       // Try exact match first (highest confidence)
-      const exactMatch = this.supportedLanguages.find(lang => 
+      const exactMatch = this.supportedLanguages.find(lang =>
         lang.code.toLowerCase() === browserLang.toLowerCase()
       );
       if (exactMatch) {
@@ -274,7 +274,7 @@ export class TranslationService {
 
       // Try language without region (medium confidence)
       const langOnly = browserLang.split('-')[0].toLowerCase();
-      const langMatch = this.supportedLanguages.find(lang => 
+      const langMatch = this.supportedLanguages.find(lang =>
         lang.code.toLowerCase().startsWith(langOnly)
       );
       if (langMatch) {
@@ -298,7 +298,7 @@ export class TranslationService {
    */
   private getBrowserLanguages(): string[] {
     const languages: string[] = [];
-    
+
     // Primary language
     if (navigator.language) {
       languages.push(navigator.language);
@@ -331,8 +331,8 @@ export class TranslationService {
       debounceTime(100)
     ).subscribe((event: any) => {
       const newLanguage = event.newValue;
-      if (newLanguage && this.isSupportedLanguage(newLanguage) && 
-          newLanguage !== this.currentLanguageSubject.value) {
+      if (newLanguage && this.isSupportedLanguage(newLanguage) &&
+        newLanguage !== this.currentLanguageSubject.value) {
         console.log('Language changed in another tab, syncing:', newLanguage);
         this.changeLanguage(newLanguage);
       }
@@ -362,7 +362,7 @@ export class TranslationService {
   loadBatchTranslations(culture: string, features: string[]): Observable<Record<string, any>> {
     const request: BatchTranslationRequest = { culture, features };
     const url = `${environment.apiUrl}/v7/localization/translations/batch`;
-    
+
     return this.http.post<Record<string, Record<string, string>>>(url, request).pipe(
       map(response => {
         // Flatten the nested structure for ngx-translate
@@ -420,7 +420,7 @@ export class TranslationService {
 
     try {
       console.log(`Changing language to ${languageCode}`);
-      
+
       // Initialize feature status for new language
       const newFeatureStatus: FeatureTranslationStatus[] = this.communityFeatures.map(feature => ({
         feature,
@@ -429,31 +429,31 @@ export class TranslationService {
         loading: false
       }));
       this.featureStatusSubject.next(newFeatureStatus);
-      
+
       // Load translations using enhanced feature loading
       const translations = await this.loadFeatureTranslations(languageCode, this.communityFeatures);
-      
+
       // Set translations in ngx-translate
       this.translateService.setTranslation(languageCode, translations, true);
-      
+
       // Use the language
       await this.translateService.use(languageCode).toPromise();
-      
+
       // Update internal state
       this.setLanguage(languageCode);
-      
+
       // Save preference
       localStorage.setItem('preferred-language', languageCode);
-      
+
       // Restart real-time updates for new language if enabled
       if (this.realTimeConfig.enabled) {
         this.startRealTimeUpdates();
       }
-      
+
       console.log(`Successfully changed language to ${languageCode}`);
     } catch (error) {
       console.error(`Failed to change language to ${languageCode}`, error);
-      
+
       // Fallback to English on error
       if (languageCode !== 'en-US') {
         console.log('Attempting fallback to en-US');
@@ -473,14 +473,14 @@ export class TranslationService {
   private setLanguage(languageCode: string): void {
     const language = this.supportedLanguages.find(lang => lang.code === languageCode);
     const isRTL = language?.isRTL || false;
-    
+
     this.currentLanguageSubject.next(languageCode);
     this.isRTLSubject.next(isRTL);
-    
+
     // Update document direction and language
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = languageCode;
-    
+
     // Add/remove RTL class for styling
     if (isRTL) {
       document.documentElement.classList.add('rtl');
@@ -550,7 +550,7 @@ export class TranslationService {
    */
   async preloadTranslations(languages?: string[]): Promise<void> {
     const languagesToPreload = languages || this.supportedLanguages.map(lang => lang.code);
-    
+
     try {
       await this.translationLoader.preloadTranslations(languagesToPreload).toPromise();
       console.log('Translation preloading completed');
@@ -647,7 +647,7 @@ export class TranslationService {
   private checkForTranslationUpdates(): Observable<TranslationUpdate[] | null> {
     const culture = this.currentLanguageSubject.value;
     const url = `${environment.apiUrl}/v7/localization/updates/${culture}`;
-    
+
     // Get last update timestamp for each feature
     const featureStatus = this.featureStatusSubject.value;
     const lastUpdateTimes = featureStatus.reduce((acc, status) => {
@@ -679,7 +679,7 @@ export class TranslationService {
     updates.forEach(update => {
       if (update.culture === culture) {
         translationsToUpdate[update.key] = update.value;
-        
+
         // Update feature status
         this.updateFeatureStatus(update.feature, culture, {
           lastUpdated: update.timestamp
@@ -710,7 +710,7 @@ export class TranslationService {
    */
   isFeatureLoaded(feature: string, culture?: string): boolean {
     const targetCulture = culture || this.currentLanguageSubject.value;
-    const status = this.featureStatusSubject.value.find(s => 
+    const status = this.featureStatusSubject.value.find(s =>
       s.feature === feature && s.culture === targetCulture
     );
     return status?.loaded || false;
@@ -729,7 +729,7 @@ export class TranslationService {
   updateRealTimeConfig(config: Partial<RealTimeTranslationConfig>): void {
     const wasEnabled = this.realTimeConfig.enabled;
     this.realTimeConfig = { ...this.realTimeConfig, ...config };
-    
+
     if (this.realTimeConfig.enabled && !wasEnabled) {
       this.startRealTimeUpdates();
     } else if (!this.realTimeConfig.enabled && wasEnabled) {
@@ -746,10 +746,10 @@ export class TranslationService {
   async refreshAllTranslations(): Promise<void> {
     const culture = this.currentLanguageSubject.value;
     console.log(`Force refreshing all translations for ${culture}`);
-    
+
     // Clear all caches
     this.translationLoader.clearCache();
-    
+
     // Reload all features
     await this.reloadFeatureTranslations(this.communityFeatures, culture);
   }
@@ -769,7 +769,7 @@ export class TranslationService {
     const featureStatus = this.featureStatusSubject.value;
     const currentCulture = this.currentLanguageSubject.value;
     const currentFeatures = featureStatus.filter(s => s.culture === currentCulture);
-    
+
     return {
       currentLanguage: currentCulture,
       isRTL: this.isRTLSubject.value,

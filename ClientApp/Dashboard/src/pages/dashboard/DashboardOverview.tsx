@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { BarChart3, TrendingUp, Brain, Zap, ChevronDown, PieChart, Activity, Users, DollarSign } from 'lucide-react';
 import { useAuth, useDashboard } from '../../hooks';
 import { DashboardHeader } from './components/DashboardHeader';
@@ -12,6 +13,7 @@ import { TabNavigation, TabContent } from '../../components/layout/tabs/TabNavig
 import { DashboardSkeleton } from '../../components/feedback/skeletons/DashboardSkeleton';
 
 export const DashboardOverview = () => {
+  const { t } = useTranslation('dashboard');
   const { user } = useAuth();
   const {
     stats,
@@ -29,28 +31,28 @@ export const DashboardOverview = () => {
   const [showChartTypeSelector, setShowChartTypeSelector] = useState(false);
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'analytics', label: 'Analytics', icon: <TrendingUp className="w-4 h-4" /> },
-    { id: 'ai-training', label: 'AI Training', icon: <Brain className="w-4 h-4" /> },
-    { id: 'actions', label: 'Actions', icon: <Zap className="w-4 h-4" /> }
+    { id: 'overview', label: t('overview'), icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'analytics', label: t('analytics'), icon: <TrendingUp className="w-4 h-4" /> },
+    { id: 'ai-training', label: t('ai_training'), icon: <Brain className="w-4 h-4" /> },
+    { id: 'actions', label: t('actions'), icon: <Zap className="w-4 h-4" /> }
   ];
 
   const chartViews = [
-    { id: 'overview', label: 'All Charts', icon: BarChart3, description: 'Complete dashboard overview' },
-    { id: 'users', label: 'User Analytics', icon: Users, description: 'User growth and engagement' },
-    { id: 'revenue', label: 'Revenue Focus', icon: DollarSign, description: 'Financial performance metrics' },
-    { id: 'content', label: 'Content Metrics', icon: PieChart, description: 'Content creation and activity' },
-    { id: 'system', label: 'System Health', icon: Activity, description: 'Server and performance data' }
+    { id: 'overview', label: t('all_charts'), icon: BarChart3, description: t('complete_dashboard') },
+    { id: 'users', label: t('user_analytics'), icon: Users, description: t('user_growth_engagement') },
+    { id: 'revenue', label: t('revenue_focus'), icon: DollarSign, description: t('financial_performance') },
+    { id: 'content', label: t('content_metrics'), icon: PieChart, description: t('content_creation_activity') },
+    { id: 'system', label: t('system_health'), icon: Activity, description: t('server_performance') }
   ];
 
   const currentChartView = chartViews.find(view => view.id === chartView);
 
   const chartTypeOptions = useMemo(() => [
-    { id: 'line', label: 'Line Chart', icon: TrendingUp, description: 'Trend visualization' },
-    { id: 'bar', label: 'Bar Chart', icon: BarChart3, description: 'Comparison view' },
-    { id: 'area', label: 'Area Chart', icon: Activity, description: 'Filled trend view' },
-    { id: 'pie', label: 'Pie Chart', icon: PieChart, description: 'Proportion view' }
-  ], []);
+    { id: 'line', label: t('line_chart'), icon: TrendingUp, description: t('trend_visualization') },
+    { id: 'bar', label: t('bar_chart'), icon: BarChart3, description: t('comparison_view') },
+    { id: 'area', label: t('area_chart'), icon: Activity, description: t('filled_trend_view') },
+    { id: 'pie', label: t('pie_chart'), icon: PieChart, description: t('proportion_view') }
+  ], [t]);
 
   const currentChartType = useMemo(() =>
     chartTypeOptions.find(option => option.id === chartType),
@@ -69,8 +71,8 @@ export const DashboardOverview = () => {
               <div className="flex items-center justify-between flex-wrap gap-4">
                 {/* Title and Description */}
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-lg font-semibold text-foreground">Analytics Overview</h3>
-                  <p className="text-sm text-muted-foreground">Select a focus area and chart type to customize your dashboard view</p>
+                  <h3 className="text-lg font-semibold text-foreground">{t('analytics_overview')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('analytics_description')}</p>
                 </div>
 
                 {/* Compact Dropdowns Container */}

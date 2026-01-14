@@ -3,7 +3,7 @@ using Domain.Entities.Shared.Localization;
 using Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using System.Text.Json;
+using global::System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Application.Features.Shared.Localization.Services;

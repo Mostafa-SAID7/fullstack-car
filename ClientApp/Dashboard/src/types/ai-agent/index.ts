@@ -5,11 +5,13 @@ export interface AIMessage {
   content: string;
   role: 'user' | 'assistant' | 'system';
   timestamp: string;
+  agentType?: AgentType;
   metadata?: {
     model?: string;
     tokens?: number;
     confidence?: number;
     processingTime?: number;
+    cost?: number;
   };
 }
 
@@ -20,6 +22,7 @@ export interface AIConversation {
   createdAt: string;
   updatedAt: string;
   userId: string;
+  isActive: boolean;
   metadata?: {
     model: string;
     totalTokens: number;
@@ -28,10 +31,144 @@ export interface AIConversation {
 }
 
 export interface ChatResponse {
-  message: AIMessage;
-  conversation: AIConversation;
-  suggestions?: string[];
+  message: string;
+  messageId: string;
+  conversationId: string;
+  agent: string;
+  metadata?: Record<string, any>;
+  quickActions?: QuickAction[];
+  timestamp: string;
 }
+
+export interface ChatRequest {
+  message: string;
+  conversationId?: string;
+  userId?: string;
+  mode?: AgentType;
+  context?: Record<string, any>;
+}
+
+// Multi-Agent System Types
+
+export enum AgentType {
+  GENERAL = 'general',
+  MECHANIC = 'mechanic',
+  BUYER_GUIDE = 'buyer_guide',
+  SELLER_ASSISTANT = 'seller_assistant',
+  MODIFICATION_EXPERT = 'modification_expert',
+  COMMUNITY_HELPER = 'community_helper'
+}
+
+export enum KnowledgeCategory {
+  MAINTENANCE = 'maintenance',
+  DIAGNOSTICS = 'diagnostics',
+  BUYING_GUIDE = 'buying_guide',
+  SELLING_TIPS = 'selling_tips',
+  MODIFICATIONS = 'modifications',
+  CAR_SPECS = 'car_specs',
+  COMMUNITY_HELP = 'community_help'
+}
+
+export enum FeedbackType {
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
+  CORRECTION = 'correction'
+}
+
+export interface QuickAction {
+  label: string;
+  action: string;
+  icon?: string;
+  data?: Record<string, any>;
+}
+
+export interface AgentResponse {
+  text: string;
+  agent: string;
+  confidence: number;
+  metadata: Record<string, any>;
+  quickActions: QuickAction[];
+}
+
+export interface AgentStatus {
+  agentType: AgentType;
+  isActive: boolean;
+  totalConversations: number;
+  averageSatisfaction: number;
+  lastUsed?: string;
+}
+
+export interface AgentConfig {
+  agentType: AgentType;
+  config: Record<string, any>;
+}
+
+export interface ConversationContext {
+  conversationId: string;
+  userId: string;
+  messages: AIMessage[];
+  metadata: Record<string, any>;
+}
+
+export interface KnowledgeEntry {
+  id: string;
+  content: string;
+  category: KnowledgeCategory;
+  metadata: Record<string, any>;
+  embedding?: number[];
+  source: string;
+  verified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  score?: number;
+}
+
+export interface Feedback {
+  id: string;
+  conversationId: string;
+  messageId: string;
+  type: FeedbackType;
+  data?: Record<string, any>;
+  timestamp: string;
+}
+
+export interface ConversationMetrics {
+  conversationId: string;
+  userId: string;
+  agentType: AgentType;
+  messageCount: number;
+  durationSeconds: number;
+  satisfactionScore?: number;
+  resolved: boolean;
+  tokensUsed: number;
+  cost: number;
+  createdAt: string;
+}
+
+export interface AgentPerformanceMetrics {
+  agentType: AgentType;
+  totalConversations: number;
+  averageSatisfaction: number;
+  averageResponseTime: number;
+  successRate: number;
+  commonTopics: string[];
+  periodStart: string;
+  periodEnd: string;
+}
+
+export interface AnalyticsOverview {
+  totalConversations: number;
+  activeConversations: number;
+  averageResponseTime: number;
+  satisfactionScore: number;
+  tokensUsed: number;
+  errorRate: number;
+  uptime: number;
+  periodStart: string;
+  periodEnd: string;
+}
+
+// Legacy Types (kept for backward compatibility)
 
 export interface AIModel {
   id: string;

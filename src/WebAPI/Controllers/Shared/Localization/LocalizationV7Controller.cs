@@ -11,6 +11,7 @@ namespace WebAPI.Controllers.Shared.Localization;
 [ApiController]
 [ApiVersion("7.0")]
 [Route("api/v{version:apiVersion}/localization")]
+[AllowAnonymous]
 public class LocalizationV7Controller : BaseController
 {
     private readonly IMediator _mediator;
@@ -20,6 +21,18 @@ public class LocalizationV7Controller : BaseController
     {
         _mediator = mediator;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Gets a paged list of translations (Admin View)
+    /// </summary>
+    [HttpGet("translations")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(PagedResult<Application.Features.Shared.Localization.DTOs.TranslationDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTranslations([FromQuery] GetTranslationsQuery query)
+    {
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>
@@ -126,6 +139,88 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { 
                 Message = "An error occurred while retrieving batch translations" 
             });
+        }
+    }
+
+    /// <summary>
+    /// Gets translations that were updated after a certain date
+    /// </summary>
+    [HttpPost("updates/{culture}")]
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTranslationUpdates(string culture, [FromBody] TranslationUpdatesRequestDto request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetTranslationUpdatesQuery 
+            { 
+                Culture = culture, 
+                Features = request.Features, 
+                Since = request.Since 
+            });
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting translation updates for culture: {Culture}", culture);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred" });
+        }
+    }
+
+    /// <summary>
+    /// Creates a new translation
+    /// </summary>
+    [HttpPost("translations")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateTranslation([FromBody] CreateTranslationCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating translation");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Updates an existing translation
+    /// </summary>
+    [HttpPut("translations/{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateTranslation(string id, [FromBody] UpdateTranslationCommand command)
+    {
+        try
+        {
+            command.Id = id;
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating translation {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Deletes a translation
+    /// </summary>
+    [HttpDelete("translations/{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteTranslation(string id)
+    {
+        try
+        {
+            var result = await _mediator.Send(new DeleteTranslationCommand { Id = id });
+            return Ok(new { Success = result });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting translation {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
 
@@ -278,6 +373,127 @@ public class LocalizationV7Controller : BaseController
             _logger.LogError(ex, "Error getting cache metrics");
             return StatusCode(StatusCodes.Status500InternalServerError, new { 
                 Message = "An error occurred while retrieving cache metrics" 
+            });
+        }
+    }
+
+    /// <summary>
+    /// Gets translation statistics
+    /// </summary>
+    [HttpGet("stats")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetTranslationStats()
+    {
+        var result = await _mediator.Send(new GetTranslationStatsQuery());
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Imports translations from a file
+    /// </summary>
+    [HttpPost("bulk-import")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> BulkImportTranslations([FromBody] BulkImportTranslationsCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Exports translations
+    /// </summary>
+    [HttpPost("export")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ExportTranslations([FromBody] ExportTranslationsCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+            return File(result.Content, result.ContentType, result.FileName);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Validates translations using the V7 validation engine
+    /// </summary>
+    [HttpPost("validate")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ValidateTranslations([FromBody] RunTranslationValidationCommand command)
+    {
+        try
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error validating translations");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Detects language from headers
+    /// </summary>
+    [HttpGet("detect")]
+    public async Task<IActionResult> DetectLanguage()
+    {
+        var result = await _mediator.Send(new DetectLanguageQuery
+        {
+            AcceptLanguage = Request.Headers["Accept-Language"].ToString(),
+            UserAgent = Request.Headers["User-Agent"].ToString()
+        });
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Gets culture info
+    /// </summary>
+    [HttpGet("culture/{language}")]
+    public async Task<IActionResult> GetCultureInfo(string language)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetCultureInfoQuery { Language = language });
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message, Language = language });
+        }
+    }
+
+    /// <summary>
+    /// Gets translation cache performance metrics
+    /// </summary>
+    /// <returns>List of resource files</returns>
+    [HttpGet("resources/files")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(IEnumerable<ResourceFileDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetResourceFiles()
+    {
+        try
+        {
+            _logger.LogInformation("Getting physical localization resource files");
+            var result = await _mediator.Send(new GetResourceFilesQuery());
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting resource files");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { 
+                Message = "An error occurred while retrieving resource files" 
             });
         }
     }

@@ -15,17 +15,17 @@ i18n
 const initConfig = {
   fallbackLng: 'en-US',
   debug: import.meta.env.DEV,
-  
+
   // Supported languages - all 4 cultures as per requirements
   supportedLngs: ['en-US', 'ar-EG', 'ar-AE', 'ar-SA'],
-  
+
   // Backend configuration for v7 API endpoints
   backend: {
     // Use local files for development, v7 API for production
-    loadPath: import.meta.env.DEV 
+    loadPath: import.meta.env.DEV
       ? '/locales/{{lng}}/{{ns}}.json'
       : `${API_BASE_URL}/v7/localization/translations/{{lng}}/{{ns}}`,
-    
+
     // Request options with caching and performance optimization
     requestOptions: {
       cache: 'default' as RequestCache,
@@ -35,7 +35,7 @@ const initConfig = {
         'Content-Type': 'application/json'
       }
     },
-    
+
     // Custom request function with enhanced error handling and fallback
     request: async (options: any, url: string, _payload: any, callback: any) => {
       try {
@@ -51,11 +51,11 @@ const initConfig = {
             const urlParts = url.split('/');
             const namespace = urlParts[urlParts.length - 1];
             const culture = urlParts[urlParts.length - 2];
-            
+
             if (culture !== 'en-US') {
               const fallbackUrl = url.replace(`/${culture}/`, '/en-US/');
               const fallbackResponse = await fetch(fallbackUrl, options.requestOptions);
-              
+
               if (fallbackResponse.ok) {
                 const fallbackData = await fallbackResponse.json();
                 console.warn(`Using fallback translations for ${culture}:${namespace}`);
@@ -64,7 +64,7 @@ const initConfig = {
               }
             }
           }
-          
+
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
@@ -72,7 +72,7 @@ const initConfig = {
         callback(null, { status: response.status, data });
       } catch (error) {
         console.warn('Translation loading failed:', error);
-        
+
         // Fallback to local translations for critical features
         const fallbackTranslations = getFallbackTranslations(url);
         if (fallbackTranslations) {
@@ -82,18 +82,18 @@ const initConfig = {
         }
       }
     },
-    
+
     // Parse response data
     parse: (data: any) => {
       return typeof data === 'object' ? data : {};
     },
-    
+
     // Allow cross-origin requests
     crossDomain: true,
-    
+
     // Request timeout
     requestTimeout: 10000,
-    
+
     // Retry configuration
     maxRetries: 3,
     retryDelay: 1000
@@ -107,7 +107,7 @@ const initConfig = {
     lookupFromPathIndex: 0,
     lookupFromSubdomainIndex: 0,
     checkWhitelist: true,
-    
+
     // Convert browser language codes to supported cultures
     convertDetectedLanguage: (lng: string) => {
       // Map browser language codes to our supported cultures
@@ -119,7 +119,7 @@ const initConfig = {
         'ar-AE': 'ar-AE',
         'ar-SA': 'ar-SA'
       };
-      
+
       return languageMap[lng] || 'en-US';
     }
   },
@@ -130,12 +130,12 @@ const initConfig = {
     format: (value: any, format: string | undefined, lng: string | undefined) => {
       // Enhanced culture-aware formatting
       if (!format) return value;
-      
+
       const language = lng || 'en-US';
-      
+
       if (format === 'uppercase') return value.toUpperCase();
       if (format === 'lowercase') return value.toLowerCase();
-      
+
       // Culture-aware date formatting
       if (format === 'date' && value instanceof Date) {
         return new Intl.DateTimeFormat(language, {
@@ -144,7 +144,7 @@ const initConfig = {
           day: 'numeric'
         }).format(value);
       }
-      
+
       if (format === 'shortDate' && value instanceof Date) {
         return new Intl.DateTimeFormat(language, {
           year: 'numeric',
@@ -152,12 +152,12 @@ const initConfig = {
           day: 'numeric'
         }).format(value);
       }
-      
+
       // Culture-aware number formatting
       if (format === 'number' && typeof value === 'number') {
         return new Intl.NumberFormat(language).format(value);
       }
-      
+
       if (format === 'currency' && typeof value === 'number') {
         // Default to USD, but could be enhanced with culture-specific currencies
         return new Intl.NumberFormat(language, {
@@ -165,7 +165,7 @@ const initConfig = {
           currency: 'USD'
         }).format(value);
       }
-      
+
       return value;
     }
   },
@@ -181,12 +181,12 @@ const initConfig = {
   },
 
   // Namespace configuration for feature-based loading
-  ns: ['common', 'dashboard', 'community', 'management', 'analytics', 'moderation', 'posts', 'groups', 'qa', 'reviews', 'social', 'maps', 'news', 'guides'],
+  ns: ['common', 'dashboard', 'community', 'management', 'analytics', 'moderation', 'posts', 'groups', 'qa', 'reviews', 'social', 'maps', 'news', 'guides', 'marketplace', 'media'],
   defaultNS: 'common',
-  
+
   // Preload critical languages for better performance
   preload: ['en-US'],
-  
+
   // Enhanced caching configuration
   cache: {
     enabled: true,
@@ -198,7 +198,7 @@ const initConfig = {
   // Enhanced error handling
   missingKeyHandler: (lngs: readonly string[], ns: string, key: string, _fallbackValue: string, _updateMissing: boolean, _options: any) => {
     console.warn(`Missing translation key: ${key} for language: ${lngs[0]} in namespace: ${ns}`);
-    
+
     // Report missing keys to analytics in production
     if (import.meta.env.PROD) {
       // Could send to analytics service
@@ -209,14 +209,14 @@ const initConfig = {
   // Save missing translations in development
   saveMissing: import.meta.env.DEV,
   saveMissingTo: 'current' as const,
-  
+
   // Performance optimizations
   load: 'languageOnly' as const, // Load only language without region for fallback
   cleanCode: true,
-  
+
   // Partition keys for better performance
   partialBundledLanguages: true,
-  
+
   // Non-explicit support for plurals
   compatibilityJSON: 'v4' as const
 };
@@ -228,7 +228,7 @@ i18n.init(initConfig);
 function getFallbackTranslations(url: string): Record<string, string> | null {
   const urlParts = url.split('/');
   const namespace = urlParts[urlParts.length - 1];
-  
+
   const fallbackTranslations: Record<string, Record<string, string>> = {
     common: {
       // Navigation
@@ -239,7 +239,7 @@ function getFallbackTranslations(url: string): Record<string, string> | null {
       ai_agent: 'AI Agent',
       system: 'System',
       settings: 'Settings',
-      
+
       // Common actions
       welcome: 'Welcome',
       login: 'Login',
@@ -250,7 +250,7 @@ function getFallbackTranslations(url: string): Record<string, string> | null {
       edit: 'Edit',
       create: 'Create',
       update: 'Update',
-      
+
       // Auth
       email: 'Email',
       password: 'Password',
@@ -258,14 +258,14 @@ function getFallbackTranslations(url: string): Record<string, string> | null {
       forgot_password: 'Forgot password?',
       sign_in: 'Sign In',
       sign_up: 'Sign Up',
-      
+
       // Errors
       error_occurred: 'An error occurred',
       try_again: 'Try again',
       page_not_found: 'Page not found',
       loading: 'Loading...',
       no_data: 'No data available',
-      
+
       // Status messages
       success: 'Success',
       error: 'Error',
@@ -289,7 +289,7 @@ function getFallbackTranslations(url: string): Record<string, string> | null {
       discussions: 'Discussions'
     }
   };
-  
+
   return fallbackTranslations[namespace] || null;
 }
 
@@ -304,12 +304,12 @@ export const changeLanguage = async (languageCode: string): Promise<void> => {
 
     // Change language in i18next
     await i18n.changeLanguage(languageCode);
-    
+
     // Update document direction and language for RTL languages
     const isRTL = languageCode.startsWith('ar-');
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = languageCode;
-    
+
     // Add RTL class to body for CSS styling
     if (isRTL) {
       document.body.classList.add('rtl');
@@ -318,10 +318,10 @@ export const changeLanguage = async (languageCode: string): Promise<void> => {
       document.body.classList.add('ltr');
       document.body.classList.remove('rtl');
     }
-    
+
     // Save preference to localStorage
     localStorage.setItem('preferred-language', languageCode);
-    
+
     // Update user preference in backend if authenticated
     try {
       const token = localStorage.getItem('authToken');
@@ -338,18 +338,18 @@ export const changeLanguage = async (languageCode: string): Promise<void> => {
     } catch (error) {
       console.warn('Failed to update user language preference:', error);
     }
-    
+
     // Dispatch custom event for other components to listen
-    window.dispatchEvent(new CustomEvent('languageChanged', { 
-      detail: { 
-        language: languageCode, 
+    window.dispatchEvent(new CustomEvent('languageChanged', {
+      detail: {
+        language: languageCode,
         isRTL,
-        previousLanguage: i18n.language 
-      } 
+        previousLanguage: i18n.language
+      }
     }));
-    
+
     console.info(`Language changed to: ${languageCode} (RTL: ${isRTL})`);
-    
+
   } catch (error) {
     console.error('Failed to change language:', error);
     throw new Error(`Language change failed: ${error}`);
@@ -360,7 +360,7 @@ export const changeLanguage = async (languageCode: string): Promise<void> => {
 export const preloadTranslations = async (languages: string[] = ['en-US'], namespaces: string[] = ['common', 'dashboard']): Promise<void> => {
   try {
     const preloadPromises: Promise<void>[] = [];
-    
+
     for (const lang of languages) {
       for (const ns of namespaces) {
         preloadPromises.push(
@@ -372,7 +372,7 @@ export const preloadTranslations = async (languages: string[] = ['en-US'], names
         );
       }
     }
-    
+
     await Promise.allSettled(preloadPromises);
     console.info('Translation preloading completed');
   } catch (error) {
@@ -385,17 +385,17 @@ export const clearTranslationCache = (): void => {
   try {
     // Clear i18next cache
     i18n.services.backendConnector?.backend?.clearCache?.();
-    
+
     // Clear localStorage cache
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith('i18next_res_')) {
         localStorage.removeItem(key);
       }
     });
-    
+
     // Clear translation service cache
     translationService.invalidateCache();
-    
+
     console.info('Translation cache cleared');
   } catch (error) {
     console.error('Failed to clear translation cache:', error);
@@ -403,14 +403,14 @@ export const clearTranslationCache = (): void => {
 };
 
 export const getTranslationCacheInfo = (): { size: number; keys: string[]; i18nextCache: any; serviceCache: any } => {
-  const cacheKeys = Object.keys(localStorage).filter(key => 
+  const cacheKeys = Object.keys(localStorage).filter(key =>
     key.startsWith('i18next_res_')
   );
-  
+
   const totalSize = cacheKeys.reduce((size, key) => {
     return size + (localStorage.getItem(key)?.length || 0);
   }, 0);
-  
+
   return {
     size: totalSize,
     keys: cacheKeys,
@@ -426,12 +426,12 @@ export const loadTranslationBatch = async (culture: string, features: string[]):
       culture,
       features
     });
-    
+
     // Add translations to i18next store
     Object.entries(batchData).forEach(([feature, translations]) => {
       i18n.addResourceBundle(culture, feature, translations, true, true);
     });
-    
+
     console.info(`Loaded batch translations for ${culture}:`, features);
   } catch (error) {
     console.error('Failed to load translation batch:', error);
@@ -448,20 +448,20 @@ export const getTextDirection = (language?: string): 'ltr' | 'rtl' => {
 // Culture-aware formatting utilities
 export const formatDate = (date: Date, format: 'short' | 'long' | 'full' = 'short', language?: string): string => {
   const lang = language || i18n.language;
-  
+
   const formatOptions: Record<string, Intl.DateTimeFormatOptions> = {
     short: { year: 'numeric', month: 'short', day: 'numeric' },
     long: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' },
-    full: { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric', 
+    full: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
       weekday: 'long',
       hour: '2-digit',
       minute: '2-digit'
     }
   };
-  
+
   return new Intl.DateTimeFormat(lang, formatOptions[format]).format(date);
 };
 
@@ -482,10 +482,10 @@ export const formatCurrency = (amount: number, currency: string = 'USD', languag
 const initializeRTLSupport = () => {
   const currentLanguage = i18n.language || localStorage.getItem('preferred-language') || 'en-US';
   const isRTL = currentLanguage.startsWith('ar-');
-  
+
   document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
   document.documentElement.lang = currentLanguage;
-  
+
   if (isRTL) {
     document.body.classList.add('rtl');
   } else {
@@ -497,18 +497,18 @@ const initializeRTLSupport = () => {
 if (typeof window !== 'undefined') {
   // Initialize RTL support
   initializeRTLSupport();
-  
+
   // Listen for i18next initialization
   i18n.on('initialized', () => {
     initializeRTLSupport();
   });
-  
+
   // Listen for language changes
   i18n.on('languageChanged', (lng: string) => {
     const isRTL = lng.startsWith('ar-');
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = lng;
-    
+
     if (isRTL) {
       document.body.classList.add('rtl');
       document.body.classList.remove('ltr');

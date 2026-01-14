@@ -6,6 +6,7 @@ export const ROUTES = {
   ANALYTICS: '/analytics',
   AI_AGENT: '/ai-agent',
   CONTENT: '/content',
+  COMMUNITY: '/community',
   USERS: '/users',
   CUSTOMERS: '/customers',
   PRODUCTS: '/products',

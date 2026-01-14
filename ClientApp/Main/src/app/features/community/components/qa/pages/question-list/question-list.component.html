@@ -1,4 +1,4 @@
-<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6 overflow-x-hidden">
 
   <!-- Card 1: Header & Actions -->
   <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
@@ -99,7 +99,7 @@
 
         <!-- Question Header Skeleton -->
         <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
-          <div class="flex-1">
+          <div class="flex-1 min-w-0">
             <!-- Title skeleton -->
             <div class="space-y-3 mb-4">
               <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-2xl w-4/5"></div>
@@ -118,7 +118,7 @@
           </div>
 
           <!-- Stats skeleton -->
-          <div class="flex gap-4 lg:gap-6">
+          <div class="flex shrink-0 gap-4 lg:gap-6">
             <div class="text-center">
               <div class="h-6 bg-secondary/30 dark:bg-white/5 rounded-xl w-8 mx-auto mb-1"></div>
               <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded-full w-12 mx-auto"></div>
@@ -177,9 +177,9 @@
 
         <!-- Question Header -->
         <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
-          <div class="flex-1">
+          <div class="flex-1 min-w-0">
             <h3
-              class="text-lg font-black text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2 break-words">
+              class="text-lg font-black text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2 break-all">
               {{ question.title }}
             </h3>
 
@@ -199,7 +199,7 @@
           </div>
 
           <!-- Stats -->
-          <div class="flex gap-4 lg:gap-6">
+          <div class="flex shrink-0 gap-4 lg:gap-6">
             <div class="text-center" [ngClass]="getStatusColor(question)">
               <div class="text-lg font-black">{{ question.answerCount }}</div>
               <div class="text-xs font-bold uppercase tracking-widest opacity-70">Answers</div>

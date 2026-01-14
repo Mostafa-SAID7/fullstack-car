@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ShoppingCart, 
-  Users, 
-  Package, 
-  Wrench, 
-  TrendingUp, 
+import { useTranslation } from 'react-i18next';
+import {
+  ShoppingCart,
+  Users,
+  Package,
+  Wrench,
+  TrendingUp,
   DollarSign,
   Activity,
   AlertTriangle,
@@ -18,6 +19,7 @@ import { Button } from '../../components/forms/buttons/Button';
 import { Badge } from '../../components/data-display/badges/Badge';
 
 export const MarketplaceOverview = () => {
+  const { t } = useTranslation(['marketplace', 'common']);
   const { getDashboard, getDashboardMetrics, loading, error } = useMarketplace();
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [metrics, setMetrics] = useState<any>(null);
@@ -92,8 +94,8 @@ export const MarketplaceOverview = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Marketplace Overview</h1>
-          <p className="text-muted-foreground">Manage your customers, products, and services</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('overview.title')}</h1>
+          <p className="text-muted-foreground">{t('overview.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <select
@@ -101,14 +103,14 @@ export const MarketplaceOverview = () => {
             onChange={(e) => setSelectedPeriod(e.target.value)}
             className="px-3 py-2 border border-border rounded-lg bg-background"
           >
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="90d">Last 90 days</option>
-            <option value="1y">Last year</option>
+            <option value="7d">{t('periods.7d')}</option>
+            <option value="30d">{t('periods.30d')}</option>
+            <option value="90d">{t('periods.90d')}</option>
+            <option value="1y">{t('periods.1y')}</option>
           </select>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Quick Actions
+            {t('actions.title')}
           </Button>
         </div>
       </div>
@@ -123,7 +125,7 @@ export const MarketplaceOverview = () => {
           >
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('overview.totalRevenue')}</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -131,7 +133,7 @@ export const MarketplaceOverview = () => {
                 <div className={`flex items-center text-xs ${getTrendColor(metrics.revenue?.trend)}`}>
                   {getTrendIcon(metrics.revenue?.trend)}
                   <span className="ml-1">
-                    {metrics.revenue?.growth > 0 ? '+' : ''}{metrics.revenue?.growth?.toFixed(1)}% from last period
+                    {metrics.revenue?.growth > 0 ? '+' : ''}{metrics.revenue?.growth?.toFixed(1)}% {t('overview.fromLastPeriod')}
                   </span>
                 </div>
               </CardContent>
@@ -145,7 +147,7 @@ export const MarketplaceOverview = () => {
           >
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('overview.totalOrders')}</CardTitle>
                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -153,7 +155,7 @@ export const MarketplaceOverview = () => {
                 <div className={`flex items-center text-xs ${getTrendColor(metrics.orders?.trend)}`}>
                   {getTrendIcon(metrics.orders?.trend)}
                   <span className="ml-1">
-                    {metrics.orders?.growth > 0 ? '+' : ''}{metrics.orders?.growth?.toFixed(1)}% from last period
+                    {metrics.orders?.growth > 0 ? '+' : ''}{metrics.orders?.growth?.toFixed(1)}% {t('overview.fromLastPeriod')}
                   </span>
                 </div>
               </CardContent>
@@ -167,7 +169,7 @@ export const MarketplaceOverview = () => {
           >
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Customers</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('overview.activeCustomers')}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -175,7 +177,7 @@ export const MarketplaceOverview = () => {
                 <div className={`flex items-center text-xs ${getTrendColor(metrics.customers?.trend)}`}>
                   {getTrendIcon(metrics.customers?.trend)}
                   <span className="ml-1">
-                    {metrics.customers?.new || 0} new this period
+                    {metrics.customers?.new || 0} {t('overview.newThisPeriod')}
                   </span>
                 </div>
               </CardContent>
@@ -189,7 +191,7 @@ export const MarketplaceOverview = () => {
           >
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Products & Services</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('overview.productsAndServices')}</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -197,7 +199,7 @@ export const MarketplaceOverview = () => {
                   {formatNumber((metrics.products?.active || 0) + (metrics.services?.active || 0))}
                 </div>
                 <div className="flex items-center text-xs text-muted-foreground">
-                  <span>{metrics.products?.active || 0} products, {metrics.services?.active || 0} services</span>
+                  <span>{metrics.products?.active || 0} {t('overview.products')}, {metrics.services?.active || 0} {t('overview.services')}</span>
                 </div>
               </CardContent>
             </Card>
@@ -217,26 +219,26 @@ export const MarketplaceOverview = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="w-5 h-5" />
-                Products
+                {t('stats.products')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Products</span>
+                <span className="text-sm text-muted-foreground">{t('stats.totalProducts')}</span>
                 <span className="font-semibold">{metrics?.products?.total || 0}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Active</span>
+                <span className="text-sm text-muted-foreground">{t('stats.active')}</span>
                 <Badge variant="secondary">{metrics?.products?.active || 0}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Low Stock</span>
+                <span className="text-sm text-muted-foreground">{t('stats.lowStock')}</span>
                 <Badge variant={metrics?.products?.lowStock > 0 ? "destructive" : "secondary"}>
                   {metrics?.products?.lowStock || 0}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Out of Stock</span>
+                <span className="text-sm text-muted-foreground">{t('stats.outOfStock')}</span>
                 <Badge variant={metrics?.products?.outOfStock > 0 ? "destructive" : "secondary"}>
                   {metrics?.products?.outOfStock || 0}
                 </Badge>
@@ -255,24 +257,24 @@ export const MarketplaceOverview = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Wrench className="w-5 h-5" />
-                Services
+                {t('stats.services')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Services</span>
+                <span className="text-sm text-muted-foreground">{t('stats.totalServices')}</span>
                 <span className="font-semibold">{metrics?.services?.total || 0}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Active</span>
+                <span className="text-sm text-muted-foreground">{t('stats.active')}</span>
                 <Badge variant="secondary">{metrics?.services?.active || 0}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Booked Today</span>
+                <span className="text-sm text-muted-foreground">{t('stats.bookedToday')}</span>
                 <Badge variant="default">{metrics?.services?.booked || 0}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Completed</span>
+                <span className="text-sm text-muted-foreground">{t('stats.completed')}</span>
                 <Badge variant="secondary">{metrics?.services?.completed || 0}</Badge>
               </div>
             </CardContent>
@@ -289,32 +291,32 @@ export const MarketplaceOverview = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5" />
-                Alerts & Issues
+                {t('alerts.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {dashboardData?.alerts ? (
                 <>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Low Stock Items</span>
+                    <span className="text-sm text-muted-foreground">{t('alerts.lowStockItems')}</span>
                     <Badge variant={dashboardData.alerts.lowStock?.length > 0 ? "destructive" : "secondary"}>
                       {dashboardData.alerts.lowStock?.length || 0}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Pending Orders</span>
+                    <span className="text-sm text-muted-foreground">{t('alerts.pendingOrders')}</span>
                     <Badge variant={dashboardData.alerts.pendingOrders?.length > 0 ? "default" : "secondary"}>
                       {dashboardData.alerts.pendingOrders?.length || 0}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Customer Issues</span>
+                    <span className="text-sm text-muted-foreground">{t('alerts.customerIssues')}</span>
                     <Badge variant={dashboardData.alerts.customerIssues?.length > 0 ? "destructive" : "secondary"}>
                       {dashboardData.alerts.customerIssues?.length || 0}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Service Issues</span>
+                    <span className="text-sm text-muted-foreground">{t('alerts.serviceIssues')}</span>
                     <Badge variant={dashboardData.alerts.serviceIssues?.length > 0 ? "destructive" : "secondary"}>
                       {dashboardData.alerts.serviceIssues?.length || 0}
                     </Badge>
@@ -323,7 +325,7 @@ export const MarketplaceOverview = () => {
               ) : (
                 <div className="text-center text-muted-foreground py-4">
                   <Eye className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>No alerts at this time</p>
+                  <p>{t('alerts.noAlerts')}</p>
                 </div>
               )}
             </CardContent>
@@ -339,25 +341,25 @@ export const MarketplaceOverview = () => {
       >
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>{t('actions.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button variant="outline" className="h-20 flex-col">
                 <Users className="w-6 h-6 mb-2" />
-                <span>Add Customer</span>
+                <span>{t('actions.addCustomer')}</span>
               </Button>
               <Button variant="outline" className="h-20 flex-col">
                 <Package className="w-6 h-6 mb-2" />
-                <span>Add Product</span>
+                <span>{t('actions.addProduct')}</span>
               </Button>
               <Button variant="outline" className="h-20 flex-col">
                 <Wrench className="w-6 h-6 mb-2" />
-                <span>Add Service</span>
+                <span>{t('actions.addService')}</span>
               </Button>
               <Button variant="outline" className="h-20 flex-col">
                 <ShoppingCart className="w-6 h-6 mb-2" />
-                <span>View Orders</span>
+                <span>{t('actions.viewOrders')}</span>
               </Button>
             </div>
           </CardContent>

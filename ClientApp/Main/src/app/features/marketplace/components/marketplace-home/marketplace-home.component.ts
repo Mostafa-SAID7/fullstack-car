@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { MarketplaceService } from '../../services/marketplace.service';
 import { CarService, ServiceType } from '../../models/marketplace.model';
 
 @Component({
     selector: 'app-marketplace-home',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, TranslateModule],
     templateUrl: './marketplace-home.component.html'
 })
 export class MarketplaceHomeComponent implements OnInit {
@@ -45,6 +46,6 @@ export class MarketplaceHomeComponent implements OnInit {
     }
 
     getServiceTypeLabel(type: ServiceType): string {
-        return type.replace(/([A-Z])/g, ' $1').trim();
+        return `marketplace.categories.${type.toLowerCase()}`;
     }
 }

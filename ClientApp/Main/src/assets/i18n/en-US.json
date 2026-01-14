@@ -86,23 +86,19 @@
     "answerAccepted": "Answer accepted successfully",
     "answerUnaccepted": "Answer unaccepted",
     "acceptanceError": "Failed to change answer acceptance",
-
     "addBookmark": "Bookmark question",
     "removeBookmark": "Remove bookmark",
     "questionBookmarked": "Question bookmarked",
     "questionUnbookmarked": "Question unbookmarked",
     "bookmarkError": "Failed to update bookmark",
-
     "followQuestion": "Follow question",
     "unfollowQuestion": "Unfollow question",
     "questionFollowed": "Now following this question",
     "questionUnfollowed": "No longer following this question",
     "followError": "Failed to update follow status",
-
     "shareQuestion": "Share Question",
     "shareQuestionDesc": "Share this question with others",
     "linkCopied": "Link copied to clipboard",
-
     "possibleDuplicates": "Possible Duplicates",
     "duplicateSuggestionDesc": "We found similar questions that might already have the answer you're looking for",
     "similarTitle": "Similar Title",
@@ -111,5 +107,51 @@
     "answers": "answers",
     "views": "views",
     "votes": "votes"
+  },
+  "marketplace": {
+    "bookingLog": "My Service Log",
+    "trackManage": "Track and manage all your automotive service appointments in one place. Your booking history will appear here.",
+    "noTransmissions": "No past transmissions found in your service log.",
+    "browseCategories": "Browse Categories",
+    "listings": "Listings",
+    "featuredServices": "Featured Services",
+    "viewAll": "View All",
+    "booked": "Booked",
+    "categories": {
+      "maintenance": "Maintenance",
+      "repair": "Repair",
+      "emergency": "Emergency",
+      "inspection": "Inspection",
+      "cleaning": "Cleaning",
+      "towing": "Towing"
+    }
+  },
+  "media": {
+    "videos": "Videos",
+    "podcasts": "Podcasts",
+    "searchVideos": "Search videos...",
+    "searchPlaceholder": "Search videos...",
+    "filters": "Filters",
+    "upload": "Upload",
+    "status": "Status",
+    "allStatuses": "All Statuses",
+    "ready": "Ready",
+    "failed": "Failed",
+    "sortBy": "Sort By",
+    "noVideosFound": "No videos found",
+    "adjustSearch": "Try adjusting your search criteria",
+    "newestFirst": "Newest First",
+    "oldestFirst": "Oldest First",
+    "mostViewed": "Most Viewed",
+    "mostLiked": "Most Liked",
+    "titleAZ": "Title A-Z",
+    "titleZA": "Title Z-A",
+    "allStatus": "All Status",
+    "published": "Published",
+    "draft": "Draft",
+    "processing": "Processing",
+    "deleteConfirm": "Are you sure you want to delete this video?",
+    "linkCopied": "Video link copied to clipboard!",
+    "copyFailed": "Failed to copy link"
   }
 }

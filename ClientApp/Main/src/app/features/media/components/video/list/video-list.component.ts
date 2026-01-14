@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { VideoService, VideoFilters } from '../../../services/video.service';
 import { VideoList, MediaFilters, MediaStatus } from '../../../models';
@@ -15,7 +16,7 @@ import { MediaCardComponent } from '../../media-card/media-card.component';
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent, PaginationComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MediaCardComponent, PaginationComponent, TranslateModule],
   templateUrl: './video-list.component.html'
 })
 export class VideoListComponent implements OnInit {
@@ -58,7 +59,8 @@ export class VideoListComponent implements OnInit {
   constructor(
     private videoService: VideoService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translate: TranslateService
   ) {
     this.searchForm = this.fb.group({
       searchTerm: [''],
@@ -195,10 +197,10 @@ export class VideoListComponent implements OnInit {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(url).then(() => {
         // Show success message
-        alert('Video link copied to clipboard!');
+        this.translate.get('media.linkCopied').subscribe(res => alert(res));
       }).catch(() => {
         // Show error message
-        alert('Failed to copy link');
+        this.translate.get('media.copyFailed').subscribe(res => alert(res));
       });
     }
   }
@@ -217,16 +219,18 @@ export class VideoListComponent implements OnInit {
   }
 
   onDelete(video: VideoList): void {
-    if (confirm('Are you sure you want to delete this video?')) {
-      this.videoService.deleteVideo(video.id).subscribe({
-        next: () => {
-          this.loadVideos();
-        },
-        error: (error) => {
-          console.error('Error deleting video:', error);
-        }
-      });
-    }
+    this.translate.get('media.deleteConfirm').subscribe(msg => {
+      if (confirm(msg)) {
+        this.videoService.deleteVideo(video.id).subscribe({
+          next: () => {
+            this.loadVideos();
+          },
+          error: (error) => {
+            console.error('Error deleting video:', error);
+          }
+        });
+      }
+    });
   }
 
   clearFilters(): void {

@@ -90,6 +90,7 @@ try
     app.UseOutputCache();
 
     app.UseCors("AllowAngularApp");
+    app.UseRouting();
 
     // Add custom middleware
     app.UseGlobalExceptionHandler(); // Add global exception handler first

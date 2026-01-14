@@ -1,4 +1,4 @@
-<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
+<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6 overflow-x-hidden">
 
   <!-- Loading State - Skeleton -->
   <div *ngIf="loading" class="space-y-6 animate-pulse">
@@ -12,7 +12,7 @@
     <div
       class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
       <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-        <div class="flex-1 space-y-4">
+        <div class="flex-1 min-w-0 space-y-4">
           <!-- Title skeleton -->
           <div class="space-y-3">
             <div class="h-8 bg-secondary/30 dark:bg-white/5 rounded-2xl w-3/4"></div>
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Actions skeleton -->
-        <div class="flex gap-2">
+        <div class="flex shrink-0 gap-2">
           <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
           <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
           <div class="h-10 bg-secondary/30 dark:bg-white/5 rounded-2xl w-16"></div>
@@ -48,7 +48,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-8">
 
         <!-- Voting sidebar skeleton -->
-        <div class="flex lg:flex-col items-center lg:items-start gap-4">
+        <div class="flex shrink-0 lg:flex-col items-center lg:items-start gap-4">
           <div class="flex flex-col items-center gap-2">
             <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
             <div class="w-8 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Question body skeleton -->
-        <div class="space-y-6">
+        <div class="flex-1 min-w-0 space-y-6">
           <!-- Content skeleton -->
           <div class="space-y-4">
             <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-full"></div>
@@ -155,7 +155,7 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6">
             <!-- Voting skeleton -->
-            <div class="flex lg:flex-col items-center lg:items-start">
+            <div class="flex shrink-0 lg:flex-col items-center lg:items-start">
               <div class="flex flex-col items-center gap-2">
                 <div class="w-12 h-12 bg-secondary/30 dark:bg-white/5 rounded-full"></div>
                 <div class="w-8 h-6 bg-secondary/30 dark:bg-white/5 rounded-xl"></div>
@@ -164,7 +164,7 @@
             </div>
 
             <!-- Answer content skeleton -->
-            <div class="space-y-6">
+            <div class="flex-1 min-w-0 space-y-6">
               <div class="space-y-3">
                 <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-full"></div>
                 <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded-full w-4/5"></div>
@@ -231,8 +231,8 @@
     <div
       class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5">
       <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-        <div class="flex-1 space-y-4">
-          <h1 class="text-2xl lg:text-3xl font-black text-foreground leading-tight break-words">{{ question.title }}
+        <div class="flex-1 min-w-0 space-y-4">
+          <h1 class="text-2xl lg:text-3xl font-black text-foreground leading-tight break-all">{{ question.title }}
           </h1>
 
           <div class="flex flex-wrap gap-4 text-sm text-muted-foreground font-bold">
@@ -270,7 +270,7 @@
         </div>
 
         <!-- Question Actions -->
-        <div class="flex gap-2">
+        <div class="flex shrink-0 gap-2">
           <button (click)="editQuestion()"
             class="px-6 py-3 bg-secondary/50 dark:bg-white/5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-secondary transition-all flex items-center gap-2">
             <i class="fas fa-edit"></i>
@@ -298,7 +298,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-8">
 
         <!-- Real-time Voting Sidebar -->
-        <div class="flex lg:flex-col items-center lg:items-start gap-4">
+        <div class="flex shrink-0 lg:flex-col items-center lg:items-start gap-4">
           <app-real-time-vote-display [contentId]="question.id" contentType="Question"
             [initialVoteScore]="question.voteScore" [initialUserVote]="question.userVote || null">
           </app-real-time-vote-display>
@@ -311,9 +311,9 @@
         </div>
 
         <!-- Question Body -->
-        <div class="space-y-6">
+        <div class="flex-1 min-w-0 space-y-6">
           <!-- Question Content -->
-          <div class="prose prose-lg max-w-none text-foreground" [innerHTML]="question.content"></div>
+          <div class="prose prose-lg max-w-none text-foreground break-all" [innerHTML]="question.content"></div>
 
           <!-- Tags -->
           <div class="flex flex-wrap gap-2" *ngIf="question.tags.length > 0">
@@ -385,7 +385,7 @@
 
             <div class="flex-1">
               <h4
-                class="font-bold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2 break-words">
+                class="font-bold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2 break-all">
                 {{
                 similar.title }}</h4>
               <div class="flex items-center gap-4 text-xs text-muted-foreground font-bold">

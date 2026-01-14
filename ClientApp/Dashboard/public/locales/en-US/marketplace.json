@@ -1,0 +1,46 @@
+{
+    "overview": {
+        "title": "Marketplace Overview",
+        "subtitle": "Manage your customers, products, and services",
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "activeCustomers": "Active Customers",
+        "productsAndServices": "Products & Services",
+        "fromLastPeriod": "from last period",
+        "newThisPeriod": "new this period",
+        "products": "products",
+        "services": "services"
+    },
+    "stats": {
+        "products": "Products",
+        "totalProducts": "Total Products",
+        "active": "Active",
+        "lowStock": "Low Stock",
+        "outOfStock": "Out of Stock",
+        "services": "Services",
+        "totalServices": "Total Services",
+        "bookedToday": "Booked Today",
+        "completed": "Completed"
+    },
+    "alerts": {
+        "title": "Alerts & Issues",
+        "lowStockItems": "Low Stock Items",
+        "pendingOrders": "Pending Orders",
+        "customerIssues": "Customer Issues",
+        "serviceIssues": "Service Issues",
+        "noAlerts": "No alerts at this time"
+    },
+    "actions": {
+        "title": "Quick Actions",
+        "addCustomer": "Add Customer",
+        "addProduct": "Add Product",
+        "addService": "Add Service",
+        "viewOrders": "View Orders"
+    },
+    "periods": {
+        "7d": "Last 7 days",
+        "30d": "Last 30 days",
+        "90d": "Last 90 days",
+        "1y": "Last year"
+    }
+}

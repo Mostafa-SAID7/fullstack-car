@@ -1,6 +1,6 @@
 using Application.Features.Shared.Logging.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
+using global::System.Text.Json;
 
 namespace Application.Features.Shared.Logging.Services
 {

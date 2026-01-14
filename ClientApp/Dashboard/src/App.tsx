@@ -34,6 +34,14 @@ const MediaManagement = React.lazy(() => import('./pages').then(module => ({ def
 const ThemesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ThemesManagement })));
 const QAManagement = React.lazy(() => import('./pages').then(module => ({ default: module.QAManagement })));
 const QAAnalytics = React.lazy(() => import('./pages').then(module => ({ default: module.QAAnalytics })));
+const PostsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.PostsManagement })));
+const GroupsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.GroupsManagement })));
+const FriendsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.FriendsManagement })));
+const GuidesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.GuidesManagement })));
+const ReviewsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ReviewsManagement })));
+const MapsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.MapsManagement })));
+const NewsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.NewsManagement })));
+const PagesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.PagesManagement })));
 
 // Marketing Pages
 const MarketingOverview = React.lazy(() => import('./pages').then(module => ({ default: module.MarketingOverview })));
@@ -271,7 +279,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/content/qa"
+          path="/community/qa"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
@@ -283,12 +291,108 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/content/qa/analytics"
+          path="/community/qa/analytics"
           element={
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
                   <QAAnalytics />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/posts"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <PostsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/groups"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <GroupsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/friends"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <FriendsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/guides"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <GuidesManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/reviews"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <ReviewsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/maps"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <MapsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/news"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <NewsManagement />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/pages"
+          element={
+            <ProtectedRoute requiredRoles={["Admin"]}>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <PagesManagement />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -438,7 +542,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         {/* Error Pages */}
         <Route
           path="/error/403"
@@ -456,7 +560,7 @@ const AppRoutes = () => {
             </Suspense>
           }
         />
-        
+
         {/* Catch-all route for 404 - Must be last */}
         <Route
           path="*"
@@ -487,7 +591,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <RTLErrorBoundary 
+      <RTLErrorBoundary
         fallbackToLTR={true}
         resetOnLanguageChange={true}
         showErrorDetails={import.meta.env.DEV}

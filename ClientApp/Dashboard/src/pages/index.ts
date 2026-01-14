@@ -1,5 +1,17 @@
 export { DashboardOverview } from './dashboard';
-export { Content, LocalizationManagement, Media, ThemesManagement, QAManagement, QAAnalytics } from './content';
+export { Content, LocalizationManagement, Media, ThemesManagement } from './content';
+export {
+    QAManagement,
+    QAAnalytics,
+    PostsManagement,
+    GroupsManagement,
+    FriendsManagement,
+    GuidesManagement,
+    ReviewsManagement,
+    MapsManagement,
+    NewsManagement,
+    PagesManagement
+} from './community';
 export { MediaManagement } from './media';
 export { Settings } from './settings';
 export { AIAgentManagement, ModelTraining } from './ai-agent';

@@ -4,7 +4,6 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # API Configuration
-    # API Configuration
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     DEBUG: bool = True
@@ -22,6 +21,16 @@ class Settings(BaseSettings):
     
     # Database
     DATABASE_URL: str = "mssql+pyodbc://localhost/CCarDb?driver=SQL+Server&trusted_connection=yes"
+    
+    # Redis Cache
+    REDIS_URL: str = "redis://localhost:6379/0"
+    
+    # ChromaDB
+    CHROMA_PERSIST_DIR: str = "./chroma_db"
+    CHROMA_COLLECTION_NAME: str = "automotive_knowledge"
+    
+    # OpenAI (optional, for fallback)
+    OPENAI_API_KEY: str = ""
     
     # Backend Integration
     BACKEND_API_URL: str = "http://localhost:5000"

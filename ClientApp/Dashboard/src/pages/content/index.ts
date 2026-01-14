@@ -11,4 +11,4 @@ export { ThemesManagement } from './themes';
 export * from './themes';
 
 // QA Management
-export * from './pages/qa';
+// QA Management - Moved to community

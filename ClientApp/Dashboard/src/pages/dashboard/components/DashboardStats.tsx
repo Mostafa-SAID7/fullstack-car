@@ -1,5 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Users,
   Car,
@@ -16,6 +16,8 @@ import type { DashboardStatsProps } from '../../../types/pages/dashboard/main';
 
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, loading }) => {
+  const { t } = useTranslation('dashboard');
+
   if (loading) {
     return <StatsSkeleton count={4} />;
   }
@@ -30,69 +32,69 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, loading }
     suffix?: string;
   }> = [
       {
-        title: 'Total Users',
+        title: t('total_users'),
         value: stats?.totalUsers || 0,
         change: stats?.userGrowth || 0,
         icon: Users,
         color: 'blue' as const,
-        description: 'Active community members'
+        description: t('active_community_members')
       },
       {
-        title: 'Active Listings',
+        title: t('active_listings'),
         value: stats?.activeListings || 0,
         change: stats?.listingGrowth || 0,
         icon: Car,
         color: 'green',
-        description: 'Cars available for sale'
+        description: t('cars_available_sale')
       },
       {
-        title: 'Total Posts',
+        title: t('total_posts'),
         value: stats?.totalPosts || 0,
         change: stats?.postGrowth || 0,
         icon: MessageSquare,
         color: 'purple',
-        description: 'Community discussions'
+        description: t('community_discussions')
       },
       {
-        title: 'Revenue',
+        title: t('revenue'),
         value: stats?.totalRevenue || 0,
         change: stats?.revenueGrowth || 0,
         icon: DollarSign,
         color: 'emerald',
-        description: 'Monthly earnings',
+        description: t('monthly_earnings'),
         prefix: '$'
       },
       {
-        title: 'Active Sessions',
+        title: t('active_sessions'),
         value: stats?.activeSessions || 0,
         change: stats?.sessionGrowth || 0,
         icon: Activity,
         color: 'orange',
-        description: 'Current online users'
+        description: t('current_online_users')
       },
       {
-        title: 'Verified Users',
+        title: t('verified_users'),
         value: stats?.verifiedUsers || 0,
         change: stats?.verificationGrowth || 0,
         icon: UserCheck,
         color: 'cyan',
-        description: 'Identity verified members'
+        description: t('identity_verified_members')
       },
       {
-        title: 'Pending Reviews',
+        title: t('pending_reviews'),
         value: stats?.pendingReviews || 0,
         change: stats?.reviewGrowth || 0,
         icon: AlertTriangle,
         color: 'red',
-        description: 'Content awaiting moderation'
+        description: t('content_awaiting_moderation')
       },
       {
-        title: 'Growth Rate',
+        title: t('growth_rate'),
         value: stats?.overallGrowth || 0,
         change: stats?.growthTrend || 0,
         icon: TrendingUp,
         color: 'pink',
-        description: 'Platform expansion rate',
+        description: t('platform_expansion_rate'),
         suffix: '%'
       }
     ];

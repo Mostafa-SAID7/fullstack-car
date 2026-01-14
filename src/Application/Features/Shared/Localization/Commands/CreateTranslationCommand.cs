@@ -1,4 +1,5 @@
 using MediatR;
+using Application.Common.Interfaces;
 
 namespace Application.Features.Shared.Localization.Commands
 {
@@ -25,5 +26,33 @@ namespace Application.Features.Shared.Localization.Commands
         public DateTime UpdatedAt { get; set; }
         public string CreatedBy { get; set; } = string.Empty;
         public string? UpdatedBy { get; set; }
+    }
+
+    public class CreateTranslationCommandHandler : IRequestHandler<CreateTranslationCommand, TranslationDto>
+    {
+        private readonly ITranslationRepository _repository;
+
+        public CreateTranslationCommandHandler(ITranslationRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<TranslationDto> Handle(CreateTranslationCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _repository.CreateTranslationAsync(
+                request.Key, 
+                request.Value, 
+                request.Language, 
+                request.Category, 
+                request.Description, 
+                request.IsActive, 
+                cancellationToken);
+
+            // Re-map the generic object to TranslationDto
+            var json = global::System.Text.Json.JsonSerializer.Serialize(result);
+            var dto = global::System.Text.Json.JsonSerializer.Deserialize<TranslationDto>(json, new global::System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+            
+            return dto;
+        }
     }
 }

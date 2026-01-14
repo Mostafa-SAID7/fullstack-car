@@ -28,8 +28,13 @@ import {
   TrendingUp,
   Calendar,
   Bell,
-  Video,
-  HelpCircle
+  HelpCircle,
+  Book,
+  Star,
+  Map,
+  Newspaper,
+  Layout,
+  Video
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -140,6 +145,75 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     {
+      title: 'Community',
+      icon: Users,
+      items: [
+        {
+          path: '/community/qa',
+          icon: HelpCircle,
+          label: t('qa_system', 'QA System'),
+          color: 'text-green-600',
+          description: 'Question & Answer management'
+        },
+        {
+          path: '/community/posts',
+          icon: FileText,
+          label: t('posts', 'Posts'),
+          color: 'text-blue-600',
+          description: 'Community posts'
+        },
+        {
+          path: '/community/groups',
+          icon: Users,
+          label: t('groups', 'Groups'),
+          color: 'text-purple-600',
+          description: 'Community groups'
+        },
+        {
+          path: '/community/friends',
+          icon: UserCheck,
+          label: t('friends', 'Friends'),
+          color: 'text-pink-600',
+          description: 'Friend connections'
+        },
+        {
+          path: '/community/guides',
+          icon: Book,
+          label: t('guides', 'Guides'),
+          color: 'text-orange-600',
+          description: 'Community guides'
+        },
+        {
+          path: '/community/reviews',
+          icon: Star,
+          label: t('reviews', 'Reviews'),
+          color: 'text-yellow-500',
+          description: 'Community reviews'
+        },
+        {
+          path: '/community/maps',
+          icon: Map,
+          label: t('maps', 'Maps'),
+          color: 'text-blue-500',
+          description: 'Community locations'
+        },
+        {
+          path: '/community/news',
+          icon: Newspaper,
+          label: t('news', 'News'),
+          color: 'text-red-500',
+          description: 'Community news'
+        },
+        {
+          path: '/community/pages',
+          icon: Layout,
+          label: t('pages', 'Pages'),
+          color: 'text-violet-600',
+          description: 'Community pages'
+        }
+      ]
+    },
+    {
       title: 'Content',
       icon: FileText,
       items: [
@@ -149,13 +223,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('pages', 'Pages'),
           color: 'text-orange-600',
           description: 'Pages management'
-        },
-        {
-          path: '/content/qa',
-          icon: HelpCircle,
-          label: t('qa_system', 'QA System'),
-          color: 'text-green-600',
-          description: 'Question & Answer management'
         },
         {
           path: '/media',

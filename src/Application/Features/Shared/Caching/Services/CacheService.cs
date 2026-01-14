@@ -2,7 +2,7 @@ using Application.Features.Shared.Caching.Interfaces.Services;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
+using global::System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 

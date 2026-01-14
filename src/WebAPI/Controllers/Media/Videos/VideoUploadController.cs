@@ -155,13 +155,7 @@ public class VideoUploadController : BaseController
     /// Upload video with progress tracking (chunked upload)
     /// </summary>
     [HttpPost("chunked")]
-    public async Task<IActionResult> UploadVideoChunked(
-        [FromForm] IFormFile chunk,
-        [FromForm] string uploadId,
-        [FromForm] int chunkNumber,
-        [FromForm] int totalChunks,
-        [FromForm] string fileName,
-        [FromForm] Application.Features.Media.Shared.DTOs.Requests.UploadVideoRequest? metadata = null)
+    public async Task<IActionResult> UploadVideoChunked([FromForm] VideoChunkUploadRequest request)
     {
         try
         {
@@ -171,48 +165,48 @@ public class VideoUploadController : BaseController
                 return Unauthorized("User not authenticated");
             }
 
-            if (chunk == null || chunk.Length == 0)
+            if (request.Chunk == null || request.Chunk.Length == 0)
             {
                 return BadRequest("No chunk uploaded");
             }
 
-            if (string.IsNullOrWhiteSpace(uploadId))
+            if (string.IsNullOrWhiteSpace(request.UploadId))
             {
                 return BadRequest("Upload ID is required");
             }
 
-            if (chunkNumber < 1 || chunkNumber > totalChunks)
+            if (request.ChunkNumber < 1 || request.ChunkNumber > request.TotalChunks)
             {
                 return BadRequest("Invalid chunk number");
             }
 
-            if (totalChunks < 1)
+            if (request.TotalChunks < 1)
             {
                 return BadRequest("Total chunks must be greater than 0");
             }
 
             // Create upload directory
-            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "temp", uploadId);
+            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "temp", request.UploadId);
             Directory.CreateDirectory(uploadPath);
 
             // Save chunk
-            var chunkPath = Path.Combine(uploadPath, $"chunk_{chunkNumber:D4}");
+            var chunkPath = Path.Combine(uploadPath, $"chunk_{request.ChunkNumber:D4}");
             using (var stream = new FileStream(chunkPath, FileMode.Create))
             {
-                await chunk.CopyToAsync(stream);
+                await request.Chunk.CopyToAsync(stream);
             }
 
             // Check if all chunks are uploaded
             var uploadedChunks = Directory.GetFiles(uploadPath, "chunk_*").Length;
             
-            if (uploadedChunks == totalChunks)
+            if (uploadedChunks == request.TotalChunks)
             {
                 // Combine chunks into final file
                 var tempFilePath = Path.Combine(uploadPath, "combined_temp");
                 
                 using (var finalStream = new FileStream(tempFilePath, FileMode.Create))
                 {
-                    for (int i = 1; i <= totalChunks; i++)
+                    for (int i = 1; i <= request.TotalChunks; i++)
                     {
                         var chunkFilePath = Path.Combine(uploadPath, $"chunk_{i:D4}");
                         if (System.IO.File.Exists(chunkFilePath))
@@ -226,11 +220,11 @@ public class VideoUploadController : BaseController
                 // Validate the combined file
                 using var validationStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
                 var fileInfo = new FileInfo(tempFilePath);
-                var contentType = GetContentTypeFromFileName(fileName);
+                var contentType = GetContentTypeFromFileName(request.FileName);
                 
                 var validationResult = await _fileValidationService.ValidateVideoFileAsync(
                     validationStream, 
-                    fileName, 
+                    request.FileName, 
                     contentType, 
                     fileInfo.Length);
 
@@ -246,7 +240,7 @@ public class VideoUploadController : BaseController
                 validationStream.Position = 0;
                 var uploadResult = await _fileStorageService.UploadVideoAsync(
                     validationStream, 
-                    fileName, 
+                    request.FileName, 
                     contentType);
 
                 if (!uploadResult.IsSuccess)
@@ -259,25 +253,25 @@ public class VideoUploadController : BaseController
 
                 // Extract metadata
                 validationStream.Position = 0;
-                var extractedMetadata = await _fileValidationService.ExtractVideoMetadataAsync(validationStream, fileName);
+                var extractedMetadata = await _fileValidationService.ExtractVideoMetadataAsync(validationStream, request.FileName);
 
                 // Clean up temp files
                 Directory.Delete(uploadPath, true);
 
                 // Create video record if metadata provided
-                if (metadata != null)
+                if (request.Metadata != null)
                 {
                     var createCommand = new CreateVideoCommand
                     {
                         CreatorId = userGuid,
                         Request = new CreateVideoRequest
                         {
-                            Title = metadata.Title,
-                            Description = metadata.Description,
-                            Quality = metadata.Quality,
-                            Tags = metadata.Tags,
-                            IsPublic = metadata.IsPublic,
-                            AllowComments = metadata.AllowComments
+                            Title = request.Metadata.Title,
+                            Description = request.Metadata.Description,
+                            Quality = request.Metadata.Quality,
+                            Tags = request.Metadata.Tags,
+                            IsPublic = request.Metadata.IsPublic,
+                            AllowComments = request.Metadata.AllowComments
                         }
                     };
 
@@ -345,21 +339,22 @@ public class VideoUploadController : BaseController
 
             var progressResponseData = new
             {
-                ChunkNumber = chunkNumber,
-                TotalChunks = totalChunks,
+                ChunkNumber = request.ChunkNumber,
+                TotalChunks = request.TotalChunks,
                 UploadedChunks = uploadedChunks,
-                Progress = (double)uploadedChunks / totalChunks * 100,
+                Progress = (double)uploadedChunks / request.TotalChunks * 100,
                 IsComplete = false
             };
 
-            return Success(progressResponseData, $"Chunk {chunkNumber} of {totalChunks} uploaded successfully");
+            return Success(progressResponseData, $"Chunk {request.ChunkNumber} of {request.TotalChunks} uploaded successfully");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading chunk {ChunkNumber} for upload {UploadId}", chunkNumber, uploadId);
+            _logger.LogError(ex, "Error uploading chunk {ChunkNumber} for upload {UploadId}", request.ChunkNumber, request.UploadId);
             return InternalServerError("An error occurred while uploading the chunk", ex.Message);
         }
     }
+
 
     /// <summary>
     /// Get upload progress

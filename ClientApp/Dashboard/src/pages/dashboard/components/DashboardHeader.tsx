@@ -1,15 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-// import { useTranslation } from 'react-i18next'; // Not currently used
+import { useTranslation } from 'react-i18next';
 import { Calendar, Clock, Sparkles } from 'lucide-react';
 import type { DashboardHeaderProps } from '../../../types/pages/dashboard/main';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
-  // const { t } = useTranslation(); // Not currently used
+  const { t } = useTranslation('dashboard');
 
   const currentTime = new Date();
-  const greeting = currentTime.getHours() < 12 ? 'Good morning' :
-    currentTime.getHours() < 18 ? 'Good afternoon' : 'Good evening';
+  const greetingKey = currentTime.getHours() < 12 ? 'good_morning' :
+    currentTime.getHours() < 18 ? 'good_afternoon' : 'good_evening';
 
   return (
     <motion.div
@@ -35,7 +35,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                Dashboard
+                {t('overview')}
               </motion.h1>
               <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full mb-3" />
               <motion.p
@@ -44,11 +44,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {greeting}, {user?.firstName || 'Admin'}! Welcome to your Community Car dashboard overview. 👋
+                {t(greetingKey)}, {user?.firstName || 'Admin'}! Welcome to your Community Car dashboard overview. 👋
               </motion.p>
               <div className="flex items-center gap-2 mt-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-sm text-muted-foreground font-medium">System Online</span>
+                <span className="text-sm text-muted-foreground font-medium">{t('system_online')}</span>
               </div>
             </div>
           </div>
@@ -84,13 +84,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-card-foreground">
-                  {currentTime.toLocaleTimeString('en-US', {
+                  {currentTime.toLocaleTimeString(undefined, {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Local time
+                  {t('local_time')}
                 </p>
               </div>
             </motion.div>
@@ -104,10 +104,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-pink-600">
-                  AI Powered
+                  {t('ai_powered')}
                 </p>
                 <p className="text-xs text-pink-500/70">
-                  Smart insights
+                  {t('smart_insights')}
                 </p>
               </div>
             </motion.div>

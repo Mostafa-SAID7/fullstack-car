@@ -129,7 +129,11 @@ export const API_ENDPOINTS = {
     BATCH_TRANSLATIONS: '/v7/localization/translations/batch',
     SUPPORTED_CULTURES: '/v7/localization/cultures/supported',
     TRANSLATION_BY_CULTURE_FEATURE: '/v7/localization/translations/{culture}/{feature}',
-    CACHE_INVALIDATION: '/v7/localization/cache/invalidate'
+    CACHE: '/v7/localization/cache',
+    CACHE_METRICS: '/v7/localization/cache/metrics',
+    CACHE_WARM: '/v7/localization/cache/warm',
+    UPDATES: '/v7/localization/updates/{culture}',
+    RESOURCE_FILES: '/v7/localization/resources/files'
   },
 
   // AI Agent

@@ -63,4 +63,29 @@ public interface ITranslationRepository
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>List of available feature names</returns>
     Task<IEnumerable<string>> GetAvailableFeaturesAsync(string culture, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates a new translation
+    /// </summary>
+    Task<object> CreateTranslationAsync(string key, string value, string culture, string feature, string? description = null, bool isActive = true, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates an existing translation
+    /// </summary>
+    Task<object> UpdateTranslationAsync(string id, string key, string value, string culture, string feature, string? description = null, bool isActive = true, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes a translation
+    /// </summary>
+    Task<bool> DeleteTranslationAsync(string id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets translations that were updated after a certain date
+    /// </summary>
+    Task<IEnumerable<object>> GetTranslationUpdatesAsync(string culture, IEnumerable<string> features, DateTime since, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets all physical resource files and their metadata
+    /// </summary>
+    Task<IEnumerable<Application.Features.Shared.Localization.DTOs.ResourceFileDto>> GetResourceFilesAsync(CancellationToken cancellationToken = default);
 }

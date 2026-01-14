@@ -4,6 +4,16 @@ import { AIAgentChatService } from './chat';
 import { AIAgentTrainingService } from './training';
 import { AIAgentModelsService } from './models';
 import { AIAgentKnowledgeService } from './knowledge';
+import { AIAgentManagementService } from './agents';
+import { AIConversationsService } from './conversations';
+
+// Re-export sub-services
+export { AIAgentChatService } from './chat';
+export { AIAgentTrainingService } from './training';
+export { AIAgentModelsService } from './models';
+export { AIAgentKnowledgeService } from './knowledge';
+export { AIAgentManagementService, agentManagementService } from './agents';
+export { AIConversationsService, conversationsService } from './conversations';
 
 // Type definitions
 export interface ChatMessage {
@@ -43,12 +53,16 @@ export class AIAgentService {
   private trainingService: AIAgentTrainingService;
   private modelsService: AIAgentModelsService;
   private knowledgeService: AIAgentKnowledgeService;
+  public agentManagement: AIAgentManagementService;
+  public conversations: AIConversationsService;
 
   private constructor() {
     this.chatService = new AIAgentChatService();
     this.trainingService = new AIAgentTrainingService();
     this.modelsService = new AIAgentModelsService();
     this.knowledgeService = new AIAgentKnowledgeService();
+    this.agentManagement = new AIAgentManagementService();
+    this.conversations = new AIConversationsService();
   }
 
   static getInstance(): AIAgentService {

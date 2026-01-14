@@ -73,7 +73,7 @@ public class LocalizationE2ETests : BaseIntegrationTest
             foreach (var toCulture in _supportedCultures)
             {
                 // Load translations in first language
-                var response1 = await _client.GetAsync($"/api/v7/localization/translations/{fromCulture}/posts");
+                var response1 = await Client.GetAsync($"/api/v7/localization/translations/{fromCulture}/posts");
                 Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
                 
                 var translations1 = await response1.Content.ReadFromJsonAsync<Dictionary<string, string>>();
@@ -81,7 +81,7 @@ public class LocalizationE2ETests : BaseIntegrationTest
                 Assert.NotEmpty(translations1);
 
                 // Switch to second language
-                var response2 = await _client.GetAsync($"/api/v7/localization/translations/{toCulture}/posts");
+                var response2 = await Client.GetAsync($"/api/v7/localization/translations/{toCulture}/posts");
                 Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
                 
                 var translations2 = await response2.Content.ReadFromJsonAsync<Dictionary<string, string>>();
@@ -110,7 +110,7 @@ public class LocalizationE2ETests : BaseIntegrationTest
         var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v7/localization/translations/{culture}/posts");
         request.Headers.Add("Accept-Language", culture);
         
-        var response = await _client.SendAsync(request);
+        var response = await Client.SendAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
@@ -128,12 +128,202 @@ public class LocalizationE2ETests : BaseIntegrationTest
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         
-        var response = await _client.GetAsync("/api/v7/localization/translations/en-US/posts");
+        var response = await Client.GetAsync("/api/v7/localization/translations/en-US/posts");
         
         stopwatch.Stop();
         
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.True(stopwatch.ElapsedMilliseconds < 1000, 
             $"Translation loading took {stopwatch.ElapsedMilliseconds}ms");
+    }
+
+    [Fact]
+    public async Task CompleteUserJourney_AllCommunityFeatures_ShouldLoadTranslations()
+    {
+        // Test that all community features have translations available
+        foreach (var culture in _supportedCultures)
+        {
+            foreach (var feature in _communityFeatures)
+            {
+                var response = await Client.GetAsync($"/api/v7/localization/translations/{culture}/{feature}");
+                
+                // Should either return translations or fallback gracefully
+                Assert.True(
+                    response.StatusCode == HttpStatusCode.OK || 
+                    response.StatusCode == HttpStatusCode.NotFound,
+                    $"Unexpected status for {culture}/{feature}: {response.StatusCode}");
+                
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                    Assert.NotNull(translations);
+                }
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("en-US", "posts")]
+    [InlineData("ar-EG", "groups")]
+    [InlineData("ar-AE", "qa")]
+    [InlineData("ar-SA", "reviews")]
+    public async Task RTL_LayoutDirection_ShouldBeCorrectForCulture(string culture, string feature)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v7/localization/translations/{culture}/{feature}");
+        request.Headers.Add("Accept-Language", culture);
+        
+        var response = await Client.SendAsync(request);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        // Verify RTL cultures are properly identified
+        var isRTL = culture.StartsWith("ar-");
+        
+        // The response should contain translations appropriate for the direction
+        var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+        Assert.NotNull(translations);
+        
+        if (isRTL && translations.Count > 0)
+        {
+            // At least some translations should contain Arabic characters
+            var hasArabicContent = translations.Values.Any(v => 
+                !string.IsNullOrEmpty(v) && v.Any(c => c >= '\u0600' && c <= '\u06FF'));
+            
+            Assert.True(hasArabicContent || culture == "en-US", 
+                $"RTL culture {culture} should have Arabic content");
+        }
+    }
+
+    [Fact]
+    public async Task BatchTranslation_AllFeatures_ShouldReturnConsistentData()
+    {
+        foreach (var culture in _supportedCultures)
+        {
+            var batchRequest = new
+            {
+                culture = culture,
+                features = _communityFeatures
+            };
+            
+            var response = await Client.PostAsJsonAsync("/api/v7/localization/translations/batch", batchRequest);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            
+            var batchTranslations = await response.Content.ReadFromJsonAsync<Dictionary<string, Dictionary<string, string>>>();
+            Assert.NotNull(batchTranslations);
+            
+            // Verify we got responses for all requested features
+            Assert.True(batchTranslations.Count > 0, 
+                $"Batch translation for {culture} returned no features");
+            
+            // Verify each feature has translations
+            foreach (var featureTranslations in batchTranslations.Values)
+            {
+                Assert.NotNull(featureTranslations);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("ar-EG")]
+    public async Task TranslationFallback_MissingKey_ShouldFallbackToEnglish(string culture)
+    {
+        // Request a feature that might not have complete translations
+        var response = await Client.GetAsync($"/api/v7/localization/translations/{culture}/posts");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+        Assert.NotNull(translations);
+        
+        // If we got translations, they should be valid (not empty or null values)
+        if (translations.Count > 0)
+        {
+            foreach (var translation in translations)
+            {
+                Assert.False(string.IsNullOrWhiteSpace(translation.Value), 
+                    $"Translation key '{translation.Key}' has empty value in culture {culture}");
+            }
+        }
+    }
+
+    [Fact]
+    public async Task CultureDetection_AcceptLanguageHeader_ShouldBeRespected()
+    {
+        foreach (var culture in _supportedCultures)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/v7/localization/cultures/supported");
+            request.Headers.Add("Accept-Language", culture);
+            
+            var response = await Client.SendAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            
+            var supportedCultures = await response.Content.ReadFromJsonAsync<List<string>>();
+            Assert.NotNull(supportedCultures);
+            Assert.Contains(culture, supportedCultures);
+        }
+    }
+
+    [Fact]
+    public async Task TranslationKeys_HierarchicalStructure_ShouldBeFlattened()
+    {
+        var response = await Client.GetAsync("/api/v7/localization/translations/en-US/posts");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+        Assert.NotNull(translations);
+        
+        if (translations.Count > 0)
+        {
+            // Verify that keys use dot notation for hierarchy
+            var hasHierarchicalKeys = translations.Keys.Any(k => k.Contains('.'));
+            Assert.True(hasHierarchicalKeys || translations.Count == 0, 
+                "Translations should use hierarchical dot notation");
+        }
+    }
+
+    [Theory]
+    [InlineData("posts")]
+    [InlineData("groups")]
+    [InlineData("qa")]
+    [InlineData("reviews")]
+    public async Task FeatureTranslations_AllCultures_ShouldHaveConsistentKeys(string feature)
+    {
+        var translationsByCulture = new Dictionary<string, Dictionary<string, string>>();
+        
+        // Load translations for all cultures
+        foreach (var culture in _supportedCultures)
+        {
+            var response = await Client.GetAsync($"/api/v7/localization/translations/{culture}/{feature}");
+            
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var translations = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                if (translations != null && translations.Count > 0)
+                {
+                    translationsByculture[culture] = translations;
+                }
+            }
+        }
+        
+        if (translationsByculture.Count > 1)
+        {
+            // Get the reference key set (from en-US if available, otherwise first culture)
+            var referenceKeys = translationsByculture.ContainsKey("en-US") 
+                ? translationsByculture["en-US"].Keys.ToHashSet()
+                : translationsByculture.First().Value.Keys.ToHashSet();
+            
+            // Verify other cultures have similar key structure (allowing for some variance)
+            foreach (var (culture, translations) in translationsByculture)
+            {
+                if (culture == "en-US") continue;
+                
+                var currentKeys = translations.Keys.ToHashSet();
+                var intersection = referenceKeys.Intersect(currentKeys).Count();
+                var minExpected = Math.Min(referenceKeys.Count, currentKeys.Count) * 0.7;
+                
+                Assert.True(intersection >= minExpected,
+                    $"Feature '{feature}' in culture '{culture}' has inconsistent keys. " +
+                    $"Expected at least {minExpected} matching keys, got {intersection}");
+            }
+        }
     }
 }

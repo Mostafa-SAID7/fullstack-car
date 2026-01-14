@@ -1,0 +1,37 @@
+{
+  "common": {
+    "search": "بحث",
+    "notifications": "الإشعارات",
+    "language": {
+      "switch": "تغيير اللغة",
+      "select": "اختر اللغة",
+      "current": "اللغة الحالية"
+    }
+  },
+  "time": {
+    "justNow": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "minutesAgo_plural": "منذ {{count}} دقائق",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "hoursAgo_plural": "منذ {{count}} ساعات",
+    "yesterday": "أمس",
+    "daysAgo": "منذ {{count}} يوم",
+    "daysAgo_plural": "منذ {{count}} أيام",
+    "weeksAgo": "منذ {{count}} أسبوع",
+    "weeksAgo_plural": "منذ {{count}} أسابيع",
+    "monthsAgo": "منذ {{count}} شهر",
+    "monthsAgo_plural": "منذ {{count}} شهور",
+    "yearsAgo": "منذ {{count}} سنة",
+    "yearsAgo_plural": "منذ {{count}} سنوات",
+    "inMinutes": "خلال {{count}} دقيقة",
+    "inMinutes_plural": "خلال {{count}} دقائق",
+    "inHours": "خلال {{count}} ساعة",
+    "inHours_plural": "خلال {{count}} ساعات",
+    "tomorrow": "غداً",
+    "inDays": "خلال {{count}} يوم",
+    "inDays_plural": "خلال {{count}} أيام"
+  },
+  "date": {
+    "rangeSeparator": " - "
+  }
+}

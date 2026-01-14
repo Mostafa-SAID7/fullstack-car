@@ -23,17 +23,17 @@ export interface CachedTranslation {
 export class CustomTranslationLoader implements TranslateLoader {
   private http = inject(HttpClient);
   private performanceService = inject(TranslationPerformanceService);
-  
+
   // Cache for translations with 1 hour expiry
   private translationCache = new Map<string, CachedTranslation>();
   private readonly CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
-  
+
   // Observable cache for ongoing requests to prevent duplicate API calls
   private loadingCache = new Map<string, Observable<any>>();
-  
+
   private readonly communityFeatures = [
-    'posts', 'groups', 'qa', 'reviews', 'social', 
-    'maps', 'news', 'guides', 'common'
+    'posts', 'groups', 'qa', 'reviews', 'social',
+    'maps', 'news', 'guides', 'common', 'marketplace', 'media'
   ];
 
   getTranslation(lang: string): Observable<any> {
@@ -73,20 +73,20 @@ export class CustomTranslationLoader implements TranslateLoader {
       catchError(error => {
         this.performanceService.recordError(lang, requestId, error);
         console.error(`Failed to load translations for ${lang} after retries:`, error);
-        
+
         // Try fallback to base language (e.g., 'ar' for 'ar-EG')
         const baseLang = lang.split('-')[0];
         if (baseLang !== lang && this.isLanguageSupported(baseLang)) {
           console.log(`Trying fallback to base language ${baseLang} for ${lang}`);
           return this.getTranslation(baseLang);
         }
-        
+
         // Fallback to English if the requested language fails
         if (lang !== 'en-US') {
           console.log(`Falling back to en-US for ${lang}`);
           return this.getTranslation('en-US');
         }
-        
+
         // If even English fails, return empty object
         console.error('Failed to load English translations, returning empty object');
         return of({});
@@ -100,7 +100,7 @@ export class CustomTranslationLoader implements TranslateLoader {
 
     // Cache the observable to prevent duplicate requests
     this.loadingCache.set(lang, request$);
-    
+
     return request$;
   }
 
@@ -111,12 +111,12 @@ export class CustomTranslationLoader implements TranslateLoader {
     };
 
     const url = `${environment.apiUrl}/v7/localization/translations/batch`;
-    
+
     return this.http.post<Record<string, Record<string, string>>>(url, request).pipe(
       map(response => {
         // Flatten the nested structure for ngx-translate
         const flattened: Record<string, any> = {};
-        
+
         if (response && typeof response === 'object') {
           Object.entries(response).forEach(([feature, translations]) => {
             if (translations && typeof translations === 'object') {
@@ -126,7 +126,7 @@ export class CustomTranslationLoader implements TranslateLoader {
             }
           });
         }
-        
+
         console.log(`Loaded ${Object.keys(flattened).length} translations for ${lang} from API`);
         return flattened;
       })
@@ -135,16 +135,16 @@ export class CustomTranslationLoader implements TranslateLoader {
 
   private getCachedTranslation(lang: string): CachedTranslation | null {
     const cached = this.translationCache.get(lang);
-    
+
     if (cached && Date.now() < cached.expiresAt) {
       return cached;
     }
-    
+
     // Remove expired cache entry
     if (cached) {
       this.translationCache.delete(lang);
     }
-    
+
     return null;
   }
 
@@ -155,7 +155,7 @@ export class CustomTranslationLoader implements TranslateLoader {
       timestamp: now,
       expiresAt: now + this.CACHE_DURATION
     };
-    
+
     this.translationCache.set(lang, cached);
   }
 
@@ -183,7 +183,7 @@ export class CustomTranslationLoader implements TranslateLoader {
    * Preload translations for multiple languages
    */
   preloadTranslations(languages: string[]): Observable<void> {
-    const preloadRequests = languages.map(lang => 
+    const preloadRequests = languages.map(lang =>
       this.getTranslation(lang).pipe(
         catchError(error => {
           console.warn(`Failed to preload translations for ${lang}:`, error);

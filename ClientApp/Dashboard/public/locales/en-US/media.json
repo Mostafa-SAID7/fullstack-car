@@ -1,0 +1,30 @@
+{
+    "management": {
+        "title": "Media Management",
+        "subtitle": "Manage your videos, podcasts, and media content",
+        "totalVideos": "Total Videos",
+        "totalPodcasts": "Total Podcasts",
+        "totalViews": "Total Views",
+        "activeUsers": "Active Users",
+        "fromLastMonth": "from last month",
+        "contentTitle": "Content Management",
+        "selectType": "Select media type",
+        "videos": "Videos",
+        "podcasts": "Podcasts",
+        "settingsTitle": "Media Settings",
+        "settingsDesc": "Configure media upload limits, quality settings, and more."
+    },
+    "tabs": {
+        "overview": "Overview",
+        "content": "Content Management",
+        "upload": "Upload Media",
+        "analytics": "Analytics",
+        "settings": "Settings"
+    },
+    "actions": {
+        "upload": "Upload Media",
+        "delete": "Delete",
+        "edit": "Edit",
+        "view": "View"
+    }
+}

@@ -32,6 +32,7 @@ namespace WebAPI.Controllers.Identity.Auth
             _languageDetector = languageDetector;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
@@ -51,6 +52,7 @@ namespace WebAPI.Controllers.Identity.Auth
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {

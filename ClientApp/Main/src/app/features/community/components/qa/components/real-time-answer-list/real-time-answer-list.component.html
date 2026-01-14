@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 overflow-x-hidden">
     <!-- Loading State -->
     <app-loading-spinner *ngIf="loading" text="Loading answers..." size="md">
     </app-loading-spinner>
@@ -38,8 +38,8 @@
             </div>
 
             <!-- Header -->
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
+            <div class="flex items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3 min-w-0">
                     <!-- Avatar -->
                     <div
                         class="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center overflow-hidden">
@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="flex items-center gap-1">
+                <div class="flex shrink-0 items-center gap-1">
                     <app-form-button *ngIf="canAcceptAnswer(answer)" (clicked)="onAcceptAnswer(answer)" variant="ghost"
                         size="sm" [disabled]="acceptingAnswer === answer.id" title="Accept this answer">
                         <i class="fas fa-check" [class.text-green-500]="answer.isAccepted"></i>
@@ -94,7 +94,7 @@
                 </div>
 
                 <!-- Text -->
-                <div class="prose prose-sm max-w-none text-foreground break-words"
+                <div class="prose prose-sm max-w-none text-foreground break-all"
                     [innerHTML]="formatAnswerContent(answer.content)"></div>
             </div>
 
