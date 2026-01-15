@@ -1,8 +1,14 @@
 """
 Embedding generation service using SentenceTransformers.
 """
-from sentence_transformers import SentenceTransformer
-from typing import List
+try:
+    from sentence_transformers import SentenceTransformer
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+    SentenceTransformer = None
+
+from typing import List, Optional
 import logging
 import numpy as np
 
@@ -19,11 +25,18 @@ class EmbeddingService:
             model_name: Name of the SentenceTransformer model to use
         """
         self.model_name = model_name
-        self.model: Optional[SentenceTransformer] = None
-        self._initialize_model()
+        self.model: Optional[any] = None
+        
+        if not SENTENCE_TRANSFORMERS_AVAILABLE:
+            logger.warning("sentence-transformers not available. Using fallback embeddings.")
+        else:
+            self._initialize_model()
     
     def _initialize_model(self):
         """Initialize the embedding model"""
+        if not SENTENCE_TRANSFORMERS_AVAILABLE:
+            return
+            
         try:
             self.model = SentenceTransformer(self.model_name)
             logger.info(f"Embedding model initialized: {self.model_name}")
@@ -31,7 +44,7 @@ class EmbeddingService:
             logger.error(f"Error initializing embedding model: {e}")
             self.model = None
     
-    async def generate_embedding(self, text: str) -> List[float]:
+    def generate_embedding(self, text: str) -> List[float]:
         """
         Generate embedding for a single text.
         
@@ -41,8 +54,9 @@ class EmbeddingService:
         Returns:
             List of floats representing the embedding vector
         """
-        if not self.model:
-            self._initialize_model()
+        if not SENTENCE_TRANSFORMERS_AVAILABLE or not self.model:
+            # Return simple hash-based fallback embedding
+            return self._fallback_embedding(text)
         
         try:
             # Generate embedding
@@ -53,8 +67,22 @@ class EmbeddingService:
             
         except Exception as e:
             logger.error(f"Error generating embedding: {e}")
-            # Return zero vector as fallback
-            return [0.0] * 384  # all-MiniLM-L6-v2 produces 384-dimensional vectors
+            return self._fallback_embedding(text)
+    
+    def _fallback_embedding(self, text: str) -> List[float]:
+        """Generate a simple fallback embedding when model is not available"""
+        # Simple hash-based embedding (384 dimensions to match all-MiniLM-L6-v2)
+        import hashlib
+        hash_obj = hashlib.sha256(text.encode())
+        hash_bytes = hash_obj.digest()
+        
+        # Expand to 384 dimensions
+        embedding = []
+        for i in range(384):
+            byte_val = hash_bytes[i % len(hash_bytes)]
+            embedding.append((byte_val / 255.0) - 0.5)  # Normalize to [-0.5, 0.5]
+        
+        return embedding
     
     async def generate_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
         """

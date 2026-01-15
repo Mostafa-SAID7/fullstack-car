@@ -1,9 +1,8 @@
-// AI Agent Management Service - For managing specialized agents
-
+import { ENV } from '../../config/environment';
 import { apiClient } from '../api';
 import type { AgentType, AgentStatus, AgentConfig, AgentResponse, ChatRequest } from '../../types/ai-agent';
 
-const BASE_URL = '/api/agents';
+const BASE_URL = `${ENV.AI_AGENT_URL}/agents`;
 
 export class AIAgentManagementService {
   /**

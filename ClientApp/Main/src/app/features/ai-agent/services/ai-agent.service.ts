@@ -12,12 +12,14 @@ import {
     SubmitFeedbackRequest, FeedbackResponse,
     QueuedMessage, AIAgentError, AgentType
 } from '../models/ai-agent.models';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AIAgentService {
-    private apiUrl = 'http://localhost:8000/api';
+    private apiUrl = environment.apiUrl;
+    private aiAgentUrl = environment.aiAgentUrl;
     private offlineQueue: QueuedMessage[] = [];
     private isOnline$ = new BehaviorSubject<boolean>(true);
     private readonly MAX_RETRY_COUNT = 3;
@@ -27,7 +29,7 @@ export class AIAgentService {
         // Monitor online/offline status
         window.addEventListener('online', () => this.handleOnline());
         window.addEventListener('offline', () => this.handleOffline());
-        
+
         // Load offline queue from localStorage
         this.loadOfflineQueue();
     }
@@ -43,7 +45,7 @@ export class AIAgentService {
             return this.queueMessage(request);
         }
 
-        return this.http.post<ChatResponse>(`${this.apiUrl}/chat`, request).pipe(
+        return this.http.post<ChatResponse>(`${this.aiAgentUrl}/chat`, request).pipe(
             retry({
                 count: this.MAX_RETRY_COUNT,
                 delay: (error, retryCount) => {
@@ -74,7 +76,7 @@ export class AIAgentService {
      * Create a new conversation
      */
     createConversation(request: CreateConversationRequest): Observable<Conversation> {
-        return this.http.post<Conversation>(`${this.apiUrl}/conversations`, request).pipe(
+        return this.http.post<Conversation>(`${this.aiAgentUrl}/conversations`, request).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -83,7 +85,7 @@ export class AIAgentService {
      * Get a specific conversation by ID
      */
     getConversation(conversationId: string): Observable<Conversation> {
-        return this.http.get<Conversation>(`${this.apiUrl}/conversations/${conversationId}`).pipe(
+        return this.http.get<Conversation>(`${this.aiAgentUrl}/conversations/${conversationId}`).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -101,7 +103,7 @@ export class AIAgentService {
             params.is_active = request.isActive;
         }
 
-        return this.http.get<ConversationListResponse>(`${this.apiUrl}/conversations`, { params }).pipe(
+        return this.http.get<ConversationListResponse>(`${this.aiAgentUrl}/conversations`, { params }).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -110,7 +112,7 @@ export class AIAgentService {
      * Update conversation title
      */
     updateConversation(conversationId: string, title: string): Observable<Conversation> {
-        return this.http.put<Conversation>(`${this.apiUrl}/conversations/${conversationId}`, { title }).pipe(
+        return this.http.put<Conversation>(`${this.aiAgentUrl}/conversations/${conversationId}`, { title }).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -119,7 +121,7 @@ export class AIAgentService {
      * Delete a conversation
      */
     deleteConversation(conversationId: string): Observable<{ success: boolean }> {
-        return this.http.delete<{ success: boolean }>(`${this.apiUrl}/conversations/${conversationId}`).pipe(
+        return this.http.delete<{ success: boolean }>(`${this.aiAgentUrl}/conversations/${conversationId}`).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -129,7 +131,7 @@ export class AIAgentService {
      */
     getConversationMessages(conversationId: string, page: number = 1, limit: number = 50): Observable<{ messages: Message[], total: number }> {
         return this.http.get<{ messages: Message[], total: number }>(
-            `${this.apiUrl}/conversations/${conversationId}/messages`,
+            `${this.aiAgentUrl}/conversations/${conversationId}/messages`,
             { params: { page: page.toString(), limit: limit.toString() } }
         ).pipe(
             catchError((error) => this.handleGenericError(error))
@@ -140,8 +142,8 @@ export class AIAgentService {
      * Search conversations by query
      */
     searchConversations(userId: string, query: string, page: number = 1, limit: number = 20): Observable<ConversationListResponse> {
-        return this.http.get<ConversationListResponse>(`${this.apiUrl}/conversations/search`, {
-            params: { 
+        return this.http.get<ConversationListResponse>(`${this.aiAgentUrl}/conversations/search`, {
+            params: {
                 user_id: userId,
                 q: query,
                 page: page.toString(),
@@ -158,7 +160,7 @@ export class AIAgentService {
      * Submit user feedback for a message
      */
     submitFeedback(request: SubmitFeedbackRequest): Observable<FeedbackResponse> {
-        return this.http.post<FeedbackResponse>(`${this.apiUrl}/feedback`, request).pipe(
+        return this.http.post<FeedbackResponse>(`${this.aiAgentUrl}/feedback`, request).pipe(
             tap(response => {
                 if (response.success) {
                     console.log('Feedback submitted successfully:', response.message);
@@ -207,7 +209,7 @@ export class AIAgentService {
     // ==================== Recommendation Methods ====================
 
     getRecommendations(request: RecommendationRequest): Observable<RecommendationResponse> {
-        return this.http.post<RecommendationResponse>(`${this.apiUrl}/recommendations`, request).pipe(
+        return this.http.post<RecommendationResponse>(`${this.aiAgentUrl}/recommendations`, request).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -215,7 +217,7 @@ export class AIAgentService {
     // ==================== Maintenance Methods ====================
 
     getMaintenanceAdvice(request: MaintenanceRequest): Observable<MaintenanceResponse> {
-        return this.http.post<MaintenanceResponse>(`${this.apiUrl}/maintenance/advice`, request).pipe(
+        return this.http.post<MaintenanceResponse>(`${this.aiAgentUrl}/maintenance/advice`, request).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -223,7 +225,7 @@ export class AIAgentService {
     // ==================== Market Analysis Methods ====================
 
     analyzeMarket(request: MarketAnalysisRequest): Observable<MarketAnalysisResponse> {
-        return this.http.post<MarketAnalysisResponse>(`${this.apiUrl}/analysis/market`, request).pipe(
+        return this.http.post<MarketAnalysisResponse>(`${this.aiAgentUrl}/analysis/market`, request).pipe(
             catchError((error) => this.handleGenericError(error))
         );
     }
@@ -276,7 +278,7 @@ export class AIAgentService {
                 },
                 error: (error) => {
                     console.error('Failed to send queued message:', queuedMessage.id, error);
-                    
+
                     // Re-queue if retry count not exceeded
                     if (queuedMessage.retryCount < this.MAX_RETRY_COUNT) {
                         queuedMessage.retryCount++;

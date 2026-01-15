@@ -8,7 +8,6 @@ from app.models.schemas import (
     KnowledgeCategory,
     Document
 )
-from app.services import KnowledgeBase
 from app.services.document_parser import DocumentParser
 from starlette.requests import Request
 import tempfile

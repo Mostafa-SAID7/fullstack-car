@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Shield, 
-  CheckSquare, 
-  Square, 
-  Trash2, 
-  Ban, 
+import {
+  Shield,
+  CheckSquare,
+  Square,
+  Trash2,
+  Ban,
   Award,
   Users,
   Download,
@@ -14,21 +14,21 @@ import {
   X,
   Filter
 } from 'lucide-react';
-import { Card } from '../layout/cards/Card';
-import { Button } from '../forms/buttons/Button';
-import { Input } from '../forms/inputs/Input';
-import { DataTable } from '../shared/DataTable';
-import { Badge } from '../data-display/badges/Badge';
-import { DynamicModal } from '../shared/DynamicModal';
-import { cn } from '../../lib/utils';
-import { useTranslation, useRTL } from '../../hooks/useTranslation';
-import { qaService } from '../../services/qa/QAService';
-import type { 
+import { Card } from '@/components/layout/cards/Card';
+import { Button } from '@/components/forms/buttons/Button';
+import { Input } from '@/components/forms/inputs/Input';
+import { DataTable } from '@/components/shared/DataTable';
+import { Badge } from '@/components/data-display/badges/Badge';
+import { DynamicModal } from '@/components/shared/DynamicModal';
+import { cn } from '@/lib/utils';
+import { useTranslation, useRTL } from '@/hooks/useTranslation';
+import { qaService } from '@/services/qa/QAService';
+import type {
   UserModerationInfo,
   Question,
   Answer
-} from '../../types/qa/api-types';
-import type { FormField } from '../../types/shared';
+} from '@/types/qa/api-types';
+import type { FormField } from '@/types/shared';
 
 interface BulkModerationComponentProps {
   className?: string;
@@ -45,7 +45,7 @@ interface BulkOperationResult {
 export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = ({ className }) => {
   const { t, ready: translationsReady } = useTranslation('qa');
   const { isRTL, getRTLClass } = useRTL();
-  
+
   const [loading, setLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -135,15 +135,15 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
 
   const filteredContentItems = useMemo(() => {
     return contentItems.filter(item => {
-      const matchesSearch = 
+      const matchesSearch =
         ('title' in item && item.title?.toLowerCase().includes(searchTerm.toLowerCase())) ||
         item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.userName.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesType = contentTypeFilter === 'all' || 
+
+      const matchesType = contentTypeFilter === 'all' ||
         (contentTypeFilter === 'Question' && 'title' in item) ||
         (contentTypeFilter === 'Answer' && 'questionId' in item);
-      
+
       return matchesSearch && matchesType;
     });
   }, [contentItems, searchTerm, contentTypeFilter]);
@@ -155,7 +155,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
         (statusFilter === 'active' && !user.isBanned && user.flaggedContentCount === 0) ||
         (statusFilter === 'flagged' && user.flaggedContentCount > 0) ||
         (statusFilter === 'banned' && user.isBanned);
-      
+
       return matchesSearch && matchesStatus;
     });
   }, [userItems, searchTerm, statusFilter]);
@@ -163,13 +163,13 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
   // Bulk content operations
   const handleBulkDeleteContent = async () => {
     if (selectedItems.length === 0) return;
-    
+
     setLoading(true);
     try {
-      const questionIds = selectedItems.filter(id => 
+      const questionIds = selectedItems.filter(id =>
         contentItems.find(item => item.id === id && 'title' in item)
       );
-      const answerIds = selectedItems.filter(id => 
+      const answerIds = selectedItems.filter(id =>
         contentItems.find(item => item.id === id && 'questionId' in item)
       );
 
@@ -224,16 +224,16 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
   };
 
   const handleBulkCloseQuestions = async (reason: string) => {
-    const questionIds = selectedItems.filter(id => 
+    const questionIds = selectedItems.filter(id =>
       contentItems.find(item => item.id === id && 'title' in item)
     );
-    
+
     if (questionIds.length === 0) return;
-    
+
     setLoading(true);
     try {
       await qaService.bulkCloseQuestions(questionIds, reason);
-      
+
       setOperationResult({
         success: true,
         message: 'Questions closed successfully',
@@ -242,8 +242,8 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
       });
 
       // Update local state
-      setContentItems(prev => prev.map(item => 
-        questionIds.includes(item.id) && 'title' in item 
+      setContentItems(prev => prev.map(item =>
+        questionIds.includes(item.id) && 'title' in item
           ? { ...item, isClosed: true } as Question
           : item
       ));
@@ -264,7 +264,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
   // Bulk user operations
   const handleBulkReputationAdjustment = async (adjustment: number, reason: string) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       let processedCount = 0;
@@ -291,7 +291,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
 
       if (failedCount === 0) {
         // Update local state
-        setUserItems(prev => prev.map(user => 
+        setUserItems(prev => prev.map(user =>
           selectedUsers.includes(user.userId)
             ? { ...user, reputationScore: user.reputationScore + adjustment }
             : user
@@ -313,7 +313,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
 
   const handleBulkBadgeAwarding = async (badgeType: string) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       let processedCount = 0;
@@ -359,7 +359,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
     setLoading(true);
     try {
       // In real implementation, this would call an API endpoint
-      const exportData = selectedItems.length > 0 
+      const exportData = selectedItems.length > 0
         ? contentItems.filter(item => selectedItems.includes(item.id))
         : contentItems;
 
@@ -375,8 +375,8 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
       }));
 
       // Simulate export process
-      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { 
-        type: 'application/json' 
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+        type: 'application/json'
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -625,7 +625,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
             {t('bulk_operations.description', 'Manage content and users efficiently with bulk operations')}
           </p>
         </div>
-        
+
         <div className={cn(
           'flex items-center gap-3',
           getRTLClass('', 'flex-row-reverse')
@@ -637,7 +637,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
             <Filter className={cn('w-4 h-4', getRTLClass('mr-2', 'ml-2'))} />
             {showBulkActions ? t('bulk_operations.actions.hide_actions', 'Hide Actions') : t('bulk_operations.actions.show_actions', 'Show Actions')}
           </Button>
-          
+
           <Button onClick={() => setShowExportModal(true)}>
             <Download className={cn('w-4 h-4', getRTLClass('mr-2', 'ml-2'))} />
             {t('bulk_operations.actions.export_data', 'Export Data')}
@@ -649,8 +649,8 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
       {operationResult && (
         <Card className={cn(
           'p-4 border-l-4',
-          operationResult.success 
-            ? 'border-l-green-500 bg-green-50 dark:bg-green-900/20' 
+          operationResult.success
+            ? 'border-l-green-500 bg-green-50 dark:bg-green-900/20'
             : 'border-l-red-500 bg-red-50 dark:bg-red-900/20'
         )}>
           <div className="flex items-start justify-between">
@@ -689,7 +689,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
       {showBulkActions && (
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Bulk Actions</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Content Actions */}
             <div className="space-y-2">
@@ -808,7 +808,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
               className="w-full"
             />
           </div>
-          
+
           <select
             value={contentTypeFilter}
             onChange={(e) => setContentTypeFilter(e.target.value as any)}
@@ -818,7 +818,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
             <option value="Question">Questions Only</option>
             <option value="Answer">Answers Only</option>
           </select>
-          
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
@@ -868,7 +868,7 @@ export const BulkModerationComponent: React.FC<BulkModerationComponentProps> = (
         fields={reputationFormFields}
         onSubmit={async (data) => {
           await handleBulkReputationAdjustment(
-            parseInt(data.adjustment), 
+            parseInt(data.adjustment),
             data.reason
           );
           setShowReputationModal(false);

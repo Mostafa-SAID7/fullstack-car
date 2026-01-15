@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Shield, 
-  Users, 
+import {
+  Shield,
+  Users,
   Download,
   Settings,
   BarChart3
 } from 'lucide-react';
-import { 
+import {
   EnhancedPageHeader,
   TabNavigation,
   TabContent
-} from '../../components/shared';
-import { 
+} from '@/components/shared';
+import {
   BulkModerationComponent,
   BulkUserManagementComponent,
   ContentExportComponent
-} from '../../components/qa';
-import type { TabItem } from '../../types/shared';
+} from '@/components/qa';
+import type { TabItem } from '@/types/shared';
 
 export const BulkOperationsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('moderation');

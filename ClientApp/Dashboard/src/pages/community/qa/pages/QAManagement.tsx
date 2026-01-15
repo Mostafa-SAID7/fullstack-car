@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  BarChart3, 
-  Shield, 
-  Users, 
+import {
+  BarChart3,
+  Shield,
+  Users,
   Settings,
   MessageSquare,
   TrendingUp
 } from 'lucide-react';
-import { 
+import {
   QAAnalyticsComponent,
   ModerationDashboardComponent,
   UserReputationManagementComponent,
   QAConfigurationComponent
-} from '../../../../components/qa';
-import { TabNavigation, TabContent } from '../../../../components/shared/TabNavigation';
+} from '@/components/qa';
+import { TabNavigation, TabContent } from '@/components/shared/TabNavigation';
 
 export const QAManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -176,3 +176,5 @@ export const QAManagement: React.FC = () => {
     </motion.div>
   );
 };
+
+export default QAManagement;

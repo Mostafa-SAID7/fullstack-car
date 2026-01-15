@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Users, 
-  Award, 
-  TrendingUp, 
-  Ban, 
+import {
+  Users,
+  Award,
+  TrendingUp,
+  Ban,
   UserCheck,
   Download,
   RefreshCw,
@@ -14,19 +14,19 @@ import {
   X,
   Settings
 } from 'lucide-react';
-import { Card } from '../layout/cards/Card';
-import { Button } from '../forms/buttons/Button';
-import { Input } from '../forms/inputs/Input';
-import { DataTable } from '../shared/DataTable';
-import { Badge } from '../data-display/badges/Badge';
-import { DynamicModal } from '../shared/DynamicModal';
-import { StatsCards } from '../shared';
-import { cn } from '../../lib/utils';
-import { bulkOperationsService } from '../../services/qa/BulkOperationsService';
-import type { 
+import { Card } from '@/components/layout/cards/Card';
+import { Button } from '@/components/forms/buttons/Button';
+import { Input } from '@/components/forms/inputs/Input';
+import { DataTable } from '@/components/shared/DataTable';
+import { Badge } from '@/components/data-display/badges/Badge';
+import { DynamicModal } from '@/components/shared/DynamicModal';
+import { StatsCards } from '@/components/shared';
+import { cn } from '@/lib/utils';
+import { bulkOperationsService } from '@/services/qa/BulkOperationsService';
+import type {
   UserModerationInfo
-} from '../../types/qa/api-types';
-import type { FormField } from '../../types/shared';
+} from '@/types/qa/api-types';
+import type { FormField } from '@/types/shared';
 
 interface BulkUserManagementComponentProps {
   className?: string;
@@ -121,18 +121,18 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   const filteredUsers = useMemo(() => {
     return users.filter(user => {
       const matchesSearch = user.userName.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesStatus = statusFilter === 'all' ||
         (statusFilter === 'active' && !user.isBanned && user.flaggedContentCount === 0) ||
         (statusFilter === 'flagged' && user.flaggedContentCount > 0) ||
         (statusFilter === 'banned' && user.isBanned) ||
         (statusFilter === 'expert' && user.reputationScore > 2000);
-      
+
       const matchesReputation = reputationFilter === 'all' ||
         (reputationFilter === 'low' && user.reputationScore < 500) ||
         (reputationFilter === 'medium' && user.reputationScore >= 500 && user.reputationScore < 2000) ||
         (reputationFilter === 'high' && user.reputationScore >= 2000);
-      
+
       return matchesSearch && matchesStatus && matchesReputation;
     });
   }, [users, searchTerm, statusFilter, reputationFilter]);
@@ -182,11 +182,11 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   // Bulk reputation adjustment
   const handleBulkReputationAdjustment = async (adjustment: number, reason: string) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkAdjustUserReputation(selectedUsers, adjustment, reason);
-      
+
       setOperationResult({
         success: true,
         message: 'Reputation adjusted successfully',
@@ -195,7 +195,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
       });
 
       // Update local state
-      setUsers(prev => prev.map(user => 
+      setUsers(prev => prev.map(user =>
         selectedUsers.includes(user.userId)
           ? { ...user, reputationScore: Math.max(0, user.reputationScore + adjustment) }
           : user
@@ -217,11 +217,11 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   // Bulk badge awarding
   const handleBulkBadgeAwarding = async (badgeType: string) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkAwardBadges(selectedUsers, badgeType);
-      
+
       setOperationResult({
         success: true,
         message: 'Badges awarded successfully',
@@ -246,11 +246,11 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   // Bulk user banning
   const handleBulkBanUsers = async (duration: number, reason: string) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkBanUsers(selectedUsers, duration, reason);
-      
+
       setOperationResult({
         success: true,
         message: 'Users banned successfully',
@@ -260,7 +260,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
 
       // Update local state
       const banExpiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000).toISOString();
-      setUsers(prev => prev.map(user => 
+      setUsers(prev => prev.map(user =>
         selectedUsers.includes(user.userId)
           ? { ...user, isBanned: true, banReason: reason, banExpiresAt }
           : user
@@ -281,16 +281,16 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
 
   // Bulk user unbanning
   const handleBulkUnbanUsers = async () => {
-    const bannedUsers = selectedUsers.filter(userId => 
+    const bannedUsers = selectedUsers.filter(userId =>
       users.find(u => u.userId === userId)?.isBanned
     );
-    
+
     if (bannedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkUnbanUsers(bannedUsers);
-      
+
       setOperationResult({
         success: true,
         message: 'Users unbanned successfully',
@@ -299,7 +299,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
       });
 
       // Update local state
-      setUsers(prev => prev.map(user => 
+      setUsers(prev => prev.map(user =>
         bannedUsers.includes(user.userId)
           ? { ...user, isBanned: false, banReason: undefined, banExpiresAt: undefined }
           : user
@@ -321,11 +321,11 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   // Bulk role updates
   const handleBulkRoleUpdate = async (rolesToAdd: string[], rolesToRemove: string[]) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkUpdateUserRoles(selectedUsers, rolesToAdd, rolesToRemove);
-      
+
       setOperationResult({
         success: true,
         message: 'User roles updated successfully',
@@ -350,11 +350,11 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
   // Bulk expertise area updates
   const handleBulkExpertiseUpdate = async (expertiseAreas: string[]) => {
     if (selectedUsers.length === 0) return;
-    
+
     setLoading(true);
     try {
       await bulkOperationsService.bulkUpdateUserExpertise(selectedUsers, expertiseAreas);
-      
+
       setOperationResult({
         success: true,
         message: 'User expertise areas updated successfully',
@@ -382,9 +382,9 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
     try {
       const userIds = selectedUsers.length > 0 ? selectedUsers : undefined;
       const result = await bulkOperationsService.exportUserData(
-        userIds, 
-        format, 
-        includeHistory, 
+        userIds,
+        format,
+        includeHistory,
         includeHistory
       );
 
@@ -470,7 +470,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
           <span className={cn(
             'font-medium',
             value >= 2000 ? 'text-purple-600' :
-            value >= 500 ? 'text-blue-600' : 'text-muted-foreground'
+              value >= 500 ? 'text-blue-600' : 'text-muted-foreground'
           )}>
             {value.toLocaleString()}
           </span>
@@ -657,7 +657,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
             Efficiently manage user accounts, reputation, and roles in bulk
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
@@ -669,7 +669,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-          
+
           <Button onClick={() => setShowExportModal(true)}>
             <Download className="w-4 h-4 mr-2" />
             Export Users
@@ -684,8 +684,8 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
       {operationResult && (
         <Card className={cn(
           'p-4 border-l-4',
-          operationResult.success 
-            ? 'border-l-green-500 bg-green-50 dark:bg-green-900/20' 
+          operationResult.success
+            ? 'border-l-green-500 bg-green-50 dark:bg-green-900/20'
             : 'border-l-red-500 bg-red-50 dark:bg-red-900/20'
         )}>
           <div className="flex items-start justify-between">
@@ -736,7 +736,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               Clear Selection
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <Button
               variant="outline"
@@ -747,7 +747,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               <TrendingUp className="w-4 h-4 mr-2" />
               Adjust Reputation
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -757,7 +757,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               <Award className="w-4 h-4 mr-2" />
               Award Badges
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -767,7 +767,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               <Settings className="w-4 h-4 mr-2" />
               Update Roles
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -777,7 +777,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               <Award className="w-4 h-4 mr-2" />
               Set Expertise
             </Button>
-            
+
             <Button
               variant="destructive"
               size="sm"
@@ -787,7 +787,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               <Ban className="w-4 h-4 mr-2" />
               Ban Users
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -812,7 +812,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
               className="w-full"
             />
           </div>
-          
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
@@ -824,7 +824,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
             <option value="banned">Banned Users</option>
             <option value="expert">Expert Users</option>
           </select>
-          
+
           <select
             value={reputationFilter}
             onChange={(e) => setReputationFilter(e.target.value as any)}
@@ -866,7 +866,7 @@ export const BulkUserManagementComponent: React.FC<BulkUserManagementComponentPr
         fields={reputationFormFields}
         onSubmit={async (data) => {
           await handleBulkReputationAdjustment(
-            parseInt(data.adjustment), 
+            parseInt(data.adjustment),
             data.reason
           );
           setShowReputationModal(false);

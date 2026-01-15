@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { QAAnalyticsComponent } from '../../../../components/qa';
+import { QAAnalyticsComponent } from '@/components/qa';
 
 export const QAAnalytics: React.FC = () => {
   return (
@@ -22,3 +22,5 @@ export const QAAnalytics: React.FC = () => {
     </motion.div>
   );
 };
+
+export default QAAnalytics;

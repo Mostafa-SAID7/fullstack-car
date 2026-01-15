@@ -55,7 +55,7 @@ export const ABTestComparison: React.FC<ABTestComparisonProps> = ({ results, onR
       </div>
 
       {/* Results List */}
-      {results.length === 0 ? (
+      {(results || []).length === 0 ? (
         <div className="bg-card border border-border rounded-2xl p-12 text-center">
           <GitCompare className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
           <p className="text-muted-foreground">No A/B test results yet</p>
@@ -98,9 +98,8 @@ export const ABTestComparison: React.FC<ABTestComparisonProps> = ({ results, onR
                   <div className="grid grid-cols-3 gap-4">
                     {/* Config A */}
                     <div
-                      className={`bg-muted/50 rounded-xl p-4 ${
-                        winner === 'A' ? 'ring-2 ring-green-500' : ''
-                      }`}
+                      className={`bg-muted/50 rounded-xl p-4 ${winner === 'A' ? 'ring-2 ring-green-500' : ''
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <h5 className="text-sm font-semibold text-card-foreground">Config A</h5>
@@ -138,9 +137,8 @@ export const ABTestComparison: React.FC<ABTestComparisonProps> = ({ results, onR
 
                     {/* Config B */}
                     <div
-                      className={`bg-muted/50 rounded-xl p-4 ${
-                        winner === 'B' ? 'ring-2 ring-green-500' : ''
-                      }`}
+                      className={`bg-muted/50 rounded-xl p-4 ${winner === 'B' ? 'ring-2 ring-green-500' : ''
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <h5 className="text-sm font-semibold text-card-foreground">Config B</h5>

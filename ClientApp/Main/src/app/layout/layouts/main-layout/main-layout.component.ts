@@ -45,7 +45,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     isAiTyping = false;
     aiMode: 'chat' | 'maintenance' | 'recommendation' = 'chat';
     showAiModes = false;
-    
+
     // Widget State
     widgetPosition: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' = 'bottom-right';
     unreadCount: number = 0;
@@ -79,13 +79,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             event.preventDefault();
             this.toggleAi();
         }
-        
+
         // Ctrl+M or Cmd+M to toggle messenger
         if ((event.ctrlKey || event.metaKey) && event.key === 'm') {
             event.preventDefault();
             this.toggleMessenger();
         }
-        
+
         // Escape to close any open widget
         if (event.key === 'Escape') {
             if (this.isAiVisible || this.isMessengerVisible) {
@@ -153,7 +153,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     getPositionClasses(): string {
         const baseClasses = 'fixed z-[60] flex flex-col gap-4';
         const sizeClasses = 'w-[calc(100vw-3rem)] sm:w-[380px]';
-        
+
         switch (this.widgetPosition) {
             case 'bottom-right':
                 return `${baseClasses} ${sizeClasses} bottom-6 right-6`;
@@ -165,6 +165,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
                 return `${baseClasses} ${sizeClasses} top-20 left-6`;
             default:
                 return `${baseClasses} ${sizeClasses} bottom-6 right-6`;
+        }
+    }
+
+    getChatWindowClasses(): string {
+        const isTop = this.widgetPosition.startsWith('top');
+        const baseClasses = 'absolute w-full h-[500px] max-h-[calc(100vh-200px)] bg-white dark:bg-[#111] rounded-[2rem] border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col chat-widget z-50';
+
+        if (isTop) {
+            return `${baseClasses} top-16 animate-fade-in`;
+        } else {
+            return `${baseClasses} bottom-0 animate-slide-up`;
         }
     }
 
@@ -219,9 +230,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
                 this.aiMessages.push({ text: res?.message || 'No response.', isUser: false, timestamp: new Date() });
                 this.scrollToAiBottom();
             },
-            error: () => {
+            error: (error: any) => {
+                console.error('AI Chat Connection Error:', error);
                 this.isAiTyping = false;
-                this.aiMessages.push({ text: 'Connection trouble. Try again later.', isUser: false, timestamp: new Date() });
+                const errorMessage = error.message || 'Connection trouble. Try again later.';
+                this.aiMessages.push({ text: `Error: ${errorMessage}`, isUser: false, timestamp: new Date() });
                 this.scrollToAiBottom();
             }
         });
@@ -238,7 +251,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     setAiMode(mode: any): void {
         this.aiMode = mode;
         this.showAiModes = false;
-        
+
         // Add system message about mode change
         this.aiMessages.push({
             text: `Switched to **${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode**. How can I assist you?`,

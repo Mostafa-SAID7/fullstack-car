@@ -27,6 +27,7 @@ export interface AIConversation {
     model: string;
     totalTokens: number;
     totalMessages: number;
+    agentType?: AgentType;
   };
 }
 
@@ -190,27 +191,27 @@ export interface AIModel {
   updatedAt: string;
 }
 
-export type ModelType = 
-  | 'chat' 
-  | 'completion' 
-  | 'classification' 
-  | 'detection' 
-  | 'generation' 
+export type ModelType =
+  | 'chat'
+  | 'completion'
+  | 'classification'
+  | 'detection'
+  | 'generation'
   | 'translation';
 
-export type ModelStatus = 
-  | 'training' 
-  | 'ready' 
-  | 'deployed' 
-  | 'failed' 
+export type ModelStatus =
+  | 'training'
+  | 'ready'
+  | 'deployed'
+  | 'failed'
   | 'deprecated';
 
-export type ModelCapability = 
-  | 'text_generation' 
-  | 'image_analysis' 
-  | 'code_generation' 
-  | 'translation' 
-  | 'summarization' 
+export type ModelCapability =
+  | 'text_generation'
+  | 'image_analysis'
+  | 'code_generation'
+  | 'translation'
+  | 'summarization'
   | 'question_answering';
 
 export interface ModelParameters {
@@ -247,11 +248,11 @@ export interface TrainingJob {
   logs?: TrainingLog[];
 }
 
-export type TrainingStatus = 
-  | 'pending' 
-  | 'running' 
-  | 'completed' 
-  | 'failed' 
+export type TrainingStatus =
+  | 'pending'
+  | 'running'
+  | 'completed'
+  | 'failed'
   | 'cancelled';
 
 export interface TrainingConfig {

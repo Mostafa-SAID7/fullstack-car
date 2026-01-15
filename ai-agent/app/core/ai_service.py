@@ -24,30 +24,34 @@ class AIService:
         """Initialize AI models"""
         try:
             logger.info("Initializing AI models...")
-            # Lazy imports
-            from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-            from sentence_transformers import SentenceTransformer
-            import torch
+            logger.warning("AI model loading disabled for faster startup. Models will load on first use.")
+            # Models will be loaded lazily on first use
+            return
             
-            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+            # Lazy imports (commented out for faster startup)
+            # from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+            # from sentence_transformers import SentenceTransformer
+            # import torch
             
-            # Load chat model
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                settings.MODEL_NAME,
-                cache_dir=settings.CACHE_DIR
-            )
+            # self.device = "cuda" if torch.cuda.is_available() else "cpu"
             
-            self.model = AutoModelForCausalLM.from_pretrained(
-                settings.MODEL_NAME,
-                cache_dir=settings.CACHE_DIR,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
-            )
+            # # Load chat model
+            # self.tokenizer = AutoTokenizer.from_pretrained(
+            #     settings.MODEL_NAME,
+            #     cache_dir=settings.CACHE_DIR
+            # )
             
-            # Add padding token if not present
-            if self.tokenizer.pad_token is None:
-                self.tokenizer.pad_token = self.tokenizer.eos_token
+            # self.model = AutoModelForCausalLM.from_pretrained(
+            #     settings.MODEL_NAME,
+            #     cache_dir=settings.CACHE_DIR,
+            #     torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+            # )
             
-            # Create chat pipeline
+            # # Add padding token if not present
+            # if self.tokenizer.pad_token is None:
+            #     self.tokenizer.pad_token = self.tokenizer.eos_token
+            
+            # # Create chat pipeline
             self.chat_pipeline = pipeline(
                 "text-generation",
                 model=self.model,

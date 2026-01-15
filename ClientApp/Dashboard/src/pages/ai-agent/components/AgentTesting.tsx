@@ -113,31 +113,28 @@ export const AgentTesting: React.FC = () => {
         <div className="flex gap-6">
           <button
             onClick={() => setActiveTab('quick-test')}
-            className={`pb-3 px-1 border-b-2 transition-colors ${
-              activeTab === 'quick-test'
+            className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'quick-test'
                 ? 'border-primary text-primary font-medium'
                 : 'border-transparent text-muted-foreground hover:text-card-foreground'
-            }`}
+              }`}
           >
             Quick Test
           </button>
           <button
             onClick={() => setActiveTab('scenarios')}
-            className={`pb-3 px-1 border-b-2 transition-colors ${
-              activeTab === 'scenarios'
+            className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'scenarios'
                 ? 'border-primary text-primary font-medium'
                 : 'border-transparent text-muted-foreground hover:text-card-foreground'
-            }`}
+              }`}
           >
-            Test Scenarios ({scenarios.length})
+            Test Scenarios ({(scenarios || []).length})
           </button>
           <button
             onClick={() => setActiveTab('ab-test')}
-            className={`pb-3 px-1 border-b-2 transition-colors ${
-              activeTab === 'ab-test'
+            className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'ab-test'
                 ? 'border-primary text-primary font-medium'
                 : 'border-transparent text-muted-foreground hover:text-card-foreground'
-            }`}
+              }`}
           >
             A/B Testing
           </button>

@@ -63,15 +63,27 @@ class BaseAgent(ABC):
             logger.info(f"{self.name} processing message: {message[:50]}...")
             
             # Build prompt with context and knowledge
-            prompt = await self._build_prompt(message, context)
+            logger.info("Building prompt...")
+            try:
+                prompt = await self._build_prompt(message, context)
+                logger.info("Prompt built successfully")
+            except Exception as e:
+                logger.error(f"Error building prompt: {e}")
+                raise e
             
             # Generate response using LLM
-            llm_response = await self.llm_client.generate(
-                prompt=prompt,
-                max_tokens=self.config.get('max_tokens', 300),
-                temperature=self.config.get('temperature', 0.7),
-                user_id=context.user_id
-            )
+            logger.info("Generating LLM response...")
+            try:
+                llm_response = await self.llm_client.generate(
+                    prompt=prompt,
+                    max_tokens=self.config.get('max_tokens', 300),
+                    temperature=self.config.get('temperature', 0.7),
+                    user_id=context.user_id
+                )
+                logger.info("LLM response generated")
+            except Exception as e:
+                logger.error(f"Error generating LLM response: {e}")
+                raise e
             
             # Extract metadata from response
             metadata = self._extract_metadata(message, llm_response, context)
@@ -93,12 +105,17 @@ class BaseAgent(ABC):
             
         except Exception as e:
             logger.error(f"{self.name} processing failed: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             # Return fallback response
             return AgentResponse(
                 text="I apologize, but I'm having trouble processing your request right now. Please try again.",
                 agent=self.name,
                 confidence=0.0,
-                metadata={'error': str(e)}
+                metadata={
+                    'error': str(e),
+                    'agent_type': self.agent_type  # Ensure valid agent type is passed
+                }
             )
     
     async def _build_prompt(

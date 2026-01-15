@@ -8,6 +8,8 @@ import { environment } from '../../../../../../environments/environment';
 import { Result, PaginatedResult } from '../../../../../core/models/result.model';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { HttpClientService } from '../../../../../core/services/http-client.service';
+import { NotificationService } from '../../../../../shared/services/notification/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading/loading.service';
 
 // Import the specialized QA services
 import { QAQuestionService } from './qa-question.service';
@@ -71,7 +73,9 @@ export class QAService {
         private qaVotingService: QAVotingService,
         private qaReputationService: QAReputationService,
         private qaSearchService: QASearchService,
-        private qaSignalRService: QASignalRService
+        private qaSignalRService: QASignalRService,
+        private notificationService: NotificationService,
+        private loadingService: LoadingService
     ) {
         this.initializeRealtimeUpdates();
         this.loadUserData();
@@ -79,7 +83,7 @@ export class QAService {
 
     // Enhanced methods using specialized services and state management
     getQuestions(pageNumber: number = 1, pageSize: number = 10, searchTerm?: string, sortBy?: string, groupId?: string): Observable<PaginatedResponse<QuestionList>> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         const filter: QuestionFilter = {
@@ -98,7 +102,7 @@ export class QAService {
                 }
                 throw new Error(response.message || 'Failed to load questions');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -107,7 +111,7 @@ export class QAService {
     }
 
     getQuestion(id: string): Observable<QuestionDetailResponse> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaQuestionService.getQuestionDetail(id).pipe(
@@ -125,7 +129,7 @@ export class QAService {
                     });
                 }
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -134,7 +138,7 @@ export class QAService {
     }
 
     askQuestion(request: CreateQuestionRequest): Observable<ApiResponse<Question>> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaQuestionService.createQuestion(request).pipe(
@@ -159,12 +163,13 @@ export class QAService {
                         lastActivityAt: response.data.createdAt
                     };
                     this.questionsSubject.next([questionListItem, ...currentQuestions]);
+                    this.notificationService.success('Question posted successfully');
 
                     return response;
                 }
                 throw new Error(response.message || 'Failed to create question');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -173,7 +178,7 @@ export class QAService {
     }
 
     answerQuestion(request: CreateAnswerRequest): Observable<AnswerResponse> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaAnswerService.createAnswer(request).pipe(
@@ -193,11 +198,12 @@ export class QAService {
                         });
                     }
 
+                    this.notificationService.success('Answer posted successfully');
                     return response;
                 }
                 throw new Error(response.message || 'Failed to create answer');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -206,7 +212,7 @@ export class QAService {
     }
 
     voteQuestion(id: string, isUpvote: boolean): Observable<ApiResponse<any>> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaVotingService.createVote({
@@ -230,7 +236,7 @@ export class QAService {
                 }
                 throw new Error(response.message || 'Failed to vote on question');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -239,7 +245,7 @@ export class QAService {
     }
 
     voteAnswer(id: string, isUpvote: boolean): Observable<ApiResponse<any>> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaVotingService.createVote({
@@ -263,7 +269,7 @@ export class QAService {
                 }
                 throw new Error(response.message || 'Failed to vote on answer');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -272,7 +278,7 @@ export class QAService {
     }
 
     acceptAnswer(questionId: string, answerId: string): Observable<ApiResponse<any>> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaAnswerService.acceptAnswer(answerId).pipe(
@@ -301,11 +307,12 @@ export class QAService {
                         });
                     }
 
+                    this.notificationService.success('Answer accepted successfully');
                     return response;
                 }
                 throw new Error(response.message || 'Failed to accept answer');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -315,7 +322,7 @@ export class QAService {
 
     // New enhanced methods following existing patterns
     searchQuestions(filter: SearchFilter): Observable<QuestionList[]> {
-        this.setLoading(true);
+        this.loadingService.show();
         this.clearError();
 
         return this.qaSearchService.searchQuestions(filter).pipe(
@@ -326,7 +333,7 @@ export class QAService {
                 }
                 throw new Error(response.message || 'Search failed');
             }),
-            tap(() => this.setLoading(false)),
+            tap(() => this.loadingService.hide()),
             catchError(error => {
                 this.handleError(error);
                 return throwError(() => error);
@@ -518,10 +525,6 @@ export class QAService {
     // QuestionStatus and QuestionPriority enums should be migrated to string literals if possible.
 
     // Utility methods following existing patterns
-    private setLoading(loading: boolean): void {
-        this.loadingSubject.next(loading);
-    }
-
     private clearError(): void {
         this.errorSubject.next(null);
     }
@@ -537,7 +540,8 @@ export class QAService {
         }
 
         this.errorSubject.next(errorMessage);
-        this.setLoading(false);
+        this.notificationService.error(errorMessage);
+        this.loadingService.hide();
     }
 
     // Public getters for current state

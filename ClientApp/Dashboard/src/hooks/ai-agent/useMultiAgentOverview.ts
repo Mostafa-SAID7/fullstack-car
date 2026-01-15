@@ -31,6 +31,11 @@ export const useMultiAgentOverview = () => {
       setLoading(true);
       setError(null);
       const response = await agentManagementService.listAgents();
+
+      if (!response || !response.agents) {
+        throw new Error('Invalid response from agent service');
+      }
+
       setAgents(response.agents);
 
       // Calculate overview metrics
@@ -42,7 +47,7 @@ export const useMultiAgentOverview = () => {
       const avgSatisfaction = response.agents.reduce(
         (sum, agent) => sum + agent.averageSatisfaction,
         0
-      ) / response.agents.length;
+      ) / (response.agents.length || 1);
 
       setMetrics({
         totalConversations,

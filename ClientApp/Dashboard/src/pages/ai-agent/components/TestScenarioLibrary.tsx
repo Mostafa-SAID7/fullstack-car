@@ -18,7 +18,7 @@ export const TestScenarioLibrary: React.FC<TestScenarioLibraryProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAgent, setSelectedAgent] = useState<string>('all');
 
-  const filteredScenarios = scenarios.filter((scenario) => {
+  const filteredScenarios = (scenarios || []).filter((scenario) => {
     const matchesSearch =
       scenario.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       scenario.description.toLowerCase().includes(searchQuery.toLowerCase()) ||

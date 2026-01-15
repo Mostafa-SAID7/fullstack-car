@@ -9,7 +9,10 @@ export default {
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
       useESM: true,
-      tsconfig: 'tsconfig.test.json'
+      tsconfig: 'tsconfig.test.json',
+      diagnostics: {
+        ignoreCodes: [1343]
+      }
     }],
   },
   testMatch: [

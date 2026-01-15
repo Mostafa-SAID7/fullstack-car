@@ -1,7 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError, finalize, map } from 'rxjs/operators';
+import { GuideApiService } from '../../../shared/services/api/guide-api.service';
+import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { 
+  GuideDto,
+  CreateGuideRequest as NewCreateGuideRequest,
+  UpdateGuideRequest,
+  GuideStepDto,
+  GuideDifficulty as NewGuideDifficulty,
+  GuideCategory as NewGuideCategory
+} from '../../../shared/models/community/guide.model';
+import { PagedResult } from '../../../shared/models/community/common.model';
 import { 
   Guide, 
   GuideListItem, 
@@ -9,7 +20,8 @@ import {
   RateGuideRequest, 
   GuideFilters,
   GuideCategory,
-  GuideDifficulty
+  GuideDifficulty,
+  GuideStep
 } from '../models/guide.model';
 import { PaginatedResult } from '../../../core/models/pagination.model';
 
@@ -17,64 +29,192 @@ import { PaginatedResult } from '../../../core/models/pagination.model';
   providedIn: 'root'
 })
 export class GuidesService {
-  private readonly apiUrl = `${environment.apiUrl}/community/guides`;
+  private guidesSubject = new BehaviorSubject<GuideListItem[]>([]);
+  public guides$ = this.guidesSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  private currentGuideSubject = new BehaviorSubject<Guide | null>(null);
+  public currentGuide$ = this.currentGuideSubject.asObservable();
+
+  constructor(
+    private guideApi: GuideApiService,
+    private notificationService: NotificationService,
+    private loadingService: LoadingService
+  ) {}
 
   getGuides(filters?: GuideFilters): Observable<PaginatedResult<GuideListItem>> {
-    let params = new HttpParams();
+    this.loadingService.show('guides-list', 'Loading guides...');
     
-    if (filters) {
-      if (filters.page) params = params.set('page', filters.page.toString());
-      if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
-      if (filters.category !== undefined) params = params.set('category', filters.category.toString());
-      if (filters.difficulty !== undefined) params = params.set('difficulty', filters.difficulty.toString());
-      if (filters.searchTerm) params = params.set('searchTerm', filters.searchTerm);
-      if (filters.isFeatured !== undefined) params = params.set('isFeatured', filters.isFeatured.toString());
-      if (filters.sortBy) params = params.set('sortBy', filters.sortBy);
-      if (filters.sortDescending !== undefined) params = params.set('sortDescending', filters.sortDescending.toString());
-    }
-
-    return this.http.get<PaginatedResult<GuideListItem>>(this.apiUrl, { params });
+    return this.guideApi.getGuides({
+      pageNumber: filters?.page || 1,
+      pageSize: filters?.pageSize || 10,
+      category: filters?.category,
+      difficulty: filters?.difficulty
+    }).pipe(
+      map(result => this.mapToLegacyPaginatedFormat(result)),
+      tap(result => {
+        if (result.items) {
+          this.guidesSubject.next(result.items);
+        }
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to load guides', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('guides-list'))
+    );
   }
 
   getGuideById(id: number): Observable<Guide> {
-    return this.http.get<Guide>(`${this.apiUrl}/${id}`);
+    this.loadingService.show('guide-detail', 'Loading guide...');
+    
+    return this.guideApi.getGuide(id.toString()).pipe(
+      map(dto => {
+        const guide = this.mapDtoToGuide(dto);
+        this.currentGuideSubject.next(guide);
+        return guide;
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to load guide', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('guide-detail'))
+    );
   }
 
   createGuide(request: CreateGuideRequest): Observable<Guide> {
-    return this.http.post<Guide>(this.apiUrl, request);
+    this.loadingService.show('create-guide', 'Creating guide...');
+    
+    const newRequest: NewCreateGuideRequest = {
+      title: request.title,
+      description: request.summary,
+      category: request.category as unknown as NewGuideCategory,
+      difficulty: request.difficulty as unknown as NewGuideDifficulty,
+      estimatedTime: request.estimatedReadTime,
+      imageUrl: request.thumbnailUrl,
+      steps: request.steps.map(step => ({
+        stepNumber: step.stepNumber,
+        title: step.title,
+        description: step.content,
+        imageUrl: step.imageUrl,
+        videoUrl: step.videoUrl,
+        tips: step.tips ? [step.tips] : undefined,
+        warnings: step.warningNotes ? [step.warningNotes] : undefined
+      }))
+    };
+    
+    return this.guideApi.createGuide(newRequest).pipe(
+      map(dto => {
+        const guide = this.mapDtoToGuide(dto);
+        this.notificationService.success('Guide created successfully');
+        return guide;
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to create guide', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('create-guide'))
+    );
   }
 
   updateGuide(id: number, request: CreateGuideRequest): Observable<Guide> {
-    return this.http.put<Guide>(`${this.apiUrl}/${id}`, request);
+    this.loadingService.show('update-guide', 'Updating guide...');
+    
+    const updateRequest: UpdateGuideRequest = {
+      title: request.title,
+      description: request.summary,
+      category: request.category as unknown as NewGuideCategory,
+      difficulty: request.difficulty as unknown as NewGuideDifficulty,
+      estimatedTime: request.estimatedReadTime,
+      imageUrl: request.thumbnailUrl
+    };
+    
+    return this.guideApi.updateGuide(id.toString(), updateRequest).pipe(
+      map(dto => {
+        const guide = this.mapDtoToGuide(dto);
+        this.notificationService.success('Guide updated successfully');
+        return guide;
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to update guide', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('update-guide'))
+    );
   }
 
   rateGuide(request: RateGuideRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${request.guideId}/rate`, request);
+    this.loadingService.show('rate-guide', 'Submitting rating...');
+    
+    return this.guideApi.rateGuide(request.guideId.toString(), request.rating, request.comment).pipe(
+      map(() => {
+        this.notificationService.success('Rating submitted successfully');
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to submit rating', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('rate-guide'))
+    );
   }
 
   bookmarkGuide(id: number, notes?: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/bookmark`, { notes });
+    return this.guideApi.bookmarkGuide(id.toString()).pipe(
+      tap(() => {
+        this.notificationService.success('Guide bookmarked successfully');
+      }),
+      catchError(error => {
+        this.notificationService.error('Failed to bookmark guide', error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   getBookmarkedGuides(page: number = 1, pageSize: number = 10): Observable<PaginatedResult<GuideListItem>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
-    return this.http.get<PaginatedResult<GuideListItem>>(`${this.apiUrl}/bookmarks`, { params });
+    this.notificationService.info('Bookmarked guides feature coming soon');
+    return new Observable(observer => {
+      observer.next({
+        items: [],
+        pageNumber: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPages: 0,
+        hasPreviousPage: false,
+        hasNextPage: false
+      } as any);
+      observer.complete();
+    });
   }
 
   getCategories(): Observable<{ value: number; name: string }[]> {
-    return this.http.get<{ value: number; name: string }[]>(`${this.apiUrl}/categories`);
+    return new Observable(observer => {
+      const categories = Object.keys(GuideCategory)
+        .filter(key => !isNaN(Number(key)))
+        .map(key => ({
+          value: parseInt(key),
+          name: GuideCategory[parseInt(key)]
+        }));
+      observer.next(categories);
+      observer.complete();
+    });
   }
 
   getDifficulties(): Observable<{ value: number; name: string }[]> {
-    return this.http.get<{ value: number; name: string }[]>(`${this.apiUrl}/difficulties`);
+    return new Observable(observer => {
+      const difficulties = Object.keys(GuideDifficulty)
+        .filter(key => !isNaN(Number(key)))
+        .map(key => ({
+          value: parseInt(key),
+          name: GuideDifficulty[parseInt(key)]
+        }));
+      observer.next(difficulties);
+      observer.complete();
+    });
   }
 
-  // Helper methods
+  clearCurrentGuide(): void {
+    this.currentGuideSubject.next(null);
+  }
+
   getCategoryName(category: GuideCategory): string {
     return GuideCategory[category] || 'Unknown';
   }
@@ -96,5 +236,75 @@ export class GuidesService {
       default:
         return 'text-gray-600';
     }
+  }
+
+  private mapDtoToGuide(dto: GuideDto): Guide {
+    return {
+      id: parseInt(dto.id),
+      title: dto.title,
+      content: dto.description,
+      summary: dto.description,
+      category: dto.category as unknown as GuideCategory,
+      categoryName: this.getCategoryName(dto.category as unknown as GuideCategory),
+      difficulty: dto.difficulty as unknown as GuideDifficulty,
+      difficultyName: this.getDifficultyName(dto.difficulty as unknown as GuideDifficulty),
+      estimatedReadTime: dto.estimatedTime,
+      isFeatured: false,
+      isPublished: true,
+      tags: [],
+      thumbnailUrl: dto.imageUrl,
+      userRating: undefined,
+      averageRating: dto.rating,
+      ratingCount: dto.ratingsCount,
+      authorId: dto.userId,
+      authorName: `${dto.userFirstName} ${dto.userLastName}`,
+      authorAvatar: dto.userProfileImageUrl,
+      createdAt: typeof dto.createdAt === 'string' ? new Date(dto.createdAt) : dto.createdAt,
+      updatedAt: dto.updatedAt ? (typeof dto.updatedAt === 'string' ? new Date(dto.updatedAt) : dto.updatedAt) : undefined,
+      viewCount: dto.viewsCount,
+      likeCount: 0,
+      commentCount: 0,
+      shareCount: 0,
+      bookmarkCount: dto.bookmarksCount,
+      isLiked: false,
+      isBookmarked: false
+    };
+  }
+
+  private mapDtoToGuideListItem(dto: GuideDto): GuideListItem {
+    return {
+      id: parseInt(dto.id),
+      title: dto.title,
+      summary: dto.description,
+      category: dto.category as unknown as GuideCategory,
+      categoryName: this.getCategoryName(dto.category as unknown as GuideCategory),
+      difficulty: dto.difficulty as unknown as GuideDifficulty,
+      difficultyName: this.getDifficultyName(dto.difficulty as unknown as GuideDifficulty),
+      estimatedReadTime: dto.estimatedTime,
+      isFeatured: false,
+      viewCount: dto.viewsCount,
+      likeCount: 0,
+      bookmarkCount: dto.bookmarksCount,
+      tags: [],
+      thumbnailUrl: dto.imageUrl,
+      createdAt: typeof dto.createdAt === 'string' ? new Date(dto.createdAt) : dto.createdAt,
+      authorName: `${dto.userFirstName} ${dto.userLastName}`,
+      authorAvatar: dto.userProfileImageUrl,
+      isBookmarked: false,
+      averageRating: dto.rating,
+      ratingCount: dto.ratingsCount
+    };
+  }
+
+  private mapToLegacyPaginatedFormat(result: PagedResult<GuideDto>): PaginatedResult<GuideListItem> {
+    return {
+      items: result.items?.map(dto => this.mapDtoToGuideListItem(dto)) || [],
+      pageNumber: result.pageNumber,
+      pageSize: result.pageSize,
+      totalPages: result.totalPages,
+      totalCount: result.totalCount,
+      hasPreviousPage: result.hasPreviousPage,
+      hasNextPage: result.hasNextPage
+    } as any;
   }
 }

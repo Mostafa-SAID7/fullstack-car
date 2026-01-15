@@ -25,15 +25,16 @@ class Post(Base):
 
 # New tables for AI Agent Enhancement
 
+
 class Conversation(Base):
     __tablename__ = "conversations"
     
-    id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, nullable=False, index=True)
-    title = Column(String, nullable=False)
+    id = Column(String(50), primary_key=True, index=True)
+    user_id = Column(String(100), nullable=False, index=True)
+    title = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    metadata = Column(JSON, nullable=True)
+    metadata_ = Column("metadata", JSON, nullable=True)  # Use metadata_ to avoid SQLAlchemy conflict
     is_active = Column(Boolean, default=True, index=True)
     
     # Relationship
@@ -44,12 +45,12 @@ class Conversation(Base):
 class Message(Base):
     __tablename__ = "messages"
     
-    id = Column(String, primary_key=True, index=True)
-    conversation_id = Column(String, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
-    role = Column(String, nullable=False)  # 'user', 'assistant', 'system'
+    id = Column(String(50), primary_key=True, index=True)
+    conversation_id = Column(String(50), ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
+    role = Column(String(50), nullable=False)  # 'user', 'assistant', 'system'
     content = Column(Text, nullable=False)
-    agent_type = Column(String, nullable=True)  # 'mechanic', 'buyer_guide', etc.
-    metadata = Column(JSON, nullable=True)
+    agent_type = Column(String(50), nullable=True)  # 'mechanic', 'buyer_guide', etc.
+    metadata_ = Column("metadata", JSON, nullable=True)  # Use metadata_ to avoid SQLAlchemy conflict
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
     
     # Relationship
@@ -59,10 +60,10 @@ class Message(Base):
 class Feedback(Base):
     __tablename__ = "feedback"
     
-    id = Column(String, primary_key=True, index=True)
-    conversation_id = Column(String, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
-    message_id = Column(String, ForeignKey("messages.id", ondelete="CASCADE"), nullable=False)
-    type = Column(String, nullable=False, index=True)  # 'positive', 'negative', 'correction'
+    id = Column(String(50), primary_key=True, index=True)
+    conversation_id = Column(String(50), ForeignKey("conversations.id"), nullable=False, index=True)
+    message_id = Column(String(50), ForeignKey("messages.id", ondelete="CASCADE"), nullable=False)
+    type = Column(String(50), nullable=False, index=True)  # 'positive', 'negative', 'correction'
     data = Column(JSON, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
     
@@ -73,10 +74,10 @@ class Feedback(Base):
 class ConversationMetric(Base):
     __tablename__ = "conversation_metrics"
     
-    id = Column(String, primary_key=True, index=True)
-    conversation_id = Column(String, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(String, nullable=False, index=True)
-    agent_type = Column(String, nullable=False, index=True)
+    id = Column(String(50), primary_key=True, index=True)
+    conversation_id = Column(String(50), ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(100), nullable=False, index=True)
+    agent_type = Column(String(50), nullable=False, index=True)
     message_count = Column(Integer, default=0)
     duration_seconds = Column(Integer, nullable=True)
     satisfaction_score = Column(Float, nullable=True)
@@ -91,11 +92,11 @@ class ConversationMetric(Base):
 class KnowledgeEntry(Base):
     __tablename__ = "knowledge_entries"
     
-    id = Column(String, primary_key=True, index=True)
+    id = Column(String(50), primary_key=True, index=True)
     content = Column(Text, nullable=False)
-    category = Column(String, nullable=False, index=True)  # 'maintenance', 'diagnostics', etc.
-    metadata = Column(JSON, nullable=True)
-    source = Column(String, nullable=False, index=True)  # 'manual', 'user_correction', 'community_post', 'external'
+    category = Column(String(50), nullable=False, index=True)  # 'maintenance', 'diagnostics', etc.
+    metadata_ = Column("metadata", JSON, nullable=True)  # Use metadata_ to avoid SQLAlchemy conflict
+    source = Column(String(50), nullable=False, index=True)  # 'manual', 'user_correction', 'community_post', 'external'
     verified = Column(Boolean, default=False, index=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

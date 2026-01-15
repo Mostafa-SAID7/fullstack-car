@@ -1,12 +1,14 @@
 """
 Agent Router - Routes messages to appropriate specialized agents.
 """
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, TYPE_CHECKING
 from app.models.schemas import ConversationContext, AgentResponse, AgentType
 from app.services.intent_classifier import IntentClassifier, Intent
-from app.agents import AVAILABLE_AGENTS, BaseAgent
 import logging
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from app.agents.base_agent import BaseAgent
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +26,12 @@ class AgentRouter:
     """
     
     def __init__(self):
+        # Lazy import to avoid circular dependencies
+        from app.agents import get_available_agents
+        
         # Initialize all agents
-        self.agents: Dict[str, BaseAgent] = {}
+        self.agents: Dict[str, Any] = {}
+        AVAILABLE_AGENTS = get_available_agents()
         for agent_type, agent_class in AVAILABLE_AGENTS.items():
             self.agents[agent_type] = agent_class()
             logger.info(f"Initialized {agent_type} agent")
@@ -218,7 +224,7 @@ class AgentRouter:
         if conversation_id in self.routing_history:
             del self.routing_history[conversation_id]
     
-    def get_agent(self, agent_type: str) -> Optional[BaseAgent]:
+    def get_agent(self, agent_type: str) -> Optional[Any]:
         """Get agent instance by type"""
         return self.agents.get(agent_type)
     

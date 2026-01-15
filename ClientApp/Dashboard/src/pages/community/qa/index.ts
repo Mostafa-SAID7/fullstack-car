@@ -1,3 +1,3 @@
-export { default as QAManagement } from './pages/QAManagement';
-export { default as QAAnalytics } from './pages/QAAnalytics';
-export { default as BulkOperationsPage } from './pages/BulkOperationsPage';
+export { QAManagement } from './pages/QAManagement';
+export { QAAnalytics } from './pages/QAAnalytics';
+export { BulkOperationsPage } from './pages/BulkOperationsPage';

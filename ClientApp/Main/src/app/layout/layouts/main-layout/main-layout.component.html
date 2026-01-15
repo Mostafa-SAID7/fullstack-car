@@ -21,10 +21,9 @@
                 <div style="display:none" id="localization-test">Welcome</div>
             </div>
         </main>
-        
+
         <!-- Right Sidebar -->
-        <aside
-            class="hidden xl:flex xl:flex-col h-[calc(100vh-3.5rem)] pb-4 pr-4 border-l border-border/10 pt-6">
+        <aside class="hidden xl:flex xl:flex-col h-[calc(100vh-3.5rem)] pb-4 pr-4 border-l border-border/10 pt-6">
             <div class="flex-1 overflow-hidden">
                 <app-sidebar-right class="block h-full animate-fade-in"></app-sidebar-right>
             </div>
@@ -36,9 +35,9 @@
         <!-- Overlay Panels -->
         <div class="relative w-full">
             <!-- AI Overlay -->
-            <div *ngIf="isAiVisible"
-                class="absolute bottom-0 right-0 w-full h-[500px] max-h-[calc(100vh-200px)] bg-white dark:bg-[#111] rounded-[2rem] border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col animate-slide-up chat-widget">
-                <div class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
+            <div *ngIf="isAiVisible" [ngClass]="getChatWindowClasses()">
+                <div
+                    class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white cursor-pointer"
                             (click)="showAiModes = !showAiModes">
@@ -47,18 +46,19 @@
                         <div>
                             <div class="flex items-center gap-2 cursor-pointer" (click)="showAiModes = !showAiModes">
                                 <span class="font-bold text-xs uppercase text-primary">AI Assistant</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] opacity-40 text-primary" [class.rotate-180]="showAiModes"></i>
+                                <i class="fa-solid fa-chevron-down text-[10px] opacity-40 text-primary"
+                                    [class.rotate-180]="showAiModes"></i>
                             </div>
                             <div class="text-[10px] opacity-40 mt-0.5">Press Ctrl+K to toggle</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button (click)="togglePositionMenu()" 
+                        <button (click)="togglePositionMenu()"
                             class="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                             title="Change position">
                             <i class="fa-solid fa-arrows-up-down-left-right text-sm"></i>
                         </button>
-                        <button (click)="toggleAi()" 
+                        <button (click)="toggleAi()"
                             class="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                             <i class="fa-solid fa-xmark text-lg"></i>
                         </button>
@@ -113,8 +113,8 @@
 
                 <!-- AI Messages -->
                 <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll" #aiChatContainer>
-                    <div *ngFor="let msg of aiMessages" class="flex flex-col max-w-[85%]"
-                        [class.ml-auto]="msg.isUser" [class.items-end]="msg.isUser">
+                    <div *ngFor="let msg of aiMessages" class="flex flex-col max-w-[85%]" [class.ml-auto]="msg.isUser"
+                        [class.items-end]="msg.isUser">
                         <div class="p-3 text-[13px] leading-relaxed rounded-2xl shadow-sm"
                             [ngClass]="msg.isUser ? 'bg-primary text-white rounded-tr-none' : 'bg-slate-100 dark:bg-white/5 rounded-tl-none border border-black/5 dark:border-white/5'"
                             [innerHTML]="parseMarkdown(msg.text)">
@@ -122,12 +122,15 @@
                     </div>
                     <div *ngIf="isAiTyping" class="flex gap-1.5 p-3 bg-slate-100 dark:bg-white/5 rounded-2xl w-fit">
                         <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce"></span>
-                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" [style.animation-delay]="'0.2s'"></span>
-                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce" [style.animation-delay]="'0.4s'"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce"
+                            [style.animation-delay]="'0.2s'"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce"
+                            [style.animation-delay]="'0.4s'"></span>
                     </div>
                 </div>
 
-                <div class="p-4 bg-slate-50/50 dark:bg-white/[0.02] border-t border-black/5 dark:border-white/5 flex gap-2">
+                <div
+                    class="p-4 bg-slate-50/50 dark:bg-white/[0.02] border-t border-black/5 dark:border-white/5 flex gap-2">
                     <input type="text" [(ngModel)]="currentChatMsg" (keyup.enter)="sendAiMessage()"
                         placeholder="Ask anything..."
                         class="flex-1 bg-white dark:bg-slate-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-primary/20 outline-none transition-all">
@@ -139,9 +142,9 @@
             </div>
 
             <!-- Messenger Overlay -->
-            <div *ngIf="isMessengerVisible"
-                class="absolute bottom-0 right-0 w-full h-[500px] max-h-[calc(100vh-200px)] bg-white dark:bg-[#111] rounded-[2rem] border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col animate-slide-up chat-widget">
-                <div class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
+            <div *ngIf="isMessengerVisible" [ngClass]="getChatWindowClasses()">
+                <div
+                    class="p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between bg-primary/5">
                     <div>
                         <h3 class="font-bold text-xs uppercase tracking-wider text-primary">Community Messages</h3>
                         <div class="text-[10px] opacity-40 mt-0.5">Press Ctrl+M to toggle</div>
@@ -151,13 +154,15 @@
                     </button>
                 </div>
                 <div class="flex-1 overflow-y-auto p-2 custom-scroll">
-                    <div *ngFor="let msg of mockMessages" 
+                    <div *ngFor="let msg of mockMessages"
                         class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer group mb-1">
                         <div class="relative w-12 h-12 flex-shrink-0">
-                            <div class="w-full h-full rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                            <div
+                                class="w-full h-full rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                                 {{ msg.user[0] }}
                             </div>
-                            <span *ngIf="msg.online" class="absolute bottom-0.5 right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 shadow-sm"></span>
+                            <span *ngIf="msg.online"
+                                class="absolute bottom-0.5 right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 shadow-sm"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-center mb-0.5">
@@ -168,14 +173,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-black/5 dark:border-white/5 text-center bg-slate-50 dark:bg-white/[0.02]">
-                    <button class="w-full py-2.5 text-[11px] font-black uppercase text-white bg-primary rounded-xl tracking-widest hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95" routerLink="/community/messages">Open Full Messenger</button>
+                <div
+                    class="p-4 border-t border-black/5 dark:border-white/5 text-center bg-slate-50 dark:bg-white/[0.02]">
+                    <button
+                        class="w-full py-2.5 text-[11px] font-black uppercase text-white bg-primary rounded-xl tracking-widest hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+                        routerLink="/community/messages">Open Full Messenger</button>
                 </div>
             </div>
         </div>
 
         <!-- Floating Action Button (FAB) with Split Buttons -->
-        <div class="flex h-14 bg-white/80 dark:bg-[#111]/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-black/5 dark:border-white/10 p-1.5 gap-1.5 ml-auto w-fit fab-container">
+        <div
+            class="flex h-14 bg-white/80 dark:bg-[#111]/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-black/5 dark:border-white/10 p-1.5 gap-1.5 ml-auto w-fit fab-container">
             <button (click)="toggleMessenger()"
                 class="w-14 h-11 flex items-center justify-center rounded-xl transition-all group relative fab-button"
                 [ngClass]="isMessengerVisible ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-50 dark:hover:bg-white/5'"
@@ -189,7 +198,7 @@
                     </span>
                 </div>
             </button>
-            
+
             <div class="w-[1px] h-6 my-auto bg-black/5 dark:bg-white/10"></div>
 
             <button (click)="toggleAi()"

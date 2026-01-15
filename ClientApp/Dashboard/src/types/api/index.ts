@@ -50,6 +50,7 @@ export interface RequestConfig {
   data?: unknown;
   signal?: AbortSignal;
   redirectOnError?: boolean; // Whether to redirect to error pages on HTTP errors (default: true)
+  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
 }
 
 export interface RequestInterceptor {

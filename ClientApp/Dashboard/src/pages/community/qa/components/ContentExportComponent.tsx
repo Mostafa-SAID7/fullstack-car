@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Download, 
-  FileText, 
+import {
+  Download,
+  FileText,
   Database,
   Calendar,
   Settings,
@@ -12,16 +12,16 @@ import {
   Eye,
   X
 } from 'lucide-react';
-import { Card } from '../layout/cards/Card';
-import { Button } from '../forms/buttons/Button';
-import { Input } from '../forms/inputs/Input';
-import { DataTable } from '../shared/DataTable';
-import { Badge } from '../data-display/badges/Badge';
-import { DynamicModal } from '../shared/DynamicModal';
-import { StatsCards } from '../shared';
-import { cn } from '../../lib/utils';
-import { bulkOperationsService } from '../../services/qa/BulkOperationsService';
-import type { FormField } from '../../types/shared';
+import { Card } from '@/components/layout/cards/Card';
+import { Button } from '@/components/forms/buttons/Button';
+import { Input } from '@/components/forms/inputs/Input';
+import { DataTable } from '@/components/shared/DataTable';
+import { Badge } from '@/components/data-display/badges/Badge';
+import { DynamicModal } from '@/components/shared/DynamicModal';
+import { StatsCards } from '@/components/shared';
+import { cn } from '@/lib/utils';
+import { bulkOperationsService } from '@/services/qa/BulkOperationsService';
+import type { FormField } from '@/types/shared';
 
 interface ContentExportComponentProps {
   className?: string;
@@ -138,7 +138,7 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
       const matchesSearch = job.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === 'all' || job.status === statusFilter;
       const matchesType = typeFilter === 'all' || job.type === typeFilter;
-      
+
       return matchesSearch && matchesStatus && matchesType;
     });
   }, [exportJobs, searchTerm, statusFilter, typeFilter]);
@@ -205,8 +205,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
 
       // Simulate API call
       setTimeout(() => {
-        setExportJobs(prev => prev.map(job => 
-          job.id === newJob.id 
+        setExportJobs(prev => prev.map(job =>
+          job.id === newJob.id
             ? { ...job, status: 'running', totalItems: 1000 }
             : job
         ));
@@ -239,8 +239,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
 
       // Simulate API call
       setTimeout(() => {
-        setExportJobs(prev => prev.map(job => 
-          job.id === newJob.id 
+        setExportJobs(prev => prev.map(job =>
+          job.id === newJob.id
             ? { ...job, status: 'running', totalItems: 500 }
             : job
         ));
@@ -328,8 +328,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
   const handleCancelJob = async (jobId: string) => {
     try {
       await bulkOperationsService.cancelBatchOperation(jobId);
-      setExportJobs(prev => prev.map(job => 
-        job.id === jobId 
+      setExportJobs(prev => prev.map(job =>
+        job.id === jobId
           ? { ...job, status: 'failed', error: 'Cancelled by user' }
           : job
       ));
@@ -362,15 +362,15 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
         <div>
           <Badge variant={
             value === 'completed' ? 'success' :
-            value === 'running' ? 'warning' :
-            value === 'failed' ? 'destructive' : 'secondary'
+              value === 'running' ? 'warning' :
+                value === 'failed' ? 'destructive' : 'secondary'
           }>
             {value}
           </Badge>
           {value === 'running' && (
             <div className="mt-1">
               <div className="w-full bg-muted rounded-full h-2">
-                <div 
+                <div
                   className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${row.progress}%` }}
                 />
@@ -596,7 +596,7 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
             Export QA system data using existing reporting infrastructure
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
@@ -623,8 +623,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
           <p className="text-muted-foreground mb-4 text-sm">
             Export questions, answers, and related content data
           </p>
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             onClick={() => setShowContentExportModal(true)}
           >
             Export Content
@@ -639,8 +639,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
           <p className="text-muted-foreground mb-4 text-sm">
             Export user profiles, reputation, and activity data
           </p>
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             onClick={() => setShowUserExportModal(true)}
           >
             Export Users
@@ -655,8 +655,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
           <p className="text-muted-foreground mb-4 text-sm">
             Export analytics and performance metrics
           </p>
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             onClick={() => setShowAnalyticsExportModal(true)}
           >
             Export Analytics
@@ -671,8 +671,8 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
           <p className="text-muted-foreground mb-4 text-sm">
             Export moderation actions and audit logs
           </p>
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             onClick={() => setShowModerationExportModal(true)}
           >
             Export Moderation
@@ -691,7 +691,7 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
               className="w-full"
             />
           </div>
-          
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
@@ -703,7 +703,7 @@ export const ContentExportComponent: React.FC<ContentExportComponentProps> = ({ 
             <option value="completed">Completed</option>
             <option value="failed">Failed</option>
           </select>
-          
+
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as any)}

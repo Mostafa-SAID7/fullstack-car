@@ -1,11 +1,13 @@
 // Knowledge Base Service - For managing knowledge entries
 
+import { ENV } from '../../config/environment';
 import { apiClient } from '../api';
 import type { KnowledgeEntry, KnowledgeCategory } from '../../types/ai-agent';
 
-const BASE_URL = '/api/knowledge';
+const BASE_URL = `${ENV.AI_AGENT_URL}/knowledge`;
 
 export interface KnowledgeSearchParams {
+  [key: string]: string | number | boolean | KnowledgeCategory | undefined;
   query?: string;
   category?: KnowledgeCategory;
   verified?: boolean;

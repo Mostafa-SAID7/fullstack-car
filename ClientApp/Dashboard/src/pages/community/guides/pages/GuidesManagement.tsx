@@ -1,5 +1,5 @@
 import React from 'react';
-import { EnhancedPageHeader } from '../../../components/shared';
+import { EnhancedPageHeader } from '@/components/shared';
 import { Book } from 'lucide-react';
 
 const GuidesManagement: React.FC = () => {

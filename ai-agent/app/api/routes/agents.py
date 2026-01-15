@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, HTTPException
 from typing import Dict, Any, List
 from app.models.schemas import (
     AgentType,
@@ -8,8 +8,6 @@ from app.models.schemas import (
     ChatRequest,
     AgentResponse
 )
-from app.services import AgentRouter
-from app.agents import AVAILABLE_AGENTS
 from starlette.requests import Request
 from datetime import datetime
 import logging
@@ -28,11 +26,16 @@ async def list_agents(request: Request):
     - Basic performance metrics
     """
     try:
-        agent_router: AgentRouter = request.app.state.agent_router
+        # Initialize services if not already done
+        from main import get_services
+        get_services()
+        
+        agent_router = request.app.state.agent_router
         
         agents_status = []
         
-        for agent_type_str, agent_instance in AVAILABLE_AGENTS.items():
+        # Get agents from router instead of importing AVAILABLE_AGENTS
+        for agent_type_str, agent_instance in agent_router.agents.items():
             # Get agent type enum
             try:
                 agent_type = AgentType(agent_type_str)
@@ -44,14 +47,14 @@ async def list_agents(request: Request):
             config = agent_instance.get_config()
             
             # Get routing statistics for this agent
-            stats = agent_router.get_stats()
-            agent_stats = stats.get('agent_usage', {}).get(agent_type_str, {})
+            stats = agent_router.get_routing_stats()
+            agent_stats = stats.get('agent_distribution', {}).get(agent_type_str, 0)
             
             agents_status.append(AgentStatusResponse(
                 agent_type=agent_type,
                 is_active=config.get('enabled', True),
-                total_conversations=agent_stats.get('count', 0),
-                average_satisfaction=agent_stats.get('avg_confidence', 0.0),
+                total_conversations=agent_stats,
+                average_satisfaction=0.0,  # Would need analytics
                 last_used=None  # Would need to track this in analytics
             ))
         
@@ -77,24 +80,24 @@ async def get_agent_status(
     - Current configuration
     """
     try:
-        agent_router: AgentRouter = request.app.state.agent_router
+        agent_router = request.app.state.agent_router
         
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         config = agent_instance.get_config()
         
         # Get routing statistics
-        stats = agent_router.get_stats()
-        agent_stats = stats.get('agent_usage', {}).get(agent_type.value, {})
+        stats = agent_router.get_routing_stats()
+        agent_stats = stats.get('agent_distribution', {}).get(agent_type.value, 0)
         
         return AgentStatusResponse(
             agent_type=agent_type,
             is_active=config.get('enabled', True),
-            total_conversations=agent_stats.get('count', 0),
-            average_satisfaction=agent_stats.get('avg_confidence', 0.0),
+            total_conversations=agent_stats,
+            average_satisfaction=0.0,  # Would need analytics tracking
             last_used=None  # Would need analytics tracking
         )
         
@@ -123,11 +126,13 @@ async def configure_agent(
     Configuration is validated before applying.
     """
     try:
+        agent_router = request.app.state.agent_router
+        
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         
         # Validate configuration
         validation_errors = _validate_agent_config(config_request.config)
@@ -163,11 +168,13 @@ async def get_agent_config(
     Get current configuration for a specific agent.
     """
     try:
+        agent_router = request.app.state.agent_router
+        
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         config = agent_instance.get_config()
         
         return {
@@ -199,11 +206,13 @@ async def test_agent(
     Does not save the conversation or affect statistics.
     """
     try:
+        agent_router = request.app.state.agent_router
+        
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         
         # Create a test context
         from app.models.schemas import ConversationContext
@@ -247,10 +256,10 @@ async def get_agent_metrics(
     - Error rate
     """
     try:
-        agent_router: AgentRouter = request.app.state.agent_router
+        agent_router = request.app.state.agent_router
         
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
         # Get routing statistics
@@ -290,11 +299,13 @@ async def enable_agent(
     Enable a specific agent.
     """
     try:
+        agent_router = request.app.state.agent_router
+        
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         agent_instance.configure({"enabled": True})
         
         logger.info(f"Enabled agent {agent_type.value}")
@@ -323,8 +334,10 @@ async def disable_agent(
     Existing conversations will fall back to the general agent.
     """
     try:
+        agent_router = request.app.state.agent_router
+        
         # Check if agent exists
-        if agent_type.value not in AVAILABLE_AGENTS:
+        if agent_type.value not in agent_router.agents:
             raise HTTPException(status_code=404, detail=f"Agent type '{agent_type.value}' not found")
         
         # Don't allow disabling the general agent
@@ -334,7 +347,7 @@ async def disable_agent(
                 detail="Cannot disable the general agent as it serves as fallback"
             )
         
-        agent_instance = AVAILABLE_AGENTS[agent_type.value]
+        agent_instance = agent_router.agents[agent_type.value]
         agent_instance.configure({"enabled": False})
         
         logger.info(f"Disabled agent {agent_type.value}")
@@ -391,3 +404,4 @@ def _validate_agent_config(config: Dict[str, Any]) -> List[str]:
             errors.append("enabled must be a boolean")
     
     return errors
+

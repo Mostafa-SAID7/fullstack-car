@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     # CORS
     ALLOWED_HOSTS: List[str] = ["*"]
     
+    # Rate Limiting
+    RATE_LIMIT_USER: int = 100  # Requests per user per hour
+    RATE_LIMIT_IP: int = 200  # Requests per IP per hour
+    RATE_LIMIT_WINDOW: int = 3600  # Time window in seconds (1 hour)
+    RATE_LIMIT_ADMIN_BYPASS: bool = True  # Allow admins to bypass limits
+    
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str = "./logs/ai_agent.log"

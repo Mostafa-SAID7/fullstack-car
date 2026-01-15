@@ -34,7 +34,7 @@ export class HttpClient {
     this.defaultRetries = config.retries || API_CONFIG.retries;
     this.defaultRetryDelay = config.retryDelay || API_CONFIG.retryDelay;
     this.defaultHeaders = { ...API_CONFIG.headers, ...config.headers };
-    
+
     if (config.interceptors) {
       this.interceptors = [...config.interceptors];
     }
@@ -132,7 +132,7 @@ export class HttpClient {
       // Set up response handling
       xhr.addEventListener('load', async () => {
         try {
-          const result = await this.processXhrResponse<T>(xhr, requestId);
+          const result = await this.processXhrResponse<T>(xhr, requestId, config);
           resolve(result);
         } catch (error) {
           resolve(this.createErrorResult(error as Error));
@@ -157,6 +157,11 @@ export class HttpClient {
 
       // Set timeout
       xhr.timeout = config?.timeout || REQUEST_TIMEOUTS.UPLOAD;
+
+      // Set response type for blob/arraybuffer
+      if (config?.responseType === 'blob' || config?.responseType === 'arraybuffer') {
+        xhr.responseType = config.responseType;
+      }
 
       // Send request
       xhr.send(data);
@@ -183,7 +188,7 @@ export class HttpClient {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         const result = await this.executeRequest<T>(method, fullUrl, data, config, requestId, attempt);
-        
+
         if (REQUEST_INTERCEPTORS.LOGGING) {
           console.log(`[HttpClient] Success ${method} ${fullUrl} (ID: ${requestId})`, result);
         }
@@ -279,18 +284,18 @@ export class HttpClient {
         }
       }
 
-      return await this.processResponse<T>(processedResponse, requestId);
+      return await this.processResponse<T>(processedResponse, requestId, config);
     } catch (error) {
       clearTimeout(timeoutId);
       throw this.processError(error as Error);
     }
   }
 
-  private async processResponse<T>(response: Response, _requestId?: string): Promise<ApiResult<T>> {
+  private async processResponse<T>(response: Response, requestId?: string, config?: RequestConfig): Promise<ApiResult<T>> {
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
       let details: any = errorText;
-      
+
       try {
         details = JSON.parse(errorText);
       } catch (e) {
@@ -313,13 +318,27 @@ export class HttpClient {
       throw apiError;
     }
 
-    const contentType = response.headers.get('content-type');
+    const responseType = config?.responseType || 'json';
     let responseData: any;
 
-    if (contentType?.includes('application/json')) {
-      responseData = await response.json();
-    } else {
-      responseData = await response.text();
+    try {
+      if (responseType === 'blob') {
+        responseData = await response.blob();
+      } else if (responseType === 'arraybuffer') {
+        responseData = await response.arrayBuffer();
+      } else if (responseType === 'text') {
+        responseData = await response.text();
+      } else {
+        const contentType = response.headers.get('content-type');
+        if (contentType?.includes('application/json')) {
+          responseData = await response.json();
+        } else {
+          responseData = await response.text();
+        }
+      }
+    } catch (error) {
+      console.error(`[HttpClient] Error parsing response (ID: ${requestId})`, error);
+      throw new ApiError('Error parsing response data', response.status, 'PARSE_ERROR');
     }
 
     return {
@@ -329,15 +348,27 @@ export class HttpClient {
     };
   }
 
-  private async processXhrResponse<T>(xhr: XMLHttpRequest, _requestId?: string): Promise<ApiResult<T>> {
+  private async processXhrResponse<T>(xhr: XMLHttpRequest, requestId?: string, config?: RequestConfig): Promise<ApiResult<T>> {
     if (xhr.status >= 200 && xhr.status < 300) {
-      const contentType = xhr.getResponseHeader('content-type');
+      const responseType = config?.responseType || 'json';
       let responseData: any;
 
-      if (contentType?.includes('application/json')) {
-        responseData = JSON.parse(xhr.responseText);
-      } else {
-        responseData = xhr.responseText;
+      try {
+        if (responseType === 'blob' || responseType === 'arraybuffer') {
+          responseData = xhr.response;
+        } else if (responseType === 'text') {
+          responseData = xhr.responseText;
+        } else {
+          const contentType = xhr.getResponseHeader('content-type');
+          if (contentType?.includes('application/json')) {
+            responseData = JSON.parse(xhr.responseText);
+          } else {
+            responseData = xhr.responseText;
+          }
+        }
+      } catch (error) {
+        console.error(`[HttpClient] Error parsing XHR response (ID: ${requestId})`, error);
+        throw new ApiError('Error parsing response data', xhr.status, 'PARSE_ERROR');
       }
 
       return {
@@ -368,7 +399,7 @@ export class HttpClient {
     if (error.name === 'AbortError') {
       return new ApiError('Request timeout', 0, 'TIMEOUT_ERROR');
     }
-    
+
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       return new ApiError('Network error occurred', 0, 'NETWORK_ERROR');
     }

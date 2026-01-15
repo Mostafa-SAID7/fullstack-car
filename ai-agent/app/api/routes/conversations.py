@@ -5,7 +5,6 @@ from app.models.schemas import (
     ConversationListResponse,
     CreateConversationRequest
 )
-from app.services import ConversationManager
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 from starlette.requests import Request

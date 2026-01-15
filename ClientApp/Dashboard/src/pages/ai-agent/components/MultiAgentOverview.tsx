@@ -88,7 +88,7 @@ export const MultiAgentOverview: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Conversations"
-          value={metrics.totalConversations.toLocaleString()}
+          value={(metrics?.totalConversations ?? 0).toLocaleString()}
           icon={MessageSquare}
           iconColor="text-blue-500"
           iconBgColor="bg-blue-500/10"
@@ -98,7 +98,7 @@ export const MultiAgentOverview: React.FC = () => {
 
         <MetricCard
           title="Active Agents"
-          value={`${metrics.activeAgents}/${metrics.totalAgents}`}
+          value={`${metrics?.activeAgents ?? 0}/${metrics?.totalAgents ?? 0}`}
           subtitle="Agents online"
           icon={Bot}
           iconColor="text-green-500"
@@ -109,7 +109,7 @@ export const MultiAgentOverview: React.FC = () => {
 
         <MetricCard
           title="Avg Response Time"
-          value={`${metrics.averageResponseTime.toFixed(1)}s`}
+          value={`${(metrics?.averageResponseTime ?? 0).toFixed(1)}s`}
           icon={Zap}
           iconColor="text-purple-500"
           iconBgColor="bg-purple-500/10"
@@ -120,7 +120,7 @@ export const MultiAgentOverview: React.FC = () => {
 
         <MetricCard
           title="Satisfaction Score"
-          value={`${(metrics.satisfactionScore * 100).toFixed(0)}%`}
+          value={`${((metrics?.satisfactionScore ?? 0) * 100).toFixed(0)}%`}
           icon={ThumbsUp}
           iconColor="text-pink-500"
           iconBgColor="bg-pink-500/10"
@@ -155,6 +155,7 @@ export const MultiAgentOverview: React.FC = () => {
               const Icon = AGENT_ICONS[agent.agentType] || Bot;
               const colors = AGENT_COLORS[agent.agentType] || AGENT_COLORS[AgentType.GENERAL];
               const name = AGENT_NAMES[agent.agentType] || agent.agentType;
+              const avgSat = agent.averageSatisfaction ?? 0;
 
               return (
                 <motion.div
@@ -168,40 +169,37 @@ export const MultiAgentOverview: React.FC = () => {
                     <div className={`p-3 rounded-2xl ${colors.bg}`}>
                       <Icon className={`w-6 h-6 ${colors.icon}`} />
                     </div>
-                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-                      agent.isActive
+                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${agent.isActive
                         ? 'bg-green-100 text-green-700'
                         : 'bg-red-100 text-red-700'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${
-                        agent.isActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-                      }`} />
+                      }`}>
+                      <div className={`w-2 h-2 rounded-full ${agent.isActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                        }`} />
                       {agent.isActive ? 'Active' : 'Offline'}
                     </div>
                   </div>
 
                   <h4 className="text-lg font-bold mb-1">{name}</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    {agent.totalConversations.toLocaleString()} conversations
+                    {(agent.totalConversations ?? 0).toLocaleString()} conversations
                   </p>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Satisfaction</span>
                       <span className="font-semibold">
-                        {(agent.averageSatisfaction * 100).toFixed(0)}%
+                        {(avgSat * 100).toFixed(0)}%
                       </span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          agent.averageSatisfaction >= 0.8
+                        className={`h-2 rounded-full transition-all duration-300 ${avgSat >= 0.8
                             ? 'bg-green-500'
-                            : agent.averageSatisfaction >= 0.6
-                            ? 'bg-yellow-500'
-                            : 'bg-red-500'
-                        }`}
-                        style={{ width: `${agent.averageSatisfaction * 100}%` }}
+                            : avgSat >= 0.6
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500'
+                          }`}
+                        style={{ width: `${avgSat * 100}%` }}
                       />
                     </div>
 
@@ -242,7 +240,7 @@ export const MultiAgentOverview: React.FC = () => {
               <Zap className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{metrics.activeConversations}</p>
+              <p className="text-2xl font-bold">{metrics?.activeConversations ?? 0}</p>
               <p className="text-sm text-muted-foreground">Active Now</p>
             </div>
           </div>
@@ -253,7 +251,7 @@ export const MultiAgentOverview: React.FC = () => {
             </div>
             <div>
               <p className="text-2xl font-bold">
-                {Math.floor(metrics.totalConversations / 30)}/day
+                {Math.floor((metrics?.totalConversations ?? 0) / 30)}/day
               </p>
               <p className="text-sm text-muted-foreground">Avg Daily</p>
             </div>

@@ -15,10 +15,12 @@ logger = logging.getLogger(__name__)
 class LLMClient:
     """Enhanced LLM client with retry, fallback, and caching"""
     
+    # Class-level shared resources
+    primary_pipeline = None
+    tokenizer = None
+    openai_client = None
+    
     def __init__(self):
-        self.primary_pipeline = None
-        self.openai_client = None
-        self.tokenizer = None
         self.max_retries = 3
         self.backoff_factor = 2.0
         self.cache_ttl = 604800  # 7 days in seconds
@@ -32,16 +34,18 @@ class LLMClient:
             'gpt-4': 0.03 / 1000  # $0.03 per 1K tokens
         }
     
-    def set_primary_pipeline(self, pipeline, tokenizer):
+    @classmethod
+    def set_primary_pipeline(cls, pipeline, tokenizer):
         """Set the primary local model pipeline"""
-        self.primary_pipeline = pipeline
-        self.tokenizer = tokenizer
-        logger.info("Primary LLM pipeline set")
+        cls.primary_pipeline = pipeline
+        cls.tokenizer = tokenizer
+        logger.info("Primary LLM pipeline set globally")
     
-    def set_openai_client(self, client):
+    @classmethod
+    def set_openai_client(cls, client):
         """Set OpenAI client for fallback"""
-        self.openai_client = client
-        logger.info("OpenAI fallback client set")
+        cls.openai_client = client
+        logger.info("OpenAI fallback client set globally")
     
     async def generate(
         self,

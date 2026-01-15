@@ -33,7 +33,7 @@ export const ConversationChart: React.FC<ConversationChartProps> = ({ dateRange 
   const getDateRangeParams = () => {
     const endDate = new Date().toISOString();
     let startDate = new Date();
-    
+
     switch (dateRange) {
       case '7d':
         startDate.setDate(startDate.getDate() - 7);
@@ -47,7 +47,7 @@ export const ConversationChart: React.FC<ConversationChartProps> = ({ dateRange 
       case 'all':
         return {};
     }
-    
+
     return {
       startDate: startDate.toISOString(),
       endDate
@@ -81,9 +81,8 @@ export const ConversationChart: React.FC<ConversationChartProps> = ({ dateRange 
           </div>
         </div>
         {!loading && trend !== 0 && (
-          <div className={`flex items-center gap-1 px-3 py-1 rounded-full ${
-            trend > 0 ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'
-          }`}>
+          <div className={`flex items-center gap-1 px-3 py-1 rounded-full ${trend > 0 ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'
+            }`}>
             {trend > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             <span className="text-sm font-medium">{Math.abs(trend).toFixed(1)}%</span>
           </div>
@@ -102,7 +101,7 @@ export const ConversationChart: React.FC<ConversationChartProps> = ({ dateRange 
             {data.counts.map((count: number, index: number) => {
               const maxCount = Math.max(...data.counts);
               const height = (count / maxCount) * 100;
-              
+
               return (
                 <div key={index} className="flex-1 flex flex-col items-center gap-2">
                   <div className="w-full flex items-end justify-center" style={{ height: '200px' }}>
@@ -140,7 +139,7 @@ export const ConversationChart: React.FC<ConversationChartProps> = ({ dateRange 
           <div>
             <p className="text-sm text-muted-foreground mb-1">Total Conversations</p>
             <p className="text-xl font-bold">
-              {data.counts.reduce((a: number, b: number) => a + b, 0).toLocaleString()}
+              {(data?.counts || []).reduce((a: number, b: number) => a + b, 0).toLocaleString()}
             </p>
           </div>
           <div>

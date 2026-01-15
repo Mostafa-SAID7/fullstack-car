@@ -24,7 +24,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     isSubmitting = false;
     currentUser: any;
     validationMessages: { [key: string]: string } = {};
-    
+
     private destroy$ = new Subject<void>();
 
     constructor(
@@ -61,7 +61,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
             // Load posts feature translations for the current language
             const currentLanguage = this.translationService.getCurrentLanguage().code;
             await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'posts');
-            
+
             // Set up validation messages
             this.setupValidationMessages();
         } catch (error) {
@@ -94,8 +94,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     getFieldErrors(fieldName: string): string[] {
         const field = this.postForm.get(fieldName);
         if (!field || !field.errors) return [];
-        
-        return Object.keys(field.errors).map(errorType => 
+
+        return Object.keys(field.errors).map(errorType =>
             this.getValidationMessage(fieldName, errorType)
         );
     }
@@ -109,8 +109,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
             this.isSubmitting = true;
             this.postService.createPost(this.postForm.value).subscribe({
                 next: (result) => {
-                    if (result.succeeded) {
-                        this.postCreated.emit(result.data);
+                    if (result.succeeded && result.data) {
+                        this.postCreated.emit(result.data as Post);
                         this.postForm.reset({ type: 0 });
                         this.isExpanded = false;
                     }

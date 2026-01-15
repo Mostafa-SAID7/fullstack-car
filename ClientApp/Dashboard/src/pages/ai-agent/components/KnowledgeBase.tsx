@@ -45,7 +45,7 @@ export const KnowledgeBase: React.FC = () => {
         verified: showVerifiedOnly || undefined,
         limit: 100
       });
-      setEntries(response.results);
+      setEntries(response?.results || []);
     } catch (error) {
       console.error('Error loading entries:', error);
       toastError('Failed to load knowledge entries');
@@ -57,7 +57,9 @@ export const KnowledgeBase: React.FC = () => {
   const loadStats = async () => {
     try {
       const statsData = await knowledgeService.getStats();
-      setStats(statsData);
+      if (statsData) {
+        setStats(statsData);
+      }
     } catch (error) {
       console.error('Error loading stats:', error);
     }
@@ -159,7 +161,7 @@ export const KnowledgeBase: React.FC = () => {
             <div className="p-2 rounded-lg bg-blue-500/10">
               <Database className="w-5 h-5 text-blue-500" />
             </div>
-            <h3 className="text-2xl font-bold">{stats.total}</h3>
+            <h3 className="text-2xl font-bold">{stats?.total ?? 0}</h3>
           </div>
           <p className="text-sm text-muted-foreground">Total Entries</p>
         </motion.div>
@@ -174,7 +176,7 @@ export const KnowledgeBase: React.FC = () => {
             <div className="p-2 rounded-lg bg-green-500/10">
               <CheckCircle className="w-5 h-5 text-green-500" />
             </div>
-            <h3 className="text-2xl font-bold">{stats.verified}</h3>
+            <h3 className="text-2xl font-bold">{stats?.verified ?? 0}</h3>
           </div>
           <p className="text-sm text-muted-foreground">Verified Entries</p>
         </motion.div>
@@ -189,7 +191,7 @@ export const KnowledgeBase: React.FC = () => {
             <div className="p-2 rounded-lg bg-orange-500/10">
               <AlertCircle className="w-5 h-5 text-orange-500" />
             </div>
-            <h3 className="text-2xl font-bold">{stats.total - stats.verified}</h3>
+            <h3 className="text-2xl font-bold">{(stats?.total ?? 0) - (stats?.verified ?? 0)}</h3>
           </div>
           <p className="text-sm text-muted-foreground">Pending Verification</p>
         </motion.div>
@@ -237,11 +239,10 @@ export const KnowledgeBase: React.FC = () => {
           {/* Verified Filter */}
           <button
             onClick={() => setShowVerifiedOnly(!showVerifiedOnly)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-              showVerifiedOnly
-                ? 'bg-green-500/10 border-green-500/50 text-green-600'
-                : 'bg-background border-border hover:bg-muted/50'
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${showVerifiedOnly
+              ? 'bg-green-500/10 border-green-500/50 text-green-600'
+              : 'bg-background border-border hover:bg-muted/50'
+              }`}
           >
             <CheckCircle className="w-4 h-4" />
             Verified Only
@@ -251,6 +252,7 @@ export const KnowledgeBase: React.FC = () => {
           <button
             onClick={loadEntries}
             disabled={loading}
+            aria-label="Refresh entries"
             className="flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-lg hover:bg-muted/50 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />

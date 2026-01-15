@@ -54,9 +54,8 @@ class LearningSystem:
     """
     
     def __init__(self):
-        self.feedback_repo = FeedbackRepository()
-        self.analytics_repo = AnalyticsRepository()
-        self.knowledge_base = KnowledgeBase()
+        # Don't initialize repositories here - they need db session per request
+        self._knowledge_base = None
         
         # Learning statistics
         self.stats = {
@@ -68,6 +67,13 @@ class LearningSystem:
         }
         
         logger.info("LearningSystem initialized")
+    
+    @property
+    def knowledge_base(self):
+        """Lazy load knowledge base"""
+        if self._knowledge_base is None:
+            self._knowledge_base = KnowledgeBase()
+        return self._knowledge_base
     
     async def record_feedback(
         self,
@@ -101,21 +107,27 @@ class LearningSystem:
         )
         
         # Save to database
-        await self.feedback_repo.save(feedback)
-        
-        # Update statistics
-        self.stats['total_feedback'] += 1
-        if feedback_type == FeedbackType.POSITIVE:
-            self.stats['positive_feedback'] += 1
-        elif feedback_type == FeedbackType.NEGATIVE:
-            self.stats['negative_feedback'] += 1
-        
-        # Process correction immediately
-        if feedback_type == FeedbackType.CORRECTION:
-            await self._process_correction(feedback)
-        
-        logger.info(f"Feedback recorded: {feedback.id}")
-        return feedback.id
+        from app.core.database import get_db
+        db = next(get_db())
+        try:
+            feedback_repo = FeedbackRepository(db)
+            feedback_repo.create(feedback)
+            
+            # Update statistics
+            self.stats['total_feedback'] += 1
+            if feedback_type == FeedbackType.POSITIVE:
+                self.stats['positive_feedback'] += 1
+            elif feedback_type == FeedbackType.NEGATIVE:
+                self.stats['negative_feedback'] += 1
+            
+            # Process correction immediately
+            if feedback_type == FeedbackType.CORRECTION:
+                await self._process_correction(feedback)
+            
+            logger.info(f"Feedback recorded: {feedback.id}")
+            return feedback.id
+        finally:
+            db.close()
     
     async def _process_correction(self, feedback: Feedback) -> None:
         """
@@ -199,28 +211,34 @@ class LearningSystem:
         period_start = period_end - timedelta(days=days)
         
         # Get recent feedback
-        recent_feedback = await self.feedback_repo.get_recent(days=days)
-        
-        # Identify negative patterns
-        negative_patterns = self._identify_negative_patterns(recent_feedback)
-        
-        # Identify knowledge gaps
-        knowledge_gaps = self._identify_knowledge_gaps(recent_feedback)
-        
-        # Generate improvement suggestions
-        suggestions = self._generate_suggestions(negative_patterns, knowledge_gaps)
-        
-        report = LearningReport(
-            negative_patterns=negative_patterns,
-            knowledge_gaps=knowledge_gaps,
-            suggestions=suggestions,
-            period_start=period_start,
-            period_end=period_end
-        )
-        
-        logger.info(f"Analysis complete: {len(negative_patterns)} patterns, {len(knowledge_gaps)} gaps, {len(suggestions)} suggestions")
-        
-        return report
+        from app.core.database import get_db
+        db = next(get_db())
+        try:
+            feedback_repo = FeedbackRepository(db)
+            recent_feedback = feedback_repo.get_recent(days=days, limit=1000)
+            
+            # Identify negative patterns
+            negative_patterns = self._identify_negative_patterns(recent_feedback)
+            
+            # Identify knowledge gaps
+            knowledge_gaps = self._identify_knowledge_gaps(recent_feedback)
+            
+            # Generate improvement suggestions
+            suggestions = self._generate_suggestions(negative_patterns, knowledge_gaps)
+            
+            report = LearningReport(
+                negative_patterns=negative_patterns,
+                knowledge_gaps=knowledge_gaps,
+                suggestions=suggestions,
+                period_start=period_start,
+                period_end=period_end
+            )
+            
+            logger.info(f"Analysis complete: {len(negative_patterns)} patterns, {len(knowledge_gaps)} gaps, {len(suggestions)} suggestions")
+            
+            return report
+        finally:
+            db.close()
     
     def _identify_negative_patterns(
         self,
@@ -358,37 +376,43 @@ class LearningSystem:
         logger.info(f"Getting feedback analytics for last {days} days")
         
         # Get recent feedback
-        recent_feedback = await self.feedback_repo.get_recent(days=days)
-        
-        # Calculate metrics
-        total = len(recent_feedback)
-        positive = sum(1 for f in recent_feedback if f.type == FeedbackType.POSITIVE)
-        negative = sum(1 for f in recent_feedback if f.type == FeedbackType.NEGATIVE)
-        corrections = sum(1 for f in recent_feedback if f.type == FeedbackType.CORRECTION)
-        
-        # Calculate satisfaction rate
-        satisfaction_rate = (positive / total * 100) if total > 0 else 0
-        
-        # Group by conversation
-        conversations = set(f.conversation_id for f in recent_feedback)
-        
-        # Group by date
-        feedback_by_date: Dict[str, int] = {}
-        for feedback in recent_feedback:
-            date_key = feedback.timestamp.date().isoformat()
-            feedback_by_date[date_key] = feedback_by_date.get(date_key, 0) + 1
-        
-        return {
-            'period_days': days,
-            'total_feedback': total,
-            'positive_count': positive,
-            'negative_count': negative,
-            'corrections_count': corrections,
-            'satisfaction_rate': round(satisfaction_rate, 2),
-            'unique_conversations': len(conversations),
-            'feedback_by_date': feedback_by_date,
-            'average_per_day': round(total / days, 2) if days > 0 else 0
-        }
+        from app.core.database import get_db
+        db = next(get_db())
+        try:
+            feedback_repo = FeedbackRepository(db)
+            recent_feedback = feedback_repo.get_recent(days=days, limit=10000)
+            
+            # Calculate metrics
+            total = len(recent_feedback)
+            positive = sum(1 for f in recent_feedback if f.type == FeedbackType.POSITIVE)
+            negative = sum(1 for f in recent_feedback if f.type == FeedbackType.NEGATIVE)
+            corrections = sum(1 for f in recent_feedback if f.type == FeedbackType.CORRECTION)
+            
+            # Calculate satisfaction rate
+            satisfaction_rate = (positive / total * 100) if total > 0 else 0
+            
+            # Group by conversation
+            conversations = set(f.conversation_id for f in recent_feedback)
+            
+            # Group by date
+            feedback_by_date: Dict[str, int] = {}
+            for feedback in recent_feedback:
+                date_key = feedback.timestamp.date().isoformat()
+                feedback_by_date[date_key] = feedback_by_date.get(date_key, 0) + 1
+            
+            return {
+                'period_days': days,
+                'total_feedback': total,
+                'positive_count': positive,
+                'negative_count': negative,
+                'corrections_count': corrections,
+                'satisfaction_rate': round(satisfaction_rate, 2),
+                'unique_conversations': len(conversations),
+                'feedback_by_date': feedback_by_date,
+                'average_per_day': round(total / days, 2) if days > 0 else 0
+            }
+        finally:
+            db.close()
     
     async def get_learning_progress(self) -> Dict[str, Any]:
         """Get overall learning progress metrics"""
@@ -434,32 +458,38 @@ class LearningSystem:
         logger.info(f"Exporting corrections for last {days} days")
         
         # Get corrections from feedback
-        recent_feedback = await self.feedback_repo.get_recent(days=days)
-        corrections = [
-            f for f in recent_feedback 
-            if f.type == FeedbackType.CORRECTION
-        ]
-        
-        # Format for export
-        export_data = []
-        for correction in corrections:
-            data = {
-                'id': correction.id,
-                'conversation_id': correction.conversation_id,
-                'message_id': correction.message_id,
-                'timestamp': correction.timestamp.isoformat(),
-                'query': correction.data.get('query', ''),
-                'correction': correction.data.get('correction', ''),
-                'original_response': correction.data.get('response', ''),
-                'category': correction.data.get('category', 'general'),
-                'verified': correction.data.get('verified', False)
-            }
+        from app.core.database import get_db
+        db = next(get_db())
+        try:
+            feedback_repo = FeedbackRepository(db)
+            recent_feedback = feedback_repo.get_recent(days=days, limit=10000)
+            corrections = [
+                f for f in recent_feedback 
+                if f.type == FeedbackType.CORRECTION
+            ]
             
-            if not verified_only or data['verified']:
-                export_data.append(data)
-        
-        logger.info(f"Exported {len(export_data)} corrections")
-        return export_data
+            # Format for export
+            export_data = []
+            for correction in corrections:
+                data = {
+                    'id': correction.id,
+                    'conversation_id': correction.conversation_id,
+                    'message_id': correction.message_id,
+                    'timestamp': correction.timestamp.isoformat(),
+                    'query': correction.data.get('query', ''),
+                    'correction': correction.data.get('correction', ''),
+                    'original_response': correction.data.get('response', ''),
+                    'category': correction.data.get('category', 'general'),
+                    'verified': correction.data.get('verified', False)
+                }
+                
+                if not verified_only or data['verified']:
+                    export_data.append(data)
+            
+            logger.info(f"Exported {len(export_data)} corrections")
+            return export_data
+        finally:
+            db.close()
     
     def get_stats(self) -> Dict[str, Any]:
         """Get learning system statistics"""

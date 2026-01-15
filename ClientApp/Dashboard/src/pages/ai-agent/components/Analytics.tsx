@@ -47,7 +47,7 @@ export const Analytics: React.FC = () => {
   const getDateRangeParams = () => {
     const endDate = new Date().toISOString();
     let startDate = new Date();
-    
+
     switch (dateRange) {
       case '7d':
         startDate.setDate(startDate.getDate() - 7);
@@ -61,7 +61,7 @@ export const Analytics: React.FC = () => {
       case 'all':
         return {};
     }
-    
+
     return {
       startDate: startDate.toISOString(),
       endDate
@@ -73,7 +73,7 @@ export const Analytics: React.FC = () => {
       setExporting(true);
       const params = getDateRangeParams();
       const blob = await analyticsService.exportAnalytics(format, params);
-      
+
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -83,7 +83,7 @@ export const Analytics: React.FC = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      
+
       toast.success(`Analytics exported as ${format.toUpperCase()}`);
     } catch (error) {
       console.error('Error exporting analytics:', error);
@@ -162,11 +162,11 @@ export const Analytics: React.FC = () => {
               <div className="p-2 rounded-lg bg-blue-500/10">
                 <MessageSquare className="w-5 h-5 text-blue-500" />
               </div>
-              <h3 className="text-2xl font-bold">{overview.totalConversations.toLocaleString()}</h3>
+              <h3 className="text-2xl font-bold">{(overview.totalConversations ?? 0).toLocaleString()}</h3>
             </div>
             <p className="text-sm text-muted-foreground">Total Conversations</p>
             <p className="text-xs text-green-600 mt-1">
-              {overview.activeConversations} active
+              {overview.activeConversations ?? 0} active
             </p>
           </motion.div>
 
@@ -180,11 +180,11 @@ export const Analytics: React.FC = () => {
               <div className="p-2 rounded-lg bg-green-500/10">
                 <TrendingUp className="w-5 h-5 text-green-500" />
               </div>
-              <h3 className="text-2xl font-bold">{overview.satisfactionScore.toFixed(1)}%</h3>
+              <h3 className="text-2xl font-bold">{(overview.satisfactionScore ?? 0).toFixed(1)}%</h3>
             </div>
             <p className="text-sm text-muted-foreground">Satisfaction Score</p>
             <p className="text-xs text-muted-foreground mt-1">
-              {overview.averageResponseTime.toFixed(0)}ms avg response
+              {(overview.averageResponseTime ?? 0).toFixed(0)}ms avg response
             </p>
           </motion.div>
 
@@ -198,11 +198,11 @@ export const Analytics: React.FC = () => {
               <div className="p-2 rounded-lg bg-purple-500/10">
                 <DollarSign className="w-5 h-5 text-purple-500" />
               </div>
-              <h3 className="text-2xl font-bold">${(overview.tokensUsed * 0.00001).toFixed(2)}</h3>
+              <h3 className="text-2xl font-bold">${((overview.tokensUsed ?? 0) * 0.00001).toFixed(2)}</h3>
             </div>
             <p className="text-sm text-muted-foreground">Estimated Cost</p>
             <p className="text-xs text-muted-foreground mt-1">
-              {overview.tokensUsed.toLocaleString()} tokens
+              {(overview.tokensUsed ?? 0).toLocaleString()} tokens
             </p>
           </motion.div>
 
@@ -216,11 +216,11 @@ export const Analytics: React.FC = () => {
               <div className="p-2 rounded-lg bg-orange-500/10">
                 <Users className="w-5 h-5 text-orange-500" />
               </div>
-              <h3 className="text-2xl font-bold">{overview.uptime.toFixed(1)}%</h3>
+              <h3 className="text-2xl font-bold">{(overview.uptime ?? 0).toFixed(1)}%</h3>
             </div>
             <p className="text-sm text-muted-foreground">System Uptime</p>
             <p className="text-xs text-red-600 mt-1">
-              {overview.errorRate.toFixed(2)}% error rate
+              {(overview.errorRate ?? 0).toFixed(2)}% error rate
             </p>
           </motion.div>
         </div>

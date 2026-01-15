@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Any
 from app.models.schemas import ChatRequest, ChatResponse, AgentType
-from app.services import AgentRouter, ConversationManager
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 from starlette.requests import Request
@@ -23,9 +22,13 @@ async def chat(chat_request: ChatRequest, request: Request, db: Session = Depend
     - Message history context
     """
     try:
+        # Initialize services if not already done
+        from main import get_services
+        get_services()
+        
         # Get services from app state
-        agent_router: AgentRouter = request.app.state.agent_router
-        conversation_manager: ConversationManager = request.app.state.conversation_manager
+        agent_router = request.app.state.agent_router
+        conversation_manager = request.app.state.conversation_manager
         
         # Get or create conversation
         conversation_id = chat_request.conversation_id
@@ -58,11 +61,19 @@ async def chat(chat_request: ChatRequest, request: Request, db: Session = Depend
         
         # Add assistant message to conversation
         message_id = str(uuid.uuid4())
+        
+        # Get agent type safely from metadata or default to GENERAL
+        agent_type_str = agent_response.metadata.get('agent_type', 'general')
+        try:
+            agent_type_enum = AgentType(agent_type_str)
+        except ValueError:
+            agent_type_enum = AgentType.GENERAL
+            
         await conversation_manager.add_message(
             conversation_id=conversation_id,
             role="assistant",
             content=agent_response.text,
-            agent_type=AgentType(agent_response.agent),
+            agent_type=agent_type_enum,
             metadata=agent_response.metadata
         )
         

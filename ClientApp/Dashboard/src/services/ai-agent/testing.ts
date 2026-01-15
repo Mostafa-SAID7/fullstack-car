@@ -1,6 +1,7 @@
 // AI Agent Testing Service
 
 import { apiClient } from '../api';
+import { ENV } from '../../config/environment';
 import type { AgentType } from '../../types/ai-agent';
 
 export interface TestScenario {
@@ -63,7 +64,7 @@ export class AIAgentTestingService {
     message: string,
     context?: Record<string, any>
   ): Promise<TestResult> {
-    const response = await apiClient.post('/api/agents/test', {
+    const response = await apiClient.post(`${ENV.AI_AGENT_URL}/agents/test`, {
       agent_type: agentType,
       message,
       context
@@ -75,7 +76,7 @@ export class AIAgentTestingService {
    * Get all test scenarios
    */
   async listScenarios(): Promise<TestScenario[]> {
-    const response = await apiClient.get('/api/agents/test/scenarios');
+    const response = await apiClient.get(`${ENV.AI_AGENT_URL}/agents/test/scenarios`);
     return response.data as any as TestScenario[];
   }
 
@@ -83,7 +84,7 @@ export class AIAgentTestingService {
    * Create a new test scenario
    */
   async createScenario(scenario: Omit<TestScenario, 'id' | 'createdAt'>): Promise<TestScenario> {
-    const response = await apiClient.post('/api/agents/test/scenarios', scenario);
+    const response = await apiClient.post(`${ENV.AI_AGENT_URL}/agents/test/scenarios`, scenario);
     return response.data as any as TestScenario;
   }
 
@@ -91,7 +92,7 @@ export class AIAgentTestingService {
    * Update a test scenario
    */
   async updateScenario(id: string, updates: Partial<TestScenario>): Promise<TestScenario> {
-    const response = await apiClient.put(`/api/agents/test/scenarios/${id}`, updates);
+    const response = await apiClient.put(`${ENV.AI_AGENT_URL}/agents/test/scenarios/${id}`, updates);
     return response.data as any as TestScenario;
   }
 
@@ -99,14 +100,14 @@ export class AIAgentTestingService {
    * Delete a test scenario
    */
   async deleteScenario(id: string): Promise<void> {
-    await apiClient.delete(`/api/agents/test/scenarios/${id}`);
+    await apiClient.delete(`${ENV.AI_AGENT_URL}/agents/test/scenarios/${id}`);
   }
 
   /**
    * Run a test scenario
    */
   async runScenario(scenarioId: string): Promise<TestResult> {
-    const response = await apiClient.post(`/api/agents/test/scenarios/${scenarioId}/run`);
+    const response = await apiClient.post(`${ENV.AI_AGENT_URL}/agents/test/scenarios/${scenarioId}/run`);
     return response.data as any as TestResult;
   }
 
@@ -114,7 +115,7 @@ export class AIAgentTestingService {
    * Get test history
    */
   async getTestHistory(limit: number = 50): Promise<TestResult[]> {
-    const response = await apiClient.get('/api/agents/test/history', {
+    const response = await apiClient.get(`${ENV.AI_AGENT_URL}/agents/test/history`, {
       params: { limit }
     });
     return response.data as any as TestResult[];
@@ -124,7 +125,7 @@ export class AIAgentTestingService {
    * Run A/B test
    */
   async runABTest(config: ABTestConfig): Promise<ABTestResult> {
-    const response = await apiClient.post('/api/agents/test/ab-test', config);
+    const response = await apiClient.post(`${ENV.AI_AGENT_URL}/agents/test/ab-test`, config);
     return response.data as any as ABTestResult;
   }
 
@@ -132,7 +133,7 @@ export class AIAgentTestingService {
    * Get A/B test results
    */
   async getABTestResults(limit: number = 20): Promise<ABTestResult[]> {
-    const response = await apiClient.get('/api/agents/test/ab-test/results', {
+    const response = await apiClient.get(`${ENV.AI_AGENT_URL}/agents/test/ab-test/results`, {
       params: { limit }
     });
     return response.data as any as ABTestResult[];
@@ -142,7 +143,7 @@ export class AIAgentTestingService {
    * Delete A/B test result
    */
   async deleteABTestResult(id: string): Promise<void> {
-    await apiClient.delete(`/api/agents/test/ab-test/results/${id}`);
+    await apiClient.delete(`${ENV.AI_AGENT_URL}/agents/test/ab-test/results/${id}`);
   }
 }
 

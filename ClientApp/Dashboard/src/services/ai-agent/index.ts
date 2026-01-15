@@ -3,10 +3,9 @@
 import { AIAgentChatService } from './chat';
 import { AIAgentTrainingService } from './training';
 import { AIAgentModelsService } from './models';
-import { AIAgentKnowledgeService } from './knowledge';
+import { KnowledgeService } from './knowledge';
 import { AIAgentManagementService } from './agents';
 import { AIConversationsService } from './conversations';
-import { KnowledgeService } from './knowledge';
 import { AIAgentAnalyticsService } from './analytics';
 import { AIAgentFeedbackService } from './feedback';
 
@@ -14,10 +13,9 @@ import { AIAgentFeedbackService } from './feedback';
 export { AIAgentChatService } from './chat';
 export { AIAgentTrainingService, trainingService } from './training';
 export { AIAgentModelsService } from './models';
-export { AIAgentKnowledgeService } from './knowledge';
+export { KnowledgeService, knowledgeService } from './knowledge';
 export { AIAgentManagementService, agentManagementService } from './agents';
 export { AIConversationsService, conversationsService } from './conversations';
-export { KnowledgeService, knowledgeService } from './knowledge';
 export { AIAgentAnalyticsService, analyticsService } from './analytics';
 export { AIAgentFeedbackService, feedbackService } from './feedback';
 
@@ -58,7 +56,7 @@ export class AIAgentService {
   private chatService: AIAgentChatService;
   private trainingService: AIAgentTrainingService;
   private modelsService: AIAgentModelsService;
-  private knowledgeService: AIAgentKnowledgeService;
+  private knowledgeService: KnowledgeService;
   public agentManagement: AIAgentManagementService;
   public conversations: AIConversationsService;
 
@@ -66,7 +64,7 @@ export class AIAgentService {
     this.chatService = new AIAgentChatService();
     this.trainingService = new AIAgentTrainingService();
     this.modelsService = new AIAgentModelsService();
-    this.knowledgeService = new AIAgentKnowledgeService();
+    this.knowledgeService = new KnowledgeService();
     this.agentManagement = new AIAgentManagementService();
     this.conversations = new AIConversationsService();
   }
@@ -113,19 +111,19 @@ export class AIAgentService {
   }
 
   async trainAgent(data: any): Promise<any> {
-    return this.trainingService.trainAgent(data);
+    return this.trainingService.startTraining(data);
   }
 
   async startTraining(config: any): Promise<any> {
-    return this.trainingService.trainAgent(config);
+    return this.trainingService.startTraining(config);
   }
 
-  async getTrainingStatus(trainingId?: string): Promise<any> {
-    return this.trainingService.getTrainingStatus(trainingId || 'current');
+  async getTrainingStatus(trainingId: string): Promise<any> {
+    return this.trainingService.getTrainingSession(trainingId);
   }
 
-  async stopTraining(trainingId?: string): Promise<any> {
-    return this.trainingService.stopTraining(trainingId || 'current');
+  async stopTraining(trainingId: string): Promise<any> {
+    return this.trainingService.stopTraining(trainingId);
   }
 
   // Model Methods
@@ -143,15 +141,16 @@ export class AIAgentService {
 
   // Knowledge Base Methods
   async uploadKnowledge(file: File, metadata?: any): Promise<any> {
-    return this.knowledgeService.uploadKnowledge(file, metadata);
+    const category = metadata?.category || 'general';
+    return this.knowledgeService.uploadDocument(file, category);
   }
 
   async getKnowledgeBase(): Promise<any> {
-    return this.knowledgeService.getKnowledgeBase();
+    return this.knowledgeService.search({});
   }
 
   async deleteKnowledge(knowledgeId: string): Promise<any> {
-    return this.knowledgeService.deleteKnowledge(knowledgeId);
+    return this.knowledgeService.deleteEntry(knowledgeId);
   }
 
   // Utility Methods

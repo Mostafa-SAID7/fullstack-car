@@ -10,6 +10,7 @@ except ImportError:
     chromadb = None
     Settings = None
 
+import asyncio
 from typing import List, Optional, Dict, Any
 from app.core.config import settings
 from app.models.schemas import KnowledgeEntry, KnowledgeCategory, Document
@@ -25,11 +26,18 @@ class KnowledgeBase:
     def __init__(self, embedding_service: Optional[EmbeddingService] = None):
         self.client: Optional[Any] = None
         self.collection = None
-        self.embedding_service = embedding_service or EmbeddingService()
+        self._embedding_service = embedding_service
         self.initialized = False
         
         if not CHROMADB_AVAILABLE:
             logger.warning("ChromaDB not available. Knowledge base will use fallback mode.")
+    
+    @property
+    def embedding_service(self):
+        """Lazy load embedding service"""
+        if self._embedding_service is None:
+            self._embedding_service = EmbeddingService()
+        return self._embedding_service
     
     async def initialize(self):
         """Initialize ChromaDB client and collection"""
@@ -117,33 +125,57 @@ class KnowledgeBase:
     async def search(
         self, 
         query: str, 
-        category: Optional[str] = None,
+        category: Optional[KnowledgeCategory] = None,
         limit: int = 5,
-        min_score: float = 0.7
+        min_score: float = 0.7,
+        use_cache: bool = True
     ) -> List[KnowledgeEntry]:
         """
-        Search knowledge base using semantic similarity.
+        Search knowledge base using semantic similarity with caching.
         
         Args:
             query: Search query text
             category: Optional category filter
             limit: Maximum number of results
             min_score: Minimum similarity score (0-1)
+            use_cache: Whether to use cached results
             
         Returns:
             List of relevant knowledge entries with scores
         """
-        if not self.initialized:
-            await self.initialize()
+        if not CHROMADB_AVAILABLE or not self.initialized:
+            logger.warning("Knowledge base not available. Returning empty results.")
+            return []
         
         try:
+            # Check cache first
+            if use_cache:
+                from app.core.cache import cache_service
+                import hashlib
+                
+                query_hash = hashlib.sha256(query.lower().encode()).hexdigest()
+                cat_value = category.value if category and isinstance(category, KnowledgeCategory) else category
+                
+                cached_results = await cache_service.get_knowledge_search(
+                    query_hash,
+                    cat_value
+                )
+                
+                if cached_results:
+                    logger.info(f"Returning cached search results for '{query}'")
+                    # Convert cached dicts back to KnowledgeEntry objects
+                    return [
+                        KnowledgeEntry(**entry) for entry in cached_results
+                    ]
+            
             # Generate query embedding
-            query_embedding = await self.embedding_service.generate_embedding(query)
+            query_embedding = self.embedding_service.generate_embedding(query)
             
             # Build where filter for category
             where_filter = None
             if category:
-                where_filter = {"category": category}
+                cat_value = category.value if isinstance(category, KnowledgeCategory) else category
+                where_filter = {"category": cat_value}
             
             # Search ChromaDB
             results = self.collection.query(
@@ -173,6 +205,22 @@ class KnowledgeBase:
                         )
                         entries.append(entry)
             
+            # Cache the results
+            if use_cache and entries:
+                from app.core.cache import cache_service
+                import hashlib
+                
+                query_hash = hashlib.sha256(query.lower().encode()).hexdigest()
+                cat_value = category.value if category and isinstance(category, KnowledgeCategory) else category
+                
+                # Convert entries to dicts for caching
+                cached_data = [entry.dict() for entry in entries]
+                await cache_service.set_knowledge_search(
+                    query_hash,
+                    cached_data,
+                    cat_value
+                )
+            
             logger.info(f"Search for '{query}' returned {len(entries)} results")
             return entries
             
@@ -180,10 +228,11 @@ class KnowledgeBase:
             logger.error(f"Error searching knowledge base: {e}")
             return []
     
-    async def update_knowledge(
+    def update_knowledge(
         self,
         entry_id: str,
         content: Optional[str] = None,
+        category: Optional[KnowledgeCategory] = None,
         metadata: Optional[Dict[str, Any]] = None
     ) -> bool:
         """
@@ -192,13 +241,15 @@ class KnowledgeBase:
         Args:
             entry_id: ID of the entry to update
             content: New content (will regenerate embedding)
+            category: New category
             metadata: New metadata
             
         Returns:
             True if successful, False otherwise
         """
-        if not self.initialized:
-            await self.initialize()
+        if not CHROMADB_AVAILABLE or not self.initialized:
+            logger.warning("Knowledge base not available. Update skipped.")
+            return False
         
         try:
             # Get existing entry
@@ -213,14 +264,17 @@ class KnowledgeBase:
             
             if content:
                 # Generate new embedding
-                embedding = await self.embedding_service.generate_embedding(content)
+                embedding = self.embedding_service.generate_embedding(content)
                 update_data['embeddings'] = [embedding]
                 update_data['documents'] = [content]
             
-            if metadata:
+            if metadata or category:
                 # Merge with existing metadata
                 existing_metadata = existing['metadatas'][0] if existing['metadatas'] else {}
-                existing_metadata.update(metadata)
+                if metadata:
+                    existing_metadata.update(metadata)
+                if category:
+                    existing_metadata['category'] = category.value if isinstance(category, KnowledgeCategory) else category
                 update_data['metadatas'] = [existing_metadata]
             
             # Update in ChromaDB
@@ -229,6 +283,9 @@ class KnowledgeBase:
                 **update_data
             )
             
+            # Invalidate knowledge search caches
+            asyncio.create_task(self._invalidate_knowledge_caches(category))
+            
             logger.info(f"Updated knowledge entry: {entry_id}")
             return True
             
@@ -236,7 +293,7 @@ class KnowledgeBase:
             logger.error(f"Error updating knowledge: {e}")
             return False
     
-    async def delete_knowledge(self, entry_id: str) -> bool:
+    def delete_knowledge(self, entry_id: str) -> bool:
         """
         Delete a knowledge entry.
         
@@ -246,17 +303,32 @@ class KnowledgeBase:
         Returns:
             True if successful, False otherwise
         """
-        if not self.initialized:
-            await self.initialize()
+        if not CHROMADB_AVAILABLE or not self.initialized:
+            logger.warning("Knowledge base not available. Delete skipped.")
+            return False
         
         try:
             self.collection.delete(ids=[entry_id])
+            
+            # Invalidate knowledge search caches
+            asyncio.create_task(self._invalidate_knowledge_caches())
+            
             logger.info(f"Deleted knowledge entry: {entry_id}")
             return True
             
         except Exception as e:
             logger.error(f"Error deleting knowledge: {e}")
             return False
+    
+    async def _invalidate_knowledge_caches(self, category: Optional[KnowledgeCategory] = None):
+        """Invalidate knowledge search caches after updates"""
+        try:
+            from app.core.cache import cache_service
+            cat_value = category.value if category and isinstance(category, KnowledgeCategory) else None
+            await cache_service.invalidate_knowledge_searches(cat_value)
+            logger.debug(f"Invalidated knowledge search caches for category: {cat_value}")
+        except Exception as e:
+            logger.error(f"Error invalidating knowledge caches: {e}")
     
     async def bulk_import(self, documents: List[Document]) -> int:
         """
@@ -274,11 +346,11 @@ class KnowledgeBase:
         count = 0
         for doc in documents:
             try:
-                metadata = doc.metadata.copy()
-                metadata['category'] = doc.category.value
+                metadata = doc.metadata.copy() if doc.metadata else {}
                 
                 await self.add_knowledge(
                     content=doc.content,
+                    category=doc.category,
                     metadata=metadata
                 )
                 count += 1
@@ -329,15 +401,19 @@ class KnowledgeBase:
             logger.error(f"Error getting entries by category: {e}")
             return []
     
-    async def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> Dict[str, Any]:
         """
         Get statistics about the knowledge base.
         
         Returns:
             Dictionary with statistics
         """
-        if not self.initialized:
-            await self.initialize()
+        if not CHROMADB_AVAILABLE or not self.initialized:
+            return {
+                "total_entries": 0,
+                "categories": {},
+                "status": "unavailable"
+            }
         
         try:
             total_count = self.collection.count()
