@@ -1,0 +1,60 @@
+/**
+ * Test Environment Configuration for Main App (Angular)
+ * Copy this file to environment.test.ts and fill in the values
+ */
+
+export const environment = {
+  production: false,
+  testing: true,
+  
+  // API Configuration
+  apiUrl: 'http://localhost:5000/api',
+  apiVersion: 'v3',
+  
+  // SignalR Configuration
+  signalRHubUrl: 'http://localhost:5000/hubs/marketplace',
+  enableSignalR: true,
+  
+  // Authentication
+  authTokenKey: 'auth_token',
+  refreshTokenKey: 'refresh_token',
+  
+  // Test Configuration
+  testTimeout: 10000,
+  testRetryAttempts: 3,
+  
+  // Feature Flags
+  enableIntegrationTests: true,
+  skipAuthInTests: false,
+  
+  // Logging
+  logLevel: 'debug',
+  logApiRequests: true,
+  
+  // Cache Configuration
+  cacheEnabled: true,
+  cacheTTL: {
+    short: 30000,   // 30 seconds
+    medium: 120000, // 2 minutes
+    long: 300000    // 5 minutes
+  },
+  
+  // Pagination
+  defaultPageSize: 20,
+  maxPageSize: 100,
+  
+  // Search
+  searchDebounceMs: 300,
+  minSearchLength: 2,
+  
+  // Image Loading
+  lazyLoadImages: true,
+  imagePlaceholder: '/assets/images/placeholder.png',
+  
+  // Performance
+  enableVirtualScrolling: false,
+  enableInfiniteScroll: true,
+  
+  // Test Data
+  testServiceProviderId: '00000000-0000-0000-0000-000000000000',
+};

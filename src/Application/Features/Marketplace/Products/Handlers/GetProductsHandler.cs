@@ -273,3 +273,262 @@ public class GetProductStatisticsHandler : IRequestHandler<GetProductStatisticsQ
         }
     }
 }
+
+public class ExportProductsHandler : IRequestHandler<ExportProductsQuery, Result<byte[]>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public ExportProductsHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Result<byte[]>> Handle(ExportProductsQuery request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var query = _context.Products.AsQueryable();
+
+            // Apply filters (same as GetProductsQuery)
+            if (!string.IsNullOrEmpty(request.Search))
+            {
+                var searchLower = request.Search.ToLower();
+                query = query.Where(p => 
+                    p.Name.ToLower().Contains(searchLower) ||
+                    p.SKU.ToLower().Contains(searchLower) ||
+                    p.Brand.ToLower().Contains(searchLower) ||
+                    p.Description.ToLower().Contains(searchLower));
+            }
+
+            if (request.Status.HasValue)
+            {
+                query = query.Where(p => p.Status == request.Status.Value);
+            }
+
+            if (request.Category.HasValue)
+            {
+                query = query.Where(p => p.Category == request.Category.Value);
+            }
+
+            if (!string.IsNullOrEmpty(request.Brand))
+            {
+                query = query.Where(p => p.Brand == request.Brand);
+            }
+
+            if (request.MinPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= request.MinPrice.Value);
+            }
+
+            if (request.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= request.MaxPrice.Value);
+            }
+
+            if (request.IsFeatured.HasValue)
+            {
+                query = query.Where(p => p.IsFeatured == request.IsFeatured.Value);
+            }
+
+            if (request.IsLowStock.HasValue && request.IsLowStock.Value)
+            {
+                query = query.Where(p => p.StockQuantity <= p.MinStockLevel);
+            }
+
+            var products = await query.OrderBy(p => p.Name).ToListAsync(cancellationToken);
+
+            // Generate CSV
+            var csv = new System.Text.StringBuilder();
+            csv.AppendLine("ID,Name,SKU,Brand,Category,Status,Price,Discount Price,Stock,Min Stock,Sales Count,Rating,Created At");
+
+            foreach (var product in products)
+            {
+                csv.AppendLine($"{product.Id},{EscapeCsv(product.Name)},{EscapeCsv(product.SKU)},{EscapeCsv(product.Brand)},{product.Category},{product.Status},{product.Price},{product.DiscountPrice},{product.StockQuantity},{product.MinStockLevel},{product.SalesCount},{product.Rating},{product.CreatedAt:yyyy-MM-dd}");
+            }
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+            return Result<byte[]>.Success(bytes);
+        }
+        catch (Exception ex)
+        {
+            return Result<byte[]>.Failure($"Error exporting products: {ex.Message}");
+        }
+    }
+
+    private string EscapeCsv(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return string.Empty;
+
+        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
+        {
+            return $"\"{value.Replace("\"", "\"\"")}\"";
+        }
+
+        return value;
+    }
+}
+
+public class GetLowStockProductsHandler : IRequestHandler<GetLowStockProductsQuery, Result<List<ProductSummary>>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetLowStockProductsHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Result<List<ProductSummary>>> Handle(GetLowStockProductsQuery request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var products = await _context.Products
+                .Where(p => p.StockQuantity <= request.Threshold && p.Status == ProductStatus.Active)
+                .OrderBy(p => p.StockQuantity)
+                .ToListAsync(cancellationToken);
+
+            var productSummaries = products.Select(p => new ProductSummary
+            {
+                Id = p.Id,
+                Name = p.Name,
+                SKU = p.SKU,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+                StockQuantity = p.StockQuantity,
+                Status = p.Status,
+                StatusName = p.Status.ToString(),
+                Category = p.Category,
+                CategoryName = p.Category.ToString(),
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsFeatured = p.IsFeatured,
+                SalesCount = p.SalesCount,
+                Rating = p.Rating,
+                CreatedAt = p.CreatedAt
+            }).ToList();
+
+            return Result<List<ProductSummary>>.Success(productSummaries);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<ProductSummary>>.Failure($"Error retrieving low stock products: {ex.Message}");
+        }
+    }
+}
+
+public class GetTopSellingProductsHandler : IRequestHandler<GetTopSellingProductsQuery, Result<List<ProductSummary>>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetTopSellingProductsHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Result<List<ProductSummary>>> Handle(GetTopSellingProductsQuery request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var products = await _context.Products
+                .Where(p => p.Status == ProductStatus.Active)
+                .OrderByDescending(p => p.SalesCount)
+                .Take(request.Limit)
+                .ToListAsync(cancellationToken);
+
+            var productSummaries = products.Select(p => new ProductSummary
+            {
+                Id = p.Id,
+                Name = p.Name,
+                SKU = p.SKU,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+                StockQuantity = p.StockQuantity,
+                Status = p.Status,
+                StatusName = p.Status.ToString(),
+                Category = p.Category,
+                CategoryName = p.Category.ToString(),
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsFeatured = p.IsFeatured,
+                SalesCount = p.SalesCount,
+                Rating = p.Rating,
+                CreatedAt = p.CreatedAt
+            }).ToList();
+
+            return Result<List<ProductSummary>>.Success(productSummaries);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<ProductSummary>>.Failure($"Error retrieving top selling products: {ex.Message}");
+        }
+    }
+}
+
+public class SearchProductsHandler : IRequestHandler<SearchProductsQuery, Result<List<ProductSummary>>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public SearchProductsHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Result<List<ProductSummary>>> Handle(SearchProductsQuery request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.SearchTerm))
+            {
+                var searchLower = request.SearchTerm.ToLower();
+                query = query.Where(p => 
+                    p.Name.ToLower().Contains(searchLower) ||
+                    p.SKU.ToLower().Contains(searchLower) ||
+                    p.Brand.ToLower().Contains(searchLower) ||
+                    p.Description.ToLower().Contains(searchLower));
+            }
+
+            if (request.Category.HasValue)
+            {
+                query = query.Where(p => p.Category == request.Category.Value);
+            }
+
+            if (request.Status.HasValue)
+            {
+                query = query.Where(p => p.Status == request.Status.Value);
+            }
+
+            var products = await query
+                .OrderByDescending(p => p.SalesCount)
+                .Take(request.Limit)
+                .ToListAsync(cancellationToken);
+
+            var productSummaries = products.Select(p => new ProductSummary
+            {
+                Id = p.Id,
+                Name = p.Name,
+                SKU = p.SKU,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+                StockQuantity = p.StockQuantity,
+                Status = p.Status,
+                StatusName = p.Status.ToString(),
+                Category = p.Category,
+                CategoryName = p.Category.ToString(),
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsFeatured = p.IsFeatured,
+                SalesCount = p.SalesCount,
+                Rating = p.Rating,
+                CreatedAt = p.CreatedAt
+            }).ToList();
+
+            return Result<List<ProductSummary>>.Success(productSummaries);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<ProductSummary>>.Failure($"Error searching products: {ex.Message}");
+        }
+    }
+}

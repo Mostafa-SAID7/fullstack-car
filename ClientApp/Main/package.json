@@ -11,6 +11,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
+    "e2e:marketplace": "playwright test e2e/marketplace",
     "lint": "ng lint"
   },
   "private": true,

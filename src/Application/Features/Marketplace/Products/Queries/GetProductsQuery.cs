@@ -39,3 +39,27 @@ public class SearchProductsQuery : IRequest<Result<List<ProductSummary>>>
     public ProductCategory? Category { get; set; }
     public ProductStatus? Status { get; set; }
 }
+
+public class ExportProductsQuery : IRequest<Result<byte[]>>
+{
+    public string Format { get; set; } = "csv";
+    public string? Search { get; set; }
+    public ProductStatus? Status { get; set; }
+    public ProductCategory? Category { get; set; }
+    public string? Brand { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+    public bool? IsFeatured { get; set; }
+    public bool? IsLowStock { get; set; }
+}
+
+public class GetLowStockProductsQuery : IRequest<Result<List<ProductSummary>>>
+{
+    public int Threshold { get; set; } = 10;
+}
+
+public class GetTopSellingProductsQuery : IRequest<Result<List<ProductSummary>>>
+{
+    public int Limit { get; set; } = 10;
+    public string Period { get; set; } = "30d";
+}

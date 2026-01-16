@@ -246,6 +246,103 @@ public class ProductsController : BaseController
         }
     }
 
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportProducts(
+        [FromQuery] string format = "csv",
+        [FromQuery] string? search = null,
+        [FromQuery] Domain.Enums.Marketplace.ProductStatus? status = null,
+        [FromQuery] Domain.Enums.Marketplace.ProductCategory? category = null,
+        [FromQuery] string? brand = null,
+        [FromQuery] decimal? minPrice = null,
+        [FromQuery] decimal? maxPrice = null,
+        [FromQuery] bool? isFeatured = null,
+        [FromQuery] bool? isLowStock = null)
+    {
+        try
+        {
+            var query = new ExportProductsQuery
+            {
+                Format = format,
+                Search = search,
+                Status = status,
+                Category = category,
+                Brand = brand,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                IsFeatured = isFeatured,
+                IsLowStock = isLowStock
+            };
+
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+            {
+                var contentType = format.ToLower() == "csv" ? "text/csv" : "application/json";
+                var fileName = $"products-export-{DateTime.UtcNow:yyyyMMdd-HHmmss}.{format.ToLower()}";
+                
+                return File(result.Data, contentType, fileName);
+            }
+
+            return BadRequest(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting products");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpGet("low-stock")]
+    public async Task<IActionResult> GetLowStockProducts([FromQuery] int? threshold = null)
+    {
+        try
+        {
+            var query = new GetLowStockProductsQuery
+            {
+                Threshold = threshold ?? 10
+            };
+
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting low stock products");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpGet("top-selling")]
+    public async Task<IActionResult> GetTopSellingProducts(
+        [FromQuery] int limit = 10,
+        [FromQuery] string period = "30d")
+    {
+        try
+        {
+            var query = new GetTopSellingProductsQuery
+            {
+                Limit = limit,
+                Period = period
+            };
+
+            var result = await Mediator.Send(query);
+
+            if (result.Succeeded)
+                return Ok(result.Data);
+
+            return BadRequest(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting top selling products");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
     private Guid GetCurrentUserId()
     {
         var userIdClaim = User?.FindFirst("sub")?.Value ?? User?.FindFirst("id")?.Value;

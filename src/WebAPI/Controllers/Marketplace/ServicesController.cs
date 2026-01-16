@@ -269,6 +269,121 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve services"
             });
         }
+
+        /// <summary>
+        /// Export services to CSV or JSON
+        /// </summary>
+        [HttpGet("export")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportServices(
+            [FromQuery] string format = "csv",
+            [FromQuery] string? searchTerm = null,
+            [FromQuery] Domain.Enums.Marketplace.ServiceType? type = null,
+            [FromQuery] decimal? minPrice = null,
+            [FromQuery] decimal? maxPrice = null,
+            [FromQuery] bool? isEmergencyService = null,
+            [FromQuery] bool? isAvailable24x7 = null,
+            [FromQuery] decimal? minRating = null)
+        {
+            var query = new ExportServicesQuery
+            {
+                Format = format,
+                SearchTerm = searchTerm,
+                Type = type,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                IsEmergencyService = isEmergencyService,
+                IsAvailable24x7 = isAvailable24x7,
+                MinRating = minRating
+            };
+
+            var result = await _mediator.Send(query);
+            
+            if (result.IsSuccess)
+            {
+                var contentType = format.ToLower() == "csv" ? "text/csv" : "application/json";
+                var fileName = $"services-export-{DateTime.UtcNow:yyyyMMdd-HHmmss}.{format.ToLower()}";
+                
+                return File(result.Data, contentType, fileName);
+            }
+
+            return BadRequest(new
+            {
+                Success = false,
+                Errors = result.Errors,
+                Message = "Failed to export services"
+            });
+        }
+
+        /// <summary>
+        /// Get popular services
+        /// </summary>
+        [HttpGet("popular")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPopularServices(
+            [FromQuery] int limit = 10,
+            [FromQuery] string period = "30d")
+        {
+            var query = new GetPopularServicesQuery
+            {
+                Limit = limit,
+                Period = period
+            };
+
+            var result = await _mediator.Send(query);
+            
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    Success = true,
+                    Data = result.Data,
+                    Message = "Popular services retrieved successfully"
+                });
+            }
+
+            return BadRequest(new
+            {
+                Success = false,
+                Errors = result.Errors,
+                Message = "Failed to retrieve popular services"
+            });
+        }
+
+        /// <summary>
+        /// Get service statistics
+        /// </summary>
+        [HttpGet("statistics")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetServiceStatistics(
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            var query = new GetServiceStatisticsQuery
+            {
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+
+            var result = await _mediator.Send(query);
+            
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    Success = true,
+                    Data = result.Data,
+                    Message = "Service statistics retrieved successfully"
+                });
+            }
+
+            return BadRequest(new
+            {
+                Success = false,
+                Errors = result.Errors,
+                Message = "Failed to retrieve service statistics"
+            });
+        }
     }
 
     // Placeholder classes for missing queries and commands
@@ -324,5 +439,29 @@ namespace WebAPI.Controllers.Marketplace
         public double RadiusKm { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+    }
+
+    public class ExportServicesQuery : IRequest<Application.Common.Models.Result<byte[]>>
+    {
+        public string Format { get; set; } = "csv";
+        public string? SearchTerm { get; set; }
+        public Domain.Enums.Marketplace.ServiceType? Type { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public bool? IsEmergencyService { get; set; }
+        public bool? IsAvailable24x7 { get; set; }
+        public decimal? MinRating { get; set; }
+    }
+
+    public class GetPopularServicesQuery : IRequest<Application.Common.Models.Result<List<Application.Features.Marketplace.Services.DTOs.Responses.CarServiceDto>>>
+    {
+        public int Limit { get; set; } = 10;
+        public string Period { get; set; } = "30d";
+    }
+
+    public class GetServiceStatisticsQuery : IRequest<Application.Common.Models.Result<object>>
+    {
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
     }
 }

@@ -8,7 +8,7 @@ Implementation tasks for integrating and enhancing authentication and identity f
 
 ### Phase 1: Shared Type Definitions
 
-- [ ] 1. Create Shared Auth Types
+- [-] 1. Create Shared Auth Types
   - Create TypeScript interfaces for User entities matching backend DTOs
   - Define UserStatus and UserRole enums
   - Define LoginRequest, LoginResponse, RegisterRequest interfaces
