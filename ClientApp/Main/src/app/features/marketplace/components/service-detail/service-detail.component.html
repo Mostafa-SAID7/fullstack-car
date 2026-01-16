@@ -1,0 +1,265 @@
+<!-- Service Detail Component -->
+<div class="service-detail-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" *ngIf="service">
+    <a (click)="goBack()">Services</a>
+    <span class="separator">/</span>
+    <span>{{ service.title }}</span>
+  </nav>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading service details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error">
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="back-btn">Back to Services</button>
+  </div>
+
+  <!-- Service Content -->
+  <div class="service-content" *ngIf="service && !loading && !error">
+    <!-- Service Header -->
+    <div class="service-header">
+      <div class="service-type-badge" [attr.data-type]="service.serviceType">
+        {{ service.serviceType }}
+      </div>
+      <div class="service-badges">
+        <span *ngIf="service.isPopular" class="badge badge-popular">
+          🔥 Popular
+        </span>
+        <span *ngIf="service.requiresApproval" class="badge badge-approval">
+          Requires Approval
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Left Column: Service Info -->
+      <div class="service-info-section">
+        <h1 class="service-title">{{ service.title }}</h1>
+
+        <p class="service-name" *ngIf="service.name !== service.title">
+          {{ service.name }}
+        </p>
+
+        <!-- Rating and Reviews -->
+        <div class="service-rating">
+          <div class="stars">
+            <span *ngFor="let filled of getStarRating()" [class.filled]="filled" class="star">
+              ★
+            </span>
+          </div>
+          <span class="rating-value">{{ service.averageRating.toFixed(1) }}</span>
+          <span class="rating-count">({{ service.totalReviews }} reviews)</span>
+        </div>
+
+        <!-- Pricing -->
+        <div class="service-pricing">
+          <span class="price-label">Price:</span>
+          <span class="price-value">{{ getPriceRange() }}</span>
+        </div>
+
+        <!-- Status -->
+        <div class="service-status" [class]="getStatusClass()">
+          {{ getStatusMessage() }}
+        </div>
+
+        <!-- Short Description -->
+        <div class="service-short-description">
+          <p>{{ service.shortDescription }}</p>
+        </div>
+
+        <!-- Full Description -->
+        <div class="service-description">
+          <h3>About This Service</h3>
+          <p>{{ service.description }}</p>
+        </div>
+
+        <!-- Service Details -->
+        <div class="service-details-grid">
+          <div class="detail-card">
+            <div class="detail-icon">⏱️</div>
+            <div class="detail-content">
+              <span class="detail-label">Duration</span>
+              <span class="detail-value">{{ getDurationRange() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-icon">📅</div>
+            <div class="detail-content">
+              <span class="detail-label">Total Bookings</span>
+              <span class="detail-value">{{ service.totalBookings }}</span>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-icon">📂</div>
+            <div class="detail-content">
+              <span class="detail-label">Category</span>
+              <span class="detail-value">{{ service.category }}</span>
+            </div>
+          </div>
+
+          <div class="detail-card" *ngIf="service.subCategory">
+            <div class="detail-icon">🏷️</div>
+            <div class="detail-content">
+              <span class="detail-label">Sub-Category</span>
+              <span class="detail-value">{{ service.subCategory }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="service-requirements" *ngIf="getRequirements().length > 0">
+          <h3>Requirements</h3>
+          <ul>
+            <li *ngFor="let req of getRequirements()">{{ req }}</li>
+          </ul>
+        </div>
+
+        <!-- What's Included -->
+        <div class="service-inclusions" *ngIf="getInclusions().length > 0">
+          <h3>What's Included</h3>
+          <ul class="inclusions-list">
+            <li *ngFor="let inc of getInclusions()">
+              <span class="check-icon">✓</span> {{ inc }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- What's Not Included -->
+        <div class="service-exclusions" *ngIf="getExclusions().length > 0">
+          <h3>What's Not Included</h3>
+          <ul class="exclusions-list">
+            <li *ngFor="let exc of getExclusions()">
+              <span class="cross-icon">✗</span> {{ exc }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tags -->
+        <div class="service-tags" *ngIf="getTags().length > 0">
+          <h3>Tags</h3>
+          <div class="tags-list">
+            <span *ngFor="let tag of getTags()" class="tag">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Booking & Provider -->
+      <div class="sidebar-section">
+        <!-- Booking Card -->
+        <div class="booking-card">
+          <h3>Book This Service</h3>
+
+          <div class="booking-price">
+            <span class="price-from">Starting from</span>
+            <span class="price-amount">{{ formatPrice(service.basePrice) }}</span>
+          </div>
+
+          <button class="book-service-btn" (click)="toggleBookingForm()" [disabled]="!isActive()">
+            {{ isActive() ? 'Book Now' : 'Unavailable' }}
+          </button>
+
+          <button class="contact-provider-btn" (click)="contactProvider()">
+            Contact Provider
+          </button>
+
+          <button class="share-btn" (click)="shareService()">
+            Share Service
+          </button>
+
+          <!-- Booking Form -->
+          <div class="booking-form" *ngIf="showBookingForm">
+            <h4>Select Date & Time</h4>
+
+            <div class="form-group">
+              <label for="booking-date">Date:</label>
+              <input id="booking-date" type="date" [(ngModel)]="selectedDate" [min]="getMinDate()" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label for="booking-time">Time:</label>
+              <select id="booking-time" [(ngModel)]="selectedTime" class="form-select">
+                <option value="">Select a time</option>
+                <option *ngFor="let time of getTimeSlots()" [value]="time">
+                  {{ time }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button class="confirm-booking-btn" (click)="bookService()">
+                Confirm Booking
+              </button>
+              <button class="cancel-btn" (click)="toggleBookingForm()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Provider Card -->
+        <div class="provider-card">
+          <h3>Service Provider</h3>
+          <div class="provider-info">
+            <div class="provider-avatar">
+              <span>{{ service.serviceProviderId.substring(0, 2).toUpperCase() }}</span>
+            </div>
+            <div class="provider-details">
+              <p class="provider-id">Provider ID: {{ service.serviceProviderId.substring(0, 8) }}...</p>
+              <p class="provider-meta">Member since {{ formatDate(service.createdAt) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Stats Card -->
+        <div class="stats-card">
+          <h3>Service Statistics</h3>
+          <div class="stats-list">
+            <div class="stat-item">
+              <span class="stat-label">Total Bookings</span>
+              <span class="stat-value">{{ service.totalBookings }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Reviews</span>
+              <span class="stat-value">{{ service.totalReviews }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Average Rating</span>
+              <span class="stat-value">{{ service.averageRating.toFixed(1) }} ★</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Listed Since</span>
+              <span class="stat-value">{{ formatDate(service.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section" *ngIf="service && !loading && !error">
+    <h2>Customer Reviews</h2>
+    <div class="reviews-summary">
+      <div class="average-rating">
+        <span class="rating-number">{{ service.averageRating.toFixed(1) }}</span>
+        <div class="stars-large">
+          <span *ngFor="let filled of getStarRating()" [class.filled]="filled" class="star">
+            ★
+          </span>
+        </div>
+        <span class="review-count">Based on {{ service.totalReviews }} reviews</span>
+      </div>
+    </div>
+    <div class="reviews-placeholder">
+      <p>Reviews will be displayed here</p>
+    </div>
+  </div>
+</div>

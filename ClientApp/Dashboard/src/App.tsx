@@ -5,10 +5,13 @@ import { AuthLayout, RegisterForm, ForgotPasswordForm, ResetPasswordForm } from 
 import { RTLLayout } from './components/RTLLayout';
 import RTLErrorBoundary from './components/RTLErrorBoundary';
 import { ThemeProvider } from './contexts';
+import { SignalRProvider } from './contexts/SignalRContext';
 import { authService } from './services/auth';
 import { useAuth } from './hooks/auth/useAuth';
 import { DebugPage } from './components/debug/DebugPage';
 import { preloadTranslations } from './i18n';
+import { cacheWarmingService } from './services/cache';
+import { SIGNALR_HUB_URL } from './config/api';
 import { Loader2 } from 'lucide-react';
 
 // Import i18n configuration to initialize it
@@ -52,6 +55,8 @@ const ContentPlanning = React.lazy(() => import('./pages').then(module => ({ def
 
 // Marketplace Pages
 const MarketplaceOverview = React.lazy(() => import('./pages').then(module => ({ default: module.MarketplaceOverview })));
+const ProductsManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ProductsManagement })));
+const ServicesManagement = React.lazy(() => import('./pages').then(module => ({ default: module.ServicesManagement })));
 
 // Notification Management
 const NotificationManagement = React.lazy(() => import('./pages').then(module => ({ default: module.NotificationManagement })));
@@ -200,7 +205,7 @@ const AppRoutes = () => {
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
-                  <Products />
+                  <ProductsManagement />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -212,7 +217,7 @@ const AppRoutes = () => {
             <ProtectedRoute requiredRoles={["Admin"]}>
               <MainLayout>
                 <Suspense fallback={<PageLoader />}>
-                  <Services />
+                  <ServicesManagement />
                 </Suspense>
               </MainLayout>
             </ProtectedRoute>
@@ -589,6 +594,21 @@ function App() {
     initializeTranslations();
   }, []);
 
+  // Warm cache on app start (after authentication)
+  useEffect(() => {
+    const warmCache = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          await cacheWarmingService.warmCache();
+        } catch (error) {
+          console.warn('Failed to warm cache:', error);
+        }
+      }
+    };
+
+    warmCache();
+  }, []);
+
   return (
     <ErrorBoundary>
       <RTLErrorBoundary
@@ -601,15 +621,20 @@ function App() {
         }}
       >
         <ThemeProvider>
-          <ToastProvider>
-            <BrowserRouter>
-              <RTLLayout>
-                <Suspense fallback={<PageLoader />}>
-                  <AppRoutes />
-                </Suspense>
-              </RTLLayout>
-            </BrowserRouter>
-          </ToastProvider>
+          <SignalRProvider
+            hubUrl={SIGNALR_HUB_URL}
+            getAccessToken={() => authService.getToken()}
+          >
+            <ToastProvider>
+              <BrowserRouter>
+                <RTLLayout>
+                  <Suspense fallback={<PageLoader />}>
+                    <AppRoutes />
+                  </Suspense>
+                </RTLLayout>
+              </BrowserRouter>
+            </ToastProvider>
+          </SignalRProvider>
         </ThemeProvider>
       </RTLErrorBoundary>
     </ErrorBoundary>

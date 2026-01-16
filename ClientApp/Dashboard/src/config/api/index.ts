@@ -2,6 +2,9 @@
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5100/api';
 
+// SignalR Hub URLs
+export const SIGNALR_HUB_URL = import.meta.env.VITE_SIGNALR_HUB_URL || 'http://localhost:5100/hubs/community';
+
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
@@ -80,7 +83,11 @@ export const API_ENDPOINTS = {
     CATEGORIES: '/v6/marketplace/services/categories',
     REVIEWS: '/v6/marketplace/services/reviews',
     SEARCH: '/v6/marketplace/services/search',
-    LOCATION: '/v6/marketplace/services/search/location'
+    LOCATION: '/v6/marketplace/services/search/location',
+    IMAGES: '/v6/marketplace/services/{id}/images',
+    UPLOAD_IMAGE: '/v6/marketplace/services/{id}/images/upload',
+    DELETE_IMAGE: '/v6/marketplace/services/{id}/images/{imageId}',
+    SET_PRIMARY_IMAGE: '/v6/marketplace/services/{id}/images/primary'
   },
 
   // Products
@@ -90,7 +97,11 @@ export const API_ENDPOINTS = {
     INVENTORY: '/v6/marketplace/products/inventory',
     REVIEWS: '/v6/marketplace/products/reviews',
     SEARCH: '/v6/marketplace/products/search',
-    ANALYTICS: '/v6/marketplace/products/analytics'
+    ANALYTICS: '/v6/marketplace/products/analytics',
+    IMAGES: '/v6/marketplace/products/{id}/images',
+    UPLOAD_IMAGE: '/v6/marketplace/products/{id}/images/upload',
+    DELETE_IMAGE: '/v6/marketplace/products/{id}/images/{imageId}',
+    SET_PRIMARY_IMAGE: '/v6/marketplace/products/{id}/images/primary'
   },
 
   // Customers

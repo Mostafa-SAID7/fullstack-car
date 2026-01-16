@@ -1,193 +1,192 @@
-<div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in">
+<!-- Service List Component -->
+<div class="service-list-container">
+  <!-- Header with Search and View Toggle -->
+  <div class="service-list-header">
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="filters.searchTerm" (ngModelChange)="onFilterChange()"
+        placeholder="Search services..." class="search-input" />
+    </div>
 
-  <!-- Card 1: Search & Actions -->
-  <div class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 shadow-xl border border-black/5 dark:border-white/5 mb-6">
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
-      <!-- Search Input -->
-      <div class="relative flex-grow group">
-        <i
-          class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300"></i>
-        <input type="text" [(ngModel)]="filters.searchTerm" (ngModelChange)="onFilterChange()"
-          placeholder="Search services..."
-          class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-full pl-12 pr-6 py-4 outline-none transition-all text-foreground font-bold">
-      </div>
-
-      <!-- Filter Toggle -->
-      <button type="button" (click)="toggleFilters()"
-        [ngClass]="showFilters ? 'bg-primary text-white' : 'bg-secondary dark:bg-white/5'"
-        class="px-8 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-3 whitespace-nowrap">
-        <i class="fas fa-sliders-h"></i>
-        <span>Filters</span>
+    <div class="view-controls">
+      <button (click)="toggleViewMode()" class="view-toggle-btn"
+        [attr.aria-label]="viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'">
+        <i [class]="viewMode === 'grid' ? 'icon-list' : 'icon-grid'"></i>
+        {{ viewMode === 'grid' ? 'List' : 'Grid' }}
       </button>
 
-      <!-- Create Service Action -->
-      <button (click)="createService()"
-        class="px-8 py-4 bg-primary text-white rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/25 flex items-center gap-3 whitespace-nowrap">
-        <i class="fas fa-plus"></i>
-        <span>Create Service</span>
+      <button (click)="toggleFilters()" class="filter-toggle-btn" [ngClass]="showFilters ? 'active' : ''">
+        <i class="icon-filter"></i> Filters
+      </button>
+
+      <button (click)="createService()" class="create-btn">
+        <i class="icon-plus"></i> Create Service
       </button>
     </div>
+  </div>
 
-    <!-- Collapsible Filters Panel -->
-    <div class="overflow-hidden transition-all duration-300 ease-in-out"
-      [style.max-height]="showFilters ? '1000px' : '0'" [style.opacity]="showFilters ? '1' : '0'">
-      <div class="pt-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div class="flex flex-col">
-            <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Service
-              Type</label>
-            <div class="relative">
-              <i class="fas fa-tools absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-              <select [(ngModel)]="filters.serviceType" (ngModelChange)="onFilterChange()"
-                class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                <option [ngValue]="undefined">All Types</option>
-                <option *ngFor="let type of serviceTypes" [ngValue]="type">
-                  {{ getServiceTypeLabel(type) }}
-                </option>
-              </select>
-              <i
-                class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-            </div>
+  <!-- Location Search Toggle -->
+  <div class="location-search-section">
+    <button *ngIf="!useLocationSearch" (click)="enableLocationSearch()" class="location-btn">
+      📍 Search Near Me
+    </button>
+
+    <div *ngIf="useLocationSearch" class="location-active">
+      <span class="location-indicator">📍 Searching within {{ searchRadius }}km</span>
+      <div class="radius-control">
+        <label for="radius-slider">Radius:</label>
+        <input id="radius-slider" type="range" min="1" max="50" [(ngModel)]="searchRadius"
+          (ngModelChange)="onRadiusChange(searchRadius)" class="radius-slider" />
+        <span>{{ searchRadius }}km</span>
+      </div>
+      <button (click)="disableLocationSearch()" class="disable-location-btn">
+        ✕ Disable
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Panel -->
+  <div class="filters-panel" *ngIf="showFilters" [style.max-height]="showFilters ? '1000px' : '0'"
+    [style.opacity]="showFilters ? '1' : '0'">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="type-filter">Service Type:</label>
+        <select id="type-filter" [(ngModel)]="filters.serviceType" (ngModelChange)="onFilterChange()"
+          class="filter-select">
+          <option [ngValue]="undefined">All Types</option>
+          <option *ngFor="let type of serviceTypes" [value]="type">
+            {{ getServiceTypeLabel(type) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="min-price">Min Price:</label>
+        <input id="min-price" type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onFilterChange()"
+          placeholder="Min" class="filter-input" />
+      </div>
+
+      <div class="filter-group">
+        <label for="max-price">Max Price:</label>
+        <input id="max-price" type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onFilterChange()"
+          placeholder="Max" class="filter-input" />
+      </div>
+
+      <div class="filter-group">
+        <label for="rating-filter">Min Rating:</label>
+        <select id="rating-filter" [(ngModel)]="filters.minRating" (ngModelChange)="onFilterChange()"
+          class="filter-select">
+          <option [ngValue]="undefined">Any Rating</option>
+          <option [ngValue]="4">4+ Stars</option>
+          <option [ngValue]="3">3+ Stars</option>
+          <option [ngValue]="2">2+ Stars</option>
+        </select>
+      </div>
+
+      <div class="filter-group checkbox">
+        <label>
+          <input type="checkbox" [(ngModel)]="filters.isEmergencyService" (ngModelChange)="onFilterChange()" />
+          Emergency
+        </label>
+      </div>
+
+      <div class="filter-group checkbox">
+        <label>
+          <input type="checkbox" [(ngModel)]="filters.isAvailable24x7" (ngModelChange)="onFilterChange()" />
+          24x7
+        </label>
+      </div>
+    </div>
+
+    <button (click)="clearFilters()" class="clear-filters-btn">
+      Clear All Filters
+    </button>
+  </div>
+
+  <!-- Results Count -->
+  <div class="results-info" *ngIf="!loading || services.length > 0">
+    <p>Showing {{ services.length }} of {{ totalCount }} services</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <p>{{ error }}</p>
+    <button (click)="resetAndLoad()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Services Grid/List -->
+  <div [class]="'services-container services-' + viewMode" *ngIf="!error">
+    <div *ngFor="let service of services; trackBy: trackByServiceId" class="service-card"
+      [class.inactive]="!isActive(service)" (click)="viewServiceDetail(service)">
+      <!-- Service Image -->
+      <div class="service-image">
+        <img *ngIf="service.imageUrl" [src]="service.imageUrl" alt="Service" class="w-full h-full object-cover">
+        <div *ngIf="!service.imageUrl" class="w-full h-full bg-secondary flex items-center justify-center">
+          <i class="icon-service-placeholder"></i>
+        </div>
+      </div>
+
+      <!-- Service Info -->
+      <div class="service-info">
+        <div class="service-type-badge" [attr.data-type]="service.serviceType">
+          {{ getServiceTypeLabel(service.serviceType) }}
+        </div>
+
+        <h3 class="service-title">{{ service.title }}</h3>
+        <p class="service-short-description">
+          {{ service.shortDescription }}
+        </p>
+
+        <!-- Rating and Reviews -->
+        <div class="service-rating">
+          <div class="stars">
+            <span *ngFor="let filled of getStarRating(service.averageRating)" [class.filled]="filled" class="star">
+              ★
+            </span>
           </div>
+          <span class="rating-value">{{ service.averageRating.toFixed(1) }}</span>
+          <span class="rating-count">({{ service.totalReviews }} reviews)</span>
+        </div>
 
-          <!-- Price Range -->
-          <div class="flex flex-col">
-            <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Min
-              Price</label>
-            <div class="relative">
-              <i
-                class="fas fa-dollar-sign absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-              <input type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onFilterChange()" placeholder="0"
-                class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold">
-            </div>
+        <!-- Details -->
+        <div class="service-details">
+          <div class="detail-item">
+            <span class="detail-label">Duration:</span>
+            <span class="detail-value">{{ getDurationRange(service) }}</span>
           </div>
-
-          <div class="flex flex-col">
-            <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Max
-              Price</label>
-            <div class="relative">
-              <i
-                class="fas fa-dollar-sign absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-              <input type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onFilterChange()" placeholder="1000"
-                class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold">
-            </div>
-          </div>
-
-          <!-- Rating -->
-          <div class="flex flex-col">
-            <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">Min
-              Rating</label>
-            <div class="relative">
-              <i class="fas fa-star absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-              <select [(ngModel)]="filters.minRating" (ngModelChange)="onFilterChange()"
-                class="w-full bg-secondary/50 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
-                <option [ngValue]="undefined">Any Rating</option>
-                <option [ngValue]="4">4+ Stars</option>
-                <option [ngValue]="4.5">4.5+ Stars</option>
-                <option [ngValue]="5">5 Stars</option>
-              </select>
-              <i
-                class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-            </div>
+          <div class="detail-item">
+            <span class="detail-label">Bookings:</span>
+            <span class="detail-value">{{ service.totalBookings }}</span>
           </div>
         </div>
 
-        <!-- Toggles -->
-        <div class="flex flex-wrap gap-4">
-          <label
-            class="flex items-center gap-3 p-4 bg-secondary/50 dark:bg-white/5 rounded-2xl cursor-pointer hover:bg-secondary dark:hover:bg-white/10 transition-colors">
-            <input type="checkbox" [(ngModel)]="filters.isEmergencyService" (ngModelChange)="onFilterChange()"
-              class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary">
-            <span class="text-xs font-black uppercase tracking-widest">Emergency Service</span>
-          </label>
-
-          <label
-            class="flex items-center gap-3 p-4 bg-secondary/50 dark:bg-white/5 rounded-2xl cursor-pointer hover:bg-secondary dark:hover:bg-white/10 transition-colors">
-            <input type="checkbox" [(ngModel)]="filters.isAvailable24x7" (ngModelChange)="onFilterChange()"
-              class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary">
-            <span class="text-xs font-black uppercase tracking-widest">Available 24/7</span>
-          </label>
+        <!-- Pricing -->
+        <div class="service-pricing">
+          <span class="price-label">Price:</span>
+          <span class="price-value">{{ getPriceRange(service) }}</span>
         </div>
+
+        <!-- Action Button -->
+        <button class="book-btn" (click)="bookService(service); $event.stopPropagation()"
+          [disabled]="!isActive(service)">
+          {{ isActive(service) ? 'Book Now' : 'Unavailable' }}
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Card 2: Content Grid -->
-  <div
-    class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 lg:p-8 shadow-xl border border-black/5 dark:border-white/5 min-h-[500px] mb-6">
-    <!-- Loading State -->
-    <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div *ngFor="let i of [1,2,3,4,5,6]" class="fb-card p-4 animate-pulse">
-        <div class="aspect-video bg-secondary/30 dark:bg-white/5 rounded-xl mb-4"></div>
-        <div class="h-4 bg-secondary/30 dark:bg-white/5 rounded w-3/4 mb-3"></div>
-        <div class="h-3 bg-secondary/30 dark:bg-white/5 rounded w-1/2 mb-6"></div>
-        <div class="flex justify-between">
-          <div class="h-8 w-20 bg-secondary/30 dark:bg-white/5 rounded-lg"></div>
-          <div class="h-8 w-20 bg-secondary/30 dark:bg-white/5 rounded-lg"></div>
-        </div>
-      </div>
-    </div>
+  <!-- Pagination -->
+  <app-pagination *ngIf="totalPages > 1" [currentPage]="currentPage" [totalPages]="totalPages" [pageSize]="pageSize"
+    [totalItems]="totalItems" (pageChange)="onPageChange($event)"></app-pagination>
 
-    <!-- Service Grid -->
-    <div *ngIf="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div *ngFor="let service of services" class="fb-card group hover:scale-[1.02] transition-transform duration-300">
-        <!-- Service Image -->
-        <div class="aspect-video bg-secondary/50 dark:bg-white/5 rounded-xl mb-4 overflow-hidden relative">
-          <img *ngIf="service.imageUrl" [src]="service.imageUrl" alt="Service" class="w-full h-full object-cover">
-          <div *ngIf="!service.imageUrl"
-            class="w-full h-full flex items-center justify-center text-muted-foreground/30">
-            <i class="fas fa-tools text-4xl"></i>
-          </div>
-          <div
-            class="absolute top-2 right-2 bg-white/90 dark:bg-black/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-            {{ getServiceTypeLabel(service.type) }}
-          </div>
-        </div>
-
-        <!-- Content -->
-        <div class="space-y-4">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-extrabold text-lg text-foreground line-clamp-1">{{ service.name }}</h3>
-              <div class="flex items-center gap-1 text-amber-500">
-                <i class="fas fa-star text-xs"></i>
-                <span class="text-xs font-black">{{ service.rating | number:'1.1-1' }}</span>
-              </div>
-            </div>
-            <p class="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{{ service.description }}</p>
-          </div>
-
-          <div class="flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/5">
-            <div class="flex flex-col">
-              <span class="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Start Price</span>
-              <span class="font-black text-primary text-lg">{{ service.basePrice | currency }}</span>
-            </div>
-            <button (click)="bookService(service)"
-              class="px-6 py-2 bg-primary text-white rounded-full font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Empty State -->
-    <div *ngIf="!loading && !error && services.length === 0"
-      class="py-24 text-center rounded-3xl border-2 border-dashed border-slate-200 dark:border-white/10">
-      <div class="w-20 h-20 bg-secondary/30 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8">
-        <i class="fas fa-search text-3xl text-muted-foreground/30"></i>
-      </div>
-      <h3 class="text-xl font-black text-foreground uppercase tracking-widest mb-2">No services discovered</h3>
-      <p class="text-muted-foreground font-bold text-xs uppercase tracking-widest">Try expanding your transmission range
-        (filters)</p>
-    </div>
+  <!-- Loading Indicator -->
+  <div class="loading-indicator" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading services...</p>
   </div>
 
-  <!-- Card 3: Pagination -->
-  <div *ngIf="!loading && !error"
-    class="bg-white dark:bg-[#111] rounded-[2.5rem] p-6 shadow-xl border border-black/5 dark:border-white/5">
-    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" [pageSize]="pageSize"
-      [totalItems]="totalItems" (pageChange)="onPageChange($event)"></app-pagination>
+  <!-- No Results -->
+  <div class="no-results" *ngIf="!loading && services.length === 0 && !error">
+    <p>No services found</p>
+    <button (click)="clearFilters()" class="clear-filters-btn">Clear Filters</button>
   </div>
-
 </div>

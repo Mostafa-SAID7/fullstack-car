@@ -140,4 +140,36 @@ export class SignalRService {
   public get isConnected(): boolean {
     return this.hubConnection?.state === 'Connected';
   }
+
+  /**
+   * Register a handler for a specific SignalR event
+   * @param eventName The name of the event to listen for
+   * @param handler The callback function to execute when the event is received
+   */
+  public on<T>(eventName: string, handler: (data: T) => void): void {
+    if (this.hubConnection) {
+      this.hubConnection.on(eventName, handler);
+      console.log(`Registered handler for event: ${eventName}`);
+    } else {
+      console.warn(`Cannot register handler for ${eventName}: No active connection`);
+    }
+  }
+
+  /**
+   * Unregister a handler for a specific SignalR event
+   * @param eventName The name of the event to stop listening for
+   */
+  public off(eventName: string): void {
+    if (this.hubConnection) {
+      this.hubConnection.off(eventName);
+      console.log(`Unregistered handler for event: ${eventName}`);
+    }
+  }
+
+  /**
+   * Get the underlying HubConnection for advanced scenarios
+   */
+  public getConnection(): HubConnection | null {
+    return this.hubConnection;
+  }
 }

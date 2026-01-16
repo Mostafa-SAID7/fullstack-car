@@ -1,54 +1,47 @@
+/**
+ * Marketplace Routing Module (Angular)
+ * Defines routes for marketplace features
+ */
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+import { ProductListComponent } from './components/product-list/product-list.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { ServiceListComponent } from './components/service-list/service-list.component';
+import { ServiceDetailComponent } from './components/service-detail/service-detail.component';
+import { ServiceProviderListComponent } from './components/service-provider-list/service-provider-list.component';
 
 const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./components/marketplace-home/marketplace-home.component').then(m => m.MarketplaceHomeComponent)
+    redirectTo: 'products',
+    pathMatch: 'full'
+  },
+  {
+    path: 'products',
+    component: ProductListComponent,
+    data: { title: 'Products' }
+  },
+  {
+    path: 'products/:id',
+    component: ProductDetailComponent,
+    data: { title: 'Product Details' }
   },
   {
     path: 'services',
-    loadComponent: () => import('./components/service-list/service-list.component').then(m => m.ServiceListComponent)
-  },
-  {
-    path: 'services/create',
-    loadComponent: () => import('./components/service-form/service-form.component').then(m => m.ServiceFormComponent)
+    component: ServiceListComponent,
+    data: { title: 'Services' }
   },
   {
     path: 'services/:id',
-    loadComponent: () => import('./components/service-detail/service-detail.component').then(m => m.ServiceDetailComponent)
-  },
-  {
-    path: 'services/:id/edit',
-    loadComponent: () => import('./components/service-form/service-form.component').then(m => m.ServiceFormComponent)
+    component: ServiceDetailComponent,
+    data: { title: 'Service Details' }
   },
   {
     path: 'providers',
-    loadComponent: () => import('./components/service-provider-list/service-provider-list.component').then(m => m.ServiceProviderListComponent)
-  },
-  {
-    path: 'providers/create',
-    loadComponent: () => import('./components/service-provider-form/service-provider-form.component').then(m => m.ServiceProviderFormComponent)
-  },
-  {
-    path: 'providers/:id',
-    loadComponent: () => import('./components/service-provider-detail/service-provider-detail.component').then(m => m.ServiceProviderDetailComponent)
-  },
-  {
-    path: 'providers/:id/edit',
-    loadComponent: () => import('./components/service-provider-form/service-provider-form.component').then(m => m.ServiceProviderFormComponent)
-  },
-  {
-    path: 'bookings',
-    loadComponent: () => import('./components/booking-list/booking-list.component').then(m => m.BookingListComponent)
-  },
-  {
-    path: 'bookings/create',
-    loadComponent: () => import('./components/create-booking/create-booking.component').then(m => m.CreateBookingComponent)
-  },
-  {
-    path: 'bookings/:id',
-    loadComponent: () => import('./components/booking-detail/booking-detail.component').then(m => m.BookingDetailComponent)
+    component: ServiceProviderListComponent,
+    data: { title: 'Service Providers' }
   }
 ];
 

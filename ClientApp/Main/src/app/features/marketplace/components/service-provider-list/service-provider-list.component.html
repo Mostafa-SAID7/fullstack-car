@@ -1,0 +1,210 @@
+<!-- Service Provider List Component -->
+<div class="provider-list-container">
+  <!-- Header -->
+  <div class="list-header">
+    <div class="header-content">
+      <h1 class="page-title">Service Providers</h1>
+      <p class="page-subtitle">Find trusted automotive service providers in your area</p>
+    </div>
+
+    <!-- View Mode Toggle -->
+    <div class="view-controls">
+      <button 
+        class="view-toggle-btn" 
+        [class.active]="viewMode === 'grid'"
+        (click)="toggleViewMode()"
+        title="Toggle view mode"
+      >
+        <span class="icon">{{ viewMode === 'grid' ? '☷' : '☰' }}</span>
+        {{ viewMode === 'grid' ? 'Grid' : 'List' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search providers by name..."
+        [value]="searchTerm"
+        (input)="onSearchInput($event)"
+      />
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+      <!-- City Filter -->
+      <div class="filter-group">
+        <label for="city-filter">City:</label>
+        <select
+          id="city-filter"
+          class="filter-select"
+          [(ngModel)]="selectedCity"
+          (change)="onCityChange()"
+        >
+          <option [value]="null">All Cities</option>
+          <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+        </select>
+      </div>
+
+      <!-- Rating Filter -->
+      <div class="filter-group">
+        <label for="rating-filter">Min Rating:</label>
+        <select
+          id="rating-filter"
+          class="filter-select"
+          [(ngModel)]="minRating"
+          (change)="onRatingChange()"
+        >
+          <option [value]="null">Any Rating</option>
+          <option [value]="4.5">4.5+ Stars</option>
+          <option [value]="4.0">4.0+ Stars</option>
+          <option [value]="3.5">3.5+ Stars</option>
+          <option [value]="3.0">3.0+ Stars</option>
+        </select>
+      </div>
+
+      <!-- Verified Filter -->
+      <div class="filter-group checkbox-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="showVerifiedOnly"
+            (change)="onVerifiedToggle()"
+          />
+          <span>Verified Only</span>
+        </label>
+      </div>
+
+      <!-- Clear Filters -->
+      <button
+        *ngIf="hasActiveFilters()"
+        class="clear-filters-btn"
+        (click)="clearFilters()"
+      >
+        Clear Filters ({{ getActiveFilterCount() }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-summary" *ngIf="!loading || providers.length > 0">
+    <p>
+      Showing {{ providers.length }} of {{ totalCount }} providers
+      <span *ngIf="hasActiveFilters()" class="filter-indicator">
+        ({{ getActiveFilterCount() }} filter{{ getActiveFilterCount() > 1 ? 's' : '' }} active)
+      </span>
+    </p>
+  </div>
+
+  <!-- Loading State (Initial) -->
+  <div class="loading-state" *ngIf="loading && providers.length === 0">
+    <div class="spinner"></div>
+    <p>Loading service providers...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && providers.length === 0">
+    <p>{{ error }}</p>
+    <button (click)="resetAndLoad()" class="retry-btn">Try Again</button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && providers.length === 0">
+    <div class="empty-icon">🏪</div>
+    <h3>No Service Providers Found</h3>
+    <p>Try adjusting your filters or search criteria</p>
+    <button *ngIf="hasActiveFilters()" (click)="clearFilters()" class="clear-btn">
+      Clear All Filters
+    </button>
+  </div>
+
+  <!-- Provider Grid/List -->
+  <div class="providers-grid" [class.list-view]="viewMode === 'list'" *ngIf="providers.length > 0">
+    <div
+      *ngFor="let provider of providers"
+      class="provider-card"
+      (click)="viewProviderProfile(provider.id)"
+    >
+      <!-- Provider Avatar -->
+      <div class="provider-avatar">
+        <span class="avatar-initials">{{ getProviderInitials(provider.name) }}</span>
+        <span *ngIf="provider.isVerified" class="verified-badge" title="Verified Provider">✓</span>
+      </div>
+
+      <!-- Provider Info -->
+      <div class="provider-info">
+        <h3 class="provider-name">{{ provider.name }}</h3>
+
+        <!-- Rating -->
+        <div class="provider-rating" [class]="getRatingClass(provider.rating)">
+          <div class="stars">
+            <span *ngFor="let filled of getStarRating(provider.rating)" [class.filled]="filled" class="star">
+              ★
+            </span>
+          </div>
+          <span class="rating-value">{{ formatRating(provider.rating) }}</span>
+          <span class="review-count">({{ provider.totalReviews }} reviews)</span>
+        </div>
+
+        <!-- Description -->
+        <p class="provider-description" *ngIf="provider.description">
+          {{ provider.description }}
+        </p>
+
+        <!-- Location -->
+        <div class="provider-location">
+          <span class="location-icon">📍</span>
+          <span>{{ getDisplayAddress(provider) }}</span>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="provider-contact">
+          <div class="contact-item" *ngIf="provider.phone">
+            <span class="contact-icon">📞</span>
+            <span>{{ formatPhone(provider.phone) }}</span>
+          </div>
+          <div class="contact-item" *ngIf="provider.email">
+            <span class="contact-icon">✉️</span>
+            <span>{{ provider.email }}</span>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="provider-badges">
+          <span *ngIf="provider.isVerified" class="badge badge-verified">
+            ✓ Verified
+          </span>
+          <span *ngIf="hasHighRating(provider.rating)" class="badge badge-top-rated">
+            ⭐ Top Rated
+          </span>
+          <span *ngIf="provider.isActive" class="badge badge-active">
+            ● Active
+          </span>
+        </div>
+      </div>
+
+      <!-- View Profile Button -->
+      <div class="card-actions">
+        <button class="view-profile-btn" (click)="viewProviderProfile(provider.id); $event.stopPropagation()">
+          View Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading More Indicator -->
+  <div class="loading-more" *ngIf="loading && providers.length > 0">
+    <div class="spinner-small"></div>
+    <p>Loading more providers...</p>
+  </div>
+
+  <!-- End of Results -->
+  <div class="end-of-results" *ngIf="!loading && !hasMorePages && providers.length > 0">
+    <p>You've reached the end of the list</p>
+  </div>
+</div>

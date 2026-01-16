@@ -1,167 +1,143 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * ServiceDetailComponent (Angular)
+ * Displays detailed service information with provider details, reviews, and booking functionality
+ */
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MarketplaceService } from '../../services/marketplace.service';
-import { CarService } from '../../models/marketplace.model';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ServiceService } from '../../services';
+import { ServiceDto } from '../../models';
 
 @Component({
   selector: 'app-service-detail',
+  templateUrl: './service-detail.component.html',
+  styleUrls: ['./service-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="p-4 lg:p-8 max-w-5xl mx-auto animate-fade-in" *ngIf="service">
-      <div class="mb-10">
-        <button (click)="goBack()" class="group flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-all active:scale-95">
-          <i class="fas fa-arrow-left text-xs transition-transform group-hover:-translate-x-1"></i> 
-          Back to Explorations
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div class="space-y-8">
-          <div class="fb-card overflow-hidden group/img aspect-[4/3]">
-            <img [src]="service.imageUrl || '/assets/images/default-service.jpg'" [alt]="service.name"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105">
-          </div>
-          
-          <div class="fb-card p-8">
-            <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary opacity-60 mb-6">Service Overview</h2>
-            <div class="grid grid-cols-2 gap-6">
-              <div class="p-4 bg-secondary/50 dark:bg-white/5 rounded-2xl border border-black/5 dark:border-white/5">
-                <p class="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Time Estimate</p>
-                <div class="flex items-center gap-2">
-                  <i class="fas fa-clock text-primary"></i>
-                  <span class="text-sm font-black text-foreground">{{ formatDuration(service.duration) }}</span>
-                </div>
-              </div>
-              <div class="p-4 bg-secondary/50 dark:bg-white/5 rounded-2xl border border-black/5 dark:border-white/5">
-                <p class="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Popularity</p>
-                <div class="flex items-center gap-2">
-                  <i class="fas fa-fire text-orange-500"></i>
-                  <span class="text-sm font-black text-foreground">{{ service.totalBookings }} Bookings</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-8 space-y-4">
-               <div class="flex items-center gap-3 p-4 bg-emerald-500/5 text-emerald-600 rounded-2xl border border-emerald-500/10" *ngIf="service.isAvailable24x7">
-                  <i class="fas fa-check-circle"></i>
-                  <span class="text-[10px] font-black uppercase tracking-widest">Available 24x7 for transmission</span>
-               </div>
-               <div class="flex items-center gap-3 p-4 bg-red-500/5 text-red-600 rounded-2xl border border-red-500/10" *ngIf="service.isEmergencyService">
-                  <i class="fas fa-bolt"></i>
-                  <span class="text-[10px] font-black uppercase tracking-widest">Priority Emergency Protocol</span>
-               </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="space-y-8">
-           <div class="fb-card p-10">
-              <div class="flex justify-between items-start mb-6">
-                <h1 class="text-4xl font-black text-foreground tracking-tighter uppercase">{{ service.name }}</h1>
-                <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20">
-                  <i class="fas fa-star text-primary text-xs"></i>
-                  <span class="text-xs font-black text-primary">{{ service.rating.toFixed(1) }}</span>
-                </div>
-              </div>
-
-              <div class="description text-muted-foreground text-sm leading-relaxed mb-10 prose dark:prose-invert">
-                {{ service.description }}
-              </div>
-
-              <div class="pt-8 border-t border-black/5 dark:border-white/5 mb-10">
-                <div class="flex items-baseline gap-2">
-                  <span class="text-4xl font-black text-emerald-600 tracking-tighter">{{ formatPrice(service.basePrice) }}</span>
-                  <span class="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Standard Base</span>
-                </div>
-              </div>
-
-              <button (click)="bookService()" 
-                class="w-full py-5 bg-primary text-white rounded-[1.25rem] font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                <i class="fas fa-calendar-plus text-sm"></i>
-                Initiate Booking
-              </button>
-           </div>
-
-           <div class="fb-card p-8 bg-secondary/30 dark:bg-white/5 border-dashed">
-              <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Transmission Security</h3>
-              <p class="text-[11px] leading-relaxed text-muted-foreground/60 italic">
-                All services are performed by verified transmission specialists within our orbital network. Booking implies agreement to standard protocols.
-              </p>
-           </div>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="loading" class="flex flex-col items-center justify-center py-32 animate-pulse">
-      <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Synchronizing Details...</p>
-    </div>
-
-    <div *ngIf="error" class="fb-card p-12 text-center max-w-md mx-auto mt-20">
-      <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-        <i class="fas fa-triangle-exclamation text-2xl"></i>
-      </div>
-      <p class="text-sm font-black text-foreground uppercase tracking-widest mb-6">{{ error }}</p>
-      <button (click)="loadService()" class="px-8 py-3 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition-all">Retry Transmission</button>
-    </div>
-  `
+  imports: [CommonModule, FormsModule]
 })
-export class ServiceDetailComponent implements OnInit {
-  service: CarService | null = null;
+export class ServiceDetailComponent implements OnInit, OnDestroy {
+  service: ServiceDto | null = null;
   loading = false;
   error: string | null = null;
-  serviceId: string | null = null;
+  
+  // Booking state
+  selectedDate: string = '';
+  selectedTime: string = '';
+  showBookingForm = false;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private marketplaceService: MarketplaceService
-  ) { }
+    private serviceService: ServiceService
+  ) {}
 
   ngOnInit(): void {
-    this.serviceId = this.route.snapshot.paramMap.get('id');
-    if (this.serviceId) {
-      this.loadService();
-    }
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      const serviceId = params['id'];
+      if (serviceId) {
+        this.loadService(serviceId);
+      }
+    });
   }
 
-  loadService(): void {
-    if (!this.serviceId) return;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
+  /**
+   * Load service details
+   */
+  private loadService(id: string): void {
     this.loading = true;
     this.error = null;
 
-    this.marketplaceService.getService(this.serviceId).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.service = response.data;
-        } else {
-          this.error = 'Service not found';
-        }
+    this.serviceService.getService(id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (service) => {
+        this.service = service;
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading service:', error);
-        this.error = 'Failed to load service';
+      error: (err) => {
+        this.error = err.message || 'Failed to load service';
         this.loading = false;
       }
     });
   }
 
-  bookService(): void {
-    if (this.service) {
-      this.router.navigate(['/marketplace/bookings/create'], {
-        queryParams: { serviceId: this.service.id }
-      });
-    }
-  }
-
+  /**
+   * Navigate back to service list
+   */
   goBack(): void {
     this.router.navigate(['/marketplace/services']);
   }
 
+  /**
+   * Toggle booking form visibility
+   */
+  toggleBookingForm(): void {
+    this.showBookingForm = !this.showBookingForm;
+  }
+
+  /**
+   * Book service
+   */
+  bookService(): void {
+    if (!this.service) return;
+    
+    if (!this.selectedDate || !this.selectedTime) {
+      alert('Please select a date and time for your booking');
+      return;
+    }
+    
+    // TODO: Implement booking functionality
+    console.log('Book service:', this.service, 'Date:', this.selectedDate, 'Time:', this.selectedTime);
+    alert(`Booking request sent for ${this.service.title} on ${this.selectedDate} at ${this.selectedTime}`);
+    this.showBookingForm = false;
+  }
+
+  /**
+   * Contact service provider
+   */
+  contactProvider(): void {
+    if (!this.service) return;
+    
+    // TODO: Implement contact functionality
+    console.log('Contact provider for service:', this.service);
+    alert('Contact form will be displayed here');
+  }
+
+  /**
+   * Share service
+   */
+  shareService(): void {
+    if (!this.service) return;
+
+    if (navigator.share) {
+      navigator.share({
+        title: this.service.title,
+        text: this.service.shortDescription,
+        url: window.location.href
+      }).catch(err => console.log('Error sharing:', err));
+    } else {
+      // Fallback: copy link to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  }
+
+  /**
+   * Format price as currency
+   */
   formatPrice(price: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -169,10 +145,25 @@ export class ServiceDetailComponent implements OnInit {
     }).format(price);
   }
 
+  /**
+   * Get price range display
+   */
+  getPriceRange(): string {
+    if (!this.service) return '';
+    
+    if (this.service.maxPrice && this.service.maxPrice > this.service.basePrice) {
+      return `${this.formatPrice(this.service.basePrice)} - ${this.formatPrice(this.service.maxPrice)}`;
+    }
+    return this.formatPrice(this.service.basePrice);
+  }
+
+  /**
+   * Format duration in hours and minutes
+   */
   formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-
+    
     if (hours > 0 && mins > 0) {
       return `${hours}h ${mins}m`;
     } else if (hours > 0) {
@@ -180,5 +171,121 @@ export class ServiceDetailComponent implements OnInit {
     } else {
       return `${mins}m`;
     }
+  }
+
+  /**
+   * Get duration range display
+   */
+  getDurationRange(): string {
+    if (!this.service) return '';
+    
+    if (this.service.maxDuration && this.service.maxDuration > this.service.estimatedDuration) {
+      return `${this.formatDuration(this.service.estimatedDuration)} - ${this.formatDuration(this.service.maxDuration)}`;
+    }
+    return this.formatDuration(this.service.estimatedDuration);
+  }
+
+  /**
+   * Check if service is active
+   */
+  isActive(): boolean {
+    if (!this.service) return false;
+    return this.service.isActive && this.service.status === 'Active';
+  }
+
+  /**
+   * Get service status message
+   */
+  getStatusMessage(): string {
+    if (!this.service) return '';
+    
+    if (!this.service.isActive) {
+      return 'Service Unavailable';
+    } else if (this.service.status !== 'Active') {
+      return `Service ${this.service.status}`;
+    } else {
+      return 'Available for Booking';
+    }
+  }
+
+  /**
+   * Get status class
+   */
+  getStatusClass(): string {
+    if (!this.service) return '';
+    
+    if (!this.service.isActive || this.service.status !== 'Active') {
+      return 'unavailable';
+    } else {
+      return 'available';
+    }
+  }
+
+  /**
+   * Generate star rating array for display
+   */
+  getStarRating(): boolean[] {
+    if (!this.service) return [];
+    return Array(5).fill(false).map((_, index) => index < Math.round(this.service!.averageRating));
+  }
+
+  /**
+   * Get service tags as array
+   */
+  getTags(): string[] {
+    if (!this.service || !this.service.tags) return [];
+    return this.service.tags.split(',').map(tag => tag.trim());
+  }
+
+  /**
+   * Get requirements as array
+   */
+  getRequirements(): string[] {
+    if (!this.service || !this.service.requirements) return [];
+    return this.service.requirements.split('\n').filter(req => req.trim());
+  }
+
+  /**
+   * Get inclusions as array
+   */
+  getInclusions(): string[] {
+    if (!this.service || !this.service.inclusions) return [];
+    return this.service.inclusions.split('\n').filter(inc => inc.trim());
+  }
+
+  /**
+   * Get exclusions as array
+   */
+  getExclusions(): string[] {
+    if (!this.service || !this.service.exclusions) return [];
+    return this.service.exclusions.split('\n').filter(exc => exc.trim());
+  }
+
+  /**
+   * Format date
+   */
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  /**
+   * Get minimum date for booking (today)
+   */
+  getMinDate(): string {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  /**
+   * Get available time slots (placeholder)
+   */
+  getTimeSlots(): string[] {
+    return [
+      '09:00', '10:00', '11:00', '12:00',
+      '13:00', '14:00', '15:00', '16:00', '17:00'
+    ];
   }
 }

@@ -1,0 +1,158 @@
+<!-- Product Detail Component -->
+<div class="product-detail-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" *ngIf="product">
+    <a (click)="goBack()">Products</a>
+    <span class="separator">/</span>
+    <span>{{ product.name }}</span>
+  </nav>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading product details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error">
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="back-btn">Back to Products</button>
+  </div>
+
+  <!-- Product Content -->
+  <div class="product-content" *ngIf="product && !loading && !error">
+    <!-- Product Images -->
+    <div class="product-images">
+      <div class="main-image">
+        <img
+          [src]="product.imageUrl || 'assets/images/placeholder-product.png'"
+          [alt]="product.name"
+        />
+        <div class="image-badges">
+          <span *ngIf="hasDiscount()" class="badge badge-discount">
+            -{{ getDiscountPercentage() }}%
+          </span>
+          <span *ngIf="product.isFeatured" class="badge badge-featured">
+            Featured
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info-section">
+      <h1 class="product-title">{{ product.name }}</h1>
+      
+      <div class="product-brand" *ngIf="product.brand">
+        <strong>Brand:</strong> {{ product.brand }}
+      </div>
+
+      <div class="product-rating">
+        <span class="rating-stars">★ {{ product.rating.toFixed(1) }}</span>
+        <span class="rating-count">({{ product.reviewCount }} reviews)</span>
+      </div>
+
+      <div class="product-pricing">
+        <span class="current-price">{{ formatPrice(getDisplayPrice()) }}</span>
+        <span *ngIf="hasDiscount()" class="original-price">
+          {{ formatPrice(product.price) }}
+        </span>
+      </div>
+
+      <div class="stock-status" [class]="getStockStatusClass()">
+        {{ getStockStatus() }}
+      </div>
+
+      <div class="product-description">
+        <h3>Description</h3>
+        <p>{{ product.description }}</p>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-selector" *ngIf="isInStock()">
+        <label>Quantity:</label>
+        <div class="quantity-controls">
+          <button (click)="decrementQuantity()" [disabled]="quantity <= 1">-</button>
+          <input type="number" [(ngModel)]="quantity" [min]="1" [max]="product.stockQuantity" readonly />
+          <button (click)="incrementQuantity()" [disabled]="quantity >= product.stockQuantity">+</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          class="add-to-cart-btn"
+          (click)="addToCart()"
+          [disabled]="!isInStock()"
+        >
+          {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+        </button>
+        <button class="share-btn" (click)="shareProduct()">
+          Share
+        </button>
+      </div>
+
+      <!-- Product Specifications -->
+      <div class="product-specs">
+        <h3>Specifications</h3>
+        <dl>
+          <dt>SKU:</dt>
+          <dd>{{ product.sku }}</dd>
+          
+          <dt>Category:</dt>
+          <dd>{{ product.category }}</dd>
+          
+          <dt *ngIf="product.model">Model:</dt>
+          <dd *ngIf="product.model">{{ product.model }}</dd>
+          
+          <dt>Weight:</dt>
+          <dd>{{ product.weight }} kg</dd>
+          
+          <dt *ngIf="product.dimensions">Dimensions:</dt>
+          <dd *ngIf="product.dimensions">{{ product.dimensions }}</dd>
+          
+          <dt>Type:</dt>
+          <dd>{{ product.isDigital ? 'Digital' : 'Physical' }}</dd>
+          
+          <dt *ngIf="product.launchDate">Launch Date:</dt>
+          <dd *ngIf="product.launchDate">{{ formatDate(product.launchDate) }}</dd>
+        </dl>
+      </div>
+
+      <!-- Product Tags -->
+      <div class="product-tags" *ngIf="getTags().length > 0">
+        <h3>Tags</h3>
+        <div class="tags-list">
+          <span *ngFor="let tag of getTags()" class="tag">{{ tag }}</span>
+        </div>
+      </div>
+
+      <!-- Product Stats -->
+      <div class="product-stats">
+        <div class="stat">
+          <span class="stat-label">Views:</span>
+          <span class="stat-value">{{ product.viewCount }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Sales:</span>
+          <span class="stat-value">{{ product.salesCount }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section (Placeholder) -->
+  <div class="reviews-section" *ngIf="product && !loading && !error">
+    <h2>Customer Reviews</h2>
+    <div class="reviews-summary">
+      <div class="average-rating">
+        <span class="rating-number">{{ product.rating.toFixed(1) }}</span>
+        <span class="rating-stars">★★★★★</span>
+        <span class="review-count">Based on {{ product.reviewCount }} reviews</span>
+      </div>
+    </div>
+    <div class="reviews-placeholder">
+      <p>Reviews will be displayed here</p>
+    </div>
+  </div>
+</div>

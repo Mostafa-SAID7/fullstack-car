@@ -1,12 +1,12 @@
 // Marketplace Service - Main Export (composed from sub-services)
 
-import { MarketplaceDashboardService } from './dashboard.js';
-import { MarketplaceCustomersService } from './customers.js';
-import { MarketplaceProductsService } from './products.js';
-import { MarketplaceServicesService } from './services.js';
-import { MarketplaceAnalyticsService } from './analytics.js';
-import { MarketplaceOrdersService } from './orders.js';
-import { MarketplaceIntegrationService } from './integration.js';
+import { MarketplaceDashboardService } from './dashboard';
+import { MarketplaceCustomersService } from './customers';
+import { MarketplaceProductsService } from './products';
+import { MarketplaceServicesService } from './services';
+import { MarketplaceAnalyticsService } from './analytics';
+import { MarketplaceOrdersService } from './orders';
+import { MarketplaceIntegrationService } from './integration';
 
 export class MarketplaceService {
   private static instance: MarketplaceService;
@@ -179,3 +179,17 @@ export {
   MarketplaceOrdersService,
   MarketplaceIntegrationService
 };
+
+// Export new enhanced API services
+export { ProductApiService, productApiService, productCacheInvalidation } from './product-api.service';
+export { ServiceApiService, serviceApiService, serviceCacheInvalidation } from './service-api.service';
+export { ProductManagementService, productManagementService } from './product-management.service';
+export { ServiceManagementService, serviceManagementService } from './service-management.service';
+export { ImageUploadService, imageUploadService } from './image-upload.service';
+export { 
+  ProductPrefetchService, 
+  ServicePrefetchService, 
+  productPrefetchService, 
+  servicePrefetchService,
+  createPrefetchHandlers 
+} from './prefetch.service';

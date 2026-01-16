@@ -1,0 +1,339 @@
+<div class="product-form-container">
+  <div class="form-header">
+    <h2>{{ formTitle }}</h2>
+  </div>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Basic Information</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name" class="required">Product Name</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="form-control"
+            [class.error]="hasError('name')"
+            placeholder="Enter product name"
+          />
+          <span class="error-message" *ngIf="hasError('name')">
+            {{ getErrorMessage('name') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="sku" class="required">SKU</label>
+          <input
+            type="text"
+            id="sku"
+            formControlName="sku"
+            class="form-control"
+            [class.error]="hasError('sku')"
+            placeholder="e.g., PROD-12345"
+          />
+          <span class="error-message" *ngIf="hasError('sku')">
+            {{ getErrorMessage('sku') }}
+          </span>
+          <small class="help-text">Uppercase letters, numbers, and hyphens only</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="required">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          [class.error]="hasError('description')"
+          rows="4"
+          placeholder="Enter product description"
+        ></textarea>
+        <span class="error-message" *ngIf="hasError('description')">
+          {{ getErrorMessage('description') }}
+        </span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="category" class="required">Category</label>
+          <select
+            id="category"
+            formControlName="category"
+            class="form-control"
+            [class.error]="hasError('category')"
+          >
+            <option value="">Select a category</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+          <span class="error-message" *ngIf="hasError('category')">
+            {{ getErrorMessage('category') }}
+          </span>
+        </div>
+
+        <div class="form-group" *ngIf="mode === 'edit'">
+          <label for="status" class="required">Status</label>
+          <select
+            id="status"
+            formControlName="status"
+            class="form-control"
+            [class.error]="hasError('status')"
+          >
+            <option *ngFor="let stat of statuses" [value]="stat">{{ stat }}</option>
+          </select>
+          <span class="error-message" *ngIf="hasError('status')">
+            {{ getErrorMessage('status') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="form-section">
+      <h3 class="section-title">Pricing</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price" class="required">Price ($)</label>
+          <input
+            type="number"
+            id="price"
+            formControlName="price"
+            class="form-control"
+            [class.error]="hasError('price')"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+          />
+          <span class="error-message" *ngIf="hasError('price')">
+            {{ getErrorMessage('price') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="discountPrice">Discount Price ($)</label>
+          <input
+            type="number"
+            id="discountPrice"
+            formControlName="discountPrice"
+            class="form-control"
+            [class.error]="hasError('discountPrice')"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+          />
+          <span class="error-message" *ngIf="hasError('discountPrice')">
+            {{ getErrorMessage('discountPrice') }}
+          </span>
+          <small class="help-text">Must be less than regular price</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Section -->
+    <div class="form-section">
+      <h3 class="section-title">Inventory</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="stockQuantity" class="required">Stock Quantity</label>
+          <input
+            type="number"
+            id="stockQuantity"
+            formControlName="stockQuantity"
+            class="form-control"
+            [class.error]="hasError('stockQuantity')"
+            placeholder="0"
+            min="0"
+          />
+          <span class="error-message" *ngIf="hasError('stockQuantity')">
+            {{ getErrorMessage('stockQuantity') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="minStockLevel" class="required">Minimum Stock Level</label>
+          <input
+            type="number"
+            id="minStockLevel"
+            formControlName="minStockLevel"
+            class="form-control"
+            [class.error]="hasError('minStockLevel')"
+            placeholder="0"
+            min="0"
+          />
+          <span class="error-message" *ngIf="hasError('minStockLevel')">
+            {{ getErrorMessage('minStockLevel') }}
+          </span>
+          <small class="help-text">Alert threshold for low stock</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div class="form-section">
+      <h3 class="section-title">Product Details</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="brand">Brand</label>
+          <input
+            type="text"
+            id="brand"
+            formControlName="brand"
+            class="form-control"
+            [class.error]="hasError('brand')"
+            placeholder="Enter brand name"
+          />
+          <span class="error-message" *ngIf="hasError('brand')">
+            {{ getErrorMessage('brand') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="model">Model</label>
+          <input
+            type="text"
+            id="model"
+            formControlName="model"
+            class="form-control"
+            [class.error]="hasError('model')"
+            placeholder="Enter model"
+          />
+          <span class="error-message" *ngIf="hasError('model')">
+            {{ getErrorMessage('model') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="weight" class="required">Weight (kg)</label>
+          <input
+            type="number"
+            id="weight"
+            formControlName="weight"
+            class="form-control"
+            [class.error]="hasError('weight')"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+          />
+          <span class="error-message" *ngIf="hasError('weight')">
+            {{ getErrorMessage('weight') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="dimensions">Dimensions</label>
+          <input
+            type="text"
+            id="dimensions"
+            formControlName="dimensions"
+            class="form-control"
+            [class.error]="hasError('dimensions')"
+            placeholder="e.g., 10x20x30 cm"
+          />
+          <span class="error-message" *ngIf="hasError('dimensions')">
+            {{ getErrorMessage('dimensions') }}
+          </span>
+          <small class="help-text">Format: LxWxH (e.g., "10x20x30 cm")</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="imageUrl">Image URL</label>
+        <input
+          type="url"
+          id="imageUrl"
+          formControlName="imageUrl"
+          class="form-control"
+          [class.error]="hasError('imageUrl')"
+          placeholder="https://example.com/image.jpg"
+        />
+        <span class="error-message" *ngIf="hasError('imageUrl')">
+          {{ getErrorMessage('imageUrl') }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="tags">Tags</label>
+        <input
+          type="text"
+          id="tags"
+          formControlName="tags"
+          class="form-control"
+          [class.error]="hasError('tags')"
+          placeholder="e.g., electronics, gadget, popular"
+        />
+        <span class="error-message" *ngIf="hasError('tags')">
+          {{ getErrorMessage('tags') }}
+        </span>
+        <small class="help-text">Comma-separated tags</small>
+      </div>
+
+      <div class="form-group">
+        <label for="launchDate">Launch Date</label>
+        <input
+          type="date"
+          id="launchDate"
+          formControlName="launchDate"
+          class="form-control"
+          [class.error]="hasError('launchDate')"
+        />
+        <span class="error-message" *ngIf="hasError('launchDate')">
+          {{ getErrorMessage('launchDate') }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Options Section -->
+    <div class="form-section">
+      <h3 class="section-title">Options</h3>
+      
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              formControlName="isFeatured"
+            />
+            <span>Featured Product</span>
+          </label>
+          <small class="help-text">Display this product prominently</small>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              formControlName="isDigital"
+            />
+            <span>Digital Product</span>
+          </label>
+          <small class="help-text">No physical shipping required</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="onCancel()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="submitted && !isFormValid"
+      >
+        {{ submitButtonText }}
+      </button>
+    </div>
+  </form>
+</div>

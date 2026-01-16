@@ -390,3 +390,10 @@ export const useMarketplaceServices = () => {
     deleteService
   };
 };
+
+// Export new enhanced hooks
+export { useProducts, useProduct, useProductSearch } from './useProducts';
+export { useServices, useService, useServiceSearch, useServiceLocationSearch, usePopularServices } from './useServices';
+export { useProductAnalytics, useTopSellingProducts, useLowStockProducts, useProductDashboard } from './useProductAnalytics';
+export { useServiceAnalytics, usePopularServicesAnalytics, useEmergencyServices, useProviderServices, useServiceDashboard } from './useServiceAnalytics';
+export { useProductPrefetch, useServicePrefetch, useScrollPrefetch } from './usePrefetch';

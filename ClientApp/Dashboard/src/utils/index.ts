@@ -2,6 +2,7 @@
 export * from './helpers';
 export * from './storage';
 export * from './validation';
+export * from './image.utils';
 export { apiClient } from '../services/api';
 export type { ApiError, RequestConfig, RequestInterceptor } from '../services/api';
 
