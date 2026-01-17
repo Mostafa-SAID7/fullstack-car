@@ -37,25 +37,25 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                },
-                {
-                  "type": "bundle",
-                  "name": "vendor",
                   "maximumWarning": "300kb",
                   "maximumError": "500kb"
                 },
                 {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kb",
+                  "maximumError": "8kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "vendor",
+                  "maximumWarning": "200kb",
+                  "maximumError": "350kb"
+                },
+                {
                   "type": "bundle",
                   "name": "runtime",
-                  "maximumWarning": "10kb",
-                  "maximumError": "20kb"
+                  "maximumWarning": "5kb",
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
@@ -65,23 +65,15 @@
                 }
               ],
               "outputHashing": "all",
-              "optimization": {
-                "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": true
-                },
-                "fonts": {
-                  "inline": true
-                }
-              },
+              "optimization": true,
               "buildOptimizer": true,
               "aot": true,
               "extractLicenses": true,
               "sourceMap": {
-                "scripts": true,
+                "scripts": false,
                 "styles": false,
-                "vendor": false
+                "vendor": false,
+                "hidden": true
               },
               "namedChunks": false,
               "vendorChunk": true,
@@ -92,7 +84,8 @@
               "deleteOutputPath": true,
               "preserveSymlinks": false,
               "watch": false,
-              "poll": undefined
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             },
             "development": {
               "buildOptimizer": false,

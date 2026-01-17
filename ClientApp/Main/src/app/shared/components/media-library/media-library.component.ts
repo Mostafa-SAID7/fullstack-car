@@ -606,10 +606,10 @@ export class MediaLibraryComponent implements OnInit, OnDestroy {
 
   // Signals for reactive state
   protected searchQuery = '';
-  private viewMode = signal<'grid' | 'list'>('grid');
-  private showFilters = signal(false);
-  private isLoading = signal(false);
-  private currentPage = signal(1);
+  protected viewMode = signal<'grid' | 'list'>('grid');
+  protected showFilters = signal(false);
+  protected isLoading = signal(false);
+  protected currentPage = signal(1);
 
   private filters = signal<SearchFilters>({
     query: '',
@@ -628,7 +628,7 @@ export class MediaLibraryComponent implements OnInit, OnDestroy {
   protected filterDateRange: SearchFilters['dateRange'] = 'all';
   protected filterSortBy: SearchFilters['sortBy'] = 'relevance';
 
-  private recommendations = signal<MediaItem[]>([]);
+  protected recommendations = signal<MediaItem[]>([]);
 
   // Computed values
   protected readonly filteredItems = computed(() => {

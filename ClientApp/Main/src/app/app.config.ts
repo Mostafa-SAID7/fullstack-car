@@ -12,6 +12,7 @@ import { TranslationService } from './core/services/translation.service';
 import { CustomMissingTranslationHandler } from './core/services/custom-missing-translation-handler';
 import { CustomPreloadingStrategy } from './core/services/lazy-loading.service';
 import { FeatureRegistry } from './core/services/dynamic-import.service';
+import { CoreWebVitalsService } from './core/services/core-web-vitals.service';
 
 /**
  * Enhanced Translation Loader Factory
@@ -37,6 +38,19 @@ export function initializeTranslations(translationService: TranslationService) {
   };
 }
 
+/**
+ * Core Web Vitals Initialization Factory
+ * Initializes Core Web Vitals monitoring and optimization
+ */
+export function initializeCoreWebVitals(coreWebVitalsService: CoreWebVitalsService) {
+  return () => {
+    console.log('Initializing Core Web Vitals monitoring...');
+    // Service automatically starts monitoring in constructor
+    const metrics = coreWebVitalsService.getCurrentMetrics();
+    console.log('Core Web Vitals monitoring initialized:', metrics ? 'Active' : 'Pending');
+    return Promise.resolve();
+  };
+}
 /**
  * Feature Registry Initialization Factory
  * Initializes the feature registry and preloads critical features
@@ -86,6 +100,7 @@ export const appConfig: ApplicationConfig = {
     // Lazy Loading and Dynamic Import Services
     CustomPreloadingStrategy,
     FeatureRegistry,
+    CoreWebVitalsService,
     
     // Translation Module
     importProvidersFrom(
@@ -119,6 +134,14 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: initializeFeatureRegistry,
       deps: [FeatureRegistry],
+      multi: true
+    },
+    
+    // Initialize Core Web Vitals monitoring and optimization
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeCoreWebVitals,
+      deps: [CoreWebVitalsService],
       multi: true
     }
   ]

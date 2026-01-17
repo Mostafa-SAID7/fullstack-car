@@ -41,7 +41,7 @@ import { AccessibilityService } from '../../../../core/services/accessibility.se
               id="reduced-motion"
               type="checkbox"
               [checked]="accessibilityService.reducedMotion()"
-              (change)="updateSetting('reducedMotion', $event.target.checked)"
+              (change)="updateSetting('reducedMotion', ($event.target as HTMLInputElement).checked)"
               class="sr-only peer"
               aria-describedby="reduced-motion-description">
             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 dark:peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
@@ -63,7 +63,7 @@ import { AccessibilityService } from '../../../../core/services/accessibility.se
               id="high-contrast"
               type="checkbox"
               [checked]="accessibilityService.highContrast()"
-              (change)="updateSetting('highContrast', $event.target.checked)"
+              (change)="updateSetting('highContrast', ($event.target as HTMLInputElement).checked)"
               class="sr-only peer">
             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 dark:peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
           </label>
@@ -107,7 +107,7 @@ import { AccessibilityService } from '../../../../core/services/accessibility.se
               id="focus-visible"
               type="checkbox"
               [checked]="accessibilityService.focusVisible()"
-              (change)="updateSetting('focusVisible', $event.target.checked)"
+              (change)="updateSetting('focusVisible', ($event.target as HTMLInputElement).checked)"
               class="sr-only peer">
             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 dark:peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
           </label>
@@ -128,7 +128,7 @@ import { AccessibilityService } from '../../../../core/services/accessibility.se
               id="screen-reader"
               type="checkbox"
               [checked]="accessibilityService.screenReaderOptimized()"
-              (change)="updateSetting('screenReaderOptimized', $event.target.checked)"
+              (change)="updateSetting('screenReaderOptimized', ($event.target as HTMLInputElement).checked)"
               class="sr-only peer">
             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 dark:peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
           </label>

@@ -1,561 +1,401 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { EventTrackingService } from './event-tracking.service';
-import { AnalyticsService } from './analytics.service';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError, finalize, map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { 
+  UserProfile, 
+  UpdateProfileRequest, 
+  UpdatePrivacySettingsRequest, 
+  UpdatePreferencesRequest,
+  SocialConnection,
+  FollowRequest,
+  UserSearchResult,
+  ProfileActivity,
+  ProfileStats,
+  BlockUserRequest,
+  ReportUserRequest
+} from '../models/user-profile.model';
+import { PaginatedResult } from '../models/result.model';
+import { ToastService } from './toast.service';
+import { LoadingService } from '../../shared/services/loading/loading.service';
 
-export interface UserProfile {
-  id: string;
-  username: string;
-  displayName: string;
-  email: string;
-  avatar: string;
-  bio: string;
-  location: string;
-  website: string;
-  joinDate: Date;
-  lastActive: Date;
-  isVerified: boolean;
-  isPrivate: boolean;
-  preferences: UserPreferences;
-  stats: UserStats;
-  socialLinks: SocialLinks;
-}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  language: string;
-  timezone: string;
-  notifications: NotificationSettings;
-  privacy: PrivacySettings;
-  accessibility: AccessibilitySettings;
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  inApp: boolean;
-  followers: boolean;
-  likes: boolean;
-  comments: boolean;
-  mentions: boolean;
-  newsletter: boolean;
-}
-
-export interface PrivacySettings {
-  profileVisibility: 'public' | 'followers' | 'private';
-  showEmail: boolean;
-  showLocation: boolean;
-  showActivity: boolean;
-  allowMessages: 'everyone' | 'followers' | 'none';
-  allowTags: boolean;
-}
-
-export interface AccessibilitySettings {
-  reducedMotion: boolean;
-  highContrast: boolean;
-  largeText: boolean;
-  screenReader: boolean;
-  keyboardNavigation: boolean;
-}
-
-export interface UserStats {
-  followersCount: number;
-  followingCount: number;
-  postsCount: number;
-  likesReceived: number;
-  commentsCount: number;
-  sharesCount: number;
-  viewsCount: number;
-  reputation: number;
-}
-
-export interface SocialLinks {
-  twitter?: string;
-  instagram?: string;
-  youtube?: string;
-  tiktok?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-}
-
-export interface UserActivity {
-  id: string;
-  userId: string;
-  type: 'like' | 'comment' | 'share' | 'follow' | 'post' | 'view';
-  targetId: string;
-  targetType: 'user' | 'post' | 'media' | 'playlist';
-  timestamp: Date;
-  metadata: Record<string, any>;
-}
-
-export interface UserRelationship {
-  userId: string;
-  targetUserId: string;
-  type: 'following' | 'follower' | 'blocked' | 'muted';
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-/**
- * User Profile Service
- * 
- * Manages user profiles and social features:
- * - User profile management and customization
- * - Social relationships (follow/unfollow)
- * - Activity tracking and feeds
- * - Privacy and notification settings
- * - User statistics and reputation
- */
 @Injectable({
   providedIn: 'root'
 })
 export class UserProfileService {
-  private eventTrackingService = inject(EventTrackingService);
-  private analyticsService = inject(AnalyticsService);
-
-  private currentUser = new BehaviorSubject<UserProfile | null>(null);
-  private userActivities = new BehaviorSubject<UserActivity[]>([]);
-  private userRelationships = new BehaviorSubject<UserRelationship[]>([]);
-  private isLoading = new BehaviorSubject<boolean>(false);
-
-  public readonly currentUser$ = this.currentUser.asObservable();
-  public readonly userActivities$ = this.userActivities.asObservable();
-  public readonly userRelationships$ = this.userRelationships.asObservable();
-  public readonly isLoading$ = this.isLoading.asObservable();
-
+  private http = inject(HttpClient);
+  private toastService = inject(ToastService);
+  private loadingService = inject(LoadingService);
+  
+  private readonly apiUrl = `${environment.apiUrl}/api/profile`;
+  
+  // Reactive state
+  private currentProfileSubject = new BehaviorSubject<UserProfile | null>(null);
+  public currentProfile$ = this.currentProfileSubject.asObservable();
+  
+  private connectionsSubject = new BehaviorSubject<SocialConnection[]>([]);
+  public connections$ = this.connectionsSubject.asObservable();
+  
+  private followRequestsSubject = new BehaviorSubject<FollowRequest[]>([]);
+  public followRequests$ = this.followRequestsSubject.asObservable();
+  
+  // Signals for reactive UI
+  currentProfile = signal<UserProfile | null>(null);
+  isLoading = signal<boolean>(false);
+  
+  // Computed values
+  isProfileComplete = computed(() => {
+    const profile = this.currentProfile();
+    return profile && profile.bio && profile.location && profile.profileImageUrl;
+  });
+  
   constructor() {
-    this.initializeUserProfile();
+    // Subscribe to profile changes
+    this.currentProfile$.subscribe(profile => {
+      this.currentProfile.set(profile);
+    });
   }
-
-  /**
-   * Initialize user profile service
-   */
-  private initializeUserProfile(): void {
-    this.loadCurrentUser();
-    this.loadUserActivities();
-    this.loadUserRelationships();
+  
+  // Profile Management
+  getCurrentProfile(): Observable<UserProfile> {
+    this.isLoading.set(true);
     
-    console.log('👤 User profile service initialized');
+    return this.http.get<UserProfile>(`${this.apiUrl}/me`).pipe(
+      tap(profile => {
+        this.currentProfileSubject.next(profile);
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to load profile', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.isLoading.set(false))
+    );
   }
-
-  /**
-   * Load current user profile
-   */
-  private async loadCurrentUser(): Promise<void> {
-    try {
-      // In a real app, this would fetch from an API
-      const storedUser = localStorage.getItem('current-user');
-      if (storedUser) {
-        const user = JSON.parse(storedUser) as UserProfile;
-        // Convert date strings back to Date objects
-        user.joinDate = new Date(user.joinDate);
-        user.lastActive = new Date(user.lastActive);
-        this.currentUser.next(user);
-      }
-    } catch (error) {
-      console.error('Failed to load current user:', error);
-    }
+  
+  getProfile(userId: string): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}/${userId}`).pipe(
+      catchError(error => {
+        this.toastService.error('Failed to load user profile', error.message);
+        return throwError(() => error);
+      })
+    );
   }
-
-  /**
-   * Load user activities
-   */
-  private async loadUserActivities(): Promise<void> {
-    try {
-      const storedActivities = localStorage.getItem('user-activities');
-      if (storedActivities) {
-        const activities = JSON.parse(storedActivities) as UserActivity[];
-        // Convert date strings back to Date objects
-        activities.forEach(activity => {
-          activity.timestamp = new Date(activity.timestamp);
-        });
-        this.userActivities.next(activities);
-      }
-    } catch (error) {
-      console.error('Failed to load user activities:', error);
-    }
-  }
-
-  /**
-   * Load user relationships
-   */
-  private async loadUserRelationships(): Promise<void> {
-    try {
-      const storedRelationships = localStorage.getItem('user-relationships');
-      if (storedRelationships) {
-        const relationships = JSON.parse(storedRelationships) as UserRelationship[];
-        // Convert date strings back to Date objects
-        relationships.forEach(rel => {
-          rel.createdAt = new Date(rel.createdAt);
-          rel.updatedAt = new Date(rel.updatedAt);
-        });
-        this.userRelationships.next(relationships);
-      }
-    } catch (error) {
-      console.error('Failed to load user relationships:', error);
-    }
-  }
-
-  /**
-   * Create or update user profile
-   */
-  async updateUserProfile(profileData: Partial<UserProfile>): Promise<UserProfile> {
-    this.isLoading.next(true);
+  
+  updateProfile(request: UpdateProfileRequest): Observable<UserProfile> {
+    this.loadingService.show('update-profile', 'Updating profile...');
     
-    try {
-      const currentUser = this.currentUser.value;
-      
-      const updatedUser: UserProfile = {
-        ...currentUser,
-        ...profileData,
-        id: currentUser?.id || this.generateUserId(),
-        lastActive: new Date()
-      } as UserProfile;
-
-      // Save to storage (in real app, this would be an API call)
-      localStorage.setItem('current-user', JSON.stringify(updatedUser));
-      
-      this.currentUser.next(updatedUser);
-      
-      // Track profile update
-      this.eventTrackingService.trackCustomEvent({
-        name: 'profile_updated',
-        category: 'user_profile',
-        action: 'update',
-        parameters: {
-          user_id: updatedUser.id,
-          fields_updated: Object.keys(profileData)
+    return this.http.put<UserProfile>(`${this.apiUrl}/me`, request).pipe(
+      tap(profile => {
+        this.currentProfileSubject.next(profile);
+        this.toastService.success('Profile updated successfully');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to update profile', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('update-profile'))
+    );
+  }
+  
+  updatePrivacySettings(request: UpdatePrivacySettingsRequest): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/me/privacy`, request).pipe(
+      tap(profile => {
+        this.currentProfileSubject.next(profile);
+        this.toastService.success('Privacy settings updated');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to update privacy settings', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  updatePreferences(request: UpdatePreferencesRequest): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/me/preferences`, request).pipe(
+      tap(profile => {
+        this.currentProfileSubject.next(profile);
+        this.toastService.success('Preferences updated');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to update preferences', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  uploadProfileImage(file: File): Observable<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    this.loadingService.show('upload-image', 'Uploading image...');
+    
+    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/me/image`, formData).pipe(
+      tap(response => {
+        const currentProfile = this.currentProfileSubject.value;
+        if (currentProfile) {
+          currentProfile.profileImageUrl = response.imageUrl;
+          this.currentProfileSubject.next(currentProfile);
         }
-      });
-      
-      // Update analytics user properties
-      this.analyticsService.setUserProperties({
-        userId: updatedUser.id,
-        userType: updatedUser.isVerified ? 'verified' : 'free'
-      });
-      
-      return updatedUser;
-    } catch (error) {
-      console.error('Failed to update user profile:', error);
-      throw error;
-    } finally {
-      this.isLoading.next(false);
-    }
-  }
-
-  /**
-   * Update user preferences
-   */
-  async updateUserPreferences(preferences: Partial<UserPreferences>): Promise<void> {
-    const currentUser = this.currentUser.value;
-    if (!currentUser) throw new Error('No current user');
-
-    const updatedPreferences = {
-      ...currentUser.preferences,
-      ...preferences
-    };
-
-    await this.updateUserProfile({
-      preferences: updatedPreferences
-    });
-
-    this.eventTrackingService.trackCustomEvent({
-      name: 'preferences_updated',
-      category: 'user_profile',
-      action: 'preferences',
-      parameters: {
-        user_id: currentUser.id,
-        preferences_updated: Object.keys(preferences)
-      }
-    });
-  }
-
-  /**
-   * Follow a user
-   */
-  async followUser(targetUserId: string): Promise<void> {
-    const currentUser = this.currentUser.value;
-    if (!currentUser) throw new Error('No current user');
-
-    // Check if already following
-    const relationships = this.userRelationships.value;
-    const existingRelationship = relationships.find(
-      rel => rel.userId === currentUser.id && 
-             rel.targetUserId === targetUserId && 
-             rel.type === 'following'
+        this.toastService.success('Profile image updated');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to upload image', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('upload-image'))
     );
-
-    if (existingRelationship) {
-      console.log('Already following user');
-      return;
-    }
-
-    // Create follow relationship
-    const followRelationship: UserRelationship = {
-      userId: currentUser.id,
-      targetUserId,
-      type: 'following',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    // Create follower relationship for target user
-    const followerRelationship: UserRelationship = {
-      userId: targetUserId,
-      targetUserId: currentUser.id,
-      type: 'follower',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    const updatedRelationships = [...relationships, followRelationship, followerRelationship];
-    this.userRelationships.next(updatedRelationships);
-    
-    // Save to storage
-    localStorage.setItem('user-relationships', JSON.stringify(updatedRelationships));
-
-    // Update user stats
-    const updatedUser = {
-      ...currentUser,
-      stats: {
-        ...currentUser.stats,
-        followingCount: currentUser.stats.followingCount + 1
-      }
-    };
-    
-    await this.updateUserProfile(updatedUser);
-
-    // Track follow event
-    this.eventTrackingService.trackCustomEvent({
-      name: 'user_followed',
-      category: 'social',
-      action: 'follow',
-      parameters: {
-        user_id: currentUser.id,
-        target_user_id: targetUserId
-      }
-    });
-
-    // Add activity
-    this.addUserActivity({
-      type: 'follow',
-      targetId: targetUserId,
-      targetType: 'user',
-      metadata: {}
-    });
   }
-
-  /**
-   * Unfollow a user
-   */
-  async unfollowUser(targetUserId: string): Promise<void> {
-    const currentUser = this.currentUser.value;
-    if (!currentUser) throw new Error('No current user');
-
-    const relationships = this.userRelationships.value;
+  
+  uploadCoverImage(file: File): Observable<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
     
-    // Remove follow and follower relationships
-    const updatedRelationships = relationships.filter(
-      rel => !(
-        (rel.userId === currentUser.id && rel.targetUserId === targetUserId && rel.type === 'following') ||
-        (rel.userId === targetUserId && rel.targetUserId === currentUser.id && rel.type === 'follower')
-      )
-    );
-
-    this.userRelationships.next(updatedRelationships);
-    localStorage.setItem('user-relationships', JSON.stringify(updatedRelationships));
-
-    // Update user stats
-    const updatedUser = {
-      ...currentUser,
-      stats: {
-        ...currentUser.stats,
-        followingCount: Math.max(0, currentUser.stats.followingCount - 1)
-      }
-    };
+    this.loadingService.show('upload-cover', 'Uploading cover image...');
     
-    await this.updateUserProfile(updatedUser);
-
-    // Track unfollow event
-    this.eventTrackingService.trackCustomEvent({
-      name: 'user_unfollowed',
-      category: 'social',
-      action: 'unfollow',
-      parameters: {
-        user_id: currentUser.id,
-        target_user_id: targetUserId
-      }
-    });
-  }
-
-  /**
-   * Add user activity
-   */
-  addUserActivity(activityData: Omit<UserActivity, 'id' | 'userId' | 'timestamp'>): void {
-    const currentUser = this.currentUser.value;
-    if (!currentUser) return;
-
-    const activity: UserActivity = {
-      id: this.generateActivityId(),
-      userId: currentUser.id,
-      timestamp: new Date(),
-      ...activityData
-    };
-
-    const activities = this.userActivities.value;
-    const updatedActivities = [activity, ...activities];
-    
-    // Keep only last 100 activities
-    if (updatedActivities.length > 100) {
-      updatedActivities.splice(100);
-    }
-
-    this.userActivities.next(updatedActivities);
-    localStorage.setItem('user-activities', JSON.stringify(updatedActivities));
-  }
-
-  /**
-   * Get user relationship status
-   */
-  getUserRelationshipStatus(targetUserId: string): 'following' | 'follower' | 'mutual' | 'blocked' | 'none' {
-    const currentUser = this.currentUser.value;
-    if (!currentUser) return 'none';
-
-    const relationships = this.userRelationships.value;
-    
-    const isFollowing = relationships.some(
-      rel => rel.userId === currentUser.id && 
-             rel.targetUserId === targetUserId && 
-             rel.type === 'following'
-    );
-    
-    const isFollower = relationships.some(
-      rel => rel.userId === targetUserId && 
-             rel.targetUserId === currentUser.id && 
-             rel.type === 'following'
-    );
-    
-    const isBlocked = relationships.some(
-      rel => rel.userId === currentUser.id && 
-             rel.targetUserId === targetUserId && 
-             rel.type === 'blocked'
-    );
-
-    if (isBlocked) return 'blocked';
-    if (isFollowing && isFollower) return 'mutual';
-    if (isFollowing) return 'following';
-    if (isFollower) return 'follower';
-    return 'none';
-  }
-
-  /**
-   * Create default user profile
-   */
-  createDefaultProfile(userData: Partial<UserProfile>): UserProfile {
-    return {
-      id: this.generateUserId(),
-      username: '',
-      displayName: '',
-      email: '',
-      avatar: '/assets/default-avatar.png',
-      bio: '',
-      location: '',
-      website: '',
-      joinDate: new Date(),
-      lastActive: new Date(),
-      isVerified: false,
-      isPrivate: false,
-      preferences: {
-        theme: 'auto',
-        language: 'en',
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        notifications: {
-          email: true,
-          push: true,
-          inApp: true,
-          followers: true,
-          likes: true,
-          comments: true,
-          mentions: true,
-          newsletter: false
-        },
-        privacy: {
-          profileVisibility: 'public',
-          showEmail: false,
-          showLocation: true,
-          showActivity: true,
-          allowMessages: 'everyone',
-          allowTags: true
-        },
-        accessibility: {
-          reducedMotion: false,
-          highContrast: false,
-          largeText: false,
-          screenReader: false,
-          keyboardNavigation: false
+    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/me/cover`, formData).pipe(
+      tap(response => {
+        const currentProfile = this.currentProfileSubject.value;
+        if (currentProfile) {
+          currentProfile.coverImageUrl = response.imageUrl;
+          this.currentProfileSubject.next(currentProfile);
         }
-      },
-      stats: {
-        followersCount: 0,
-        followingCount: 0,
-        postsCount: 0,
-        likesReceived: 0,
-        commentsCount: 0,
-        sharesCount: 0,
-        viewsCount: 0,
-        reputation: 0
-      },
-      socialLinks: {},
-      ...userData
-    };
+        this.toastService.success('Cover image updated');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to upload cover image', error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => this.loadingService.hide('upload-cover'))
+    );
   }
-
-  /**
-   * Generate user ID
-   */
-  private generateUserId(): string {
-    return `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Generate activity ID
-   */
-  private generateActivityId(): string {
-    return `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Get current user
-   */
-  getCurrentUser(): UserProfile | null {
-    return this.currentUser.value;
-  }
-
-  /**
-   * Check if user is authenticated
-   */
-  isAuthenticated(): boolean {
-    return !!this.currentUser.value;
-  }
-
-  /**
-   * Sign out user
-   */
-  signOut(): void {
-    this.currentUser.next(null);
-    this.userActivities.next([]);
-    this.userRelationships.next([]);
+  
+  // Social Connections
+  getConnections(type: 'friends' | 'followers' | 'following', pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<SocialConnection>> {
+    const params = new HttpParams()
+      .set('type', type)
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
     
-    // Clear storage
-    localStorage.removeItem('current-user');
-    localStorage.removeItem('user-activities');
-    localStorage.removeItem('user-relationships');
+    return this.http.get<PaginatedResult<SocialConnection>>(`${this.apiUrl}/me/connections`, { params }).pipe(
+      tap(result => {
+        if (type === 'friends') {
+          this.connectionsSubject.next(result.items);
+        }
+      }),
+      catchError(error => {
+        this.toastService.error(`Failed to load ${type}`, error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  getUserConnections(userId: string, type: 'friends' | 'followers' | 'following', pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<SocialConnection>> {
+    const params = new HttpParams()
+      .set('type', type)
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
     
-    this.eventTrackingService.trackCustomEvent({
-      name: 'user_signed_out',
-      category: 'auth',
-      action: 'sign_out'
-    });
+    return this.http.get<PaginatedResult<SocialConnection>>(`${this.apiUrl}/${userId}/connections`, { params }).pipe(
+      catchError(error => {
+        this.toastService.error(`Failed to load user ${type}`, error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // Friend System
+  sendFriendRequest(userId: string, message?: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/friends/request`, { userId, message }).pipe(
+      tap(() => {
+        this.toastService.success('Friend request sent');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to send friend request', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  acceptFriendRequest(requestId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/friends/accept/${requestId}`, {}).pipe(
+      tap(() => {
+        this.toastService.success('Friend request accepted');
+        this.refreshFriendRequests();
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to accept friend request', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  declineFriendRequest(requestId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/friends/decline/${requestId}`, {}).pipe(
+      tap(() => {
+        this.toastService.success('Friend request declined');
+        this.refreshFriendRequests();
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to decline friend request', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  removeFriend(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/friends/${userId}`).pipe(
+      tap(() => {
+        this.toastService.success('Friend removed');
+        this.refreshConnections();
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to remove friend', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // Follow System
+  followUser(userId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/follow/${userId}`, {}).pipe(
+      tap(() => {
+        this.toastService.success('User followed');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to follow user', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  unfollowUser(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/follow/${userId}`).pipe(
+      tap(() => {
+        this.toastService.success('User unfollowed');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to unfollow user', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  getFollowRequests(pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<FollowRequest>> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    return this.http.get<PaginatedResult<FollowRequest>>(`${this.apiUrl}/follow/requests`, { params }).pipe(
+      tap(result => {
+        this.followRequestsSubject.next(result.items);
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to load follow requests', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // User Search and Discovery
+  searchUsers(query: string, pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<UserSearchResult>> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    return this.http.get<PaginatedResult<UserSearchResult>>(`${this.apiUrl}/search`, { params }).pipe(
+      catchError(error => {
+        this.toastService.error('Failed to search users', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  getSuggestedUsers(pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<UserSearchResult>> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    return this.http.get<PaginatedResult<UserSearchResult>>(`${this.apiUrl}/suggestions`, { params }).pipe(
+      catchError(error => {
+        this.toastService.error('Failed to load suggested users', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // Profile Activity
+  getProfileActivity(userId?: string, pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<ProfileActivity>> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    const url = userId ? `${this.apiUrl}/${userId}/activity` : `${this.apiUrl}/me/activity`;
+    
+    return this.http.get<PaginatedResult<ProfileActivity>>(url, { params }).pipe(
+      catchError(error => {
+        this.toastService.error('Failed to load activity', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  getProfileStats(userId?: string): Observable<ProfileStats> {
+    const url = userId ? `${this.apiUrl}/${userId}/stats` : `${this.apiUrl}/me/stats`;
+    
+    return this.http.get<ProfileStats>(url).pipe(
+      catchError(error => {
+        this.toastService.error('Failed to load profile stats', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // Blocking and Reporting
+  blockUser(request: BlockUserRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/block`, request).pipe(
+      tap(() => {
+        this.toastService.success('User blocked');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to block user', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  unblockUser(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/block/${userId}`).pipe(
+      tap(() => {
+        this.toastService.success('User unblocked');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to unblock user', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  reportUser(request: ReportUserRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/report`, request).pipe(
+      tap(() => {
+        this.toastService.success('User reported');
+      }),
+      catchError(error => {
+        this.toastService.error('Failed to report user', error.message);
+        return throwError(() => error);
+      })
+    );
+  }
+  
+  // Helper methods
+  private refreshConnections(): void {
+    this.getConnections('friends').subscribe();
+  }
+  
+  private refreshFriendRequests(): void {
+    // Refresh friend requests from the friend service
+    // This would typically be handled by the existing FriendService
   }
 }

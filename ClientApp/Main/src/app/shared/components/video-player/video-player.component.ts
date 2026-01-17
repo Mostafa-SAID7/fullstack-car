@@ -489,7 +489,7 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   private eventTrackingService = inject(EventTrackingService);
 
   // Signals for reactive state
-  private playbackState = signal<PlaybackState>({
+  protected playbackState = signal<PlaybackState>({
     currentTime: 0,
     duration: 0,
     volume: 1,
@@ -503,14 +503,14 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     pictureInPicture: false
   });
 
-  private currentSource = signal<VideoSource | null>(null);
-  private isLoading = signal(false);
-  private hasError = signal(false);
-  private errorMessage = signal('');
-  private showControls = signal(true);
-  private showPlaybackRateMenu = signal(false);
-  private showQualityMenu = signal(false);
-  private subtitlesEnabled = signal(false);
+  protected currentSource = signal<VideoSource | null>(null);
+  protected isLoading = signal(false);
+  protected hasError = signal(false);
+  protected errorMessage = signal('');
+  protected showControls = signal(true);
+  protected showPlaybackRateMenu = signal(false);
+  protected showQualityMenu = signal(false);
+  protected subtitlesEnabled = signal(false);
   private isSeeking = signal(false);
 
   private controlsTimer?: number;

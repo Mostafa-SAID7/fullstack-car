@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -6,7 +6,7 @@ import {
   LoginRequest, 
   RegisterRequest, 
   LoginResponse, 
-  UserInfo, 
+  UserDto, 
   RefreshTokenRequest,
   ConfirmEmailRequest,
   ForgotPasswordRequest,
@@ -21,7 +21,7 @@ import { Result } from '../models/result.model';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/v1/auth`;
-  private currentUserSubject = new BehaviorSubject<UserInfo | null>(null);
+  private currentUserSubject = new BehaviorSubject<UserDto | null>(null);
   private tokenSubject = new BehaviorSubject<string | null>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
 
@@ -29,11 +29,20 @@ export class AuthService {
   public token$ = this.tokenSubject.asObservable();
   public isLoading$ = this.isLoadingSubject.asObservable();
 
+  // Signal-based reactive state
+  private _currentUser = signal<UserDto | null>(null);
+  public currentUser = this._currentUser.asReadonly();
+
   constructor() {
     this.loadStoredAuth();
+    
+    // Sync BehaviorSubject with signal
+    this.currentUserSubject.subscribe(user => {
+      this._currentUser.set(user);
+    });
   }
 
-  get currentUser(): UserInfo | null {
+  get currentUserValue(): UserDto | null {
     return this.currentUserSubject.value;
   }
 
@@ -42,21 +51,21 @@ export class AuthService {
   }
 
   get isAuthenticated(): boolean {
-    return !!this.token && !!this.currentUser;
+    return !!this.token && !!this.currentUserValue;
   }
 
   get isContentCreator(): boolean {
-    const user = this.currentUser;
+    const user = this.currentUserValue;
     return !!user && (
-      user.roles.includes('ContentCreator') || 
-      user.roles.includes('Admin') ||
-      user.roles.includes('Moderator')
+      user.roles.includes('ContentCreator' as any) || 
+      user.roles.includes('Admin' as any) ||
+      user.roles.includes('Moderator' as any)
     );
   }
 
   get isAdmin(): boolean {
-    const user = this.currentUser;
-    return !!user && user.roles.includes('Admin');
+    const user = this.currentUserValue;
+    return !!user && user.roles.includes('Admin' as any);
   }
 
   login(request: LoginRequest): Observable<Result<LoginResponse>> {
@@ -64,30 +73,13 @@ export class AuthService {
     console.log('[Angular AuthService] Making login request to:', `${this.apiUrl}/login`);
     console.log('[Angular AuthService] Request payload:', request);
     
-    return this.http.post<Result<{
-      success: boolean;
-      message: string;
-      token: string;
-      refreshToken: string;
-      user: UserInfo;
-      expiresAt: string;
-    }>>(`${this.apiUrl}/login`, request)
+    return this.http.post<Result<LoginResponse>>(`${this.apiUrl}/login`, request)
       .pipe(
         tap(response => {
           console.log('[Angular AuthService] Login response:', response);
           this.isLoadingSubject.next(false);
           if (response.succeeded && response.data) {
-            // Backend returns nested AuthResponse structure, map it to LoginResponse
-            const authResponse = response.data;
-            const loginResponse: LoginResponse = {
-              token: authResponse.token,
-              refreshToken: authResponse.refreshToken,
-              user: authResponse.user,
-              expiresAt: authResponse.expiresAt
-            };
-            this.setAuthData(loginResponse);
-            
-            // Note: Router navigation should be handled by the component
+            this.setAuthData(response.data);
           }
         }),
         catchError(error => {
@@ -185,8 +177,8 @@ export class AuthService {
   }
 
   canModerateContent(): boolean {
-    const user = this.currentUser;
-    return !!user && (user.roles.includes('Admin') || user.roles.includes('Moderator'));
+    const user = this.currentUserValue;
+    return !!user && (user.roles.includes('Admin' as any) || user.roles.includes('Moderator' as any));
   }
 
   canAccessAnalytics(): boolean {
@@ -199,7 +191,7 @@ export class AuthService {
 
   // Check if user owns content
   canEditContent(creatorId: string): boolean {
-    const user = this.currentUser;
+    const user = this.currentUserValue;
     return !!user && (user.id === creatorId || this.canModerateContent());
   }
 

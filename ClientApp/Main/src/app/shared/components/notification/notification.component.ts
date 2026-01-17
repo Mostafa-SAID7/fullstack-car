@@ -74,7 +74,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.notificationService.notifications$.subscribe(
-      notification => {
+      (notification: Notification) => {
         this.notifications.push(notification);
       }
     );
@@ -91,7 +91,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   getNotificationClasses(notification: Notification): string {
     const baseClasses = 'rounded-lg p-4 shadow-lg notification-enter';
-    const typeClasses = {
+    const typeClasses: Record<string, string> = {
       success: 'bg-green-50 text-green-800',
       error: 'bg-red-50 text-red-800',
       warning: 'bg-yellow-50 text-yellow-800',

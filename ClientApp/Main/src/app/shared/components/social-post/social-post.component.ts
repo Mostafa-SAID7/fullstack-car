@@ -284,7 +284,7 @@ export class SocialPostComponent {
   protected showComments = signal(false);
   protected comments = signal<Comment[]>([]);
   protected newCommentText = '';
-  protected currentUser = this.userService.currentUser$;
+  protected currentUser = this.userService.currentUser;
 
   ngOnInit() {
     this.loadComments();

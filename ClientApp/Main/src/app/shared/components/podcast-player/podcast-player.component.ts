@@ -257,7 +257,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
   private eventTrackingService = inject(EventTrackingService);
 
   // Signals for reactive state
-  private playbackState = signal<PlaybackState>({
+  protected playbackState = signal<PlaybackState>({
     currentEpisode: null,
     currentTime: 0,
     duration: 0,
@@ -271,7 +271,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
     error: null
   });
 
-  private isMinimized = signal(false);
+  protected isMinimized = signal(false);
 
   ngOnInit(): void {
     this.initializePodcastPlayer();

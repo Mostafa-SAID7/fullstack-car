@@ -140,7 +140,7 @@ export interface ImageLoadEvent {
           </div>
           <div class="metric">
             <span class="label">Size:</span>
-            <span class="value">{{ loadMetrics()?.size.width }}x{{ loadMetrics()?.size.height }}</span>
+            <span class="value">{{ loadMetrics()?.size?.width }}x{{ loadMetrics()?.size?.height }}</span>
           </div>
         </div>
       }
