@@ -6,9 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Domain.Services
 {
-    /// <summary>
-    /// Domain service for expert identification and ranking algorithms
-    /// </summary>
     public class ExpertIdentificationService : IExpertIdentificationService
     {
         private readonly IRepository<QAExpert> _expertRepository;

@@ -35,10 +35,6 @@ public class PodcastUploadController : ControllerBase
         _fileValidationService = fileValidationService;
         _fileStorageService = fileStorageService;
     }
-
-    /// <summary>
-    /// Upload a podcast audio file
-    /// </summary>
     [HttpPost]
     [RequestSizeLimit(500_000_000)] // 500MB limit as per requirements
     public async Task<IActionResult> UploadPodcast(IFormFile file, [FromForm] UploadPodcastRequest request)

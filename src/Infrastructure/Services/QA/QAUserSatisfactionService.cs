@@ -5,12 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// QA User Satisfaction Service
-/// Tracks and analyzes user satisfaction metrics for the QA system
-/// Integrates with existing feedback systems and follows established patterns
-/// </summary>
 public interface IQAUserSatisfactionService
 {
     Task<QAUserSatisfactionDto> GetSatisfactionMetricsAsync(DateTime? startDate = null, DateTime? endDate = null);
@@ -469,10 +463,6 @@ public class QAUserSatisfactionService : IQAUserSatisfactionService
 
     #endregion
 }
-
-/// <summary>
-/// QA User Feedback DTO
-/// </summary>
 public class QAUserFeedbackDto
 {
     public Guid Id { get; set; }

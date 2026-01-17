@@ -20,10 +20,6 @@ namespace WebAPI.Controllers.Marketplace
         {
             _mediator = mediator;
         }
-
-        /// <summary>
-        /// Get all bookings for the authenticated user
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetMyBookings([FromQuery] GetMyBookingsQuery query)
         {
@@ -57,10 +53,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve bookings"
             });
         }
-
-        /// <summary>
-        /// Get booking by ID
-        /// </summary>
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetBooking(Guid id)
         {
@@ -99,10 +91,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Booking not found"
             });
         }
-
-        /// <summary>
-        /// Create a new booking
-        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequest request)
         {
@@ -144,10 +132,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to create booking"
             });
         }
-
-        /// <summary>
-        /// Cancel a booking
-        /// </summary>
         [HttpPost("{id:guid}/cancel")]
         public async Task<IActionResult> CancelBooking(Guid id, [FromBody] CancelBookingRequest request)
         {
@@ -187,10 +171,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to cancel booking"
             });
         }
-
-        /// <summary>
-        /// Confirm a booking (for service providers)
-        /// </summary>
         [HttpPost("{id:guid}/confirm")]
         public async Task<IActionResult> ConfirmBooking(Guid id, [FromBody] ConfirmBookingRequest request)
         {
@@ -230,10 +210,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to confirm booking"
             });
         }
-
-        /// <summary>
-        /// Complete a booking (for service providers)
-        /// </summary>
         [HttpPost("{id:guid}/complete")]
         public async Task<IActionResult> CompleteBooking(Guid id, [FromBody] CompleteBookingRequest request)
         {
@@ -273,10 +249,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to complete booking"
             });
         }
-
-        /// <summary>
-        /// Get bookings for service provider
-        /// </summary>
         [HttpGet("provider/{providerId:guid}")]
         public async Task<IActionResult> GetProviderBookings(Guid providerId, [FromQuery] GetProviderBookingsQuery query)
         {

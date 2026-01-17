@@ -17,10 +17,6 @@ public class PodcastDiscoveryController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    /// <summary>
-    /// Get trending podcasts
-    /// </summary>
     [HttpGet("trending")]
     [AllowAnonymous]
     public async Task<IActionResult> GetTrendingPodcasts([FromQuery] int count = 10, [FromQuery] int days = 7)
@@ -50,10 +46,6 @@ public class PodcastDiscoveryController : ControllerBase
             Message = "Failed to retrieve trending podcasts"
         });
     }
-
-    /// <summary>
-    /// Search podcasts
-    /// </summary>
     [HttpGet("search")]
     [AllowAnonymous]
     public async Task<IActionResult> SearchPodcasts([FromQuery] string query = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -66,10 +58,6 @@ public class PodcastDiscoveryController : ControllerBase
             Message = "Podcasts search completed successfully"
         });
     }
-
-    /// <summary>
-    /// Get featured podcasts
-    /// </summary>
     [HttpGet("featured")]
     [AllowAnonymous]
     public async Task<IActionResult> GetFeaturedPodcasts([FromQuery] int count = 10)
@@ -94,10 +82,6 @@ public class PodcastDiscoveryController : ControllerBase
             Message = "Failed to retrieve featured podcasts"
         });
     }
-
-    /// <summary>
-    /// Get podcast categories
-    /// </summary>
     [HttpGet("categories")]
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcastCategories()

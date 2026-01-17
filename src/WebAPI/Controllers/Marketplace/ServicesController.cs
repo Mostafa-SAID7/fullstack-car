@@ -21,10 +21,6 @@ namespace WebAPI.Controllers.Marketplace
         {
             _mediator = mediator;
         }
-
-        /// <summary>
-        /// Get all car services with filtering and pagination
-        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetServices([FromQuery] GetCarServicesQuery query)
@@ -48,10 +44,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve services"
             });
         }
-
-        /// <summary>
-        /// Get service by ID
-        /// </summary>
         [HttpGet("{id:guid}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetService(Guid id)
@@ -76,10 +68,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Service not found"
             });
         }
-
-        /// <summary>
-        /// Create a new car service
-        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateService([FromBody] CreateCarServiceRequest request, [FromQuery] Guid serviceProviderId)
         {
@@ -111,10 +99,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to create service"
             });
         }
-
-        /// <summary>
-        /// Update car service
-        /// </summary>
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateService(Guid id, [FromBody] UpdateCarServiceRequest request)
         {
@@ -154,10 +138,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to update service"
             });
         }
-
-        /// <summary>
-        /// Delete car service
-        /// </summary>
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteService(Guid id)
         {
@@ -195,10 +175,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to delete service"
             });
         }
-
-        /// <summary>
-        /// Get services by service provider
-        /// </summary>
         [HttpGet("provider/{providerId:guid}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetServicesByProvider(Guid providerId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -229,10 +205,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve services"
             });
         }
-
-        /// <summary>
-        /// Search services by location
-        /// </summary>
         [HttpGet("search/location")]
         [AllowAnonymous]
         public async Task<IActionResult> SearchServicesByLocation(
@@ -270,10 +242,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve services"
             });
         }
-
-        /// <summary>
-        /// Export services to CSV or JSON
-        /// </summary>
         [HttpGet("export")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ExportServices(
@@ -315,10 +283,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to export services"
             });
         }
-
-        /// <summary>
-        /// Get popular services
-        /// </summary>
         [HttpGet("popular")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPopularServices(
@@ -350,10 +314,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve popular services"
             });
         }
-
-        /// <summary>
-        /// Get service statistics
-        /// </summary>
         [HttpGet("statistics")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetServiceStatistics(

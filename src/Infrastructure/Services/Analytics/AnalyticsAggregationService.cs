@@ -8,11 +8,6 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Infrastructure.Services.Analytics;
-
-/// <summary>
-/// Background service that aggregates analytics data from individual tracking events
-/// into the MediaAnalytics table for accurate reporting and dashboard display
-/// </summary>
 public class AnalyticsAggregationService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;

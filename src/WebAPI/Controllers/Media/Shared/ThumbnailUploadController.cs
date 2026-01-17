@@ -16,10 +16,6 @@ public class ThumbnailUploadController : ControllerBase
     {
         _environment = environment;
     }
-
-    /// <summary>
-    /// Upload a thumbnail image for videos or podcasts
-    /// </summary>
     [HttpPost("upload")]
     [RequestSizeLimit(10_000_000)] // 10MB limit
     public async Task<IActionResult> UploadThumbnail(IFormFile file)

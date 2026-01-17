@@ -22,10 +22,6 @@ public class LocalizationV7Controller : BaseController
         _mediator = mediator;
         _logger = logger;
     }
-
-    /// <summary>
-    /// Gets a paged list of translations (Admin View)
-    /// </summary>
     [HttpGet("translations")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(PagedResult<Application.Features.Shared.Localization.DTOs.TranslationDto>), StatusCodes.Status200OK)]
@@ -34,13 +30,6 @@ public class LocalizationV7Controller : BaseController
         var result = await _mediator.Send(query);
         return Ok(result);
     }
-
-    /// <summary>
-    /// Gets translations for a specific culture and feature
-    /// </summary>
-    /// <param name="culture">Culture code (e.g., en-US, ar-EG)</param>
-    /// <param name="feature">Feature name (e.g., posts, groups, qa)</param>
-    /// <returns>Dictionary of translation keys and values</returns>
     [HttpGet("translations/{culture}/{feature}")]
     [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -98,12 +87,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Gets translations for multiple features in a single culture (batch operation)
-    /// </summary>
-    /// <param name="request">Batch translation request containing culture and features</param>
-    /// <returns>Dictionary with feature names as keys and translation dictionaries as values</returns>
     [HttpPost("translations/batch")]
     [ProducesResponseType(typeof(Dictionary<string, Dictionary<string, string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -141,10 +124,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Gets translations that were updated after a certain date
-    /// </summary>
     [HttpPost("updates/{culture}")]
     [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTranslationUpdates(string culture, [FromBody] TranslationUpdatesRequestDto request)
@@ -165,10 +144,6 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred" });
         }
     }
-
-    /// <summary>
-    /// Creates a new translation
-    /// </summary>
     [HttpPost("translations")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateTranslation([FromBody] CreateTranslationCommand command)
@@ -184,10 +159,6 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Updates an existing translation
-    /// </summary>
     [HttpPut("translations/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateTranslation(string id, [FromBody] UpdateTranslationCommand command)
@@ -204,10 +175,6 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Deletes a translation
-    /// </summary>
     [HttpDelete("translations/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTranslation(string id)
@@ -223,11 +190,6 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Gets all supported cultures
-    /// </summary>
-    /// <returns>List of supported culture codes</returns>
     [HttpGet("cultures/supported")]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSupportedCultures()
@@ -249,13 +211,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Invalidates translation cache for specific culture and/or feature
-    /// </summary>
-    /// <param name="culture">Culture code (optional - null to invalidate all cultures)</param>
-    /// <param name="feature">Feature name (optional - null to invalidate all features)</param>
-    /// <returns>Success confirmation</returns>
     [HttpDelete("cache")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
@@ -299,12 +254,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Warms up translation cache for specific culture and features
-    /// </summary>
-    /// <param name="request">Cache warming request</param>
-    /// <returns>Cache warming results</returns>
     [HttpPost("cache/warm")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
@@ -349,11 +298,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Gets translation cache performance metrics
-    /// </summary>
-    /// <returns>Cache performance statistics</returns>
     [HttpGet("cache/metrics")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
@@ -376,10 +320,6 @@ public class LocalizationV7Controller : BaseController
             });
         }
     }
-
-    /// <summary>
-    /// Gets translation statistics
-    /// </summary>
     [HttpGet("stats")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetTranslationStats()
@@ -387,10 +327,6 @@ public class LocalizationV7Controller : BaseController
         var result = await _mediator.Send(new GetTranslationStatsQuery());
         return Ok(result);
     }
-
-    /// <summary>
-    /// Imports translations from a file
-    /// </summary>
     [HttpPost("bulk-import")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> BulkImportTranslations([FromBody] BulkImportTranslationsCommand command)
@@ -405,10 +341,6 @@ public class LocalizationV7Controller : BaseController
             return BadRequest(new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Exports translations
-    /// </summary>
     [HttpPost("export")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ExportTranslations([FromBody] ExportTranslationsCommand command)
@@ -423,10 +355,6 @@ public class LocalizationV7Controller : BaseController
             return BadRequest(new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Validates translations using the V7 validation engine
-    /// </summary>
     [HttpPost("validate")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ValidateTranslations([FromBody] RunTranslationValidationCommand command)
@@ -442,10 +370,6 @@ public class LocalizationV7Controller : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
-
-    /// <summary>
-    /// Detects language from headers
-    /// </summary>
     [HttpGet("detect")]
     public async Task<IActionResult> DetectLanguage()
     {
@@ -456,10 +380,6 @@ public class LocalizationV7Controller : BaseController
         });
         return Ok(result);
     }
-
-    /// <summary>
-    /// Gets culture info
-    /// </summary>
     [HttpGet("culture/{language}")]
     public async Task<IActionResult> GetCultureInfo(string language)
     {
@@ -473,11 +393,6 @@ public class LocalizationV7Controller : BaseController
             return BadRequest(new { Message = ex.Message, Language = language });
         }
     }
-
-    /// <summary>
-    /// Gets translation cache performance metrics
-    /// </summary>
-    /// <returns>List of resource files</returns>
     [HttpGet("resources/files")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(IEnumerable<ResourceFileDto>), StatusCodes.Status200OK)]

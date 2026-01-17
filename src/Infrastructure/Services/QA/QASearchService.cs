@@ -14,10 +14,6 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Configuration options for QA search service
-/// </summary>
 public class QASearchOptions
 {
     public const string SectionName = "QASearch";
@@ -30,10 +26,6 @@ public class QASearchOptions
     public int SearchIndexBatchSize { get; set; } = 100;
     public bool EnableRealTimeIndexing { get; set; } = true;
 }
-
-/// <summary>
-/// Search index entry for questions and answers
-/// </summary>
 public class QASearchIndexEntry
 {
     public Guid Id { get; set; }
@@ -65,11 +57,6 @@ public class QASearchIndexEntry
     public double RelevanceBoost { get; set; } = 1.0;
     public DateTime IndexedAt { get; set; } = DateTime.UtcNow;
 }
-
-/// <summary>
-/// Unified QA search service implementation providing comprehensive search functionality
-/// for both Angular and React frontends with advanced indexing and caching
-/// </summary>
 public class QASearchService : IQASearchService
 {
     private readonly IApplicationDbContext _context;
@@ -173,10 +160,6 @@ public class QASearchService : IQASearchService
             return Result<PaginatedList<QuestionListDto>>.Failure("An error occurred while searching questions");
         }
     }
-
-    /// <summary>
-    /// Optimized question search execution that handles mock DbSet issues better
-    /// </summary>
     private async Task<Result<PaginatedList<QuestionListDto>>> ExecuteOptimizedQuestionSearchAsync(
         string searchTerm,
         string? category,
@@ -281,10 +264,6 @@ public class QASearchService : IQASearchService
             throw;
         }
     }
-
-    /// <summary>
-    /// Simplified filter application that works better with mocks
-    /// </summary>
     private IQueryable<Question> ApplySimplifiedQuestionFilters(IQueryable<Question> query, string? category, List<string>? tags,
         DateTime? fromDate, DateTime? toDate, int? minVotes, int? maxVotes, bool? hasAcceptedAnswer, bool? isClosed)
     {
@@ -338,10 +317,6 @@ public class QASearchService : IQASearchService
 
         return query;
     }
-
-    /// <summary>
-    /// Helper method to parse tags JSON safely
-    /// </summary>
     private List<string> ParseTags(string? tagsJson)
     {
         if (string.IsNullOrWhiteSpace(tagsJson))

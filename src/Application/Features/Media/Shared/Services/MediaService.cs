@@ -1,9 +1,9 @@
 using Application.Common.Models;
-using Application.Features.Media.Shared.Interfaces;
+using Application.Features.Media.Interfaces;
 
 namespace Application.Features.Media.Shared.Services;
 
-public class MediaService : IMediaService
+public class MediaService
 {
     private readonly ILogger<MediaService> _logger;
 

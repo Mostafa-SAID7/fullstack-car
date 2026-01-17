@@ -68,19 +68,19 @@
 
                 <!-- Actions -->
                 <div class="flex shrink-0 items-center gap-1">
-                    <app-form-button *ngIf="canAcceptAnswer(answer)" (clicked)="onAcceptAnswer(answer)" variant="ghost"
+                    <ui-button *ngIf="canAcceptAnswer(answer)" (click)="onAcceptAnswer(answer)" variant="ghost"
                         size="sm" [disabled]="acceptingAnswer === answer.id" title="Accept this answer">
                         <i class="fas fa-check" [class.text-green-500]="answer.isAccepted"></i>
-                    </app-form-button>
+                    </ui-button>
 
-                    <app-form-button (clicked)="onShareAnswer(answer)" variant="ghost" size="sm" title="Share">
+                    <ui-button (click)="onShareAnswer(answer)" variant="ghost" size="sm" title="Share">
                         <i class="fas fa-share-alt"></i>
-                    </app-form-button>
+                    </ui-button>
 
-                    <app-form-button *ngIf="canEditAnswer(answer)" (clicked)="onEditAnswer(answer)" variant="ghost"
-                        size="sm" title="Edit">
+                    <ui-button *ngIf="canEditAnswer(answer)" (click)="onEditAnswer(answer)" variant="ghost" size="sm"
+                        title="Edit">
                         <i class="fas fa-edit"></i>
-                    </app-form-button>
+                    </ui-button>
                 </div>
             </div>
 

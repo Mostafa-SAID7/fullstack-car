@@ -35,10 +35,6 @@ public class VideoUploadController : BaseController
         _fileStorageService = fileStorageService;
         _logger = logger;
     }
-
-    /// <summary>
-    /// Upload a video file
-    /// </summary>
     [HttpPost]
     [RequestSizeLimit(2_000_000_000)] // 2GB limit as per requirements
     public async Task<IActionResult> UploadVideo(IFormFile file, [FromForm] Application.Features.Media.Shared.DTOs.Requests.UploadVideoRequest request)
@@ -150,10 +146,6 @@ public class VideoUploadController : BaseController
             return InternalServerError("An error occurred while uploading the video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Upload video with progress tracking (chunked upload)
-    /// </summary>
     [HttpPost("chunked")]
     public async Task<IActionResult> UploadVideoChunked([FromForm] VideoChunkUploadRequest request)
     {
@@ -354,11 +346,6 @@ public class VideoUploadController : BaseController
             return InternalServerError("An error occurred while uploading the chunk", ex.Message);
         }
     }
-
-
-    /// <summary>
-    /// Get upload progress
-    /// </summary>
     [HttpGet("progress/{uploadId}")]
     public IActionResult GetUploadProgress(string uploadId)
     {

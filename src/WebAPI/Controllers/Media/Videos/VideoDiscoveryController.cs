@@ -17,10 +17,6 @@ public class VideoDiscoveryController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    /// <summary>
-    /// Get trending videos
-    /// </summary>
     [HttpGet("trending")]
     [AllowAnonymous]
     public async Task<IActionResult> GetTrendingVideos([FromQuery] int count = 10, [FromQuery] int days = 7)
@@ -50,10 +46,6 @@ public class VideoDiscoveryController : ControllerBase
             Message = "Failed to retrieve trending videos"
         });
     }
-
-    /// <summary>
-    /// Search videos
-    /// </summary>
     [HttpGet("search")]
     [AllowAnonymous]
     public async Task<IActionResult> SearchVideos([FromQuery] string query = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -66,10 +58,6 @@ public class VideoDiscoveryController : ControllerBase
             Message = "Video search completed successfully"
         });
     }
-
-    /// <summary>
-    /// Get featured videos
-    /// </summary>
     [HttpGet("featured")]
     [AllowAnonymous]
     public async Task<IActionResult> GetFeaturedVideos([FromQuery] int count = 10)
@@ -82,10 +70,6 @@ public class VideoDiscoveryController : ControllerBase
             Message = "Featured videos retrieved successfully"
         });
     }
-
-    /// <summary>
-    /// Get video categories
-    /// </summary>
     [HttpGet("categories")]
     [AllowAnonymous]
     public async Task<IActionResult> GetVideoCategories()

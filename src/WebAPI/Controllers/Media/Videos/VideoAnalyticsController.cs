@@ -11,9 +11,6 @@ namespace WebAPI.Controllers.Media.Videos;
 [Authorize]
 public class VideoAnalyticsController : ControllerBase
 {
-    /// <summary>
-    /// Get analytics for a specific video
-    /// </summary>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetVideoAnalytics(Guid id)
     {
@@ -43,10 +40,6 @@ public class VideoAnalyticsController : ControllerBase
             Message = "Video analytics retrieved successfully"
         });
     }
-
-    /// <summary>
-    /// Get video dashboard with overview analytics
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetVideoDashboard()
     {

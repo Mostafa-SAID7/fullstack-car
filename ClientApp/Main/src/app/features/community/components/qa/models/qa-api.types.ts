@@ -375,35 +375,35 @@ export function isPaginatedResponse<T>(obj: unknown): obj is PaginatedResponse<T
 // API Endpoint Constants
 export const QA_API_ENDPOINTS = {
     QUESTIONS: {
-        BASE: '/api/v7/qa/questions',
-        SEARCH: '/api/v7/qa/questions/search',
-        SIMILAR: (id: string) => `/api/v7/qa/questions/similar/${id}`,
-        CLOSE: (id: string) => `/api/v7/qa/questions/${id}/close`,
-        MY_QUESTIONS: '/api/v7/qa/questions/my-questions'
+        BASE: '/api/v2.0/qa/questions',
+        SEARCH: '/api/v2.0/qa/questions/search',
+        SIMILAR: (id: string) => `/api/v2.0/qa/questions/similar/${id}`,
+        CLOSE: (id: string) => `/api/v2.0/qa/questions/${id}/close`,
+        MY_QUESTIONS: '/api/v2.0/qa/questions/my-questions'
     },
     ANSWERS: {
-        BASE: '/api/v7/qa/answers',
-        BY_QUESTION: (questionId: string) => `/api/v7/qa/answers/question/${questionId}`,
-        ACCEPT: (id: string) => `/api/v7/qa/answers/${id}/accept`,
-        MY_ANSWERS: '/api/v7/qa/answers/my-answers'
+        BASE: '/api/v2.0/qa/answers',
+        BY_QUESTION: (questionId: string) => `/api/v2.0/qa/answers/question/${questionId}`,
+        ACCEPT: (id: string) => `/api/v2.0/qa/answers/${id}/accept`,
+        MY_ANSWERS: '/api/v2.0/qa/answers/my-answers'
     },
     VOTES: {
-        BASE: '/api/v7/qa/votes',
-        MY_VOTES: '/api/v7/qa/votes/my-votes'
+        BASE: '/api/v2.0/qa/votes',
+        MY_VOTES: '/api/v2.0/qa/votes/my-votes'
     },
     REPUTATION: {
-        BASE: '/api/v7/qa/reputation',
-        BASE_USER: (userId: string) => `/api/v7/qa/reputation/${userId}`,
-        LEADERBOARD: '/api/v7/qa/reputation/leaderboard',
-        HISTORY: (userId: string) => `/api/v7/qa/reputation/${userId}/history`,
-        EXPERTS: '/api/v7/qa/reputation/experts'
+        BASE: '/api/v2.0/qa/reputation',
+        BASE_USER: (userId: string) => `/api/v2.0/qa/reputation/${userId}`,
+        LEADERBOARD: '/api/v2.0/qa/reputation/leaderboard',
+        HISTORY: (userId: string) => `/api/v2.0/qa/reputation/${userId}/history`,
+        EXPERTS: '/api/v2.0/qa/reputation/experts'
     },
     CATEGORIES: {
-        BASE: '/api/v7/qa/categories',
-        EXPERTS: (categoryId: string) => `/api/v7/qa/categories/${categoryId}/experts`
+        BASE: '/api/v2.0/qa/categories',
+        EXPERTS: (categoryId: string) => `/api/v2.0/qa/categories/${categoryId}/experts`
     },
     TAGS: {
-        BASE: '/api/v7/qa/tags',
-        POPULAR: '/api/v7/qa/tags/popular'
+        BASE: '/api/v2.0/qa/tags',
+        POPULAR: '/api/v2.0/qa/tags/popular'
     }
 } as const;

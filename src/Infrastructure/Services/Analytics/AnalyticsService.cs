@@ -6,10 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.Analytics;
-
-/// <summary>
-/// Service for real-time analytics operations to ensure data accuracy
-/// </summary>
 public class MediaAnalyticsService : IMediaAnalyticsService
 {
     private readonly IApplicationDbContext _context;

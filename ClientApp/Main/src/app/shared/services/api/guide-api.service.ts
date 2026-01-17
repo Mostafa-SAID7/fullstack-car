@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { BaseApiService } from './base-api.service';
-import { 
-  GuideDto, 
-  CreateGuideRequest, 
-  UpdateGuideRequest, 
+import {
+  GuideDto,
+  CreateGuideRequest,
+  UpdateGuideRequest,
   GuideStepDto,
   GuideRatingDto
 } from '../../models/community/guide.model';
@@ -15,7 +15,7 @@ import { PagedResult } from '../../models/community/common.model';
   providedIn: 'root'
 })
 export class GuideApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/guides';
+  private readonly endpoint = '/v2.0/guides';
 
   getGuides(params: {
     pageNumber?: number;
@@ -26,14 +26,14 @@ export class GuideApiService extends BaseApiService {
     let httpParams = new HttpParams()
       .set('pageNumber', (params.pageNumber || 1).toString())
       .set('pageSize', (params.pageSize || 20).toString());
-    
+
     if (params.category) {
       httpParams = httpParams.set('category', params.category.toString());
     }
     if (params.difficulty) {
       httpParams = httpParams.set('difficulty', params.difficulty.toString());
     }
-    
+
     return this.get<PagedResult<GuideDto>>(this.endpoint, {
       cache: true,
       cacheTTL: 120000, // 2 minutes
@@ -83,7 +83,7 @@ export class GuideApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<GuideRatingDto>>(`${this.endpoint}/${guideId}/ratings`, {
       cache: true,
       cacheTTL: 60000, // 1 minute

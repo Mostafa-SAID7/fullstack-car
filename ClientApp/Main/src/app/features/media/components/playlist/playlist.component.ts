@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MediaService } from '../../services/media.service';
 import { VideoPlaylist } from '../../models';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-playlist',

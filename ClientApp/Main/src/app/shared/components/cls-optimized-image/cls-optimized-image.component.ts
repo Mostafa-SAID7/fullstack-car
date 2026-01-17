@@ -14,7 +14,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SkeletonLoaderComponent } from '../skeleton-loader/skeleton-loader.component';
+import { SkeletonLoaderComponent } from '../ui/skeleton/skeleton-loader.component';
 
 export interface CLSImageConfig {
   enableLazyLoading: boolean;

@@ -110,29 +110,29 @@
         <!-- Form Actions -->
         <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-border/50">
             <div class="flex gap-3 flex-1">
-                <!-- Submit Button (reusing FormButtonComponent) -->
-                <app-form-button variant="primary" size="md" type="submit" [loading]="isSubmitting"
+                <!-- Submit Button (reusing ButtonComponent) -->
+                <ui-button variant="default" size="default" type="submit" [loading]="isSubmitting"
                     [disabled]="answerForm.invalid || isSubmitting" class="flex-1 sm:flex-none">
                     <span *ngIf="!isSubmitting">{{ 'answers.submitAnswer' | translate }}</span>
                     <span *ngIf="isSubmitting">{{ 'actions.save' | translate }}...</span>
-                </app-form-button>
+                </ui-button>
 
                 <!-- Preview Toggle Button -->
-                <app-form-button variant="outline" size="md" type="button" (clicked)="togglePreview()">
+                <ui-button variant="outline" size="default" type="button" (click)="togglePreview()">
                     {{ showPreview ? ('actions.showLess' | translate) : ('actions.preview' | translate) }}
-                </app-form-button>
+                </ui-button>
             </div>
 
             <!-- Secondary Actions -->
             <div class="flex gap-2">
-                <app-form-button variant="ghost" size="md" type="button" (clicked)="onCancel()">
+                <ui-button variant="ghost" size="default" type="button" (click)="onCancel()">
                     {{ 'actions.cancel' | translate }}
-                </app-form-button>
+                </ui-button>
 
-                <app-form-button variant="ghost" size="md" type="button" (clicked)="saveDraft()"
+                <ui-button variant="ghost" size="default" type="button" (click)="saveDraft()"
                     [disabled]="answerForm.get('content')?.value?.length < 10">
                     {{ 'questions.saveAsDraft' | translate }}
-                </app-form-button>
+                </ui-button>
             </div>
         </div>
 

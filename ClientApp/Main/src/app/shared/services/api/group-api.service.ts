@@ -9,7 +9,7 @@ import { PagedResult } from '../../models/community/common.model';
   providedIn: 'root'
 })
 export class GroupApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/groups';
+  private readonly endpoint = '/v2.0/groups';
 
   getGroups(params: {
     pageNumber?: number;
@@ -20,14 +20,14 @@ export class GroupApiService extends BaseApiService {
     let httpParams = new HttpParams()
       .set('pageNumber', (params.pageNumber || 1).toString())
       .set('pageSize', (params.pageSize || 20).toString());
-    
+
     if (params.type) {
       httpParams = httpParams.set('type', params.type.toString());
     }
     if (params.privacy) {
       httpParams = httpParams.set('privacy', params.privacy.toString());
     }
-    
+
     return this.get<PagedResult<GroupDto>>(this.endpoint, {
       cache: true,
       cacheTTL: 120000, // 2 minutes
@@ -66,7 +66,7 @@ export class GroupApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<GroupMemberDto>>(`${this.endpoint}/${groupId}/members`, {
       cache: true,
       cacheTTL: 60000, // 1 minute

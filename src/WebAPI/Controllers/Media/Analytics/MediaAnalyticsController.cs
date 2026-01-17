@@ -22,10 +22,6 @@ public class MediaAnalyticsController : ControllerBase
         _mediator = mediator;
         _logger = logger;
     }
-
-    /// <summary>
-    /// Track video view
-    /// </summary>
     [HttpPost("videos/{videoId:guid}/views")]
     public async Task<IActionResult> TrackVideoView(Guid videoId, [FromBody] object requestBody)
     {
@@ -131,10 +127,6 @@ public class MediaAnalyticsController : ControllerBase
             });
         }
     }
-
-    /// <summary>
-    /// Track podcast play
-    /// </summary>
     [HttpPost("podcasts/{podcastId:guid}/plays")]
     public async Task<IActionResult> TrackPodcastPlay(Guid podcastId, [FromBody] object requestBody)
     {
@@ -237,10 +229,6 @@ public class MediaAnalyticsController : ControllerBase
             });
         }
     }
-
-    /// <summary>
-    /// Track engagement (like, dislike, comment, share, etc.)
-    /// </summary>
     [HttpPost("engagement")]
     public async Task<IActionResult> TrackEngagement([FromBody] TrackEngagementCommand command)
     {
@@ -284,10 +272,6 @@ public class MediaAnalyticsController : ControllerBase
             });
         }
     }
-
-    /// <summary>
-    /// Get analytics dashboard data
-    /// </summary>
     [HttpGet("dashboard")]
     [Authorize]
     public async Task<IActionResult> GetAnalyticsDashboard([FromQuery] string timeRange = "30d")

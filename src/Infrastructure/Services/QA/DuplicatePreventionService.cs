@@ -13,10 +13,6 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Configuration options for duplicate prevention service
-/// </summary>
 public class DuplicatePreventionOptions
 {
     public const string SectionName = "DuplicatePrevention";
@@ -33,11 +29,6 @@ public class DuplicatePreventionOptions
     public double CategoryWeight { get; set; } = 0.1;
     public double TagWeight { get; set; } = 0.1;
 }
-
-/// <summary>
-/// Unified duplicate prevention service implementation providing semantic similarity detection
-/// and identical question prevention for both Angular and React frontends
-/// </summary>
 public class DuplicatePreventionService : IDuplicatePreventionService
 {
     private readonly IApplicationDbContext _context;

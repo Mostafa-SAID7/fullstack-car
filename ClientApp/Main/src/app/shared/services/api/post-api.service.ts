@@ -9,7 +9,7 @@ import { PagedResult } from '../../models/community/common.model';
   providedIn: 'root'
 })
 export class PostApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/posts';
+  private readonly endpoint = '/v2.0/posts';
 
   getPosts(params: {
     pageNumber?: number;
@@ -20,14 +20,14 @@ export class PostApiService extends BaseApiService {
     let httpParams = new HttpParams()
       .set('pageNumber', (params.pageNumber || 1).toString())
       .set('pageSize', (params.pageSize || 20).toString());
-    
+
     if (params.groupId) {
       httpParams = httpParams.set('groupId', params.groupId);
     }
     if (params.userId) {
       httpParams = httpParams.set('userId', params.userId);
     }
-    
+
     return this.get<PagedResult<PostDto>>(this.endpoint, {
       cache: true,
       cacheTTL: 60000, // 1 minute
@@ -66,7 +66,7 @@ export class PostApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<CommentDto>>(`${this.endpoint}/${postId}/comments`, {
       cache: true,
       cacheTTL: 30000, // 30 seconds

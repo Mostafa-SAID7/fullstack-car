@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { VideoService, VideoFilters } from '../../../services/video.service';
 import { VideoList, MediaFilters, MediaStatus } from '../../../models';
 import { PaginatedResult } from '../../../../../core/models/pagination.model';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { MediaCardComponent } from '../../media-card/media-card.component';
 
 

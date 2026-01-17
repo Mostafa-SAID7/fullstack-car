@@ -19,10 +19,6 @@ public class PodcastAnalyticsController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    /// <summary>
-    /// Get analytics for a specific podcast
-    /// </summary>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPodcastAnalytics(Guid id)
     {
@@ -51,10 +47,6 @@ public class PodcastAnalyticsController : ControllerBase
             Message = "Podcast analytics retrieved successfully"
         });
     }
-
-    /// <summary>
-    /// Get podcast dashboard with overview analytics
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetPodcastDashboard()
     {

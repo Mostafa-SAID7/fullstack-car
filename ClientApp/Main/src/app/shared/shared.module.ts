@@ -13,9 +13,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 
 // Import standalone components
-import { FormButtonComponent } from './components/form-button/form-button.component';
-import { FormInputComponent } from './components/form-input/form-input.component';
-import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { ButtonComponent } from './components/ui/button/button.component';
+import { InputComponent } from './components/ui/input/input.component';
+import { LoadingSpinnerComponent } from './components/ui/loading/loading-spinner.component';
+import { PaginationComponent } from './components/ui/pagination/pagination.component';
 import { ErrorDisplayComponent } from './components/error-display/error-display.component';
 import { RtlLayoutComponent } from './components/rtl-layout/rtl-layout.component';
 
@@ -47,9 +48,10 @@ import { RelativeTimePipe } from './pipes/relative-time.pipe';
         MatBadgeModule,
         TranslateModule,
         // Import standalone components
-        FormButtonComponent,
-        FormInputComponent,
+        ButtonComponent,
+        InputComponent,
         LoadingSpinnerComponent,
+        PaginationComponent,
         ErrorDisplayComponent,
         RtlLayoutComponent,
         // Import standalone directives
@@ -75,9 +77,10 @@ import { RelativeTimePipe } from './pipes/relative-time.pipe';
         MatBadgeModule,
         TranslateModule,
         // Export standalone components
-        FormButtonComponent,
-        FormInputComponent,
+        ButtonComponent,
+        InputComponent,
         LoadingSpinnerComponent,
+        PaginationComponent,
         ErrorDisplayComponent,
         RtlLayoutComponent,
         // Export standalone directives

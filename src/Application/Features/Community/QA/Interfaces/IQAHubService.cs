@@ -1,11 +1,6 @@
 using Application.Features.Community.QA.DTOs.Responses;
 
 namespace Application.Features.Community.QA.Interfaces;
-
-/// <summary>
-/// Service for sending real-time QA notifications through SignalR
-/// Provides unified communication for both Angular and React clients
-/// </summary>
 public interface IQAHubService
 {
     Task NotifyNewAnswerAsync(AnswerDto answer);

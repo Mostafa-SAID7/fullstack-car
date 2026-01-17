@@ -2,11 +2,6 @@ using Application.Common.Models;
 using Application.Features.Community.QA.DTOs.Responses;
 
 namespace Application.Features.Community.QA.Services;
-
-/// <summary>
-/// Unified QA search service interface providing comprehensive search functionality
-/// for both Angular and React frontends
-/// </summary>
 public interface IQASearchService
 {
     // Full-text search with advanced filtering

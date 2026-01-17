@@ -12,12 +12,8 @@ using WebAPI.Extensions;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// Unified Reputation API controller serving both Angular and React frontends
-    /// Provides comprehensive reputation management, leaderboards, and badge system
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/reputation")]
     public class ReputationController : BaseController
     {
@@ -31,13 +27,6 @@ namespace WebAPI.Controllers.Community.QA
             _currentUserService = currentUserService;
             _qaHubService = qaHubService;
         }
-
-        /// <summary>
-        /// Get user reputation details including badges and expertise areas
-        /// Serves both Angular and React frontend requirements
-        /// </summary>
-        /// <param name="userId">User ID (optional - defaults to current user)</param>
-        /// <returns>User reputation details</returns>
         [HttpGet("user/{userId?}")]
         [OutputCache(Duration = 60, Tags = new[] { "Reputation" })]
         public async Task<IActionResult> GetUserReputation(Guid? userId = null)
@@ -62,14 +51,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "User reputation retrieved successfully")
                 : this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to retrieve user reputation");
         }
-
-        /// <summary>
-        /// Get reputation leaderboard with optional category filtering
-        /// Optimized for both Angular and React leaderboard displays
-        /// </summary>
-        /// <param name="count">Number of top users to return (default: 10)</param>
-        /// <param name="category">Optional category filter</param>
-        /// <returns>Ranked list of top users by reputation</returns>
         [HttpGet("leaderboard")]
         [OutputCache(Duration = 300, Tags = new[] { "Reputation", "Leaderboard" })]
         public async Task<IActionResult> GetReputationLeaderboard(
@@ -88,17 +69,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Reputation leaderboard retrieved successfully")
                 : this.ApiBadRequest<List<UserReputationDto>>(result.Errors, "Failed to retrieve reputation leaderboard");
         }
-
-        /// <summary>
-        /// Get user's reputation history with pagination and date filtering
-        /// Serves both Angular and React history displays
-        /// </summary>
-        /// <param name="userId">User ID (optional - defaults to current user)</param>
-        /// <param name="pageNumber">Page number (default: 1)</param>
-        /// <param name="pageSize">Page size (default: 20)</param>
-        /// <param name="fromDate">Start date filter</param>
-        /// <param name="toDate">End date filter</param>
-        /// <returns>Paginated reputation history</returns>
         [HttpGet("history")]
         [OutputCache(Duration = 60, Tags = new[] { "Reputation", "History" })]
         public async Task<IActionResult> GetReputationHistory(
@@ -136,13 +106,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiPaginatedSuccess(result.Data, "Reputation history retrieved successfully")
                 : this.ApiPaginatedBadRequest<ReputationHistoryDto>(result.Errors, "Failed to retrieve reputation history");
         }
-
-        /// <summary>
-        /// Update user's expertise areas for expert notifications
-        /// Available to authenticated users for their own profile
-        /// </summary>
-        /// <param name="request">Expertise areas update request</param>
-        /// <returns>Updated user reputation with new expertise areas</returns>
         [HttpPost("expertise")]
         public async Task<IActionResult> UpdateExpertiseAreas([FromBody] UpdateExpertiseAreasRequest request)
         {
@@ -164,14 +127,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Expertise areas updated successfully")
                 : this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to update expertise areas");
         }
-
-        /// <summary>
-        /// Award a badge to a user (Admin/Moderator only)
-        /// Used by React Dashboard for manual badge awards
-        /// </summary>
-        /// <param name="userId">Target user ID</param>
-        /// <param name="request">Badge award request</param>
-        /// <returns>Updated user reputation with new badge</returns>
         [HttpPost("users/{userId}/badges")]
         [Authorize(Roles = "Admin,Moderator")]
         public async Task<IActionResult> AwardBadge(Guid userId, [FromBody] AwardBadgeRequest request)
@@ -213,14 +168,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to award badge");
         }
-
-        /// <summary>
-        /// Get experts by category for expert notifications and discovery
-        /// Used by both Angular and React for expert identification
-        /// </summary>
-        /// <param name="category">Category name</param>
-        /// <param name="count">Number of experts to return (default: 10)</param>
-        /// <returns>List of experts in the specified category</returns>
         [HttpGet("experts/{category}")]
         [OutputCache(Duration = 300, Tags = new[] { "Reputation", "Experts" })]
         public async Task<IActionResult> GetExpertsByCategory(
@@ -239,12 +186,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Experts retrieved successfully")
                 : this.ApiBadRequest<List<ExpertDto>>(result.Errors, "Failed to retrieve experts");
         }
-
-        /// <summary>
-        /// Get current user's reputation summary for navigation/header display
-        /// Optimized for frequent calls from both Angular and React
-        /// </summary>
-        /// <returns>Current user's reputation summary</returns>
         [HttpGet("me/summary")]
         [OutputCache(Duration = 30, Tags = new[] { "Reputation", "Summary" })]
         public async Task<IActionResult> GetMyReputationSummary()
@@ -272,12 +213,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return this.ApiSuccess(summary, "Reputation summary retrieved successfully");
         }
-
-        /// <summary>
-        /// Get reputation statistics for analytics dashboard
-        /// Used by React Dashboard for reputation analytics
-        /// </summary>
-        /// <returns>System-wide reputation statistics</returns>
         [HttpGet("statistics")]
         [Authorize(Roles = "Admin,Moderator")]
         [OutputCache(Duration = 600, Tags = new[] { "Reputation", "Statistics" })]

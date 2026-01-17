@@ -4,10 +4,6 @@ using Application.Features.Community.QA.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Comprehensive content quality service for automated assessment, spam detection, and content filtering
-/// </summary>
 public class ContentQualityService : IContentQualityService
 {
     private readonly ILogger<ContentQualityService> _logger;

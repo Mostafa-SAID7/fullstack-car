@@ -37,10 +37,6 @@ namespace WebAPI.Controllers.Identity.Profile
             var result = await _profileService.UpdateProfileAsync(_currentUserService.UserId!, request);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Upload profile image (avatar)
-        /// </summary>
         [HttpPost("avatar")]
         public async Task<IActionResult> UploadAvatar(IFormFile file)
         {
@@ -51,10 +47,6 @@ namespace WebAPI.Controllers.Identity.Profile
             var result = await _profileService.UploadAvatarAsync(_currentUserService.UserId!, stream, file.FileName, file.ContentType);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Upload profile image (alias for avatar)
-        /// </summary>
         [HttpPost("image")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {

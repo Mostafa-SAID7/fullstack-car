@@ -58,22 +58,12 @@ export const routes: Routes = [
         loadComponent: () => import('./debug-auth.component').then(m => m.DebugAuthComponent),
         data: { preload: false, priority: 'low' }
       },
-      {
-        path: 'rtl-demo',
-        loadComponent: () => import('./shared/components/rtl-demo/rtl-demo.component').then(m => m.RtlDemoComponent),
-        data: { preload: false, priority: 'low' }
-      },
+
       // Performance optimization demo - Medium priority for development
       {
         path: 'performance-demo',
         loadComponent: () => import('./pages/performance-demo/performance-demo.component').then(m => m.PerformanceDemoComponent),
         data: { preload: true, priority: 'medium' }
-      },
-      // Core Web Vitals Monitor - High priority for development
-      {
-        path: 'core-web-vitals',
-        loadComponent: () => import('./shared/components/core-web-vitals-monitor/core-web-vitals-monitor.component').then(m => m.CoreWebVitalsMonitorComponent),
-        data: { preload: true, priority: 'high' }
       },
       // Error pages - No preload (only load when needed)
       {

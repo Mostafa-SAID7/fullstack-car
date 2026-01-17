@@ -196,4 +196,6 @@ export interface GroupSearchFilters {
   memberCountMax?: number;
   sortBy?: 'name' | 'members' | 'activity' | 'created' | 'relevance';
   sortOrder?: 'asc' | 'desc';
+  pageNumber?: number;
+  pageSize?: number;
 }

@@ -1,10 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
-import { catchError, tap, retry } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
-import { CacheService } from '../cache/cache.service';
 
 export interface ApiRequestOptions {
   cache?: boolean;
@@ -19,30 +18,14 @@ export interface ApiRequestOptions {
 export class BaseApiService {
   protected readonly http = inject(HttpClient);
   protected readonly authService = inject(AuthService);
-  protected readonly cacheService = inject(CacheService);
   protected readonly baseUrl = environment.apiUrl;
 
   protected get<T>(endpoint: string, options?: ApiRequestOptions): Observable<T> {
-    const cacheKey = `${endpoint}${options?.params?.toString() || ''}`;
-    
-    // Check cache first
-    if (options?.cache) {
-      const cached = this.cacheService.get<T>(cacheKey);
-      if (cached) {
-        return of(cached);
-      }
-    }
-    
     return this.http.get<T>(`${this.baseUrl}${endpoint}`, {
       params: options?.params,
       headers: this.getHeaders()
     }).pipe(
       retry(options?.retryCount || 0),
-      tap(data => {
-        if (options?.cache) {
-          this.cacheService.set(cacheKey, data, options.cacheTTL);
-        }
-      }),
       catchError(error => this.handleError(error))
     );
   }
@@ -53,7 +36,6 @@ export class BaseApiService {
       params: options?.params
     }).pipe(
       retry(options?.retryCount || 0),
-      tap(() => this.invalidateRelatedCache(endpoint)),
       catchError(error => this.handleError(error))
     );
   }
@@ -64,7 +46,6 @@ export class BaseApiService {
       params: options?.params
     }).pipe(
       retry(options?.retryCount || 0),
-      tap(() => this.invalidateRelatedCache(endpoint)),
       catchError(error => this.handleError(error))
     );
   }
@@ -75,7 +56,6 @@ export class BaseApiService {
       params: options?.params
     }).pipe(
       retry(options?.retryCount || 0),
-      tap(() => this.invalidateRelatedCache(endpoint)),
       catchError(error => this.handleError(error))
     );
   }
@@ -86,7 +66,6 @@ export class BaseApiService {
       params: options?.params
     }).pipe(
       retry(options?.retryCount || 0),
-      tap(() => this.invalidateRelatedCache(endpoint)),
       catchError(error => this.handleError(error))
     );
   }
@@ -96,17 +75,17 @@ export class BaseApiService {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    
+
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-    
+
     return headers;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unexpected error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = `Error: ${error.error.message}`;
@@ -126,19 +105,8 @@ export class BaseApiService {
         errorMessage = error.error?.message || error.message || errorMessage;
       }
     }
-    
+
     console.error('API Error:', error);
     return throwError(() => new Error(errorMessage));
-  }
-
-  private invalidateRelatedCache(endpoint: string): void {
-    // Extract feature from endpoint (e.g., 'posts' from '/api/v7/community/posts')
-    const parts = endpoint.split('/');
-    const featureIndex = parts.findIndex(part => part === 'community') + 1;
-    
-    if (featureIndex > 0 && featureIndex < parts.length) {
-      const feature = parts[featureIndex];
-      this.cacheService.invalidatePattern(`*${feature}*`);
-    }
   }
 }

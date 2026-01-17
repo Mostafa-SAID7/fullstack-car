@@ -22,10 +22,6 @@ public class PodcastInteractionController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    /// <summary>
-    /// Like a podcast
-    /// </summary>
     [HttpPost("{id:guid}/like")]
     public async Task<IActionResult> LikePodcast(Guid id)
     {
@@ -63,10 +59,6 @@ public class PodcastInteractionController : ControllerBase
             Message = "Failed to like podcast"
         });
     }
-
-    /// <summary>
-    /// Add a comment to a podcast
-    /// </summary>
     [HttpPost("{id:guid}/comments")]
     public async Task<IActionResult> AddComment(Guid id, [FromBody] AddPodcastCommentRequest request)
     {
@@ -107,10 +99,6 @@ public class PodcastInteractionController : ControllerBase
             Message = "Failed to add comment"
         });
     }
-
-    /// <summary>
-    /// Subscribe to a podcast
-    /// </summary>
     [HttpPost("{id:guid}/subscribe")]
     public async Task<IActionResult> SubscribeToPodcast(Guid id)
     {
@@ -148,10 +136,6 @@ public class PodcastInteractionController : ControllerBase
             Message = "Failed to subscribe to podcast"
         });
     }
-
-    /// <summary>
-    /// Unsubscribe from a podcast
-    /// </summary>
     [HttpDelete("{id:guid}/subscribe")]
     public async Task<IActionResult> UnsubscribeFromPodcast(Guid id)
     {
@@ -189,10 +173,6 @@ public class PodcastInteractionController : ControllerBase
             Message = "Failed to unsubscribe from podcast"
         });
     }
-
-    /// <summary>
-    /// Get user's podcast subscriptions
-    /// </summary>
     [HttpGet("subscriptions")]
     public async Task<IActionResult> GetUserSubscriptions([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {

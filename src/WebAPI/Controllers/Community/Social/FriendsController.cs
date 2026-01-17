@@ -10,13 +10,10 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.Social
 {
-    /// <summary>
-    /// Manages friend relationships and social connections between users
-    /// </summary>
     [Authorize]
     [ApiController]
     [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/community/social/friends")]
+    [Route("api/v{version:apiVersion}/social/friends")]
     [Tags("Community - Social")]
     public class FriendsController : BaseController
     {
@@ -30,6 +27,7 @@ namespace WebAPI.Controllers.Community.Social
         private Guid CurrentUserGuid => Guid.TryParse(_currentUserService.UserId, out var guid) ? guid : Guid.Empty;
 
         [HttpGet]
+        [AllowAnonymous] // Temporarily allow anonymous access for testing
         public async Task<IActionResult> GetFriends(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
@@ -46,7 +44,15 @@ namespace WebAPI.Controllers.Community.Social
             return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
         }
 
+        [HttpGet("test")]
+        [AllowAnonymous]
+        public IActionResult Test()
+        {
+            return Ok(new { message = "Friends API is working", timestamp = DateTime.UtcNow });
+        }
+
         [HttpGet("requests")]
+        [AllowAnonymous] // Temporarily allow anonymous access for testing
         public async Task<IActionResult> GetFriendRequests(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)

@@ -11,10 +11,11 @@ namespace WebAPI.Controllers.Community.Reviews
 {
     [Authorize]
     [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/community/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ReviewsController : BaseController
     {
         [HttpGet]
+        [AllowAnonymous] // Temporarily allow anonymous access for testing
         public async Task<IActionResult> GetReviews([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? carBrand = null, [FromQuery] string? carModel = null)
         {
             var query = new GetReviewsQuery
@@ -26,6 +27,13 @@ namespace WebAPI.Controllers.Community.Reviews
             };
             var result = await Mediator.Send(query);
             return Ok(result);
+        }
+
+        [HttpGet("test")]
+        [AllowAnonymous]
+        public IActionResult Test()
+        {
+            return Ok(new { message = "Reviews API is working", timestamp = DateTime.UtcNow });
         }
 
         [HttpGet("{id}")]

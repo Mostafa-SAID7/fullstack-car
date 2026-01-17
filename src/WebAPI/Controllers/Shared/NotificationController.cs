@@ -8,9 +8,6 @@ using Domain.Entities.Shared.Notifications;
 
 namespace WebAPI.Controllers.Shared
 {
-    /// <summary>
-    /// Controller for managing user notifications
-    /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/notifications")]
@@ -29,15 +26,6 @@ namespace WebAPI.Controllers.Shared
             _currentUserService = currentUserService;
             _logger = logger;
         }
-
-        /// <summary>
-        /// Get paginated notifications for the current user
-        /// </summary>
-        /// <param name="page">Page number (default: 1)</param>
-        /// <param name="pageSize">Page size (default: 20)</param>
-        /// <param name="type">Filter by notification type</param>
-        /// <param name="category">Filter by notification category</param>
-        /// <param name="isRead">Filter by read status</param>
         [HttpGet]
         public async Task<IActionResult> GetNotifications(
             [FromQuery] int page = 1,
@@ -103,11 +91,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to retrieve notifications");
             }
         }
-
-        /// <summary>
-        /// Get a single notification by ID
-        /// </summary>
-        /// <param name="id">Notification ID</param>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNotification(Guid id)
         {
@@ -135,11 +118,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to retrieve notification");
             }
         }
-
-        /// <summary>
-        /// Create a new notification (admin only)
-        /// </summary>
-        /// <param name="request">Notification creation request</param>
         [HttpPost]
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationRequest request)
@@ -182,11 +160,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to create notification");
             }
         }
-
-        /// <summary>
-        /// Mark a notification as read
-        /// </summary>
-        /// <param name="id">Notification ID</param>
         [HttpPut("{id}/read")]
         public async Task<IActionResult> MarkAsRead(Guid id)
         {
@@ -216,10 +189,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to mark notification as read");
             }
         }
-
-        /// <summary>
-        /// Mark all notifications as read for the current user
-        /// </summary>
         [HttpPut("read-all")]
         public async Task<IActionResult> MarkAllAsRead()
         {
@@ -240,11 +209,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to mark all notifications as read");
             }
         }
-
-        /// <summary>
-        /// Delete a notification
-        /// </summary>
-        /// <param name="id">Notification ID</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotification(Guid id)
         {
@@ -274,10 +238,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to delete notification");
             }
         }
-
-        /// <summary>
-        /// Get unread notification count for the current user
-        /// </summary>
         [HttpGet("unread-count")]
         public async Task<IActionResult> GetUnreadCount()
         {
@@ -298,10 +258,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to retrieve unread count");
             }
         }
-
-        /// <summary>
-        /// Get notification statistics for the current user
-        /// </summary>
         [HttpGet("stats")]
         public async Task<IActionResult> GetStats()
         {
@@ -340,10 +296,6 @@ namespace WebAPI.Controllers.Shared
             }
         }
     }
-
-    /// <summary>
-    /// Request model for creating notifications
-    /// </summary>
     public class CreateNotificationRequest
     {
         public string? UserId { get; set; }

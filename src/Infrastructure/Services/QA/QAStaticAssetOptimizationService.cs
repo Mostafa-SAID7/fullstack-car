@@ -4,11 +4,6 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Service for optimizing static assets shared across Angular and React QA frontends
-/// Implements CDN integration and asset optimization for dual frontend usage
-/// </summary>
 public interface IQAStaticAssetOptimizationService
 {
     Task<string> OptimizeSharedAssetAsync(string assetPath, SharedAssetType assetType, CancellationToken cancellationToken = default);

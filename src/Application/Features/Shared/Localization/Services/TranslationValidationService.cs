@@ -7,10 +7,6 @@ using global::System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Application.Features.Shared.Localization.Services;
-
-/// <summary>
-/// Service for validating translation completeness and consistency
-/// </summary>
 public interface ITranslationValidationService
 {
     Task<TranslationValidationReport> ValidateAllTranslationsAsync(CancellationToken cancellationToken = default);

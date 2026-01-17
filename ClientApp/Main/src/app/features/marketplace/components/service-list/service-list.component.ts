@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ServiceService } from '../../services';
 import { ServiceDto, ServiceFilters, ServiceType } from '../../models';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-service-list',

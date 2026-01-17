@@ -7,12 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Infrastructure.Common;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// QA Alert Service
-/// Integrates with existing notification infrastructure to provide real-time alerts
-/// Follows existing notification patterns and extends NotificationHub functionality
-/// </summary>
 public interface IQAAlertService
 {
     Task SendHealthAlertAsync(QASystemAlertDto alert);
@@ -296,12 +290,6 @@ public class QAAlertService : IQAAlertService
 
     #endregion
 }
-
-/// <summary>
-/// QA Health Monitor Background Service
-/// Continuously monitors QA system health and triggers alerts
-/// Integrates with existing background service patterns
-/// </summary>
 public class QAHealthMonitorBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;

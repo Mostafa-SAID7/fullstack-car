@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Group } from '../../../../../core/models/group.model';
-import { GroupService } from '../../../services/group.service';
+import { GroupService } from '../../../../../core/services/group.service';
 
 @Component({
     selector: 'app-group-card',
@@ -21,15 +21,12 @@ export class GroupCardComponent {
 
     joinGroup(): void {
         this.groupService.joinGroup(this.group.id).subscribe({
-            next: (result) => {
-                if (result.succeeded) {
-                    // Update state or emit event
-                    this.group.memberCount++;
-                }
+            next: () => {
+                // Update local state
+                this.group.memberCount++;
             },
-            error: (error) => {
+            error: (error: any) => {
                 console.error('Failed to join group:', error);
-                // Handle error - could emit an event or show a notification
             }
         });
     }

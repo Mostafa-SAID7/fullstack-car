@@ -2,10 +2,10 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { 
-  Group, 
-  GroupMember, 
-  GroupPost, 
+import {
+  Group,
+  GroupMember,
+  GroupPost,
   GroupJoinRequest,
   GroupEvent,
   GroupDiscussion,
@@ -53,11 +53,11 @@ export class GroupService {
 
   // Computed values
   readonly totalGroups = computed(() => this._userGroups().length);
-  readonly ownedGroups = computed(() => 
+  readonly ownedGroups = computed(() =>
     this._userGroups().filter(group => group.ownerId === this.authService.currentUser()?.id)
   );
-  readonly moderatedGroups = computed(() => 
-    this._userGroups().filter(group => 
+  readonly moderatedGroups = computed(() =>
+    this._userGroups().filter(group =>
       group.moderatorIds.includes(this.authService.currentUser()?.id || '')
     )
   );
@@ -72,7 +72,7 @@ export class GroupService {
    */
   loadUserGroups(): void {
     this._isLoading.set(true);
-    
+
     this.getUserGroups().subscribe({
       next: (groups) => {
         this._userGroups.set(groups);
@@ -129,7 +129,7 @@ export class GroupService {
    */
   searchGroups(filters: GroupSearchFilters): Observable<PaginatedResponse<Group>> {
     let params = new HttpParams();
-    
+
     if (filters.query) params = params.set('query', filters.query);
     if (filters.category) params = params.set('category', filters.category);
     if (filters.type) params = params.set('type', filters.type);
@@ -138,6 +138,8 @@ export class GroupService {
     if (filters.memberCountMax) params = params.set('memberCountMax', filters.memberCountMax.toString());
     if (filters.sortBy) params = params.set('sortBy', filters.sortBy);
     if (filters.sortOrder) params = params.set('sortOrder', filters.sortOrder);
+    if (filters.pageNumber) params = params.set('pageNumber', filters.pageNumber.toString());
+    if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
 
     return this.http.get<PaginatedResponse<Group>>(`${this.apiUrl}/search`, { params });
   }
@@ -158,7 +160,7 @@ export class GroupService {
    */
   createGroup(request: CreateGroupRequest): Observable<Group> {
     const formData = new FormData();
-    
+
     formData.append('name', request.name);
     formData.append('description', request.description);
     formData.append('type', request.type);
@@ -166,11 +168,11 @@ export class GroupService {
     formData.append('tags', JSON.stringify(request.tags));
     formData.append('rules', JSON.stringify(request.rules));
     formData.append('settings', JSON.stringify(request.settings));
-    
+
     if (request.coverImage) {
       formData.append('coverImage', request.coverImage);
     }
-    
+
     if (request.avatar) {
       formData.append('avatar', request.avatar);
     }
@@ -190,7 +192,7 @@ export class GroupService {
    */
   updateGroup(groupId: string, request: UpdateGroupRequest): Observable<Group> {
     const formData = new FormData();
-    
+
     if (request.name) formData.append('name', request.name);
     if (request.description) formData.append('description', request.description);
     if (request.type) formData.append('type', request.type);
@@ -198,11 +200,11 @@ export class GroupService {
     if (request.tags) formData.append('tags', JSON.stringify(request.tags));
     if (request.rules) formData.append('rules', JSON.stringify(request.rules));
     if (request.settings) formData.append('settings', JSON.stringify(request.settings));
-    
+
     if (request.coverImage) {
       formData.append('coverImage', request.coverImage);
     }
-    
+
     if (request.avatar) {
       formData.append('avatar', request.avatar);
     }
@@ -211,7 +213,7 @@ export class GroupService {
       .pipe(
         map(response => response.data!),
         tap(group => {
-          this._userGroups.update(groups => 
+          this._userGroups.update(groups =>
             groups.map(g => g.id === groupId ? group : g)
           );
           this._selectedGroup.set(group);
@@ -309,7 +311,7 @@ export class GroupService {
       .pipe(
         map(() => void 0),
         tap(() => {
-          this._groupMembers.update(members => 
+          this._groupMembers.update(members =>
             members.map(m => m.userId === userId ? { ...m, role } : m)
           );
           this.notificationService.success('Member role updated successfully!');
@@ -344,7 +346,7 @@ export class GroupService {
     const formData = new FormData();
     formData.append('content', content);
     formData.append('type', type);
-    
+
     if (mediaFiles?.length) {
       mediaFiles.forEach((file, index) => {
         formData.append(`media_${index}`, file);
@@ -455,7 +457,7 @@ export class GroupService {
   canManageGroup(group: Group): boolean {
     const currentUser = this.authService.currentUser();
     if (!currentUser) return false;
-    
+
     return group.ownerId === currentUser.id || group.moderatorIds.includes(currentUser.id);
   }
 
@@ -479,7 +481,7 @@ export class GroupService {
    */
   getPopularGroups(limit: number = 10): Observable<Group[]> {
     const params = new HttpParams().set('limit', limit.toString());
-    
+
     return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/popular`, { params })
       .pipe(map(response => response.data || []));
   }
@@ -489,7 +491,7 @@ export class GroupService {
    */
   getRecommendedGroups(limit: number = 10): Observable<Group[]> {
     const params = new HttpParams().set('limit', limit.toString());
-    
+
     return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/recommended`, { params })
       .pipe(map(response => response.data || []));
   }

@@ -4,9 +4,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Group } from '../../../../../core/models/group.model';
-import { GroupService } from '../../../services/group.service';
+import { GroupService } from '../../../../../core/services/group.service';
 import { GroupCardComponent } from '../group-card/group-card.component';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-group-list',
@@ -103,7 +103,7 @@ export class GroupListComponent implements OnInit {
   searchForm: FormGroup;
 
   constructor(
-    private groupService: GroupService, 
+    private groupService: GroupService,
     private fb: FormBuilder,
     private translateService: TranslateService
   ) {
@@ -133,12 +133,21 @@ export class GroupListComponent implements OnInit {
 
   loadGroups(): void {
     this.loading = true;
-    this.groupService.getGroups(this.currentPage, this.pageSize).subscribe({
-      next: (result) => {
-        this.groups = result.items;
-        this.totalCount = result.totalCount;
-        this.totalPages = result.totalPages;
-        this.currentPage = result.pageNumber;
+    const sortBy = this.searchForm.get('sortBy')?.value === 'memberCount' ? 'members' : 'created';
+
+    this.groupService.searchGroups({
+      query: this.searchForm.get('searchTerm')?.value || '',
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: sortBy as any,
+      sortOrder: 'desc'
+    }).subscribe({
+      next: (response) => {
+        this.groups = response.data || [];
+        if (response.pagination) {
+          this.totalCount = response.pagination.total || 0;
+          this.totalPages = response.pagination.totalPages || 0;
+        }
         this.loading = false;
       },
       error: () => {
@@ -163,10 +172,10 @@ export class GroupListComponent implements OnInit {
   getPrivacyLabel(privacy: number): string {
     const privacyKeys = {
       0: 'privacy.public',
-      1: 'privacy.private', 
+      1: 'privacy.private',
       2: 'privacy.secret'
     };
-    
+
     const key = privacyKeys[privacy as keyof typeof privacyKeys] || 'privacy.public';
     return this.translateService.instant(key);
   }

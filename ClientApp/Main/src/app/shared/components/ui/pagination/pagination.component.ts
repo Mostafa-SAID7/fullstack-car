@@ -15,24 +15,34 @@ import { CommonModule } from '@angular/common';
 })
 export class PaginationComponent {
   // Input signals
+  // Input signals
   currentPage = input<number>(1);
   totalItems = input<number>(0);
   itemsPerPage = input<number>(10);
   maxVisiblePages = input<number>(7);
+  // Add backward compatibility inputs
+  totalPagesInput = input<number | undefined>(undefined, { alias: 'totalPages' });
+  pageSize = input<number | undefined>(undefined, { alias: 'pageSize' });
 
   // Output signals
   pageChange = output<number>();
 
   // Computed signals
-  totalPages = computed(() => Math.ceil(this.totalItems() / this.itemsPerPage()));
+  actualItemsPerPage = computed(() => this.pageSize() ?? this.itemsPerPage());
+
+  totalPages = computed(() => {
+    const inputTotal = this.totalPagesInput();
+    if (inputTotal !== undefined) return inputTotal;
+    return Math.ceil(this.totalItems() / this.actualItemsPerPage());
+  });
 
   startItem = computed(() => {
-    const start = (this.currentPage() - 1) * this.itemsPerPage() + 1;
+    const start = (this.currentPage() - 1) * this.actualItemsPerPage() + 1;
     return Math.min(start, this.totalItems());
   });
 
   endItem = computed(() => {
-    const end = this.currentPage() * this.itemsPerPage();
+    const end = this.currentPage() * this.actualItemsPerPage();
     return Math.min(end, this.totalItems());
   });
 

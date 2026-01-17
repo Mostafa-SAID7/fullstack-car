@@ -12,10 +12,6 @@ namespace WebAPI.Controllers.Admin.Analytics
         public EngagementAnalyticsController(ILogger<EngagementAnalyticsController> logger) : base(logger)
         {
         }
-
-        /// <summary>
-        /// Get engagement analytics data
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetEngagementAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -42,10 +38,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetEngagementAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get likes analytics
-        /// </summary>
         [HttpGet("likes")]
         public async Task<IActionResult> GetLikesAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -72,10 +64,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetLikesAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get views analytics
-        /// </summary>
         [HttpGet("views")]
         public async Task<IActionResult> GetViewsAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -102,10 +90,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetViewsAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get shares analytics
-        /// </summary>
         [HttpGet("shares")]
         public async Task<IActionResult> GetSharesAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -132,10 +116,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSharesAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get engagement rates
-        /// </summary>
         [HttpGet("rates")]
         public async Task<IActionResult> GetEngagementRates(
             [FromQuery] DateTime? startDate = null,
@@ -162,10 +142,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetEngagementRates");
             }
         }
-
-        /// <summary>
-        /// Get top engaged content
-        /// </summary>
         [HttpGet("top")]
         public async Task<IActionResult> GetTopEngagedContent(
             [FromQuery] int limit = 10,
@@ -188,10 +164,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetTopEngagedContent");
             }
         }
-
-        /// <summary>
-        /// Get engagement trends
-        /// </summary>
         [HttpGet("trends")]
         public async Task<IActionResult> GetEngagementTrends(
             [FromQuery] DateTime? startDate = null,

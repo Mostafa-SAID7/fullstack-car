@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MapsService } from '../../../services/maps.service';
 import { Location, LocationType } from '../../../../../core/models/maps.model';
 import { LocationCardComponent } from '../location-card/location-card.component';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-maps-explorer',

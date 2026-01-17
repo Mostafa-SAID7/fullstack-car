@@ -18,10 +18,6 @@ public class MarketplaceController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Get marketplace dashboard overview with integrated metrics
-    /// </summary>
     [HttpGet("dashboard")]
     public async Task<IActionResult> GetMarketplaceDashboard(
         [FromQuery] DateTime? fromDate = null,
@@ -49,10 +45,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get integrated analytics across customers, products, and services
-    /// </summary>
     [HttpGet("analytics")]
     public async Task<IActionResult> GetMarketplaceAnalytics(
         [FromQuery] DateTime? fromDate = null,
@@ -82,10 +74,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get all orders (products and services) with unified view
-    /// </summary>
     [HttpGet("orders")]
     public async Task<IActionResult> GetMarketplaceOrders(
         [FromQuery] int page = 1,
@@ -127,10 +115,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get marketplace transactions with payment details
-    /// </summary>
     [HttpGet("transactions")]
     public async Task<IActionResult> GetMarketplaceTransactions(
         [FromQuery] int page = 1,
@@ -168,10 +152,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Generate comprehensive marketplace reports
-    /// </summary>
     [HttpGet("reports")]
     public async Task<IActionResult> GetMarketplaceReports(
         [FromQuery] string reportType,
@@ -210,10 +190,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Create integrated marketplace promotion
-    /// </summary>
     [HttpPost("promotions")]
     public async Task<IActionResult> CreateMarketplacePromotion([FromBody] CreateMarketplacePromotionRequest request)
     {
@@ -241,10 +217,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get marketplace promotion details
-    /// </summary>
     [HttpGet("promotions/{id}")]
     public async Task<IActionResult> GetMarketplacePromotion(Guid id)
     {
@@ -264,10 +236,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Sync customer data across products and services
-    /// </summary>
     [HttpPost("integration/sync-customers")]
     public async Task<IActionResult> SyncCustomerData([FromBody] SyncCustomerDataRequest request)
     {
@@ -292,10 +260,6 @@ public class MarketplaceController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get cross-sell recommendations
-    /// </summary>
     [HttpGet("recommendations/cross-sell/{customerId}")]
     public async Task<IActionResult> GetCrossSellRecommendations(
         Guid customerId,

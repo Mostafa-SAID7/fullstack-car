@@ -12,10 +12,6 @@ namespace WebAPI.Controllers.Admin.Analytics
         public SystemAnalyticsController(ILogger<SystemAnalyticsController> logger) : base(logger)
         {
         }
-
-        /// <summary>
-        /// Get system performance analytics
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetSystemAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -42,10 +38,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSystemAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get performance metrics
-        /// </summary>
         [HttpGet("performance")]
         public async Task<IActionResult> GetPerformanceMetrics(
             [FromQuery] DateTime? startDate = null,
@@ -72,10 +64,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetPerformanceMetrics");
             }
         }
-
-        /// <summary>
-        /// Get API performance analytics
-        /// </summary>
         [HttpGet("api")]
         public async Task<IActionResult> GetApiPerformance(
             [FromQuery] DateTime? startDate = null,
@@ -102,10 +90,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetApiPerformance");
             }
         }
-
-        /// <summary>
-        /// Get database performance analytics
-        /// </summary>
         [HttpGet("database")]
         public async Task<IActionResult> GetDatabasePerformance(
             [FromQuery] DateTime? startDate = null,
@@ -132,10 +116,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetDatabasePerformance");
             }
         }
-
-        /// <summary>
-        /// Get system alerts
-        /// </summary>
         [HttpGet("alerts")]
         public async Task<IActionResult> GetSystemAlerts(
             [FromQuery] DateTime? startDate = null,
@@ -165,10 +145,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSystemAlerts");
             }
         }
-
-        /// <summary>
-        /// Get system health status
-        /// </summary>
         [HttpGet("health")]
         public async Task<IActionResult> GetSystemHealth()
         {
@@ -189,10 +165,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSystemHealth");
             }
         }
-
-        /// <summary>
-        /// Get error logs analytics
-        /// </summary>
         [HttpGet("errors")]
         public async Task<IActionResult> GetErrorLogs(
             [FromQuery] DateTime? startDate = null,

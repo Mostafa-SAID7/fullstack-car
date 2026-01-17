@@ -9,10 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Implementation of expert identification and management service
-/// </summary>
 public class ExpertService : IExpertService
 {
     private readonly IRepository<QAExpert> _expertRepository;

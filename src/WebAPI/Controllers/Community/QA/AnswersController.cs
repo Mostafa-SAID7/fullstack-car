@@ -11,12 +11,8 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// Unified Answers API controller serving both Angular and React frontends
-    /// Provides comprehensive CRUD operations for answers with validation and quality checking
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/answers")]
     public class AnswersController : BaseController
     {
@@ -30,14 +26,6 @@ namespace WebAPI.Controllers.Community.QA
             _currentUserService = currentUserService;
             _qaHubService = qaHubService;
         }
-
-        /// <summary>
-        /// Get paginated list of answers for a specific question
-        /// Supports both Angular and React frontend requirements with sorting and filtering
-        /// </summary>
-        /// <param name="questionId">Question ID to get answers for</param>
-        /// <param name="query">Query parameters for pagination and sorting</param>
-        /// <returns>Paginated list of answers</returns>
         [HttpGet("question/{questionId}")]
         [OutputCache(Duration = 30, Tags = new[] { "Answers", "Question" })]
         public async Task<IActionResult> GetAnswersByQuestion(Guid questionId, [FromQuery] GetAnswersByQuestionQuery query)
@@ -60,13 +48,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to retrieve answers", result.Errors);
         }
-
-        /// <summary>
-        /// Get specific answer details with version history
-        /// Used by both Angular and React for answer detail views
-        /// </summary>
-        /// <param name="id">Answer ID</param>
-        /// <returns>Answer details</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAnswer(Guid id)
         {
@@ -88,13 +69,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to retrieve answer", result.Errors);
         }
-
-        /// <summary>
-        /// Create a new answer with content validation and quality checking
-        /// Serves both Angular and React frontend answer creation workflows
-        /// </summary>
-        /// <param name="request">Answer creation request</param>
-        /// <returns>Created answer details</returns>
         [HttpPost]
         public async Task<IActionResult> CreateAnswer([FromBody] CreateAnswerRequest request)
         {
@@ -155,14 +129,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to create answer", result.Errors);
         }
-
-        /// <summary>
-        /// Update existing answer with validation and version history tracking
-        /// Supports both Angular and React editing interfaces
-        /// </summary>
-        /// <param name="id">Answer ID</param>
-        /// <param name="request">Answer update request</param>
-        /// <returns>Updated answer details</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAnswer(Guid id, [FromBody] UpdateAnswerRequest request)
         {
@@ -199,13 +165,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to update answer", result.Errors);
         }
-
-        /// <summary>
-        /// Accept an answer as the best solution (question author only)
-        /// Updates reputation and marks answer as accepted
-        /// </summary>
-        /// <param name="id">Answer ID to accept</param>
-        /// <returns>Success confirmation</returns>
         [HttpPost("{id}/accept")]
         public async Task<IActionResult> AcceptAnswer(Guid id)
         {
@@ -238,13 +197,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to accept answer", result.Errors);
         }
-
-        /// <summary>
-        /// Delete an answer (soft delete with reputation impact)
-        /// Available to answer authors and moderators
-        /// </summary>
-        /// <param name="id">Answer ID</param>
-        /// <returns>Success confirmation</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnswer(Guid id)
         {
@@ -283,13 +235,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to delete answer", result.Errors);
         }
-
-        /// <summary>
-        /// Get user's own answers with filtering
-        /// Used by both Angular and React for user profile pages
-        /// </summary>
-        /// <param name="query">User answers query parameters</param>
-        /// <returns>Paginated list of user's answers</returns>
         [HttpGet("my-answers")]
         [OutputCache(Duration = 30, Tags = new[] { "Answers", "UserAnswers" })]
         public async Task<IActionResult> GetMyAnswers([FromQuery] GetMyAnswersQuery query)

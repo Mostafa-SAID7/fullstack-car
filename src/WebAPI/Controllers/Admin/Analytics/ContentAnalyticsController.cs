@@ -12,10 +12,6 @@ namespace WebAPI.Controllers.Admin.Analytics
         public ContentAnalyticsController(ILogger<ContentAnalyticsController> logger) : base(logger)
         {
         }
-
-        /// <summary>
-        /// Get content analytics data
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetContentAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -42,10 +38,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetContentAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get posts analytics
-        /// </summary>
         [HttpGet("posts")]
         public async Task<IActionResult> GetPostsAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -72,10 +64,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetPostsAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get comments analytics
-        /// </summary>
         [HttpGet("comments")]
         public async Task<IActionResult> GetCommentsAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -102,10 +90,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetCommentsAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get groups analytics
-        /// </summary>
         [HttpGet("groups")]
         public async Task<IActionResult> GetGroupsAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -130,10 +114,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetGroupsAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get content categories analytics
-        /// </summary>
         [HttpGet("categories")]
         public async Task<IActionResult> GetContentCategories(
             [FromQuery] DateTime? startDate = null,
@@ -158,10 +138,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetContentCategories");
             }
         }
-
-        /// <summary>
-        /// Get popular content
-        /// </summary>
         [HttpGet("popular")]
         public async Task<IActionResult> GetPopularContent(
             [FromQuery] int limit = 10,

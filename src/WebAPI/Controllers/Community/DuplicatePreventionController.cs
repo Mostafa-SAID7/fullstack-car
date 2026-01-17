@@ -8,22 +8,11 @@ using WebAPI.Common;
 using WebAPI.Controllers;
 
 namespace WebAPI.Controllers.Community;
-
-/// <summary>
-/// Unified duplicate prevention controller serving both Angular and React frontends
-/// Provides semantic similarity detection and identical question prevention
-/// </summary>
 [ApiController]
-[Route("api/v7/qa/duplicate-prevention")]
+[Route("api/v2.0/qa/duplicate-prevention")]
 [Authorize]
 public class DuplicatePreventionController : BaseController
 {
-
-    /// <summary>
-    /// Validates a question for duplicates before creation
-    /// </summary>
-    /// <param name="request">Question validation request</param>
-    /// <returns>Validation result with duplicate detection information</returns>
     [HttpPost("validate")]
     [ProducesResponseType(typeof(QuestionValidationResult), 200)]
     [ProducesResponseType(400)]
@@ -50,12 +39,6 @@ public class DuplicatePreventionController : BaseController
 
         return ApiResponseWrapper.Success(result.Data, "Question validation completed");
     }
-
-    /// <summary>
-    /// Finds similar questions using semantic analysis
-    /// </summary>
-    /// <param name="request">Similar questions search request</param>
-    /// <returns>List of similar questions with similarity scores</returns>
     [HttpPost("similar")]
     [ProducesResponseType(typeof(List<SimilarQuestionResult>), 200)]
     [ProducesResponseType(400)]
@@ -82,12 +65,6 @@ public class DuplicatePreventionController : BaseController
 
         return ApiResponseWrapper.Success(result.Data, $"Found {result.Data.Count} similar questions");
     }
-
-    /// <summary>
-    /// Detects if a question is a duplicate of an existing question
-    /// </summary>
-    /// <param name="request">Duplicate detection request</param>
-    /// <returns>Duplicate detection result with similarity information</returns>
     [HttpPost("detect")]
     [ProducesResponseType(typeof(DuplicateDetectionResult), 200)]
     [ProducesResponseType(400)]
@@ -112,12 +89,6 @@ public class DuplicatePreventionController : BaseController
         return ApiResponseWrapper.Success(result.Data, 
             result.Data.IsDuplicate ? "Duplicate question detected" : "No duplicate found");
     }
-
-    /// <summary>
-    /// Calculates semantic similarity between two text strings
-    /// </summary>
-    /// <param name="request">Similarity calculation request</param>
-    /// <returns>Similarity score between 0.0 and 1.0</returns>
     [HttpPost("similarity")]
     [ProducesResponseType(typeof(double), 200)]
     [ProducesResponseType(400)]
@@ -132,13 +103,6 @@ public class DuplicatePreventionController : BaseController
 
         return ApiResponseWrapper.Success(similarity, "Similarity calculation completed");
     }
-
-    /// <summary>
-    /// Gets duplicate prevention analytics and statistics
-    /// </summary>
-    /// <param name="fromDate">Start date for analytics (optional)</param>
-    /// <param name="toDate">End date for analytics (optional)</param>
-    /// <returns>Duplicate prevention analytics data</returns>
     [HttpGet("analytics")]
     [ProducesResponseType(typeof(DuplicatePreventionAnalyticsDto), 200)]
     [ProducesResponseType(400)]
@@ -161,10 +125,6 @@ public class DuplicatePreventionController : BaseController
         return ApiResponseWrapper.Success(result.Data, "Analytics retrieved successfully");
     }
 }
-
-/// <summary>
-/// Request models for duplicate prevention endpoints
-/// </summary>
 public class ValidateQuestionRequest
 {
     public string Title { get; set; } = string.Empty;

@@ -8,12 +8,6 @@ using Infrastructure.Common;
 using System.Diagnostics;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// QA System Health Monitoring Service
-/// Provides comprehensive health monitoring for the QA system following existing infrastructure patterns
-/// Integrates with existing monitoring and notification systems
-/// </summary>
 public interface IQAHealthMonitoringService
 {
     Task<QASystemHealthDto> GetSystemHealthAsync();

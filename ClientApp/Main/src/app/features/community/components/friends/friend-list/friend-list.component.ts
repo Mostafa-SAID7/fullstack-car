@@ -4,16 +4,16 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { TranslationService } from '../../../../../core/services/translation.service';
 import { FriendService } from '../../../services/friend.service';
 import { MessageInterfaceComponent, Conversation } from '../../messaging/message-interface/message-interface.component';
 
 @Component({
-    selector: 'app-friend-list',
-    standalone: true,
-    imports: [CommonModule, TranslateModule, PaginationComponent, ReactiveFormsModule, MessageInterfaceComponent],
-    template: `
+  selector: 'app-friend-list',
+  standalone: true,
+  imports: [CommonModule, TranslateModule, PaginationComponent, ReactiveFormsModule, MessageInterfaceComponent],
+  template: `
     <div class="p-4 lg:p-8 max-w-[1600px] mx-auto animate-fade-in space-y-6">
       
       <!-- Card 1: Search & Actions -->
@@ -126,172 +126,172 @@ import { MessageInterfaceComponent, Conversation } from '../../messaging/message
   `
 })
 export class FriendListComponent implements OnInit, OnDestroy {
-    private destroy$ = new Subject<void>();
-    private translationService = inject(TranslationService);
-    private friendService = inject(FriendService);
-    
-    friends: any[] = [];
-    loading = false;
-    currentPage = 1;
-    pageSize = 12;
-    totalCount = 0;
-    totalPages = 0;
-    showFilters = false;
-    searchForm: FormGroup;
-    selectedConversation: Conversation | null = null;
+  private destroy$ = new Subject<void>();
+  private translationService = inject(TranslationService);
+  private friendService = inject(FriendService);
 
-    constructor(
-        private fb: FormBuilder,
-        private translate: TranslateService
-    ) {
-        this.searchForm = this.fb.group({
-            searchTerm: [''],
-            sortBy: ['name']
+  friends: any[] = [];
+  loading = false;
+  currentPage = 1;
+  pageSize = 12;
+  totalCount = 0;
+  totalPages = 0;
+  showFilters = false;
+  searchForm: FormGroup;
+  selectedConversation: Conversation | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private translate: TranslateService
+  ) {
+    this.searchForm = this.fb.group({
+      searchTerm: [''],
+      sortBy: ['name']
+    });
+  }
+
+  async ngOnInit(): Promise<void> {
+    // Load social feature translations from backend API
+    await this.loadSocialTranslations();
+    this.loadFriends();
+    this.setupSearch();
+
+    // Subscribe to language changes to reload translations
+    this.translationService.currentLanguage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (newLanguage) => {
+        await this.loadSocialTranslations();
+        // Refresh friend list with new language
+        this.loadFriends();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private async loadSocialTranslations(): Promise<void> {
+    try {
+      const currentLanguage = this.translationService.getCurrentLanguage().code;
+
+      // Load social translations from backend API
+      await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'social');
+
+      // Update ngx-translate with the loaded translations
+      const translations = await this.translationService.loadTranslations(currentLanguage, 'social').toPromise();
+      this.translate.setTranslation(currentLanguage, translations, true);
+
+      console.log('Social translations loaded successfully from backend API');
+    } catch (error) {
+      console.error('Failed to load social translations from backend API:', error);
+      // Fallback to English if current language fails
+      if (this.translationService.getCurrentLanguage().code !== 'en-US') {
+        try {
+          const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').toPromise();
+          this.translate.setTranslation('en-US', fallbackTranslations, true);
+          console.log('Loaded fallback English translations for social features');
+        } catch (fallbackError) {
+          console.error('Failed to load fallback translations:', fallbackError);
+        }
+      }
+    }
+  }
+
+  private setupSearch(): void {
+    this.searchForm.get('searchTerm')?.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.onSearch());
+
+    this.searchForm.get('sortBy')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onSearch());
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadFriends();
+  }
+
+  loadFriends(): void {
+    this.loading = true;
+
+    this.friendService.getFriends(this.currentPage, this.pageSize)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          this.friends = result.items || [];
+          this.totalCount = result.totalCount || 0;
+          this.totalPages = result.totalPages || 1;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error loading friends:', error);
+          // Fallback to mock data for development
+          this.friends = [
+            { id: '1', firstName: 'Ahmed', lastName: 'Ali', friendsSince: new Date() },
+            { id: '2', firstName: 'Sara', lastName: 'Hassan', friendsSince: new Date() },
+            { id: '3', firstName: 'Omar', lastName: 'Khaled', friendsSince: new Date() },
+            { id: '4', firstName: 'Zainab', lastName: 'Ibrahim', friendsSince: new Date() }
+          ];
+          this.totalCount = 4;
+          this.totalPages = 1;
+          this.loading = false;
+        }
+      });
+  }
+
+  removeFriend(friendId: string): void {
+    const confirmMessage = this.translate.instant('friends.confirmRemove');
+    if (confirm(confirmMessage)) {
+      this.friendService.removeFriend(friendId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (result) => {
+            if (result.succeeded) {
+              this.friends = this.friends.filter(f => f.id !== friendId);
+              this.totalCount--;
+
+              const successMessage = this.translate.instant('friends.friendRemoved');
+              // You could show a toast notification here
+              console.log(successMessage);
+            } else {
+              console.error('Failed to remove friend:', result.errors);
+            }
+          },
+          error: (error) => {
+            console.error('Error removing friend:', error);
+          }
         });
     }
+  }
 
-    async ngOnInit(): Promise<void> {
-        // Load social feature translations from backend API
-        await this.loadSocialTranslations();
-        this.loadFriends();
-        this.setupSearch();
-        
-        // Subscribe to language changes to reload translations
-        this.translationService.currentLanguage$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(async (newLanguage) => {
-                await this.loadSocialTranslations();
-                // Refresh friend list with new language
-                this.loadFriends();
-            });
-    }
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
 
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
-    }
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadFriends();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-    private async loadSocialTranslations(): Promise<void> {
-        try {
-            const currentLanguage = this.translationService.getCurrentLanguage().code;
-            
-            // Load social translations from backend API
-            await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'social');
-            
-            // Update ngx-translate with the loaded translations
-            const translations = await this.translationService.loadTranslations(currentLanguage, 'social').toPromise();
-            this.translate.setTranslation(currentLanguage, translations, true);
-            
-            console.log('Social translations loaded successfully from backend API');
-        } catch (error) {
-            console.error('Failed to load social translations from backend API:', error);
-            // Fallback to English if current language fails
-            if (this.translationService.getCurrentLanguage().code !== 'en-US') {
-                try {
-                    const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').toPromise();
-                    this.translate.setTranslation('en-US', fallbackTranslations, true);
-                    console.log('Loaded fallback English translations for social features');
-                } catch (fallbackError) {
-                    console.error('Failed to load fallback translations:', fallbackError);
-                }
-            }
-        }
-    }
+  openMessageInterface(friend: any): void {
+    this.selectedConversation = {
+      id: `conv_${friend.id}`,
+      participantId: friend.id,
+      participantName: friend.name,
+      participantAvatar: friend.avatar,
+      unreadCount: 0,
+      isOnline: Math.random() > 0.5 // Random online status for demo
+    };
+  }
 
-    private setupSearch(): void {
-        this.searchForm.get('searchTerm')?.valueChanges
-            .pipe(
-                debounceTime(500), 
-                distinctUntilChanged(),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => this.onSearch());
-
-        this.searchForm.get('sortBy')?.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(() => this.onSearch());
-    }
-
-    onSearch(): void {
-        this.currentPage = 1;
-        this.loadFriends();
-    }
-
-    loadFriends(): void {
-        this.loading = true;
-        
-        this.friendService.getFriends(this.currentPage, this.pageSize)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-                next: (result) => {
-                    this.friends = result.items || [];
-                    this.totalCount = result.totalCount || 0;
-                    this.totalPages = result.totalPages || 1;
-                    this.loading = false;
-                },
-                error: (error) => {
-                    console.error('Error loading friends:', error);
-                    // Fallback to mock data for development
-                    this.friends = [
-                        { id: '1', firstName: 'Ahmed', lastName: 'Ali', friendsSince: new Date() },
-                        { id: '2', firstName: 'Sara', lastName: 'Hassan', friendsSince: new Date() },
-                        { id: '3', firstName: 'Omar', lastName: 'Khaled', friendsSince: new Date() },
-                        { id: '4', firstName: 'Zainab', lastName: 'Ibrahim', friendsSince: new Date() }
-                    ];
-                    this.totalCount = 4;
-                    this.totalPages = 1;
-                    this.loading = false;
-                }
-            });
-    }
-
-    removeFriend(friendId: string): void {
-        const confirmMessage = this.translate.instant('friends.confirmRemove');
-        if (confirm(confirmMessage)) {
-            this.friendService.removeFriend(friendId)
-                .pipe(takeUntil(this.destroy$))
-                .subscribe({
-                    next: (result) => {
-                        if (result.succeeded) {
-                            this.friends = this.friends.filter(f => f.id !== friendId);
-                            this.totalCount--;
-                            
-                            const successMessage = this.translate.instant('friends.friendRemoved');
-                            // You could show a toast notification here
-                            console.log(successMessage);
-                        } else {
-                            console.error('Failed to remove friend:', result.errors);
-                        }
-                    },
-                    error: (error) => {
-                        console.error('Error removing friend:', error);
-                    }
-                });
-        }
-    }
-
-    toggleFilters(): void {
-        this.showFilters = !this.showFilters;
-    }
-
-    onPageChange(page: number): void {
-        this.currentPage = page;
-        this.loadFriends();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    openMessageInterface(friend: any): void {
-        this.selectedConversation = {
-            id: `conv_${friend.id}`,
-            participantId: friend.id,
-            participantName: friend.name,
-            participantAvatar: friend.avatar,
-            unreadCount: 0,
-            isOnline: Math.random() > 0.5 // Random online status for demo
-        };
-    }
-
-    closeMessageInterface(): void {
-        this.selectedConversation = null;
-    }
+  closeMessageInterface(): void {
+    this.selectedConversation = null;
+  }
 }

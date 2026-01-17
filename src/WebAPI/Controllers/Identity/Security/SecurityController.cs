@@ -30,10 +30,6 @@ namespace WebAPI.Controllers.Identity.Security
             var result = await _securityService.EnableTwoFactorAsync(_currentUserService.UserId!);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Enable MFA (alias for 2FA)
-        /// </summary>
         [HttpPost("mfa/enable")]
         public async Task<IActionResult> EnableMFA()
         {
@@ -46,10 +42,6 @@ namespace WebAPI.Controllers.Identity.Security
             var result = await _securityService.DisableTwoFactorAsync(_currentUserService.UserId!, request);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Disable MFA (alias for 2FA)
-        /// </summary>
         [HttpPost("mfa/disable")]
         public async Task<IActionResult> DisableMFA([FromBody] DisableTwoFactorRequest request)
         {
@@ -62,10 +54,6 @@ namespace WebAPI.Controllers.Identity.Security
             var result = await _securityService.GetTwoFactorStatusAsync(_currentUserService.UserId!);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Get MFA status (alias for 2FA)
-        /// </summary>
         [HttpGet("mfa/status")]
         public async Task<IActionResult> GetMFAStatus()
         {
@@ -85,10 +73,6 @@ namespace WebAPI.Controllers.Identity.Security
             var result = await _securityService.VerifyTwoFactorTokenAsync(_currentUserService.UserId!, token);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Verify MFA code (alias for 2FA)
-        /// </summary>
         [HttpPost("mfa/verify")]
         public async Task<IActionResult> VerifyMFA([FromBody] string token)
         {

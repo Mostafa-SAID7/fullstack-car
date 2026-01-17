@@ -5,11 +5,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.QA;
-
-/// <summary>
-/// Service for sending real-time QA notifications through SignalR
-/// Provides unified communication for both Angular and React clients
-/// </summary>
 public class QAHubService : IQAHubService
 {
     private readonly IHubContext<QAHub, IQAHub> _hubContext;
@@ -22,10 +17,6 @@ public class QAHubService : IQAHubService
         _hubContext = hubContext;
         _logger = logger;
     }
-
-    /// <summary>
-    /// Notify all users viewing a question about a new answer
-    /// </summary>
     public async Task NotifyNewAnswerAsync(AnswerDto answer)
     {
         try
@@ -48,10 +39,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users about vote updates on questions or answers
-    /// </summary>
     public async Task NotifyVoteUpdateAsync(VoteUpdateDto voteUpdate)
     {
         try
@@ -81,10 +68,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users about question updates (edits, status changes)
-    /// </summary>
     public async Task NotifyQuestionUpdateAsync(QuestionDto question)
     {
         try
@@ -108,10 +91,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify relevant users when an answer is accepted
-    /// </summary>
     public async Task NotifyAnswerAcceptedAsync(AnswerAcceptedDto answerAccepted)
     {
         try
@@ -134,10 +113,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users about reputation changes
-    /// </summary>
     public async Task NotifyReputationUpdateAsync(ReputationUpdateDto reputationUpdate)
     {
         try
@@ -163,10 +138,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users when a question is closed
-    /// </summary>
     public async Task NotifyQuestionClosedAsync(QuestionClosedDto questionClosed)
     {
         try
@@ -193,10 +164,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify experts about new questions in their expertise areas
-    /// </summary>
     public async Task NotifyExpertsAsync(ExpertNotificationDto expertNotification)
     {
         try
@@ -222,10 +189,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users about question view count updates
-    /// </summary>
     public async Task NotifyQuestionViewUpdateAsync(QuestionViewUpdateDto viewUpdate)
     {
         try
@@ -244,10 +207,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Notify users following a category about new questions
-    /// </summary>
     public async Task NotifyNewQuestionToCategoryAsync(NewQuestionNotificationDto notification, string category)
     {
         try
@@ -271,10 +230,6 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
-
-    /// <summary>
-    /// Send connection status updates to all clients
-    /// </summary>
     public async Task SendConnectionStatusAsync(ConnectionStatusDto connectionStatus)
     {
         try

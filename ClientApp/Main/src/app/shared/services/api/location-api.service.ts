@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { BaseApiService } from './base-api.service';
-import { 
-  LocationDto, 
-  CreateLocationRequest, 
-  CheckInDto, 
+import {
+  LocationDto,
+  CreateLocationRequest,
+  CheckInDto,
   CreateCheckInRequest,
   PlaceReviewDto,
   CreatePlaceReviewRequest,
@@ -17,7 +17,7 @@ import { PagedResult } from '../../models/community/common.model';
   providedIn: 'root'
 })
 export class LocationApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/locations';
+  private readonly endpoint = '/v2.0/locations';
 
   getLocations(params: {
     pageNumber?: number;
@@ -29,7 +29,7 @@ export class LocationApiService extends BaseApiService {
     let httpParams = new HttpParams()
       .set('pageNumber', (params.pageNumber || 1).toString())
       .set('pageSize', (params.pageSize || 20).toString());
-    
+
     if (params.category) {
       httpParams = httpParams.set('category', params.category.toString());
     }
@@ -39,7 +39,7 @@ export class LocationApiService extends BaseApiService {
     if (params.country) {
       httpParams = httpParams.set('country', params.country);
     }
-    
+
     return this.get<PagedResult<LocationDto>>(this.endpoint, {
       cache: true,
       cacheTTL: 300000, // 5 minutes
@@ -81,7 +81,7 @@ export class LocationApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<CheckInDto>>(`${this.endpoint}/${locationId}/check-ins`, {
       cache: true,
       cacheTTL: 60000, // 1 minute
@@ -97,7 +97,7 @@ export class LocationApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<PlaceReviewDto>>(`${this.endpoint}/${locationId}/reviews`, {
       cache: true,
       cacheTTL: 120000, // 2 minutes

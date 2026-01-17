@@ -20,10 +20,6 @@ namespace WebAPI.Controllers.Media
             _currentUserService = currentUserService;
             _logger = logger;
         }
-
-        /// <summary>
-        /// Test endpoint for authenticated users
-        /// </summary>
         [HttpGet("test-auth")]
         [Authorize]
         public IActionResult TestAuth()
@@ -49,10 +45,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Authentication test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for admin users only
-        /// </summary>
         [HttpGet("test-admin")]
         [AdminOnly]
         public IActionResult TestAdmin()
@@ -74,10 +66,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Admin test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for content creators
-        /// </summary>
         [HttpGet("test-content-creator")]
         [ContentCreator]
         public IActionResult TestContentCreator()
@@ -99,10 +87,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Content creator test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for media upload permissions
-        /// </summary>
         [HttpGet("test-media-upload")]
         [MediaUpload]
         public IActionResult TestMediaUpload()
@@ -124,10 +108,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Media upload test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for moderators and admins
-        /// </summary>
         [HttpGet("test-moderator")]
         [ModeratorOrAdmin]
         public IActionResult TestModerator()
@@ -149,10 +129,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Moderator test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for active users
-        /// </summary>
         [HttpGet("test-active-user")]
         [ActiveUser]
         public IActionResult TestActiveUser()
@@ -174,10 +150,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Active user test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Test endpoint for verified users
-        /// </summary>
         [HttpGet("test-verified-user")]
         [VerifiedUser]
         public IActionResult TestVerifiedUser()
@@ -200,10 +172,6 @@ namespace WebAPI.Controllers.Media
                 return InternalServerError("Verified user test failed", ex.Message);
             }
         }
-
-        /// <summary>
-        /// Get current user information
-        /// </summary>
         [HttpGet("me")]
         [Authorize]
         public IActionResult GetCurrentUser()

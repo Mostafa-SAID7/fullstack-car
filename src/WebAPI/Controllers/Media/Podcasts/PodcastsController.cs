@@ -21,10 +21,6 @@ public class PodcastsController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Get all podcasts with filtering and pagination
-    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcasts([FromQuery] GetPodcastsQuery query)
@@ -41,10 +37,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to retrieve podcasts", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get a specific podcast by ID
-    /// </summary>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcast(Guid id)
@@ -75,10 +67,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to retrieve podcast", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Create a new podcast
-    /// </summary>
     [HttpPost]
     public async Task<IActionResult> CreatePodcast([FromBody] CreatePodcastRequest request)
     {
@@ -112,10 +100,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to create podcast", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Update an existing podcast
-    /// </summary>
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdatePodcast(Guid id, [FromBody] UpdatePodcastRequest request)
     {
@@ -144,10 +128,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to update podcast", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Delete a podcast
-    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletePodcast(Guid id)
     {
@@ -175,10 +155,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to delete podcast", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Publish a podcast
-    /// </summary>
     [HttpPost("{id:guid}/publish")]
     public async Task<IActionResult> PublishPodcast(Guid id)
     {
@@ -206,10 +182,6 @@ public class PodcastsController : BaseController
             return InternalServerError("Failed to publish podcast", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get user's own podcasts
-    /// </summary>
     [HttpGet("my-podcasts")]
     public async Task<IActionResult> GetMyPodcasts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {

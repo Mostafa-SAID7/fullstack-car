@@ -16,7 +16,7 @@ import { CategoryFilterComponent } from '../category-filter/category-filter.comp
 import { TagCloudComponent } from '../tag-cloud/tag-cloud.component';
 import { SearchInputComponent } from '../../../../../../shared/components/search-input/search-input.component';
 import { FilterSelectComponent } from '../../../../../../shared/components/filter-select/filter-select.component';
-import { PaginationComponent } from '../../../../../../shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { FilterChipsComponent } from '../../../../../../shared/components/filter-chips/filter-chips.component';
 
 @Component({

@@ -19,10 +19,6 @@ public class AnalyticsController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Track a video view
-    /// </summary>
     [HttpPost("videos/{videoId}/views")]
     public async Task<IActionResult> TrackVideoView(Guid videoId, [FromBody] TrackVideoViewCommand command)
     {
@@ -59,10 +55,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to track video view", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Track a podcast play
-    /// </summary>
     [HttpPost("podcasts/{podcastId}/plays")]
     public async Task<IActionResult> TrackPodcastPlay(Guid podcastId, [FromBody] TrackPodcastPlayCommand command)
     {
@@ -92,10 +84,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to track podcast play", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Track engagement (like, dislike, comment, share)
-    /// </summary>
     [HttpPost("engagement")]
     [Authorize]
     public async Task<IActionResult> TrackEngagement([FromBody] TrackEngagementCommand command)
@@ -119,10 +107,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to track engagement", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get analytics dashboard data
-    /// </summary>
     [HttpGet("dashboard")]
     [Authorize]
     public async Task<IActionResult> GetDashboard([FromQuery] GetAnalyticsDashboardQuery query)
@@ -145,10 +129,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to retrieve dashboard data", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get detailed analytics for a specific video
-    /// </summary>
     [HttpGet("videos/{videoId}")]
     [Authorize]
     public async Task<IActionResult> GetVideoAnalytics(Guid videoId, [FromQuery] GetVideoAnalyticsQuery query)
@@ -166,10 +146,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to retrieve video analytics", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get detailed analytics for a specific podcast
-    /// </summary>
     [HttpGet("podcasts/{podcastId}")]
     [Authorize]
     public async Task<IActionResult> GetPodcastAnalytics(Guid podcastId, [FromQuery] GetPodcastAnalyticsQuery query)
@@ -187,10 +163,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to retrieve podcast analytics", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get analytics for a creator's content
-    /// </summary>
     [HttpGet("creator")]
     [Authorize]
     public async Task<IActionResult> GetCreatorAnalytics([FromQuery] GetCreatorAnalyticsQuery query)
@@ -214,10 +186,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to retrieve creator analytics", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Export analytics data
-    /// </summary>
     [HttpGet("export")]
     [Authorize]
     public async Task<IActionResult> ExportAnalytics([FromQuery] ExportAnalyticsQuery query)
@@ -256,10 +224,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to export analytics data", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get real-time analytics data
-    /// </summary>
     [HttpGet("realtime")]
     [Authorize]
     public async Task<IActionResult> GetRealtimeAnalytics([FromQuery] GetRealtimeAnalyticsQuery query)
@@ -276,10 +240,6 @@ public class AnalyticsController : BaseController
             return InternalServerError("Failed to retrieve real-time analytics", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get analytics trends over time
-    /// </summary>
     [HttpGet("trends")]
     [Authorize]
     public async Task<IActionResult> GetAnalyticsTrends([FromQuery] GetAnalyticsTrendsQuery query)

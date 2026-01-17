@@ -9,12 +9,8 @@ using WebAPI.Extensions;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// Unified Tags API controller serving both Angular and React frontends
-    /// Provides comprehensive tag management with search and discovery features
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/tags")]
     public class TagsController : BaseController
     {
@@ -24,13 +20,6 @@ namespace WebAPI.Controllers.Community.QA
         {
             _currentUserService = currentUserService;
         }
-
-        /// <summary>
-        /// Get tags with filtering and sorting
-        /// Supports both Angular and React frontend requirements
-        /// </summary>
-        /// <param name="query">Query parameters for filtering and sorting</param>
-        /// <returns>List of tags</returns>
         [HttpGet]
         [OutputCache(Duration = 300, Tags = new[] { "Tags" })] // 5 minutes cache
         public async Task<IActionResult> GetTags([FromQuery] GetTagsQuery query)
@@ -41,13 +30,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve tags");
         }
-
-        /// <summary>
-        /// Get tag details by ID
-        /// Used by both Angular and React for tag-specific views
-        /// </summary>
-        /// <param name="id">Tag ID</param>
-        /// <returns>Tag details</returns>
         [HttpGet("{id}")]
         [OutputCache(Duration = 300, Tags = new[] { "Tags" })]
         public async Task<IActionResult> GetTag(Guid id)
@@ -59,14 +41,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Tag retrieved successfully")
                 : this.ApiBadRequest<TagDto>(result.Errors, "Failed to retrieve tag");
         }
-
-        /// <summary>
-        /// Get popular tags based on usage and trending
-        /// Used by both Angular and React for content discovery
-        /// Supports requirement 6.5: Tag-based browsing and discovery
-        /// </summary>
-        /// <param name="query">Query parameters for popular tags</param>
-        /// <returns>List of popular tags</returns>
         [HttpGet("popular")]
         [OutputCache(Duration = 600, Tags = new[] { "Tags" })] // 10 minutes cache
         public async Task<IActionResult> GetPopularTags([FromQuery] GetPopularTagsQuery query)
@@ -77,13 +51,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Popular tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve popular tags");
         }
-
-        /// <summary>
-        /// Search tags by name or description
-        /// Supports autocomplete and tag suggestion features for both frontends
-        /// </summary>
-        /// <param name="query">Search query parameters</param>
-        /// <returns>List of matching tags</returns>
         [HttpGet("search")]
         [OutputCache(Duration = 180, Tags = new[] { "Tags" })] // 3 minutes cache
         public async Task<IActionResult> SearchTags([FromQuery] SearchTagsQuery query)
@@ -94,14 +61,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Tag search completed successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to search tags");
         }
-
-        /// <summary>
-        /// Get tags for a specific category
-        /// Used by both Angular and React for category-filtered tag selection
-        /// </summary>
-        /// <param name="categoryId">Category ID</param>
-        /// <param name="maxResults">Maximum number of results</param>
-        /// <returns>List of category tags</returns>
         [HttpGet("category/{categoryId}")]
         [OutputCache(Duration = 300, Tags = new[] { "Tags", "Categories" })]
         public async Task<IActionResult> GetTagsByCategory(Guid categoryId, [FromQuery] int maxResults = 20)
@@ -120,14 +79,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Category tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve category tags");
         }
-
-        /// <summary>
-        /// Get tag suggestions for question creation
-        /// Supports intelligent tag suggestions based on question content
-        /// Used by both Angular and React question creation forms
-        /// </summary>
-        /// <param name="request">Tag suggestion request</param>
-        /// <returns>List of suggested tags</returns>
         [HttpPost("suggest")]
         [OutputCache(Duration = 60, Tags = new[] { "Tags" })] // 1 minute cache
         public async Task<IActionResult> SuggestTags([FromBody] TagSuggestionRequest request)
@@ -168,11 +119,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return this.ApiSuccess(uniqueTags, "Tag suggestions generated successfully");
         }
-
-        /// <summary>
-        /// Extract keywords from content for tag suggestions
-        /// Simple implementation - could be enhanced with NLP
-        /// </summary>
         private List<string> ExtractKeywords(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -189,10 +135,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return words;
         }
-
-        /// <summary>
-        /// Check if a word is a common stop word
-        /// </summary>
         private bool IsStopWord(string word)
         {
             var stopWords = new HashSet<string> 
@@ -203,10 +145,6 @@ namespace WebAPI.Controllers.Community.QA
             return stopWords.Contains(word);
         }
     }
-
-    /// <summary>
-    /// Request model for tag suggestions
-    /// </summary>
     public class TagSuggestionRequest
     {
         public string Content { get; set; } = string.Empty;

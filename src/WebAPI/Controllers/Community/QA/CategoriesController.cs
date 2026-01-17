@@ -9,12 +9,8 @@ using WebAPI.Extensions;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// Unified Categories API controller serving both Angular and React frontends
-    /// Provides comprehensive category management with expert identification and notifications
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/categories")]
     public class CategoriesController : BaseController
     {
@@ -24,13 +20,6 @@ namespace WebAPI.Controllers.Community.QA
         {
             _currentUserService = currentUserService;
         }
-
-        /// <summary>
-        /// Get all categories with filtering and sorting
-        /// Supports both Angular and React frontend requirements
-        /// </summary>
-        /// <param name="query">Query parameters for filtering and sorting</param>
-        /// <returns>List of categories</returns>
         [HttpGet]
         [OutputCache(Duration = 300, Tags = new[] { "Categories" })] // 5 minutes cache
         public async Task<IActionResult> GetCategories([FromQuery] GetCategoriesQuery query)
@@ -41,13 +30,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Categories retrieved successfully")
                 : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve categories");
         }
-
-        /// <summary>
-        /// Get category details by ID
-        /// Used by both Angular and React for category-specific views
-        /// </summary>
-        /// <param name="id">Category ID</param>
-        /// <returns>Category details</returns>
         [HttpGet("{id}")]
         [OutputCache(Duration = 300, Tags = new[] { "Categories" })]
         public async Task<IActionResult> GetCategory(Guid id)
@@ -59,14 +41,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Category retrieved successfully")
                 : this.ApiBadRequest<CategoryDto>(result.Errors, "Failed to retrieve category");
         }
-
-        /// <summary>
-        /// Get experts for a specific category
-        /// Supports expert identification and notification features for both frontends
-        /// </summary>
-        /// <param name="id">Category ID</param>
-        /// <param name="query">Query parameters for expert filtering</param>
-        /// <returns>List of category experts</returns>
         [HttpGet("{id}/experts")]
         [OutputCache(Duration = 180, Tags = new[] { "Categories", "Experts" })] // 3 minutes cache
         public async Task<IActionResult> GetCategoryExperts(Guid id, [FromQuery] GetCategoryExpertsQuery query)
@@ -78,13 +52,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Category experts retrieved successfully")
                 : this.ApiBadRequest<List<ExpertDto>>(result.Errors, "Failed to retrieve category experts");
         }
-
-        /// <summary>
-        /// Get popular categories based on recent activity
-        /// Used by both Angular and React for trending content discovery
-        /// </summary>
-        /// <param name="query">Query parameters for popular categories</param>
-        /// <returns>List of popular categories</returns>
         [HttpGet("popular")]
         [OutputCache(Duration = 600, Tags = new[] { "Categories" })] // 10 minutes cache
         public async Task<IActionResult> GetPopularCategories([FromQuery] GetPopularCategoriesQuery query)
@@ -95,15 +62,6 @@ namespace WebAPI.Controllers.Community.QA
                 ? this.ApiSuccess(result.Data, "Popular categories retrieved successfully")
                 : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve popular categories");
         }
-
-        /// <summary>
-        /// Notify experts in a category about a new question
-        /// Internal endpoint used by question creation process
-        /// Supports requirement 5.1: Expert notification system
-        /// </summary>
-        /// <param name="categoryId">Category ID</param>
-        /// <param name="questionId">Question ID</param>
-        /// <returns>Notification result</returns>
         [HttpPost("{categoryId}/notify-experts")]
         [Authorize(Roles = "User,Expert,Moderator,Admin")]
         public async Task<IActionResult> NotifyExperts(Guid categoryId, [FromBody] NotifyExpertsRequest request)
@@ -138,10 +96,6 @@ namespace WebAPI.Controllers.Community.QA
             }, "Expert notifications sent successfully");
         }
     }
-
-    /// <summary>
-    /// Request model for expert notifications
-    /// </summary>
     public class NotifyExpertsRequest
     {
         public Guid QuestionId { get; set; }

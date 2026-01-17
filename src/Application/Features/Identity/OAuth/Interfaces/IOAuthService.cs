@@ -16,8 +16,14 @@ namespace Application.Features.Identity.OAuth.Interfaces
         // Facebook OAuth
         Task<Result<AuthResponse>> FacebookLoginAsync(FacebookLoginRequest request);
         
+        // Microsoft OAuth
+        Task<Result<AuthResponse>> MicrosoftLoginAsync(MicrosoftLoginRequest request);
+        
         // Generic External Login
         Task<Result<AuthResponse>> ExternalLoginCallbackAsync(ExternalLoginCallbackRequest request);
+        
+        // OAuth Initiation
+        Task<Result<OAuthInitiationResponse>> InitiateOAuthAsync(string provider, string redirectUri);
         
         // Account Linking
         Task<Result> LinkExternalAccountAsync(string userId, string provider, string providerKey);

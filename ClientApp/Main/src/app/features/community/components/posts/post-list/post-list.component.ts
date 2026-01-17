@@ -8,7 +8,7 @@ import { PostService } from '../../../services/post.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
 import { Post } from '../../../../../core/models/post.model';
 import { PostItemComponent } from '../post-item/post-item.component';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-post-list',
@@ -26,11 +26,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   totalPages = 0;
   showFilters = false;
   searchForm: FormGroup;
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
-    private postService: PostService, 
+    private postService: PostService,
     private fb: FormBuilder,
     private translationService: TranslationService
   ) {
@@ -64,7 +64,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   private setupSearch(): void {
     this.searchForm.get('searchTerm')?.valueChanges
       .pipe(
-        debounceTime(500), 
+        debounceTime(500),
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )

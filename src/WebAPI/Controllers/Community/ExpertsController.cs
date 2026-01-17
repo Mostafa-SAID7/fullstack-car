@@ -6,15 +6,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Controllers;
+using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community;
-
-/// <summary>
-/// API controller for expert identification and management
-/// Serves both Angular Main app and React Dashboard app
-/// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/experts")]
 [Authorize]
 public class ExpertsController : BaseController
 {
@@ -28,10 +25,6 @@ public class ExpertsController : BaseController
     }
 
     #region Expert Detection and Ranking
-
-    /// <summary>
-    /// Get experts by category
-    /// </summary>
     [HttpGet("category/{category}")]
     public async Task<IActionResult> GetExpertsByCategory(string category)
     {
@@ -48,10 +41,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get ranked experts in a category
-    /// </summary>
     [HttpGet("category/{category}/ranked")]
     public async Task<IActionResult> GetRankedExperts(string category, [FromQuery] int count = 10)
     {
@@ -68,10 +57,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Check if user is expert in category
-    /// </summary>
     [HttpGet("user/{userId}/category/{category}/is-expert")]
     public async Task<IActionResult> IsUserExpertInCategory(Guid userId, string category)
     {
@@ -88,10 +73,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get user's expertise level in category
-    /// </summary>
     [HttpGet("user/{userId}/category/{category}/expertise-level")]
     public async Task<IActionResult> GetExpertiseLevel(Guid userId, string category)
     {
@@ -108,10 +89,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Promote user to expert status (Admin only)
-    /// </summary>
     [HttpPost("user/{userId}/promote")]
     [Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> PromoteToExpert(Guid userId, [FromBody] PromoteExpertRequest request)
@@ -134,10 +111,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Update expert statistics after activity
-    /// </summary>
     [HttpPost("user/{userId}/stats")]
     public async Task<IActionResult> UpdateExpertStats(Guid userId, [FromBody] UpdateExpertStatsRequest request)
     {
@@ -163,10 +136,6 @@ public class ExpertsController : BaseController
     #endregion
 
     #region Expert Notification System
-
-    /// <summary>
-    /// Get notifiable experts for a category
-    /// </summary>
     [HttpGet("category/{category}/notifiable")]
     public async Task<IActionResult> GetNotifiableExperts(string category)
     {
@@ -183,10 +152,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Notify experts about a new question
-    /// </summary>
     [HttpPost("notify")]
     public async Task<IActionResult> NotifyExpertsForQuestion([FromBody] NotifyExpertsRequest request)
     {
@@ -207,10 +172,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get expert notification preferences
-    /// </summary>
     [HttpGet("user/{userId}/notification-preferences")]
     public async Task<IActionResult> GetNotificationPreferences(Guid userId)
     {
@@ -227,10 +188,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Update expert notification preferences
-    /// </summary>
     [HttpPut("user/{userId}/notification-preferences")]
     public async Task<IActionResult> UpdateNotificationPreferences(Guid userId, [FromBody] UpdateNotificationPreferencesRequest request)
     {
@@ -256,10 +213,6 @@ public class ExpertsController : BaseController
     #endregion
 
     #region Expert Badge and Recognition
-
-    /// <summary>
-    /// Get expert badges for a user
-    /// </summary>
     [HttpGet("user/{userId}/badges")]
     public async Task<IActionResult> GetExpertBadges(Guid userId)
     {
@@ -276,10 +229,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Check if user has expert badge in category
-    /// </summary>
     [HttpGet("user/{userId}/category/{category}/has-badge")]
     public async Task<IActionResult> HasExpertBadge(Guid userId, string category)
     {
@@ -296,10 +245,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Check and award expert badges
-    /// </summary>
     [HttpPost("user/{userId}/category/{category}/check-badges")]
     public async Task<IActionResult> CheckAndAwardBadges(Guid userId, string category)
     {
@@ -320,10 +265,6 @@ public class ExpertsController : BaseController
     #endregion
 
     #region Expert Preference Management
-
-    /// <summary>
-    /// Get user's expertise categories
-    /// </summary>
     [HttpGet("user/{userId}/categories")]
     public async Task<IActionResult> GetUserExpertiseCategories(Guid userId)
     {
@@ -340,10 +281,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Add expertise category for user
-    /// </summary>
     [HttpPost("user/{userId}/categories")]
     public async Task<IActionResult> AddExpertiseCategory(Guid userId, [FromBody] AddExpertiseCategoryRequest request)
     {
@@ -360,10 +297,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Remove expertise category for user
-    /// </summary>
     [HttpDelete("user/{userId}/categories/{category}")]
     public async Task<IActionResult> RemoveExpertiseCategory(Guid userId, string category)
     {
@@ -380,10 +313,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get expert preferences
-    /// </summary>
     [HttpGet("user/{userId}/preferences")]
     public async Task<IActionResult> GetExpertPreferences(Guid userId)
     {
@@ -400,10 +329,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Update expert preferences
-    /// </summary>
     [HttpPut("user/{userId}/preferences")]
     public async Task<IActionResult> UpdateExpertPreferences(Guid userId, [FromBody] ExpertPreferencesDto preferences)
     {
@@ -425,10 +350,6 @@ public class ExpertsController : BaseController
     #endregion
 
     #region Expert Analytics
-
-    /// <summary>
-    /// Get expert analytics
-    /// </summary>
     [HttpGet("user/{userId}/analytics")]
     public async Task<IActionResult> GetExpertAnalytics(Guid userId, [FromQuery] string? category = null)
     {
@@ -445,10 +366,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get expert leaderboard
-    /// </summary>
     [HttpGet("category/{category}/leaderboard")]
     public async Task<IActionResult> GetExpertLeaderboard(string category, [FromQuery] int count = 10)
     {
@@ -465,10 +382,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-
-    /// <summary>
-    /// Get expert performance metrics
-    /// </summary>
     [HttpGet("user/{userId}/category/{category}/performance")]
     public async Task<IActionResult> GetExpertPerformance(Guid userId, string category)
     {

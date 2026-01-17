@@ -5,11 +5,6 @@ using Microsoft.Extensions.Options;
 using Application.Features.Shared.Localization.Services;
 
 namespace Infrastructure.Services;
-
-/// <summary>
-/// Background service for periodic translation validation
-/// Implements Requirements: 15.1, 15.2, 15.4
-/// </summary>
 public class TranslationValidationBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -152,36 +147,12 @@ public class TranslationValidationBackgroundService : BackgroundService
         await base.StopAsync(cancellationToken);
     }
 }
-
-/// <summary>
-/// Configuration settings for translation validation background service
-/// </summary>
 public class TranslationValidationSettings
 {
     public const string SectionName = "TranslationValidation";
-
-    /// <summary>
-    /// Interval in hours between validation runs (default: 24 hours)
-    /// </summary>
     public int ValidationIntervalHours { get; set; } = 24;
-
-    /// <summary>
-    /// Threshold for missing keys that triggers a warning (default: 50)
-    /// </summary>
     public int MissingKeysThreshold { get; set; } = 50;
-
-    /// <summary>
-    /// Minimum completion percentage before triggering a warning (default: 80%)
-    /// </summary>
     public decimal MinimumCompletionPercentage { get; set; } = 80.0m;
-
-    /// <summary>
-    /// Whether to automatically update completeness tracking (default: true)
-    /// </summary>
     public bool AutoUpdateCompleteness { get; set; } = true;
-
-    /// <summary>
-    /// Whether the background service is enabled (default: true)
-    /// </summary>
     public bool Enabled { get; set; } = true;
 }

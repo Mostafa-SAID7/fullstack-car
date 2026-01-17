@@ -7,7 +7,7 @@ import { MediaService } from '../../../services/media.service';
 import { PodcastService, PodcastFilters } from '../../../services/podcast.service';
 import { PodcastList, MediaFilters, MediaStatus } from '../../../models';
 import { PaginatedResult } from '../../../../../core/models/pagination.model';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { MediaCardComponent } from '../../media-card/media-card.component';
 
 

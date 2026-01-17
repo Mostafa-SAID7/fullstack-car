@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../ui/loading/loading-spinner.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { PaginationComponent } from '../ui/pagination/pagination.component';
+import { LoadingStateComponent } from '../ui/loading-state/loading-state.component';
 
 export interface ListViewConfig {
     showPagination?: boolean;
@@ -21,7 +22,7 @@ export interface PaginationConfig {
 @Component({
     selector: 'app-list-view',
     standalone: true,
-    imports: [CommonModule, LoadingSpinnerComponent, EmptyStateComponent, PaginationComponent],
+    imports: [CommonModule, EmptyStateComponent, PaginationComponent, LoadingStateComponent],
     templateUrl: './list-view.component.html'
 })
 export class ListViewComponent {

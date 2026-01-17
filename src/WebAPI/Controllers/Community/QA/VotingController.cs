@@ -11,12 +11,8 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// Unified Voting API controller serving both Angular and React frontends
-    /// Provides comprehensive vote management with validation and business rules
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/votes")]
     public class VotingController : BaseController
     {
@@ -30,13 +26,6 @@ namespace WebAPI.Controllers.Community.QA
             _currentUserService = currentUserService;
             _qaHubService = qaHubService;
         }
-
-        /// <summary>
-        /// Create a new vote on a question or answer
-        /// Validates business rules including self-vote prevention and reputation requirements
-        /// </summary>
-        /// <param name="request">Vote creation request</param>
-        /// <returns>Success confirmation</returns>
         [HttpPost]
         public async Task<IActionResult> CreateVote([FromBody] CreateVoteRequest request)
         {
@@ -98,14 +87,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to create vote", result.Errors);
         }
-
-        /// <summary>
-        /// Remove an existing vote (within 5 minutes of casting)
-        /// Reverses reputation changes and updates vote counts
-        /// </summary>
-        /// <param name="contentId">Content ID that was voted on</param>
-        /// <param name="contentType">Content type (Question or Answer)</param>
-        /// <returns>Success confirmation</returns>
         [HttpDelete("{contentType}/{contentId}")]
         public async Task<IActionResult> RemoveVote(Guid contentId, string contentType)
         {
@@ -168,13 +149,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to remove vote", result.Errors);
         }
-
-        /// <summary>
-        /// Change an existing vote type (within 5 minutes of casting)
-        /// Allows switching between upvote and downvote with reputation validation
-        /// </summary>
-        /// <param name="request">Vote change request</param>
-        /// <returns>Success confirmation</returns>
         [HttpPut]
         public async Task<IActionResult> ChangeVote([FromBody] ChangeVoteRequest request)
         {
@@ -236,13 +210,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to change vote", result.Errors);
         }
-
-        /// <summary>
-        /// Get user's voting history with filtering and pagination
-        /// Used by both Angular and React for user profile and activity tracking
-        /// </summary>
-        /// <param name="query">User votes query parameters</param>
-        /// <returns>Paginated list of user's votes</returns>
         [HttpGet("my-votes")]
         [OutputCache(Duration = 30, Tags = new[] { "Votes", "UserVotes" })]
         public async Task<IActionResult> GetUserVotes([FromQuery] GetUserVotesQuery query)
@@ -265,14 +232,6 @@ namespace WebAPI.Controllers.Community.QA
 
             return BadRequest("Failed to retrieve user votes", result.Errors);
         }
-
-        /// <summary>
-        /// Get vote status for specific content (for current user)
-        /// Used by both Angular and React to show current vote state in UI
-        /// </summary>
-        /// <param name="contentId">Content ID to check vote status for</param>
-        /// <param name="contentType">Content type (Question or Answer)</param>
-        /// <returns>Current vote status or null if not voted</returns>
         [HttpGet("{contentType}/{contentId}/status")]
         [OutputCache(Duration = 60, Tags = new[] { "Votes", "VoteStatus" })]
         public async Task<IActionResult> GetVoteStatus(Guid contentId, string contentType)
@@ -322,14 +281,6 @@ namespace WebAPI.Controllers.Community.QA
                 return Success(new { HasVoted = false, VoteType = (string?)null }, "Vote status retrieved");
             }
         }
-
-        /// <summary>
-        /// Get vote statistics for content (total upvotes, downvotes, score)
-        /// Public endpoint used by both Angular and React for displaying vote counts
-        /// </summary>
-        /// <param name="contentId">Content ID to get vote statistics for</param>
-        /// <param name="contentType">Content type (Question or Answer)</param>
-        /// <returns>Vote statistics</returns>
         [HttpGet("{contentType}/{contentId}/stats")]
         [AllowAnonymous]
         [OutputCache(Duration = 30, Tags = new[] { "Votes", "VoteStats" })]

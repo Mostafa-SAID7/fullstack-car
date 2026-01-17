@@ -15,7 +15,7 @@ import { PagedResult, UserProfileDto } from '../../models/community/common.model
   providedIn: 'root'
 })
 export class FriendApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/friends';
+  private readonly endpoint = '/v2.0/social/friends';
 
   getFriends(params: {
     pageNumber?: number;

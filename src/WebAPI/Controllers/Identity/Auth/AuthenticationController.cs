@@ -112,11 +112,6 @@ namespace WebAPI.Controllers.Identity.Auth
             var result = await _authenticationService.RevokeTokenAsync(token);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Get current authenticated user information
-        /// </summary>
-        /// <returns>Current user profile</returns>
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
@@ -129,11 +124,6 @@ namespace WebAPI.Controllers.Identity.Auth
             var result = await _profileService.GetProfileAsync(_currentUserService.UserId);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Revoke all refresh tokens for the current user
-        /// </summary>
-        /// <returns>Success result</returns>
         [Authorize]
         [HttpPost("revoke-all-tokens")]
         public async Task<IActionResult> RevokeAllTokens()

@@ -18,10 +18,6 @@ namespace WebAPI.Controllers.Shared.Notifications
         {
             _notificationService = notificationService;
         }
-
-        /// <summary>
-        /// Get user notifications with pagination and filtering
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetNotifications(
             [FromQuery] string? type = null,
@@ -82,10 +78,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to retrieve notifications", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Get notification statistics for dashboard
-        /// </summary>
         [HttpGet("stats")]
         public async Task<IActionResult> GetNotificationStats()
         {
@@ -128,10 +120,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to retrieve notification stats", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Mark a notification as read
-        /// </summary>
         [HttpPatch("{id}/read")]
         public async Task<IActionResult> MarkAsRead(string id)
         {
@@ -145,10 +133,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to mark notification as read", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Mark all notifications as read
-        /// </summary>
         [HttpPatch("mark-all-read")]
         public async Task<IActionResult> MarkAllAsRead()
         {
@@ -165,10 +149,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to mark all notifications as read", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Create a new notification (admin only)
-        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationRequest request)
@@ -195,10 +175,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to send notification", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Get notifications by type (success, warning, error, info)
-        /// </summary>
         [HttpGet("by-type/{type}")]
         public async Task<IActionResult> GetNotificationsByType(string type, [FromQuery] int limit = 10)
         {
@@ -222,10 +198,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = $"Failed to retrieve {type} notifications", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Get notifications by category (system, marketplace, user, security)
-        /// </summary>
         [HttpGet("by-category/{category}")]
         public async Task<IActionResult> GetNotificationsByCategory(string category, [FromQuery] int limit = 10)
         {
@@ -249,10 +221,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = $"Failed to retrieve {category} notifications", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Send marketplace notification (admin only)
-        /// </summary>
         [HttpPost("marketplace")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SendMarketplaceNotification([FromBody] MarketplaceNotificationRequest request)
@@ -293,10 +261,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to send marketplace notification", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Send system broadcast (admin only)
-        /// </summary>
         [HttpPost("broadcast")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SendSystemBroadcast([FromBody] SystemBroadcastRequest request)
@@ -311,10 +275,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to send system broadcast", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Get unread notification count
-        /// </summary>
         [HttpGet("unread-count")]
         public async Task<IActionResult> GetUnreadCount()
         {
@@ -336,10 +296,6 @@ namespace WebAPI.Controllers.Shared.Notifications
                 return StatusCode(500, new { succeeded = false, message = "Failed to retrieve unread count", error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Delete a notification
-        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotification(string id)
         {

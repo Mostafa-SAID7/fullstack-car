@@ -25,9 +25,19 @@ namespace Application.Features.Identity.Auth.Services
             throw new NotImplementedException("OAuthService.FacebookLoginAsync needs implementation");
         }
 
+        public Task<Result<AuthResponse>> MicrosoftLoginAsync(MicrosoftLoginRequest request)
+        {
+            throw new NotImplementedException("OAuthService.MicrosoftLoginAsync needs implementation");
+        }
+
         public Task<Result<AuthResponse>> ExternalLoginCallbackAsync(ExternalLoginCallbackRequest request)
         {
             throw new NotImplementedException("OAuthService.ExternalLoginCallbackAsync needs implementation");
+        }
+
+        public Task<Result<OAuthInitiationResponse>> InitiateOAuthAsync(string provider, string redirectUri)
+        {
+            throw new NotImplementedException("OAuthService.InitiateOAuthAsync needs implementation");
         }
 
         public Task<Result> LinkExternalAccountAsync(string userId, string provider, string providerKey)

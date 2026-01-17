@@ -21,10 +21,6 @@ public class VideoInteractionController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Like or dislike a video
-    /// </summary>
     [HttpPost("{id:guid}/like")]
     public async Task<IActionResult> LikeVideo(Guid id, [FromBody] LikeVideoRequest request)
     {
@@ -54,10 +50,6 @@ public class VideoInteractionController : BaseController
             return InternalServerError("Failed to process like/dislike", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Add a comment to a video
-    /// </summary>
     [HttpPost("{id:guid}/comments")]
     public async Task<IActionResult> AddComment(Guid id, [FromBody] AddVideoCommentRequest request)
     {

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { QASignalRService } from '../../services/qa-signalr.service';
 import { RealTimeVoteDisplayComponent } from '../real-time-vote-display/real-time-vote-display.component';
-import { LoadingSpinnerComponent } from '../../../../../../shared/components/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerComponent } from '../../../../../../shared/components/ui/loading/loading-spinner.component';
 import { ErrorDisplayComponent } from '../../../../../../shared/components/error-display/error-display.component';
-import { FormButtonComponent } from '../../../../../../shared/components/form-button/form-button.component';
+import { ButtonComponent } from '../../../../../../shared/components/ui/button/button.component';
 import { ToastService } from '../../../../../../core/services/toast.service';
 import { Answer } from '../../models/qa-api.types';
 import { RealTimeAnswer } from '../../models/qa-ui.types';
@@ -19,7 +19,7 @@ import { RelativeTimePipe } from '../../../../../../shared/pipes/relative-time.p
         RealTimeVoteDisplayComponent,
         LoadingSpinnerComponent,
         ErrorDisplayComponent,
-        FormButtonComponent,
+        ButtonComponent,
         RelativeTimePipe
     ],
     templateUrl: './real-time-answer-list.component.html'

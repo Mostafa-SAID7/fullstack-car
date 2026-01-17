@@ -16,10 +16,6 @@ public class DiscoveryController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Search for videos and podcasts with advanced filters
-    /// </summary>
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] SearchMediaQuery query)
     {
@@ -45,10 +41,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Search failed", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get trending content with configurable time window
-    /// </summary>
     [HttpGet("trending")]
     public async Task<IActionResult> GetTrending([FromQuery] GetTrendingContentQuery query)
     {
@@ -64,10 +56,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Failed to retrieve trending content", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get featured content
-    /// </summary>
     [HttpGet("featured")]
     public async Task<IActionResult> GetFeatured([FromQuery] GetFeaturedContentQuery query)
     {
@@ -83,10 +71,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Failed to retrieve featured content", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Browse content by category
-    /// </summary>
     [HttpGet("categories/{category}")]
     public async Task<IActionResult> BrowseByCategory(string category, [FromQuery] BrowseByCategoryQuery query)
     {
@@ -108,10 +92,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Failed to browse content by category", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get available categories
-    /// </summary>
     [HttpGet("categories")]
     public async Task<IActionResult> GetCategories()
     {
@@ -128,10 +108,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Failed to retrieve categories", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get search suggestions based on partial input
-    /// </summary>
     [HttpGet("suggestions")]
     public async Task<IActionResult> GetSearchSuggestions([FromQuery] string query, [FromQuery] int limit = 10)
     {
@@ -158,10 +134,6 @@ public class DiscoveryController : BaseController
             return InternalServerError("Failed to retrieve search suggestions", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get personalized recommendations for authenticated users
-    /// </summary>
     [HttpGet("recommendations")]
     public async Task<IActionResult> GetRecommendations([FromQuery] GetRecommendationsQuery query)
     {

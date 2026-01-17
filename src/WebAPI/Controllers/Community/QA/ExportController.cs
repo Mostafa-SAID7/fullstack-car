@@ -4,12 +4,8 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.QA
 {
-    /// <summary>
-    /// QA Export API controller serving both Angular and React frontends
-    /// Provides data export functionality for reporting and analytics
-    /// </summary>
     [Authorize]
-    [ApiVersion("7.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/qa/export")]
     public class ExportController : BaseController
     {
@@ -19,15 +15,6 @@ namespace WebAPI.Controllers.Community.QA
         {
             _logger = logger;
         }
-
-        /// <summary>
-        /// Export questions data for reporting
-        /// Used by React Dashboard for data export functionality
-        /// </summary>
-        /// <param name="format">Export format (json, csv, excel)</param>
-        /// <param name="dateFrom">Start date for export</param>
-        /// <param name="dateTo">End date for export</param>
-        /// <returns>Exported data</returns>
         [HttpGet("questions")]
         public async Task<IActionResult> ExportQuestions(
             [FromQuery] string format = "json",

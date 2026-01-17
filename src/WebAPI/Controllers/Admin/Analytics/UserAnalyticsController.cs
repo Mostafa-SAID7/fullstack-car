@@ -12,10 +12,6 @@ namespace WebAPI.Controllers.Admin.Analytics
         public UserAnalyticsController(ILogger<UserAnalyticsController> logger) : base(logger)
         {
         }
-
-        /// <summary>
-        /// Get user analytics data
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetUserAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -42,10 +38,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetUserAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get user demographics data
-        /// </summary>
         [HttpGet("demographics")]
         public async Task<IActionResult> GetUserDemographics(
             [FromQuery] DateTime? startDate = null,
@@ -70,10 +62,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetUserDemographics");
             }
         }
-
-        /// <summary>
-        /// Get user activity trends
-        /// </summary>
         [HttpGet("activity")]
         public async Task<IActionResult> GetUserActivity(
             [FromQuery] DateTime? startDate = null,
@@ -100,10 +88,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetUserActivity");
             }
         }
-
-        /// <summary>
-        /// Get top users by engagement
-        /// </summary>
         [HttpGet("top")]
         public async Task<IActionResult> GetTopUsers(
             [FromQuery] int limit = 10,

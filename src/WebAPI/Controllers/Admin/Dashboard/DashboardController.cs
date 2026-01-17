@@ -21,10 +21,6 @@ namespace WebAPI.Controllers.Admin.Dashboard
         {
             _logger = logger;
         }
-
-        /// <summary>
-        /// Get comprehensive dashboard statistics
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetDashboard([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
         {
@@ -51,10 +47,6 @@ namespace WebAPI.Controllers.Admin.Dashboard
                 return StatusCode(500, "Internal server error");
             }
         }
-
-        /// <summary>
-        /// Get system information and health status
-        /// </summary>
         [HttpGet("system-info")]
         public async Task<IActionResult> GetSystemInfo()
         {
@@ -76,10 +68,6 @@ namespace WebAPI.Controllers.Admin.Dashboard
                 return StatusCode(500, "Internal server error");
             }
         }
-
-        /// <summary>
-        /// Get recent system activity
-        /// </summary>
         [HttpGet("recent-activity")]
         public async Task<IActionResult> GetRecentActivity(
             [FromQuery] int limit = 10,
@@ -110,10 +98,6 @@ namespace WebAPI.Controllers.Admin.Dashboard
                 return StatusCode(500, "Internal server error");
             }
         }
-
-        /// <summary>
-        /// Get system alerts categorized by severity
-        /// </summary>
         [HttpGet("alerts")]
         public async Task<IActionResult> GetSystemAlerts(
             [FromQuery] string? severity = null,
@@ -142,10 +126,6 @@ namespace WebAPI.Controllers.Admin.Dashboard
                 return StatusCode(500, "Internal server error");
             }
         }
-
-        /// <summary>
-        /// Get detailed performance metrics
-        /// </summary>
         [HttpGet("performance")]
         public async Task<IActionResult> GetPerformanceMetrics(
             [FromQuery] DateTime? fromDate = null,

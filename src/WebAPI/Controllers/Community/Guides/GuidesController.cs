@@ -12,7 +12,7 @@ namespace WebAPI.Controllers.Community.Guides;
 
 [ApiController]
 [ApiVersion("2.0")]
-[Route("api/v{version:apiVersion}/community/guides")]
+[Route("api/v{version:apiVersion}/guides")]
 [Authorize]
 public class GuidesController : ControllerBase
 {

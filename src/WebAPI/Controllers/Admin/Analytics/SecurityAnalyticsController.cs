@@ -12,10 +12,6 @@ namespace WebAPI.Controllers.Admin.Analytics
         public SecurityAnalyticsController(ILogger<SecurityAnalyticsController> logger) : base(logger)
         {
         }
-
-        /// <summary>
-        /// Get security analytics data
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetSecurityAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -40,10 +36,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSecurityAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get failed login attempts analytics
-        /// </summary>
         [HttpGet("failed-logins")]
         public async Task<IActionResult> GetFailedLogins(
             [FromQuery] DateTime? startDate = null,
@@ -69,10 +61,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetFailedLogins");
             }
         }
-
-        /// <summary>
-        /// Get security threats analytics
-        /// </summary>
         [HttpGet("threats")]
         public async Task<IActionResult> GetSecurityThreats(
             [FromQuery] DateTime? startDate = null,
@@ -102,10 +90,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSecurityThreats");
             }
         }
-
-        /// <summary>
-        /// Get blocked IPs analytics
-        /// </summary>
         [HttpGet("blocked-ips")]
         public async Task<IActionResult> GetBlockedIPs(
             [FromQuery] DateTime? startDate = null,
@@ -130,10 +114,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetBlockedIPs");
             }
         }
-
-        /// <summary>
-        /// Get security incidents analytics
-        /// </summary>
         [HttpGet("incidents")]
         public async Task<IActionResult> GetSecurityIncidents(
             [FromQuery] DateTime? startDate = null,
@@ -163,10 +143,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSecurityIncidents");
             }
         }
-
-        /// <summary>
-        /// Get security events analytics
-        /// </summary>
         [HttpGet("events")]
         public async Task<IActionResult> GetSecurityEvents(
             [FromQuery] DateTime? startDate = null,
@@ -196,10 +172,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetSecurityEvents");
             }
         }
-
-        /// <summary>
-        /// Get authentication analytics
-        /// </summary>
         [HttpGet("authentication")]
         public async Task<IActionResult> GetAuthenticationAnalytics(
             [FromQuery] DateTime? startDate = null,
@@ -225,10 +197,6 @@ namespace WebAPI.Controllers.Admin.Analytics
                 return HandleException(ex, "GetAuthenticationAnalytics");
             }
         }
-
-        /// <summary>
-        /// Get suspicious activities analytics
-        /// </summary>
         [HttpGet("suspicious")]
         public async Task<IActionResult> GetSuspiciousActivities(
             [FromQuery] DateTime? startDate = null,

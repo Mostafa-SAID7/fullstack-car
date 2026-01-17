@@ -14,7 +14,7 @@ namespace WebAPI.Controllers.Community.Groups
 {
     [Authorize]
     [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/community/groups")]
+    [Route("api/v{version:apiVersion}/groups")]
     public class GroupsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;

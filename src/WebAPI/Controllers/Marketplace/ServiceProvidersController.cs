@@ -21,10 +21,6 @@ namespace WebAPI.Controllers.Marketplace
         {
             _mediator = mediator;
         }
-
-        /// <summary>
-        /// Get all service providers with filtering and pagination
-        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetServiceProviders([FromQuery] GetServiceProvidersQuery query)
@@ -48,10 +44,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to retrieve service providers"
             });
         }
-
-        /// <summary>
-        /// Get service provider by ID
-        /// </summary>
         [HttpGet("{id:guid}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetServiceProvider(Guid id)
@@ -76,10 +68,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Service provider not found"
             });
         }
-
-        /// <summary>
-        /// Create a new service provider
-        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateServiceProvider([FromBody] CreateServiceProviderRequest request)
         {
@@ -121,10 +109,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to create service provider"
             });
         }
-
-        /// <summary>
-        /// Update service provider
-        /// </summary>
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateServiceProvider(Guid id, [FromBody] UpdateServiceProviderRequest request)
         {
@@ -164,10 +148,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to update service provider"
             });
         }
-
-        /// <summary>
-        /// Delete service provider
-        /// </summary>
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteServiceProvider(Guid id)
         {
@@ -205,10 +185,6 @@ namespace WebAPI.Controllers.Marketplace
                 Message = "Failed to delete service provider"
             });
         }
-
-        /// <summary>
-        /// Get my service providers (for authenticated user)
-        /// </summary>
         [HttpGet("my-providers")]
         public async Task<IActionResult> GetMyServiceProviders([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {

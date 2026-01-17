@@ -7,11 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.Analytics;
-
-/// <summary>
-/// Background service that validates and corrects analytics data integrity
-/// Runs periodically to ensure analytics data remains accurate
-/// </summary>
 public class AnalyticsValidationService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;

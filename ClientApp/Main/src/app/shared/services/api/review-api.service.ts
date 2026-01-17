@@ -9,7 +9,7 @@ import { PagedResult } from '../../models/community/common.model';
   providedIn: 'root'
 })
 export class ReviewApiService extends BaseApiService {
-  private readonly endpoint = '/v7/community/reviews';
+  private readonly endpoint = '/v2.0/reviews';
 
   getReviews(params: {
     pageNumber?: number;
@@ -20,14 +20,14 @@ export class ReviewApiService extends BaseApiService {
     let httpParams = new HttpParams()
       .set('pageNumber', (params.pageNumber || 1).toString())
       .set('pageSize', (params.pageSize || 20).toString());
-    
+
     if (params.type) {
       httpParams = httpParams.set('type', params.type.toString());
     }
     if (params.rating) {
       httpParams = httpParams.set('rating', params.rating.toString());
     }
-    
+
     return this.get<PagedResult<ReviewDto>>(this.endpoint, {
       cache: true,
       cacheTTL: 120000, // 2 minutes
@@ -66,7 +66,7 @@ export class ReviewApiService extends BaseApiService {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', '20');
-    
+
     return this.get<PagedResult<ReviewCommentDto>>(`${this.endpoint}/${reviewId}/comments`, {
       cache: true,
       cacheTTL: 30000, // 30 seconds

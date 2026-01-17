@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NewsService, NewsFilters } from '../../../services/news.service';
 import { Article } from '../../../../../core/models/news.model';
 import { NewsCardComponent } from '../news-card/news-card.component';
-import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-news-list',
@@ -137,7 +137,7 @@ export class NewsListComponent implements OnInit {
   searchForm: FormGroup;
 
   constructor(
-    private newsService: NewsService, 
+    private newsService: NewsService,
     private fb: FormBuilder,
     private translate: TranslateService
   ) {
@@ -184,7 +184,7 @@ export class NewsListComponent implements OnInit {
 
   loadNews(): void {
     this.loading = true;
-    
+
     const filters: NewsFilters = {
       searchTerm: this.searchForm.get('searchTerm')?.value || undefined,
       category: this.searchForm.get('category')?.value || undefined,

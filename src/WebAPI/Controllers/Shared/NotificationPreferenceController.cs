@@ -7,9 +7,6 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Shared
 {
-    /// <summary>
-    /// Controller for managing notification preferences
-    /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/notifications/preferences")]
@@ -28,10 +25,6 @@ namespace WebAPI.Controllers.Shared
             _currentUserService = currentUserService;
             _logger = logger;
         }
-
-        /// <summary>
-        /// Get all notification preferences for the current user
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetPreferences()
         {
@@ -52,11 +45,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to retrieve preferences");
             }
         }
-
-        /// <summary>
-        /// Update notification preferences for the current user
-        /// </summary>
-        /// <param name="request">Preferences update request</param>
         [HttpPut]
         public async Task<IActionResult> UpdatePreferences([FromBody] UpdatePreferencesRequest request)
         {
@@ -94,11 +82,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to update preferences");
             }
         }
-
-        /// <summary>
-        /// Register a device token for push notifications
-        /// </summary>
-        /// <param name="request">Device registration request</param>
         [HttpPost("device")]
         public async Task<IActionResult> RegisterDevice([FromBody] RegisterDeviceRequest request)
         {
@@ -125,11 +108,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to register device");
             }
         }
-
-        /// <summary>
-        /// Unregister a device token
-        /// </summary>
-        /// <param name="token">Device token to unregister</param>
         [HttpDelete("device/{token}")]
         public async Task<IActionResult> UnregisterDevice(string token)
         {
@@ -150,10 +128,6 @@ namespace WebAPI.Controllers.Shared
                 return InternalServerError("Failed to unregister device");
             }
         }
-
-        /// <summary>
-        /// Get all device tokens for the current user
-        /// </summary>
         [HttpGet("devices")]
         public async Task<IActionResult> GetDevices()
         {
@@ -175,18 +149,10 @@ namespace WebAPI.Controllers.Shared
             }
         }
     }
-
-    /// <summary>
-    /// Request model for updating preferences
-    /// </summary>
     public class UpdatePreferencesRequest
     {
         public List<PreferenceDto> Preferences { get; set; } = new();
     }
-
-    /// <summary>
-    /// Preference DTO
-    /// </summary>
     public class PreferenceDto
     {
         public string NotificationType { get; set; } = string.Empty;
@@ -196,10 +162,6 @@ namespace WebAPI.Controllers.Shared
         public bool InAppEnabled { get; set; }
         public string Frequency { get; set; } = "immediate";
     }
-
-    /// <summary>
-    /// Request model for device registration
-    /// </summary>
     public class RegisterDeviceRequest
     {
         public string DeviceToken { get; set; } = string.Empty;

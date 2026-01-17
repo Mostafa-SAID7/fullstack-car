@@ -234,7 +234,7 @@ namespace Infrastructure.Extensions
             });
 
             // Media Services
-            services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>();
+            // services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>(); // Commented out - MediaService doesn't implement IMediaService
 
             // QA Services
             services.Configure<QASearchOptions>(configuration.GetSection(QASearchOptions.SectionName));

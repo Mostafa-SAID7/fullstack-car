@@ -21,10 +21,6 @@ public class VideosController : BaseController
     {
         _logger = logger;
     }
-
-    /// <summary>
-    /// Get all videos with filtering and pagination
-    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> GetVideos([FromQuery] GetVideosQuery query)
@@ -41,10 +37,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to retrieve videos", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get a specific video by ID
-    /// </summary>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetVideo(Guid id)
@@ -75,10 +67,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to retrieve video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Create a new video
-    /// </summary>
     [HttpPost]
     public async Task<IActionResult> CreateVideo([FromBody] CreateVideoRequest request)
     {
@@ -112,10 +100,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to create video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Update an existing video
-    /// </summary>
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateVideo(Guid id, [FromBody] UpdateVideoRequest request)
     {
@@ -144,10 +128,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to update video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Delete a video
-    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteVideo(Guid id)
     {
@@ -175,10 +155,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to delete video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Publish a video
-    /// </summary>
     [HttpPost("{id:guid}/publish")]
     public async Task<IActionResult> PublishVideo(Guid id)
     {
@@ -206,10 +182,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to publish video", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Get user's own videos
-    /// </summary>
     [HttpGet("my-videos")]
     public async Task<IActionResult> GetMyVideos([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
@@ -248,10 +220,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to retrieve videos", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Bulk delete videos
-    /// </summary>
     [HttpPost("bulk-delete")]
     public async Task<IActionResult> BulkDeleteVideos([FromBody] BulkDeleteVideosRequest request)
     {
@@ -289,10 +257,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to complete bulk delete operation", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Bulk publish videos
-    /// </summary>
     [HttpPost("bulk-publish")]
     public async Task<IActionResult> BulkPublishVideos([FromBody] BulkPublishVideosRequest request)
     {
@@ -330,10 +294,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to complete bulk publish operation", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Bulk unpublish videos
-    /// </summary>
     [HttpPost("bulk-unpublish")]
     public async Task<IActionResult> BulkUnpublishVideos([FromBody] BulkUnpublishVideosRequest request)
     {
@@ -371,10 +331,6 @@ public class VideosController : BaseController
             return InternalServerError("Failed to complete bulk unpublish operation", ex.Message);
         }
     }
-
-    /// <summary>
-    /// Bulk update video metadata
-    /// </summary>
     [HttpPost("bulk-update-metadata")]
     public async Task<IActionResult> BulkUpdateVideoMetadata([FromBody] BulkUpdateVideoMetadataRequest request)
     {

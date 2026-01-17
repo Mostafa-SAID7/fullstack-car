@@ -21,10 +21,6 @@ public class PodcastSeriesController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    /// <summary>
-    /// Get all podcast series with filtering and pagination
-    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcastSeries([FromQuery] GetPodcastSeriesQuery query)
@@ -48,10 +44,6 @@ public class PodcastSeriesController : ControllerBase
             Message = "Failed to retrieve podcast series"
         });
     }
-
-    /// <summary>
-    /// Get a specific podcast series by ID
-    /// </summary>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetPodcastSeriesById(Guid id)
@@ -89,10 +81,6 @@ public class PodcastSeriesController : ControllerBase
             Message = "Podcast series not found"
         });
     }
-
-    /// <summary>
-    /// Create a new podcast series
-    /// </summary>
     [HttpPost]
     public async Task<IActionResult> CreatePodcastSeries([FromBody] CreatePodcastSeriesRequest request)
     {
@@ -134,10 +122,6 @@ public class PodcastSeriesController : ControllerBase
             Message = "Failed to create podcast series"
         });
     }
-
-    /// <summary>
-    /// Update an existing podcast series
-    /// </summary>
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdatePodcastSeries(Guid id, [FromBody] UpdatePodcastSeriesRequest request)
     {
@@ -177,10 +161,6 @@ public class PodcastSeriesController : ControllerBase
             Message = "Failed to update podcast series"
         });
     }
-
-    /// <summary>
-    /// Delete a podcast series
-    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletePodcastSeries(Guid id)
     {

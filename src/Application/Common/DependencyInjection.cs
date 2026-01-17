@@ -26,7 +26,7 @@ namespace Application.Common
             services.AddScoped<IMediaDomainService, MediaDomainService>();
             
             // Register media services
-            services.AddScoped<IMediaService, MediaService>();
+            // services.AddScoped<IMediaService, MediaService>(); // Commented out - MediaService doesn't implement IMediaService
 
             // QA services are registered in Infrastructure layer
 

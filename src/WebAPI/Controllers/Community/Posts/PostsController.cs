@@ -12,7 +12,7 @@ namespace WebAPI.Controllers.Community.Posts
 {
     [Authorize]
     [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/community/posts")]
+    [Route("api/v{version:apiVersion}/posts")]
     public class PostsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
@@ -23,6 +23,7 @@ namespace WebAPI.Controllers.Community.Posts
         }
 
         [HttpGet]
+        [AllowAnonymous] // Temporarily allow anonymous access for testing
         [OutputCache(Duration = 60, Tags = new[] { "Posts" })]
         public async Task<IActionResult> GetPosts([FromQuery] GetPostsQuery query)
         {
@@ -32,6 +33,13 @@ namespace WebAPI.Controllers.Community.Posts
                 return Ok(result.Data);
 
             return BadRequest(result.Errors);
+        }
+
+        [HttpGet("test")]
+        [AllowAnonymous]
+        public IActionResult Test()
+        {
+            return Ok(new { message = "Posts API is working", timestamp = DateTime.UtcNow });
         }
 
         [HttpGet("{id}")]
