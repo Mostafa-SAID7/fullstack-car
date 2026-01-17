@@ -5,6 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/media-streaming-main-app/stats.json",
+    "build:optimize": "ng build --configuration production --optimization --build-optimizer --aot",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test:e2e": "playwright test",
@@ -12,7 +15,11 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "e2e:marketplace": "playwright test e2e/marketplace",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "bundle:analyze": "npm run build:analyze",
+    "bundle:size": "npm run build:prod && du -sh dist/media-streaming-main-app/*",
+    "optimize:deps": "npm audit fix && npm dedupe",
+    "tree-shake:check": "npx agadoo dist/media-streaming-main-app/main*.js"
   },
   "private": true,
   "dependencies": {

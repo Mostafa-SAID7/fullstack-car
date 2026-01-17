@@ -2,49 +2,68 @@
 
 ## Architecture Overview
 
-The Dashboard Admin App follows a modern React architecture with TypeScript, utilizing functional components, hooks, and context for state management. The application implements a role-based access control system with modular design for different admin types.
+The Dashboard Admin App follows modern React 18+ architecture with TypeScript, utilizing functional components, hooks-based state management, and shadcn/ui components. The application implements a comprehensive role-based access control system with modular design for different admin types, completely separate from the main user-facing frontend interface.
 
-### System Architecture
+### Administrative vs. User-Facing Separation
+
+This administrative dashboard is architecturally distinct from the main Angular-based user interface:
+
+**Administrative Focus:**
+- Backend system management and oversight
+- Content moderation and administrative workflows
+- Business operations and analytics
+- User management and platform governance
+- System monitoring and configuration
+
+**Technical Architecture:**
+- React 18+ with TypeScript and modern hooks
+- Shadcn/ui components with Tailwind CSS
+- Lucide React icons for consistent iconography
+- Administrative-specific APIs and data patterns
+- Independent build and deployment pipeline
+
+### Modern React System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Presentation Layer                       │
+│                    Administrative Presentation Layer            │
 ├─────────────────────────────────────────────────────────────────┤
-│  React 18+ App        │  TypeScript       │  Modern UI/UX       │
-│  - Role-based Routes  │  - Type Safety    │  - Responsive Design │
-│  - Admin Modules      │  - Interface Defs │  - Dark/Light Theme  │
-│  - Dashboard Widgets  │  - API Types      │  - Accessibility     │
-│  - Real-time Updates  │  - Component Types│  - Mobile Support    │
+│  React 18+ Admin App  │  TypeScript       │  Admin UI/UX        │
+│  - Role-based Routes  │  - Type Safety    │  - Shadcn/ui Design │
+│  - Admin Modules      │  - Interface Defs │  - Tailwind CSS     │
+│  - Dashboard Widgets  │  - API Types      │  - Dark/Light Theme  │
+│  - Real-time Updates  │  - Component Types│  - Lucide Icons      │
+│  - Admin Workflows    │  - Admin Models   │  - Accessibility     │
 └─────────────────────────────────────────────────────────────────┘
                                 │
 ┌─────────────────────────────────────────────────────────────────┐
-│                         State Management                        │
+│                    Administrative State Management              │
 ├─────────────────────────────────────────────────────────────────┤
-│  React Context        │  Custom Hooks     │  Local State        │
-│  - Auth Context       │  - useAuth        │  - Component State   │
-│  - Theme Context      │  - usePermissions │  - Form State        │
-│  - Notification Ctx   │  - useRealTime    │  - UI State          │
-│  - Admin Context      │  - useApi         │  - Cache State       │
+│  React Context        │  Custom Hooks     │  Admin State        │
+│  - Admin Auth Context │  - useAdminAuth   │  - Admin Data        │
+│  - Admin Theme Context│  - usePermissions │  - Form State        │
+│  - Admin Notification │  - useRealTime    │  - UI State          │
+│  - Admin Data Context │  - useAdminApi    │  - Cache State       │
 └─────────────────────────────────────────────────────────────────┘
                                 │
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Service Layer                           │
+│                    Administrative Service Layer                 │
 ├─────────────────────────────────────────────────────────────────┤
-│  API Services         │  Real-time        │  Utility Services    │
-│  - Auth Service       │  - SignalR Hub    │  - Storage Service   │
-│  - Admin Services     │  - Notifications  │  - Theme Service     │
-│  - Content Service    │  - Live Updates   │  - Validation        │
+│  Admin API Services   │  Real-time Admin  │  Admin Utilities     │
+│  - Admin Auth Service │  - Admin Hub      │  - Admin Storage     │
+│  - Admin Services     │  - Admin Alerts   │  - Admin Theme       │
+│  - Content Admin API  │  - Live Updates   │  - Admin Validation  │
 │  - Analytics Service  │  - Collaboration  │  - Error Handling    │
 └─────────────────────────────────────────────────────────────────┘
                                 │
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Infrastructure Layer                       │
+│                   Administrative Infrastructure Layer           │
 ├─────────────────────────────────────────────────────────────────┤
 │  HTTP Client          │  Build Tools      │  Development Tools   │
 │  - Axios/Fetch        │  - Vite           │  - Hot Reload        │
-│  - Request/Response   │  - TypeScript     │  - Dev Server        │
+│  - Admin Endpoints    │  - TypeScript     │  - Dev Server        │
 │  - Error Handling     │  - ESLint         │  - Source Maps       │
-│  - Interceptors       │  - Tailwind CSS   │  - Bundle Analysis   │
+│  - Admin Interceptors │  - Tailwind CSS   │  - Bundle Analysis   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -220,9 +239,9 @@ export const ProtectedRoute: React.FC<{
 ### Core Layout Components
 
 ```typescript
-// Main Layout with Role-based Navigation
+// Main Layout with Role-based Navigation using Shadcn/ui
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
+  const { user } = useAdminAuth();
   const { hasPermission } = usePermissions();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
@@ -265,7 +284,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
       });
     }
     
-    // Content Management module
+    // Enhanced Content Management module
     if (hasPermission('content', 'read')) {
       items.push({
         id: 'content',
@@ -273,7 +292,10 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         icon: FileText,
         children: [
           { id: 'content-overview', label: 'Overview', path: '/content' },
-          { id: 'media', label: 'Media Library', path: '/content/media' },
+          { id: 'content-moderation', label: 'Content Moderation', path: '/content/moderation' },
+          { id: 'media-review', label: 'Media Review', path: '/content/media-review' },
+          { id: 'folder-management', label: 'Folder Management', path: '/content/folders' },
+          { id: 'media-library', label: 'Media Library', path: '/content/media' },
           { id: 'localization', label: 'Localization', path: '/content/localization' }
         ]
       });
@@ -328,13 +350,13 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
   
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar
+      <AdminSidebar
         items={navigationItems}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header
+        <AdminHeader
           user={user}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
@@ -423,73 +445,55 @@ export const SuperAdminDashboard: React.FC = () => {
   );
 };
 
-// Enhanced Content Admin Dashboard with Community and Media Review
+// Enhanced Content Admin Dashboard with Administrative Focus
 export const ContentAdminDashboard: React.FC = () => {
-  const { data: contentMetrics } = useQuery('content-metrics', fetchContentMetrics);
-  const { data: recentContent } = useQuery('recent-content', fetchRecentContent);
-  const { data: communityContent } = useQuery('community-content', fetchCommunityContent);
-  const { data: mediaReviews } = useQuery('media-reviews', fetchMediaReviews);
-  const { data: folderStructure } = useQuery('folder-structure', fetchFolderStructure);
+  const { data: contentMetrics } = useQuery('admin-content-metrics', fetchAdminContentMetrics);
+  const { data: moderationQueue } = useQuery('moderation-queue', fetchModerationQueue);
+  const { data: mediaReviews } = useQuery('admin-media-reviews', fetchAdminMediaReviews);
+  const { data: folderStructure } = useQuery('admin-folder-structure', fetchAdminFolderStructure);
+  const { data: communityReports } = useQuery('community-reports', fetchCommunityReports);
   
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Enhanced Content Management</h1>
+        <h1 className="text-3xl font-bold">Administrative Content Management</h1>
         <div className="flex space-x-4">
           <Button variant="outline">
-            <FileText className="w-4 h-4 mr-2" />
-            Content Library
-          </Button>
-          <Button variant="outline">
-            <Users className="w-4 h-4 mr-2" />
-            Community Moderation
+            <Shield className="w-4 h-4 mr-2" />
+            Moderation Queue
           </Button>
           <Button variant="outline">
             <Video className="w-4 h-4 mr-2" />
             Media Reviews
           </Button>
           <Button variant="outline">
-            <Folder className="w-4 h-4 mr-2" />
-            Folder Management
+            <FolderTree className="w-4 h-4 mr-2" />
+            Admin Folders
+          </Button>
+          <Button variant="outline">
+            <Flag className="w-4 h-4 mr-2" />
+            Community Reports
           </Button>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Create Content
+            Admin Content
           </Button>
         </div>
       </div>
       
-      {/* Enhanced Content Overview Cards */}
+      {/* Administrative Content Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
         <MetricCard
-          title="Total Content"
-          value={contentMetrics?.totalContent || 0}
+          title="Total Platform Content"
+          value={contentMetrics?.totalPlatformContent || 0}
           change={contentMetrics?.contentGrowth || 0}
           icon={FileText}
         />
         <MetricCard
-          title="Published Today"
-          value={contentMetrics?.publishedToday || 0}
-          change={contentMetrics?.publishingRate || 0}
-          icon={Calendar}
-        />
-        <MetricCard
-          title="Pending Review"
-          value={contentMetrics?.pendingReview || 0}
-          urgent={contentMetrics?.urgentReviews || 0}
-          icon={Clock}
-        />
-        <MetricCard
-          title="Media Assets"
-          value={contentMetrics?.mediaAssets || 0}
-          change={contentMetrics?.mediaGrowth || 0}
-          icon={Image}
-        />
-        <MetricCard
-          title="Community Posts"
-          value={communityContent?.totalPosts || 0}
-          change={communityContent?.postsGrowth || 0}
-          icon={Users}
+          title="Pending Moderation"
+          value={moderationQueue?.pendingCount || 0}
+          urgent={moderationQueue?.urgentCount || 0}
+          icon={Shield}
         />
         <MetricCard
           title="Media Reviews"
@@ -497,36 +501,54 @@ export const ContentAdminDashboard: React.FC = () => {
           urgent={mediaReviews?.urgentReviews || 0}
           icon={Video}
         />
+        <MetricCard
+          title="Community Reports"
+          value={communityReports?.activeReports || 0}
+          urgent={communityReports?.urgentReports || 0}
+          icon={Flag}
+        />
+        <MetricCard
+          title="Admin Content"
+          value={contentMetrics?.adminContent || 0}
+          change={contentMetrics?.adminContentGrowth || 0}
+          icon={Settings}
+        />
+        <MetricCard
+          title="System Folders"
+          value={folderStructure?.totalFolders || 0}
+          change={folderStructure?.folderGrowth || 0}
+          icon={FolderTree}
+        />
       </div>
       
-      {/* Enhanced Content Management Tools */}
+      {/* Administrative Content Management Tools */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Main Content Area */}
+        {/* Main Administrative Area */}
         <div className="lg:col-span-8 space-y-6">
-          {/* Content Tabs */}
+          {/* Administrative Content Tabs */}
           <Card>
             <CardHeader>
-              <CardTitle>Content Management</CardTitle>
+              <CardTitle>Administrative Content Management</CardTitle>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm">All Content</Button>
-                <Button variant="outline" size="sm">Community Posts</Button>
+                <Button variant="outline" size="sm">Platform Overview</Button>
+                <Button variant="outline" size="sm">Moderation Queue</Button>
                 <Button variant="outline" size="sm">Media Reviews</Button>
-                <Button variant="outline" size="sm">Folders</Button>
+                <Button variant="outline" size="sm">Admin Content</Button>
               </div>
             </CardHeader>
             <CardContent>
-              <EnhancedContentTable 
-                content={recentContent}
-                communityContent={communityContent}
+              <AdminContentManagementTable 
+                content={contentMetrics?.recentContent}
+                moderationQueue={moderationQueue}
                 mediaReviews={mediaReviews}
               />
             </CardContent>
           </Card>
           
-          {/* Community Moderation Queue */}
+          {/* Administrative Moderation Dashboard */}
           <Card>
             <CardHeader>
-              <CardTitle>Community Moderation Queue</CardTitle>
+              <CardTitle>Administrative Moderation Dashboard</CardTitle>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm">
                   <Flag className="w-4 h-4 mr-2" />
@@ -540,17 +562,24 @@ export const ContentAdminDashboard: React.FC = () => {
                   <AlertTriangle className="w-4 h-4 mr-2" />
                   Auto-Flagged
                 </Button>
+                <Button variant="outline" size="sm">
+                  <Users className="w-4 h-4 mr-2" />
+                  User Reports
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
-              <CommunityModerationQueue content={communityContent?.flaggedContent} />
+              <AdminModerationDashboard 
+                moderationQueue={moderationQueue}
+                communityReports={communityReports}
+              />
             </CardContent>
           </Card>
           
-          {/* Media Review System */}
+          {/* Administrative Media Review System */}
           <Card>
             <CardHeader>
-              <CardTitle>Media Review System</CardTitle>
+              <CardTitle>Administrative Media Review System</CardTitle>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm">
                   <Video className="w-4 h-4 mr-2" />
@@ -564,57 +593,61 @@ export const ContentAdminDashboard: React.FC = () => {
                   <Image className="w-4 h-4 mr-2" />
                   Image Reviews
                 </Button>
+                <Button variant="outline" size="sm">
+                  <FileCheck className="w-4 h-4 mr-2" />
+                  Bulk Review
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
-              <MediaReviewSystem reviews={mediaReviews} />
+              <AdminMediaReviewSystem reviews={mediaReviews} />
             </CardContent>
           </Card>
         </div>
         
-        {/* Sidebar */}
+        {/* Administrative Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Quick Actions */}
+          {/* Administrative Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Administrative Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <EnhancedContentQuickActions />
+              <AdminContentQuickActions />
             </CardContent>
           </Card>
           
-          {/* Folder Management */}
+          {/* Administrative Folder Management */}
           <Card>
             <CardHeader>
-              <CardTitle>Folder Structure</CardTitle>
+              <CardTitle>Administrative Folder Structure</CardTitle>
               <Button variant="outline" size="sm">
                 <FolderPlus className="w-4 h-4 mr-2" />
-                New Folder
+                New Admin Folder
               </Button>
             </CardHeader>
             <CardContent>
-              <FolderTreeView structure={folderStructure} />
+              <AdminFolderTreeView structure={folderStructure} />
             </CardContent>
           </Card>
           
-          {/* Content Analytics */}
+          {/* Administrative Analytics */}
           <Card>
             <CardHeader>
-              <CardTitle>Content Performance</CardTitle>
+              <CardTitle>Administrative Analytics</CardTitle>
             </CardHeader>
             <CardContent>
-              <ContentAnalyticsWidget metrics={contentMetrics} />
+              <AdminContentAnalyticsWidget metrics={contentMetrics} />
             </CardContent>
           </Card>
           
-          {/* Moderation Tools */}
+          {/* Administrative Moderation Tools */}
           <Card>
             <CardHeader>
-              <CardTitle>Moderation Tools</CardTitle>
+              <CardTitle>Administrative Moderation Tools</CardTitle>
             </CardHeader>
             <CardContent>
-              <ModerationToolsWidget />
+              <AdminModerationToolsWidget />
             </CardContent>
           </Card>
         </div>
@@ -699,108 +732,133 @@ export const MarketplaceAdminDashboard: React.FC = () => {
 
 ## State Management Architecture
 
-### Context Providers
+### Context Providers with Administrative Focus
 
 ```typescript
-// Auth Context
-export interface AuthContextType {
-  user: UserInfo | null;
+// Administrative Auth Context
+export interface AdminAuthContextType {
+  adminUser: AdminUserInfo | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginRequest) => Promise<void>;
+  login: (credentials: AdminLoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<void>;
   hasRole: (role: AdminRole) => boolean;
   hasAnyRole: (roles: AdminRole[]) => boolean;
+  hasPermission: (module: string, action: string) => boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserInfo | null>(null);
+export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [adminUser, setAdminUser] = useState<AdminUserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Initialize auth state
+  // Initialize admin auth state
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeAdminAuth = async () => {
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('admin_auth_token');
         if (token) {
-          // Verify token and get user info
-          const userInfo = await authService.getCurrentUser();
-          setUser(userInfo);
+          // Verify admin token and get admin user info
+          const adminUserInfo = await adminAuthService.getCurrentAdminUser();
+          setAdminUser(adminUserInfo);
         }
       } catch (error) {
-        console.error('Auth initialization failed:', error);
-        localStorage.removeItem('auth_token');
+        console.error('Admin auth initialization failed:', error);
+        localStorage.removeItem('admin_auth_token');
       } finally {
         setIsLoading(false);
       }
     };
     
-    initializeAuth();
+    initializeAdminAuth();
   }, []);
   
-  const login = async (credentials: LoginRequest) => {
+  const login = async (credentials: AdminLoginRequest) => {
     setIsLoading(true);
     try {
-      const response = await authService.login(credentials);
-      setUser(response.user);
-      localStorage.setItem('auth_token', response.token);
+      const response = await adminAuthService.adminLogin(credentials);
+      setAdminUser(response.adminUser);
+      localStorage.setItem('admin_auth_token', response.token);
     } finally {
       setIsLoading(false);
     }
   };
   
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
-    localStorage.removeItem('auth_token');
+    await adminAuthService.adminLogout();
+    setAdminUser(null);
+    localStorage.removeItem('admin_auth_token');
   };
   
   const hasRole = (role: AdminRole): boolean => {
-    return user?.roles?.includes(role) || false;
+    return adminUser?.roles?.includes(role) || false;
   };
   
   const hasAnyRole = (roles: AdminRole[]): boolean => {
     return roles.some(role => hasRole(role));
   };
   
-  const value: AuthContextType = {
-    user,
-    isAuthenticated: !!user,
+  const hasPermission = (module: string, action: string): boolean => {
+    if (!adminUser || !adminUser.roles) return false;
+    
+    // Super admin has all permissions
+    if (adminUser.roles.includes(AdminRole.SUPER_ADMIN)) return true;
+    
+    // Check specific role permissions
+    for (const role of adminUser.roles) {
+      const rolePermissions = ADMIN_ROLE_PERMISSIONS[role as AdminRole];
+      if (!rolePermissions) continue;
+      
+      for (const permission of rolePermissions.permissions) {
+        if (permission.module === '*' && permission.actions.includes('*')) return true;
+        if (permission.module === module && permission.actions.includes('*')) return true;
+        if (permission.module === module && permission.actions.includes(action)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  };
+  
+  const value: AdminAuthContextType = {
+    adminUser,
+    isAuthenticated: !!adminUser,
     isLoading,
     login,
     logout,
-    refreshToken: authService.refreshToken,
+    refreshToken: adminAuthService.refreshAdminToken,
     hasRole,
-    hasAnyRole
+    hasAnyRole,
+    hasPermission
   };
   
   return (
-    <AuthContext.Provider value={value}>
+    <AdminAuthContext.Provider value={value}>
       {children}
-    </AuthContext.Provider>
+    </AdminAuthContext.Provider>
   );
 };
 
-// Theme Context
-export interface ThemeContextType {
+// Administrative Theme Context
+export interface AdminThemeContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
   setTheme: (theme: 'light' | 'dark') => void;
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const AdminThemeContext = createContext<AdminThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AdminThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('theme');
+    const saved = localStorage.getItem('admin_theme');
     return (saved as 'light' | 'dark') || 'light';
   });
   
   useEffect(() => {
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('admin_theme', theme);
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
   
@@ -813,9 +871,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
   
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <AdminThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
-    </ThemeContext.Provider>
+    </AdminThemeContext.Provider>
   );
 };
 ```
@@ -1243,141 +1301,298 @@ export const useRealTime = () => {
 
 ## UI Component Library
 
-### Design System Components
+### Shadcn/ui Design System Components
 
 ```typescript
-// Button Component with variants
+// Button Component with Shadcn/ui styling
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
-  size?: 'sm' | 'md' | 'lg';
-  loading?: boolean;
-  icon?: React.ReactNode;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  asChild?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  loading = false,
-  icon,
-  children,
-  className,
-  disabled,
-  ...props
-}) => {
-  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
-  
-  const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-    outline: 'border border-gray-300 bg-transparent hover:bg-gray-50 focus:ring-gray-500',
-    ghost: 'bg-transparent hover:bg-gray-100 focus:ring-gray-500',
-    destructive: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
-  };
-  
-  const sizes = {
-    sm: 'h-8 px-3 text-sm',
-    md: 'h-10 px-4 text-sm',
-    lg: 'h-12 px-6 text-base'
-  };
-  
-  return (
-    <button
-      className={cn(baseClasses, variants[variant], sizes[size], className)}
-      disabled={disabled || loading}
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'default', size = 'default', asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
+        icon: 'h-10 w-10',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+// Card Components with Shadcn/ui styling
+export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('rounded-lg border bg-card text-card-foreground shadow-sm', className)}
       {...props}
-    >
-      {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-      {!loading && icon && <span className="mr-2">{icon}</span>}
-      {children}
-    </button>
-  );
-};
-
-// Card Components
-export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className
-}) => (
-  <div className={cn('bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm', className)}>
-    {children}
-  </div>
+    />
+  )
 );
 
-export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className
-}) => (
-  <div className={cn('px-6 py-4 border-b border-gray-200 dark:border-gray-700', className)}>
-    {children}
-  </div>
+export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />
+  )
 );
 
-export const CardContent: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className
-}) => (
-  <div className={cn('px-6 py-4', className)}>
-    {children}
-  </div>
+export const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3
+      ref={ref}
+      className={cn('text-2xl font-semibold leading-none tracking-tight', className)}
+      {...props}
+    />
+  )
 );
 
-// Metric Card Component
-export interface MetricCardProps {
+export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+  )
+);
+
+// Administrative Metric Card Component
+export interface AdminMetricCardProps {
   title: string;
   value: string | number;
   change?: number;
   status?: 'healthy' | 'warning' | 'error';
   urgent?: number;
   icon: React.ComponentType<{ className?: string }>;
+  description?: string;
 }
 
-export const MetricCard: React.FC<MetricCardProps> = ({
+export const AdminMetricCard: React.FC<AdminMetricCardProps> = ({
   title,
   value,
   change,
   status,
   urgent,
-  icon: Icon
+  icon: Icon,
+  description
 }) => {
   const getChangeColor = (change: number) => {
-    if (change > 0) return 'text-green-600';
-    if (change < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (change > 0) return 'text-green-600 dark:text-green-400';
+    if (change < 0) return 'text-red-600 dark:text-red-400';
+    return 'text-muted-foreground';
   };
   
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'error': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy': return 'text-green-600 dark:text-green-400';
+      case 'warning': return 'text-yellow-600 dark:text-yellow-400';
+      case 'error': return 'text-red-600 dark:text-red-400';
+      default: return 'text-muted-foreground';
     }
   };
   
   return (
     <Card>
       <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">{title}</CardTitle>
+          <Icon className={cn('h-4 w-4', status && getStatusColor(status))} />
+        </div>
+        <div className="space-y-1">
+          <div className="text-2xl font-bold">{value}</div>
+          {description && (
+            <p className="text-xs text-muted-foreground">{description}</p>
+          )}
+          <div className="flex items-center space-x-2 text-xs">
             {change !== undefined && (
-              <p className={cn('text-sm', getChangeColor(change))}>
+              <span className={cn('flex items-center', getChangeColor(change))}>
+                {change > 0 ? (
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                ) : change < 0 ? (
+                  <TrendingDown className="h-3 w-3 mr-1" />
+                ) : null}
                 {change > 0 ? '+' : ''}{change}%
-              </p>
+              </span>
             )}
             {urgent && urgent > 0 && (
-              <p className="text-sm text-red-600 font-medium">
+              <span className="flex items-center text-red-600 dark:text-red-400">
+                <AlertTriangle className="h-3 w-3 mr-1" />
                 {urgent} urgent
-              </p>
+              </span>
             )}
-          </div>
-          <div className={cn('p-3 rounded-full bg-gray-100 dark:bg-gray-700', status && getStatusColor(status))}>
-            <Icon className="w-6 h-6" />
           </div>
         </div>
       </CardContent>
     </Card>
+  );
+};
+
+// Administrative Table Component
+export interface AdminTableProps<T> {
+  data: T[];
+  columns: AdminTableColumn<T>[];
+  loading?: boolean;
+  pagination?: {
+    page: number;
+    pageSize: number;
+    total: number;
+    onPageChange: (page: number) => void;
+  };
+  selection?: {
+    selectedIds: string[];
+    onSelectionChange: (ids: string[]) => void;
+  };
+}
+
+export interface AdminTableColumn<T> {
+  key: string;
+  title: string;
+  render?: (value: any, record: T) => React.ReactNode;
+  sortable?: boolean;
+  width?: string;
+}
+
+export const AdminTable = <T extends { id: string }>({
+  data,
+  columns,
+  loading = false,
+  pagination,
+  selection
+}: AdminTableProps<T>) => {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {selection && (
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={selection.selectedIds.length === data.length}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        selection.onSelectionChange(data.map(item => item.id));
+                      } else {
+                        selection.onSelectionChange([]);
+                      }
+                    }}
+                  />
+                </TableHead>
+              )}
+              {columns.map((column) => (
+                <TableHead key={column.key} style={{ width: column.width }}>
+                  {column.title}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length + (selection ? 1 : 0)} className="text-center py-8">
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                    Loading...
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : data.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length + (selection ? 1 : 0)} className="text-center py-8">
+                  No data available
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((item) => (
+                <TableRow key={item.id}>
+                  {selection && (
+                    <TableCell>
+                      <Checkbox
+                        checked={selection.selectedIds.includes(item.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            selection.onSelectionChange([...selection.selectedIds, item.id]);
+                          } else {
+                            selection.onSelectionChange(
+                              selection.selectedIds.filter(id => id !== item.id)
+                            );
+                          }
+                        }}
+                      />
+                    </TableCell>
+                  )}
+                  {columns.map((column) => (
+                    <TableCell key={column.key}>
+                      {column.render 
+                        ? column.render((item as any)[column.key], item)
+                        : (item as any)[column.key]
+                      }
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      
+      {pagination && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Showing {(pagination.page - 1) * pagination.pageSize + 1} to{' '}
+            {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
+            {pagination.total} results
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => pagination.onPageChange(pagination.page - 1)}
+              disabled={pagination.page <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => pagination.onPageChange(pagination.page + 1)}
+              disabled={pagination.page * pagination.pageSize >= pagination.total}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 ```

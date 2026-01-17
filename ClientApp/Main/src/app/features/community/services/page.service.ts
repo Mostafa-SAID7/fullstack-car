@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { PageApiService } from '../../../shared/services/api/page-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import {
   PageDto,
@@ -27,7 +27,7 @@ export class PageService {
 
   constructor(
     private pageApi: PageApiService,
-    private notificationService: NotificationService,
+    private toastService: ToastService,
     private loadingService: LoadingService
   ) { }
 
@@ -54,7 +54,7 @@ export class PageService {
         }
       }),
       catchError(error => {
-        this.notificationService.error('Failed to load pages', error.message);
+        this.toastService.error('Failed to load pages', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('pages-list'))
@@ -72,7 +72,7 @@ export class PageService {
         this.currentPageSubject.next(page);
       }),
       catchError(error => {
-        this.notificationService.error('Failed to load page', error.message);
+        this.toastService.error('Failed to load page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('page-detail'))
@@ -90,7 +90,7 @@ export class PageService {
         this.currentPageSubject.next(page);
       }),
       catchError(error => {
-        this.notificationService.error('Failed to load page', error.message);
+        this.toastService.error('Failed to load page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('page-detail'))
@@ -103,7 +103,7 @@ export class PageService {
   getPageContent(pageId: string): Observable<PageContentDto> {
     return this.pageApi.getContent(pageId).pipe(
       catchError(error => {
-        this.notificationService.error('Failed to load page content', error.message);
+        this.toastService.error('Failed to load page content', error.message);
         return throwError(() => error);
       })
     );
@@ -115,7 +115,7 @@ export class PageService {
   getPageRevisions(pageId: string, pageNumber: number = 1): Observable<PagedResult<PageRevisionDto>> {
     return this.pageApi.getRevisions(pageId, pageNumber).pipe(
       catchError(error => {
-        this.notificationService.error('Failed to load page revisions', error.message);
+        this.toastService.error('Failed to load page revisions', error.message);
         return throwError(() => error);
       })
     );
@@ -132,10 +132,10 @@ export class PageService {
         // Add new page to the beginning of the list
         const currentPages = this.pagesSubject.value;
         this.pagesSubject.next([page, ...currentPages]);
-        this.notificationService.success('Page created successfully');
+        this.toastService.success('Page created successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to create page', error.message);
+        this.toastService.error('Failed to create page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('create-page'))
@@ -161,10 +161,10 @@ export class PageService {
           this.currentPageSubject.next(page);
         }
 
-        this.notificationService.success('Page updated successfully');
+        this.toastService.success('Page updated successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to update page', error.message);
+        this.toastService.error('Failed to update page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('update-page'))
@@ -188,10 +188,10 @@ export class PageService {
           this.currentPageSubject.next(null);
         }
 
-        this.notificationService.success('Page deleted successfully');
+        this.toastService.success('Page deleted successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to delete page', error.message);
+        this.toastService.error('Failed to delete page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('delete-page'))
@@ -221,10 +221,10 @@ export class PageService {
           });
         }
 
-        this.notificationService.success('Page published successfully');
+        this.toastService.success('Page published successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to publish page', error.message);
+        this.toastService.error('Failed to publish page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('publish-page'))
@@ -253,10 +253,10 @@ export class PageService {
           });
         }
 
-        this.notificationService.success('Page unpublished successfully');
+        this.toastService.success('Page unpublished successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to unpublish page', error.message);
+        this.toastService.error('Failed to unpublish page', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('unpublish-page'))

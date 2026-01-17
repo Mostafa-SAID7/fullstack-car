@@ -1,175 +1,162 @@
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth.service';
+import type { NotificationDto } from '../models/notification.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SignalRService {
-  private hubConnection: HubConnection | null = null;
-  private connectionStateSubject = new BehaviorSubject<boolean>(false);
-  public connectionState$ = this.connectionStateSubject.asObservable();
+  private connection: signalR.HubConnection | null = null;
+  private isConnecting = false;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
 
-  // Notification events
-  private notificationReceivedSubject = new BehaviorSubject<any>(null);
+  private notificationReceivedSubject = new BehaviorSubject<NotificationDto | null>(null);
   public notificationReceived$ = this.notificationReceivedSubject.asObservable();
 
-  constructor(private authService: AuthService) {
-    // Auto-connect when user is authenticated
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.startConnection();
-      } else {
-        this.stopConnection();
-      }
-    });
-  }
+  private connectionStateSubject = new BehaviorSubject<signalR.HubConnectionState | null>(null);
+  public connectionState$ = this.connectionStateSubject.asObservable();
 
-  private async startConnection(): Promise<void> {
-    if (this.hubConnection?.state === 'Connected') {
+  /**
+   * Initialize and connect to SignalR hub
+   */
+  async connect(): Promise<void> {
+    if (this.isConnecting) {
       return;
     }
 
-    try {
-      const token = this.authService.token;
-      
-      console.log('Starting SignalR connection...', {
-        hasToken: !!token,
-        tokenPreview: token?.substring(0, 20) + '...',
-        hubUrl: `${environment.hubUrl}/notificationHub`
-      });
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      return;
+    }
 
-      this.hubConnection = new HubConnectionBuilder()
-        .withUrl(`${environment.hubUrl}/notificationHub`, {
-          accessTokenFactory: () => token || ''
+    this.isConnecting = true;
+
+    try {
+      const hubUrl = `${environment.apiUrl}/hubs/notifications`;
+      const token = localStorage.getItem('auth_token') || '';
+
+      this.connection = new signalR.HubConnectionBuilder()
+        .withUrl(hubUrl, {
+          accessTokenFactory: () => token
         })
-        .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect({
+          nextRetryDelayInMilliseconds: (retryContext) => {
+            if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
+              return Math.min(1000 * Math.pow(2, retryContext.previousRetryCount), 30000);
+            }
+            return null;
+          }
+        })
+        .configureLogging(signalR.LogLevel.Information)
         .build();
 
       // Set up event handlers
-      this.setupEventHandlers();
+      this.connection.on('ReceiveNotification', (notification: NotificationDto) => {
+        console.log('SignalR: Notification received', notification);
+        this.notificationReceivedSubject.next(notification);
+      });
 
-      await this.hubConnection.start();
-      console.log('SignalR connection established successfully');
-      this.connectionStateSubject.next(true);
+      this.connection.on('Connected', (data: { userId: string; connectionId: string }) => {
+        console.log('SignalR: Connected', data);
+      });
 
-      // Join user group for notifications if authenticated
-      const userId = this.authService.currentUser?.id;
-      if (userId && token) {
-        try {
-          await this.hubConnection.invoke('JoinUserGroup', userId);
-          console.log('Joined user group:', userId);
-        } catch (error) {
-          console.error('Error joining user group:', error);
-        }
-      }
+      this.connection.on('NotificationAcknowledged', (notificationId: string) => {
+        console.log('SignalR: Notification acknowledged', notificationId);
+      });
 
+      this.connection.on('Pong', (timestamp: string) => {
+        console.log('SignalR: Pong received', timestamp);
+      });
+
+      this.connection.onreconnecting(() => {
+        console.log('SignalR: Reconnecting...');
+        this.connectionStateSubject.next(signalR.HubConnectionState.Reconnecting);
+      });
+
+      this.connection.onreconnected(() => {
+        console.log('SignalR: Reconnected');
+        this.reconnectAttempts = 0;
+        this.connectionStateSubject.next(signalR.HubConnectionState.Connected);
+      });
+
+      this.connection.onclose((error) => {
+        console.log('SignalR: Connection closed', error);
+        this.connectionStateSubject.next(signalR.HubConnectionState.Disconnected);
+        this.isConnecting = false;
+      });
+
+      await this.connection.start();
+      console.log('SignalR: Connected successfully');
+      this.reconnectAttempts = 0;
+      this.connectionStateSubject.next(signalR.HubConnectionState.Connected);
     } catch (error) {
-      console.error('Error starting SignalR connection:', error);
-      this.connectionStateSubject.next(false);
-      
-      // Retry connection after delay only if we have a token
-      if (this.authService.token) {
-        setTimeout(() => this.startConnection(), 5000);
-      }
-    }
-  }
-
-  private setupEventHandlers(): void {
-    if (!this.hubConnection) return;
-
-    // Handle notification received
-    this.hubConnection.on('NotificationReceived', (notification: any) => {
-      console.log('Notification received via SignalR:', notification);
-      this.notificationReceivedSubject.next(notification);
-    });
-
-    // Handle connection events
-    this.hubConnection.onreconnecting(() => {
-      console.log('SignalR reconnecting...');
-      this.connectionStateSubject.next(false);
-    });
-
-    this.hubConnection.onreconnected(() => {
-      console.log('SignalR reconnected');
-      this.connectionStateSubject.next(true);
-      
-      // Rejoin user group after reconnection
-      const userId = this.authService.currentUser?.id;
-      if (userId) {
-        this.hubConnection?.invoke('JoinUserGroup', userId);
-      }
-    });
-
-    this.hubConnection.onclose(() => {
-      console.log('SignalR connection closed');
-      this.connectionStateSubject.next(false);
-    });
-  }
-
-  public async stopConnection(): Promise<void> {
-    if (this.hubConnection) {
-      try {
-        await this.hubConnection.stop();
-        console.log('SignalR connection stopped');
-      } catch (error) {
-        console.error('Error stopping SignalR connection:', error);
-      } finally {
-        this.hubConnection = null;
-        this.connectionStateSubject.next(false);
-      }
-    }
-  }
-
-  public async sendMessage(method: string, ...args: any[]): Promise<any> {
-    if (this.hubConnection?.state === 'Connected') {
-      try {
-        return await this.hubConnection.invoke(method, ...args);
-      } catch (error) {
-        console.error(`Error invoking ${method}:`, error);
-        throw error;
-      }
-    } else {
-      throw new Error('SignalR connection not established');
-    }
-  }
-
-  public get isConnected(): boolean {
-    return this.hubConnection?.state === 'Connected';
-  }
-
-  /**
-   * Register a handler for a specific SignalR event
-   * @param eventName The name of the event to listen for
-   * @param handler The callback function to execute when the event is received
-   */
-  public on<T>(eventName: string, handler: (data: T) => void): void {
-    if (this.hubConnection) {
-      this.hubConnection.on(eventName, handler);
-      console.log(`Registered handler for event: ${eventName}`);
-    } else {
-      console.warn(`Cannot register handler for ${eventName}: No active connection`);
+      console.error('SignalR: Connection error', error);
+      this.connectionStateSubject.next(signalR.HubConnectionState.Disconnected);
+      throw error;
+    } finally {
+      this.isConnecting = false;
     }
   }
 
   /**
-   * Unregister a handler for a specific SignalR event
-   * @param eventName The name of the event to stop listening for
+   * Disconnect from SignalR hub
    */
-  public off(eventName: string): void {
-    if (this.hubConnection) {
-      this.hubConnection.off(eventName);
-      console.log(`Unregistered handler for event: ${eventName}`);
+  async disconnect(): Promise<void> {
+    if (this.connection) {
+      await this.connection.stop();
+      this.connection = null;
+      this.isConnecting = false;
+      this.connectionStateSubject.next(signalR.HubConnectionState.Disconnected);
     }
   }
 
   /**
-   * Get the underlying HubConnection for advanced scenarios
+   * Acknowledge a notification
    */
-  public getConnection(): HubConnection | null {
-    return this.hubConnection;
+  async acknowledgeNotification(notificationId: string): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke('AcknowledgeNotification', notificationId);
+    }
+  }
+
+  /**
+   * Join a priority group
+   */
+  async joinPriorityGroup(priority: string): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke('JoinPriorityGroup', priority);
+    }
+  }
+
+  /**
+   * Leave a priority group
+   */
+  async leavePriorityGroup(priority: string): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke('LeavePriorityGroup', priority);
+    }
+  }
+
+  /**
+   * Ping the server for health check
+   */
+  async ping(): Promise<void> {
+    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection.invoke('Ping');
+    }
+  }
+
+  /**
+   * Get connection state
+   */
+  getState(): signalR.HubConnectionState | null {
+    return this.connection?.state || null;
+  }
+
+  /**
+   * Check if connected
+   */
+  isConnected(): boolean {
+    return this.connection?.state === signalR.HubConnectionState.Connected;
   }
 }

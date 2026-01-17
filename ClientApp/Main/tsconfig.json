@@ -33,6 +33,12 @@
             "@shared/*": [
                 "src/app/shared/*"
             ],
+            "@features/*": [
+                "src/app/features/*"
+            ],
+            "@layout/*": [
+                "src/app/layout/*"
+            ],
             "@hugeicons/core-free-icons": [
                 "node_modules/@hugeicons/core-free-icons/dist/types/index.d.ts"
             ]
@@ -46,6 +52,17 @@
         "enableI18nLegacyMessageIdFormat": false,
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
-        "strictTemplates": true
+        "strictTemplates": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "strictAttributeTypes": true,
+        "strictSafeNavigationTypes": true,
+        "strictDomLocalRefTypes": true,
+        "strictOutputEventTypes": true,
+        "strictDomEventTypes": true,
+        "strictContextGenerics": true,
+        "strictLiteralTypes": true,
+        "enableBlockSyntax": true,
+        "enableLetSyntax": true
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { ArticleApiService } from '../../../shared/services/api/article-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import {
     ArticleDto,
@@ -45,7 +45,7 @@ export class NewsService {
 
     constructor(
         private articleApi: ArticleApiService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
 
@@ -67,7 +67,7 @@ export class NewsService {
                 }
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load articles', error.message);
+                this.toastService.error('Failed to load articles', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('articles-list'))
@@ -87,7 +87,7 @@ export class NewsService {
                 return { succeeded: true, data: article, errors: [] } as Result<Article>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load article', error.message);
+                this.toastService.error('Failed to load article', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('article-detail'))
@@ -116,7 +116,7 @@ export class NewsService {
             }),
             map(() => ({ succeeded: true, data: null, errors: [] } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to like article', error.message);
+                this.toastService.error('Failed to like article', error.message);
                 return throwError(() => error);
             })
         );
@@ -126,7 +126,7 @@ export class NewsService {
      * Save an article (bookmark)
      */
     saveArticle(id: string): Observable<Result<any>> {
-        this.notificationService.success('Article saved successfully');
+        this.toastService.success('Article saved successfully');
         return new Observable(observer => {
             observer.next({ succeeded: true, data: null, errors: [] } as Result<any>);
             observer.complete();
@@ -137,7 +137,7 @@ export class NewsService {
      * Unsave an article (remove bookmark)
      */
     unsaveArticle(id: string): Observable<Result<any>> {
-        this.notificationService.success('Article removed from saved');
+        this.toastService.success('Article removed from saved');
         return new Observable(observer => {
             observer.next({ succeeded: true, data: null, errors: [] } as Result<any>);
             observer.complete();
@@ -170,11 +170,11 @@ export class NewsService {
                 }
 
                 const comment = this.mapDtoToNewsComment(dto);
-                this.notificationService.success('Comment added successfully');
+                this.toastService.success('Comment added successfully');
                 return { succeeded: true, data: comment, errors: [] } as Result<NewsComment>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to add comment', error.message);
+                this.toastService.error('Failed to add comment', error.message);
                 return throwError(() => error);
             })
         );
@@ -195,7 +195,7 @@ export class NewsService {
                 errors: []
             } as Result<Article[]>)),
             catchError(error => {
-                this.notificationService.error('Failed to load featured articles', error.message);
+                this.toastService.error('Failed to load featured articles', error.message);
                 return throwError(() => error);
             })
         );
@@ -212,7 +212,7 @@ export class NewsService {
         }).pipe(
             map(result => this.mapToLegacyPaginatedFormat(result)),
             catchError(error => {
-                this.notificationService.error('Failed to load articles', error.message);
+                this.toastService.error('Failed to load articles', error.message);
                 return throwError(() => error);
             })
         );
@@ -223,7 +223,7 @@ export class NewsService {
      */
     searchArticles(query: string, pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<Article>> {
         // TODO: Implement search when backend supports it
-        this.notificationService.info('Search functionality coming soon');
+        this.toastService.info('Search functionality coming soon');
         return new Observable(observer => {
             observer.next({
                 items: [],
@@ -243,7 +243,7 @@ export class NewsService {
      */
     savePreferences(preferences: NewsPreferences): Observable<Result<any>> {
         // TODO: Implement when backend supports preferences
-        this.notificationService.success('Preferences saved successfully');
+        this.toastService.success('Preferences saved successfully');
         return new Observable(observer => {
             observer.next({ succeeded: true, data: null, errors: [] } as Result<any>);
             observer.complete();
@@ -277,7 +277,7 @@ export class NewsService {
      */
     reportArticle(id: string, reason: string): Observable<Result<any>> {
         // TODO: Implement when backend supports reporting
-        this.notificationService.success('Article reported successfully');
+        this.toastService.success('Article reported successfully');
         return new Observable(observer => {
             observer.next({ succeeded: true, data: null, errors: [] } as Result<any>);
             observer.complete();
@@ -296,10 +296,10 @@ export class NewsService {
                 );
                 this.articlesSubject.next(articles);
 
-                this.notificationService.success('Article shared successfully');
+                this.toastService.success('Article shared successfully');
             }),
             catchError(error => {
-                this.notificationService.error('Failed to share article', error.message);
+                this.toastService.error('Failed to share article', error.message);
                 return throwError(() => error);
             })
         );

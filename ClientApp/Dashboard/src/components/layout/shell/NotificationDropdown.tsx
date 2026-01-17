@@ -13,13 +13,15 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../../hooks';
 import { notificationService } from '../../../services/notification';
-import type { Notification } from '../../../services/notification';
+import { signalRManager } from '../../../services/notification/signalr';
+import { formatNotificationTime } from '../../../utils/notification';
+import type { NotificationDto } from '../../../types/notification';
 
 export const NotificationDropdown: React.FC = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [showNotifications, setShowNotifications] = useState(false);
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationDto[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState<'all' | 'unread' | 'system' | 'marketplace'>('all');
@@ -38,11 +40,9 @@ export const NotificationDropdown: React.FC = () => {
         
         setLoading(true);
         try {
-            const res = await notificationService.getNotifications();
-            if (res.succeeded && res.data) {
-                setNotifications(res.data);
-                setUnreadCount(res.data.filter((n: any) => !n.read).length);
-            }
+            const res = await notificationService.getNotifications({ page: 1, pageSize: 50 });
+            setNotifications(res.notifications);
+            setUnreadCount(res.unreadCount);
         } catch (err) {
             console.error('Failed to fetch notifications:', err);
         } finally {
@@ -55,10 +55,13 @@ export const NotificationDropdown: React.FC = () => {
         if (user) {
             fetchNotifications();
             
+            // Connect to SignalR
+            signalRManager.connect().catch(console.error);
+            
             // Subscribe to real-time notifications
-            const unsubscribe = notificationService.subscribeToNotifications((notification: Notification) => {
+            const unsubscribe = signalRManager.subscribe((notification: NotificationDto) => {
                 setNotifications(prev => [notification, ...prev]);
-                if (!notification.read) {
+                if (!notification.isRead) {
                     setUnreadCount(prev => prev + 1);
                 }
                 
@@ -112,7 +115,7 @@ export const NotificationDropdown: React.FC = () => {
     const handleMarkAsRead = async (id: string) => {
         try {
             await notificationService.markAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
             setUnreadCount(prev => Math.max(0, prev - 1));
         } catch (err) {
             console.error('Failed to mark notification as read:', err);
@@ -122,7 +125,7 @@ export const NotificationDropdown: React.FC = () => {
     const handleMarkAllAsRead = async () => {
         try {
             await notificationService.markAllAsRead();
-            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
             setUnreadCount(0);
         } catch (err) {
             console.error('Failed to mark all notifications as read:', err);
@@ -135,7 +138,7 @@ export const NotificationDropdown: React.FC = () => {
             await notificationService.deleteNotification(id);
             setNotifications(prev => prev.filter(n => n.id !== id));
             const deletedNotification = notifications.find(n => n.id === id);
-            if (deletedNotification && !deletedNotification.read) {
+            if (deletedNotification && !deletedNotification.isRead) {
                 setUnreadCount(prev => Math.max(0, prev - 1));
             }
         } catch (err) {
@@ -181,7 +184,7 @@ export const NotificationDropdown: React.FC = () => {
 
     const filteredNotifications = notifications.filter(notification => {
         switch (filter) {
-            case 'unread': return !notification.read;
+            case 'unread': return !notification.isRead;
             case 'system': return notification.category === 'system';
             case 'marketplace': return notification.category === 'marketplace';
             default: return true;
@@ -260,10 +263,10 @@ export const NotificationDropdown: React.FC = () => {
                                 filteredNotifications.map((notification) => (
                                     <div
                                         key={notification.id}
-                                        onClick={() => !notification.read && handleMarkAsRead(notification.id)}
+                                        onClick={() => !notification.isRead && handleMarkAsRead(notification.id)}
                                         className={cn(
                                             "p-4 border-b border-gray-200/50 cursor-pointer transition-colors hover:bg-gray-50/80 relative group",
-                                            !notification.read && "bg-blue-50/80"
+                                            !notification.isRead && "bg-blue-50/80"
                                         )}
                                     >
                                         <div className="flex gap-3">
@@ -284,7 +287,7 @@ export const NotificationDropdown: React.FC = () => {
                                                 
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-[9px] text-pink-500/60 font-black uppercase tracking-tight">
-                                                        {notificationService.formatNotificationTime(notification.createdAt)}
+                                                        {formatNotificationTime(notification.createdAt)}
                                                     </p>
                                                     
                                                     <button
@@ -297,7 +300,7 @@ export const NotificationDropdown: React.FC = () => {
                                                 </div>
                                             </div>
                                             
-                                            {!notification.read && (
+                                            {!notification.isRead && (
                                                 <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                                             )}
                                         </div>

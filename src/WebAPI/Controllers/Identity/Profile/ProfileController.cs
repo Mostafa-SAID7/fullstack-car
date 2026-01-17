@@ -28,16 +28,19 @@ namespace WebAPI.Controllers.Identity.Profile
         public async Task<IActionResult> GetProfile()
         {
             var result = await _profileService.GetProfileAsync(_currentUserService.UserId!);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             var result = await _profileService.UpdateProfileAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
+        /// <summary>
+        /// Upload profile image (avatar)
+        /// </summary>
         [HttpPost("avatar")]
         public async Task<IActionResult> UploadAvatar(IFormFile file)
         {
@@ -46,42 +49,51 @@ namespace WebAPI.Controllers.Identity.Profile
 
             using var stream = file.OpenReadStream();
             var result = await _profileService.UploadAvatarAsync(_currentUserService.UserId!, stream, file.FileName, file.ContentType);
-            return result.Succeeded ? Ok(new { Url = result.Data }) : BadRequest(result.Errors);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Upload profile image (alias for avatar)
+        /// </summary>
+        [HttpPost("image")]
+        public async Task<IActionResult> UploadProfileImage(IFormFile file)
+        {
+            return await UploadAvatar(file);
         }
 
         [HttpDelete("avatar")]
         public async Task<IActionResult> DeleteAvatar()
         {
             var result = await _profileService.DeleteAvatarAsync(_currentUserService.UserId!);
-            return result.Succeeded ? Ok(new { Message = "Avatar deleted successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpGet("privacy")]
         public async Task<IActionResult> GetPrivacySettings()
         {
             var result = await _profileService.GetPrivacySettingsAsync(_currentUserService.UserId!);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPut("privacy")]
         public async Task<IActionResult> UpdatePrivacySettings([FromBody] UpdatePrivacySettingsRequest request)
         {
             var result = await _profileService.UpdatePrivacySettingsAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(new { Message = "Privacy settings updated successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("deactivate")]
         public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
         {
             var result = await _profileService.DeactivateAccountAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(new { Message = "Account deactivated successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountRequest request)
         {
             var result = await _profileService.DeleteAccountAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(new { Message = "Account deleted successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
     }
 }

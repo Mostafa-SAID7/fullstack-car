@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { PostApiService } from '../../../shared/services/api/post-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import { Post, CreatePostRequest } from '../../../core/models/post.model';
 import { PostDto } from '../../../shared/models/community/post.model';
@@ -17,7 +17,7 @@ export class PostService {
 
     constructor(
         private postApi: PostApiService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
 
@@ -32,7 +32,7 @@ export class PostService {
                 }
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load posts', error.message);
+                this.toastService.error('Failed to load posts', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('posts-list'))
@@ -43,7 +43,7 @@ export class PostService {
         return this.postApi.getPost(id).pipe(
             map(dto => ({ succeeded: true, data: this.mapDtoToPost(dto) } as Result<Post>)),
             catchError(error => {
-                this.notificationService.error('Failed to load post', error.message);
+                this.toastService.error('Failed to load post', error.message);
                 return throwError(() => error);
             })
         );
@@ -58,11 +58,11 @@ export class PostService {
                 // Add new post to the beginning of the list
                 const currentPosts = this.postsSubject.value;
                 this.postsSubject.next([post, ...currentPosts]);
-                this.notificationService.success('Post created successfully');
+                this.toastService.success('Post created successfully');
                 return { succeeded: true, data: post } as Result<Post>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to create post', error.message);
+                this.toastService.error('Failed to create post', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('create-post'))
@@ -80,7 +80,7 @@ export class PostService {
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to like post', error.message);
+                this.toastService.error('Failed to like post', error.message);
                 return throwError(() => error);
             })
         );
@@ -97,7 +97,7 @@ export class PostService {
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to unlike post', error.message);
+                this.toastService.error('Failed to unlike post', error.message);
                 return throwError(() => error);
             })
         );
@@ -111,11 +111,11 @@ export class PostService {
                     post.id === id ? { ...post, commentsCount: post.commentsCount + 1 } : post
                 );
                 this.postsSubject.next(posts);
-                this.notificationService.success('Comment added successfully');
+                this.toastService.success('Comment added successfully');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to add comment', error.message);
+                this.toastService.error('Failed to add comment', error.message);
                 return throwError(() => error);
             })
         );
@@ -129,11 +129,11 @@ export class PostService {
                 // Remove post from the list
                 const posts = this.postsSubject.value.filter(post => post.id !== id);
                 this.postsSubject.next(posts);
-                this.notificationService.success('Post deleted successfully');
+                this.toastService.success('Post deleted successfully');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to delete post', error.message);
+                this.toastService.error('Failed to delete post', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('delete-post'))
@@ -151,11 +151,11 @@ export class PostService {
                     p.id === id ? post : p
                 );
                 this.postsSubject.next(posts);
-                this.notificationService.success('Post updated successfully');
+                this.toastService.success('Post updated successfully');
                 return { succeeded: true, data: post } as Result<Post>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to update post', error.message);
+                this.toastService.error('Failed to update post', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('update-post'))
@@ -164,7 +164,7 @@ export class PostService {
 
     reportPost(id: string, reason: string, description?: string): Observable<Result<any>> {
         // Note: Report functionality would need to be added to PostApiService if backend supports it
-        this.notificationService.info('Report functionality coming soon');
+        this.toastService.info('Report functionality coming soon');
         return new Observable(observer => {
             observer.next({ succeeded: true } as Result<any>);
             observer.complete();
@@ -175,7 +175,7 @@ export class PostService {
         return this.postApi.getComments(id, pageNumber).pipe(
             map(result => this.mapToLegacyFormat(result)),
             catchError(error => {
-                this.notificationService.error('Failed to load comments', error.message);
+                this.toastService.error('Failed to load comments', error.message);
                 return throwError(() => error);
             })
         );

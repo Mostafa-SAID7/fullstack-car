@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { LocationApiService } from '../../../shared/services/api/location-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import {
     LocationDto,
@@ -30,7 +30,7 @@ export class MapsService {
 
     constructor(
         private locationApi: LocationApiService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
 
@@ -52,7 +52,7 @@ export class MapsService {
                 }
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load locations', error.message);
+                this.toastService.error('Failed to load locations', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('locations-list'))
@@ -72,7 +72,7 @@ export class MapsService {
                 return { succeeded: true, data: location } as Result<Location>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load location', error.message);
+                this.toastService.error('Failed to load location', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('location-detail'))
@@ -88,11 +88,11 @@ export class MapsService {
         return this.locationApi.checkIn({ locationId, comment }).pipe(
             map(dto => {
                 const checkIn = this.mapDtoToCheckIn(dto);
-                this.notificationService.success('Checked in successfully');
+                this.toastService.success('Checked in successfully');
                 return { succeeded: true, data: checkIn } as Result<CheckIn>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to check in', error.message);
+                this.toastService.error('Failed to check in', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('check-in'))
@@ -108,11 +108,11 @@ export class MapsService {
         return this.locationApi.createReview({ locationId, rating, title, content }).pipe(
             map(dto => {
                 const review = this.mapDtoToPlaceReview(dto);
-                this.notificationService.success('Review added successfully');
+                this.toastService.success('Review added successfully');
                 return { succeeded: true, data: review } as Result<PlaceReview>;
             }),
             catchError(error => {
-                this.notificationService.error('Failed to add review', error.message);
+                this.toastService.error('Failed to add review', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('add-review'))
@@ -124,7 +124,7 @@ export class MapsService {
      */
     getNearbyLocations(lat: number, lng: number, radiusInKm: number = 10): Observable<Result<Location[]>> {
         // TODO: Implement when backend supports nearby search
-        this.notificationService.info('Nearby search coming soon');
+        this.toastService.info('Nearby search coming soon');
         return new Observable(observer => {
             observer.next({ succeeded: true, data: [], errors: [] } as Result<Location[]>);
             observer.complete();
@@ -146,7 +146,7 @@ export class MapsService {
                 hasNextPage: result.hasNextPage
             })),
             catchError(error => {
-                this.notificationService.error('Failed to load check-ins', error.message);
+                this.toastService.error('Failed to load check-ins', error.message);
                 return throwError(() => error);
             })
         );
@@ -167,7 +167,7 @@ export class MapsService {
                 hasNextPage: result.hasNextPage
             })),
             catchError(error => {
-                this.notificationService.error('Failed to load reviews', error.message);
+                this.toastService.error('Failed to load reviews', error.message);
                 return throwError(() => error);
             })
         );
@@ -179,7 +179,7 @@ export class MapsService {
     getLocationHours(locationId: string): Observable<LocationHourDto[]> {
         return this.locationApi.getHours(locationId).pipe(
             catchError(error => {
-                this.notificationService.error('Failed to load hours', error.message);
+                this.toastService.error('Failed to load hours', error.message);
                 return throwError(() => error);
             })
         );

@@ -1,347 +1,329 @@
-# Community Platform - Requirements Specification
+# Community Platform - Requirements Specification (Review-First Approach)
 
 ## Introduction
 
-A comprehensive social community platform that enables users to create, share, and engage with content through posts, groups, discussions, and real-time interactions. The platform fosters meaningful connections and facilitates knowledge sharing within organized communities.
+A comprehensive social community platform integration that **reviews existing implementations first**, eliminates duplicates, splits long files into manageable modules, and enhances existing code rather than recreating it. This specification focuses on consolidating community features across backend and both frontend applications.
 
 ## Glossary
 
-- **Community_Platform**: The complete social networking system
-- **User**: Any authenticated person using the platform
-- **Post**: User-generated content including text, images, videos, or links
-- **Group**: Organized communities around specific topics or interests
-- **Thread**: Discussion chains within posts or groups
-- **Moderator**: User with elevated permissions to manage groups or content
-- **Administrator**: User with full platform management capabilities
-- **Feed**: Personalized stream of content based on user preferences and connections
-- **Notification_System**: Real-time alert mechanism for user interactions
-- **Content_Filter**: System for moderating and filtering inappropriate content
-- **QA_System**: Question and answer functionality for knowledge sharing
-- **Review_System**: User rating and review system for content and services
-- **Friend_Network**: Social connection system between users
-- **Community_Page**: Dedicated pages for businesses, organizations, or topics
-- **News_Feed**: Curated news and updates relevant to the community
-- **Map_Integration**: Location-based features and geographic content
-- **Guide_System**: Structured tutorials and how-to content
+- **Review_First**: Always check existing implementations before creating new files
+- **No_Duplicates**: Single source of truth for each feature across applications
+- **File_Splitting**: Breaking files exceeding size limits into focused modules
+- **Enhancement_Over_Creation**: Prefer improving existing code over writing new code
+- **Size_Limits**: Backend <300 lines, Types <200 lines, Services <250 lines
+- **Community_Platform**: Social networking system with posts, groups, QA, reviews, social connections
+- **Existing_Infrastructure**: Extensive backend entities already in Domain layer
+- **Frontend_Consolidation**: Merging duplicate implementations in Dashboard and Main App
 
 ## Requirements
 
-### Requirement 1: User Profile Management
+### Requirement 1: Existing Implementation Review
 
-**User Story:** As a user, I want to create and manage my profile, so that I can represent myself authentically in the community.
-
-#### Acceptance Criteria
-
-1. WHEN a user registers, THE Community_Platform SHALL create a profile with basic information
-2. WHEN a user updates their profile, THE Community_Platform SHALL validate and save the changes immediately
-3. WHEN a user uploads a profile image, THE Community_Platform SHALL resize and optimize it automatically
-4. THE Community_Platform SHALL allow users to set privacy preferences for their profile visibility
-5. WHEN a user deactivates their account, THE Community_Platform SHALL anonymize their content while preserving community discussions
-
-### Requirement 2: Post Creation and Management
-
-**User Story:** As a user, I want to create and share posts with rich content, so that I can express myself and engage with the community.
+**User Story:** As a developer, I want to review all existing community implementations before making changes, so that I avoid creating duplicate code.
 
 #### Acceptance Criteria
 
-1. WHEN a user creates a post, THE Community_Platform SHALL support text, images, videos, and links
-2. WHEN a user uploads media, THE Community_Platform SHALL process and optimize it within 30 seconds
-3. THE Community_Platform SHALL allow users to edit their posts within 24 hours of creation
-4. WHEN a user deletes a post, THE Community_Platform SHALL remove it and all associated interactions
-5. THE Community_Platform SHALL support post scheduling for future publication
-6. WHEN a post contains inappropriate content, THE Content_Filter SHALL flag it for review
+1. THE System SHALL review all existing controllers in `src/WebAPI/Controllers/Community/`
+2. THE System SHALL review all existing services in `src/Application/Features/Community/`
+3. THE System SHALL review all existing entities in `src/Domain/Entities/Community/`
+4. THE System SHALL review Dashboard types in `ClientApp/Dashboard/src/types/community/`
+5. THE System SHALL review Dashboard services in `ClientApp/Dashboard/src/services/`
+6. THE System SHALL review Main App models in `ClientApp/Main/src/app/core/models/`
+7. THE System SHALL review Main App services in `ClientApp/Main/src/app/core/services/`
+8. THE System SHALL document what exists vs what needs creation
+9. THE System SHALL identify all duplicate implementations
+10. THE System SHALL flag all files exceeding size limits
 
-### Requirement 3: Group Management and Organization
+### Requirement 2: File Size Management
 
-**User Story:** As a user, I want to create and join groups around shared interests, so that I can engage in focused discussions.
-
-#### Acceptance Criteria
-
-1. WHEN a user creates a group, THE Community_Platform SHALL establish them as the group owner with full permissions
-2. THE Community_Platform SHALL support public, private, and secret group visibility levels
-3. WHEN a user requests to join a private group, THE Community_Platform SHALL notify group moderators for approval
-4. THE Community_Platform SHALL allow group owners to assign moderator roles to other members
-5. WHEN a group reaches 1000 members, THE Community_Platform SHALL suggest additional moderators
-6. THE Community_Platform SHALL support group categories and tags for better discoverability
-
-### Requirement 4: Social Interactions and Engagement
-
-**User Story:** As a user, I want to interact with posts and other users, so that I can build relationships and engage in meaningful discussions.
+**User Story:** As a developer, I want all files to be under size limits, so that code is maintainable and readable.
 
 #### Acceptance Criteria
 
-1. WHEN a user likes a post, THE Community_Platform SHALL record the interaction and update the like count immediately
-2. WHEN a user comments on a post, THE Community_Platform SHALL support threaded discussions up to 5 levels deep
-3. THE Community_Platform SHALL allow users to react with multiple emotion types (like, love, laugh, angry, sad)
-4. WHEN a user shares a post, THE Community_Platform SHALL create a reference while preserving original attribution
-5. THE Community_Platform SHALL support @mentions that notify the mentioned user
-6. WHEN a user blocks another user, THE Community_Platform SHALL hide all content and interactions between them
+1. THE System SHALL ensure backend controller files are <300 lines
+2. THE System SHALL ensure backend service files are <300 lines
+3. THE System SHALL ensure frontend type files are <200 lines
+4. THE System SHALL ensure frontend service files are <250 lines
+5. THE System SHALL split any file exceeding limits into focused modules
+6. THE System SHALL use index files for clean exports after splitting
+7. THE System SHALL maintain single responsibility principle in split files
+8. THE System SHALL document file organization structure
+9. THE System SHALL ensure split files have clear, focused purposes
+10. THE System SHALL maintain backward compatibility during splits
 
-### Requirement 5: Real-time Notifications and Messaging
+### Requirement 3: Duplicate Elimination
 
-**User Story:** As a user, I want to receive timely notifications about relevant activities, so that I can stay engaged with the community.
-
-#### Acceptance Criteria
-
-1. WHEN someone interacts with a user's content, THE Notification_System SHALL deliver a real-time notification
-2. THE Community_Platform SHALL support both in-app and push notifications
-3. WHEN a user receives a direct message, THE Notification_System SHALL notify them within 5 seconds
-4. THE Community_Platform SHALL allow users to customize their notification preferences by category
-5. WHEN a user is mentioned in a post or comment, THE Notification_System SHALL send an immediate notification
-6. THE Community_Platform SHALL support notification batching to prevent spam
-
-### Requirement 6: Content Discovery and Feed Algorithm
-
-**User Story:** As a user, I want to discover relevant and interesting content, so that I can stay engaged and find new communities.
+**User Story:** As a developer, I want to eliminate all duplicate code, so that maintenance is easier and consistency is maintained.
 
 #### Acceptance Criteria
 
-1. WHEN a user opens their feed, THE Community_Platform SHALL display personalized content based on their interests and connections
-2. THE Community_Platform SHALL support trending topics updated every hour
-3. WHEN a user searches for content, THE Community_Platform SHALL return relevant results within 2 seconds
-4. THE Community_Platform SHALL suggest new groups and users based on activity patterns
-5. WHEN a post receives high engagement, THE Community_Platform SHALL boost its visibility in relevant feeds
-6. THE Community_Platform SHALL support content filtering by type, date, and popularity
+1. THE System SHALL identify duplicate type definitions across Dashboard and Main App
+2. THE System SHALL identify duplicate service implementations
+3. THE System SHALL identify duplicate utility functions
+4. THE System SHALL consolidate duplicates into single source of truth
+5. THE System SHALL remove duplicate files after consolidation
+6. THE System SHALL update all imports to use consolidated code
+7. THE System SHALL verify no functional regressions after consolidation
+8. THE System SHALL document all removed duplicates
+9. THE System SHALL ensure types match backend DTOs exactly
+10. THE System SHALL maintain consistent naming conventions
 
-### Requirement 7: Moderation and Content Safety
+### Requirement 4: Backend API Enhancement (Not Recreation)
 
-**User Story:** As a moderator, I want to manage content and user behavior, so that I can maintain a safe and positive community environment.
-
-#### Acceptance Criteria
-
-1. WHEN inappropriate content is reported, THE Community_Platform SHALL queue it for moderator review within 1 hour
-2. THE Community_Platform SHALL support automated content filtering for spam, harassment, and explicit material
-3. WHEN a moderator takes action on content, THE Community_Platform SHALL log the action and notify relevant users
-4. THE Community_Platform SHALL allow moderators to issue warnings, temporary bans, and permanent bans
-5. WHEN a user appeals a moderation decision, THE Community_Platform SHALL escalate it to administrators
-6. THE Community_Platform SHALL provide moderation analytics and reporting tools
-
-### Requirement 8: Privacy and Data Protection
-
-**User Story:** As a user, I want control over my data and privacy, so that I can use the platform safely and confidently.
+**User Story:** As a developer, I want to enhance existing backend APIs rather than recreate them, so that I leverage existing infrastructure.
 
 #### Acceptance Criteria
 
-1. THE Community_Platform SHALL allow users to control who can see their posts, profile, and activity
-2. WHEN a user requests data export, THE Community_Platform SHALL provide it in a standard format within 48 hours
-3. THE Community_Platform SHALL support account deletion with complete data removal within 30 days
-4. WHEN a user blocks someone, THE Community_Platform SHALL prevent all forms of contact and visibility
-5. THE Community_Platform SHALL encrypt all private messages and sensitive user data
-6. THE Community_Platform SHALL comply with GDPR, CCPA, and other applicable privacy regulations
+1. THE System SHALL check if controllers exist before creating new ones
+2. THE System SHALL enhance existing controllers with missing endpoints
+3. THE System SHALL split large controller files into focused controllers
+4. THE System SHALL ensure consistent API patterns across endpoints
+5. THE System SHALL use existing services where available
+6. THE System SHALL enhance existing services with missing methods
+7. THE System SHALL split large service files into focused services
+8. THE System SHALL maintain existing endpoint contracts
+9. THE System SHALL add proper authorization to all endpoints
+10. THE System SHALL document enhanced vs newly created endpoints
 
-### Requirement 9: Mobile and Cross-Platform Experience
+### Requirement 5: Frontend Type Consolidation
 
-**User Story:** As a user, I want to access the community platform from any device, so that I can stay connected wherever I am.
-
-#### Acceptance Criteria
-
-1. THE Community_Platform SHALL provide a responsive web interface that works on all screen sizes
-2. WHEN a user switches devices, THE Community_Platform SHALL sync their data and preferences
-3. THE Community_Platform SHALL support offline reading of previously loaded content
-4. WHEN connectivity is restored, THE Community_Platform SHALL sync any offline actions
-5. THE Community_Platform SHALL provide native mobile app experiences for iOS and Android
-6. THE Community_Platform SHALL support push notifications on all supported platforms
-
-### Requirement 10: Analytics and Insights
-
-**User Story:** As an administrator, I want comprehensive analytics about platform usage, so that I can make data-driven decisions for community growth.
+**User Story:** As a frontend developer, I want consolidated types that match backend DTOs exactly, so that I have type safety without duplication.
 
 #### Acceptance Criteria
 
-1. THE Community_Platform SHALL track user engagement metrics including daily/monthly active users
-2. WHEN content is published, THE Community_Platform SHALL track views, interactions, and sharing patterns
-3. THE Community_Platform SHALL provide group analytics including member growth and engagement rates
-4. THE Community_Platform SHALL generate automated reports on community health and safety metrics
-5. WHEN trends are detected, THE Community_Platform SHALL alert administrators to significant changes
-6. THE Community_Platform SHALL support custom analytics dashboards for different stakeholder needs
+1. THE System SHALL review existing community types in both frontends
+2. THE System SHALL identify and remove duplicate type definitions
+3. THE System SHALL ensure types match backend DTOs exactly
+4. THE System SHALL split large type files (>200 lines) into modules
+5. THE System SHALL use consistent naming conventions
+6. THE System SHALL add JSDoc comments to all types
+7. THE System SHALL create index files for clean exports
+8. THE System SHALL update all imports after consolidation
+9. THE System SHALL verify TypeScript diagnostics pass
+10. THE System SHALL document type organization structure
 
-### Requirement 11: Question and Answer System
+### Requirement 6: Frontend Service Consolidation
 
-**User Story:** As a user, I want to ask questions and provide answers, so that I can share knowledge and get help from the community.
-
-#### Acceptance Criteria
-
-1. WHEN a user posts a question, THE QA_System SHALL categorize it and notify relevant experts
-2. THE Community_Platform SHALL allow users to mark answers as accepted or helpful
-3. WHEN an answer is marked as accepted, THE QA_System SHALL award reputation points to the answerer
-4. THE Community_Platform SHALL support question voting to prioritize important questions
-5. WHEN questions remain unanswered for 48 hours, THE QA_System SHALL boost their visibility
-6. THE Community_Platform SHALL provide search functionality specifically for Q&A content
-
-### Requirement 12: Review and Rating System
-
-**User Story:** As a user, I want to review and rate content, services, and experiences, so that I can help others make informed decisions.
+**User Story:** As a frontend developer, I want consolidated services without duplication, so that API integration is consistent and maintainable.
 
 #### Acceptance Criteria
 
-1. WHEN a user completes an interaction, THE Review_System SHALL invite them to leave a review
-2. THE Community_Platform SHALL support star ratings (1-5) with detailed written reviews
-3. WHEN reviews are submitted, THE Review_System SHALL validate authenticity and prevent spam
-4. THE Community_Platform SHALL calculate and display average ratings with review counts
-5. WHEN businesses respond to reviews, THE Review_System SHALL display responses alongside reviews
-6. THE Community_Platform SHALL allow users to mark reviews as helpful or report inappropriate content
+1. THE System SHALL review existing community services in both frontends
+2. THE System SHALL identify and remove duplicate service implementations
+3. THE System SHALL enhance existing services with missing methods
+4. THE System SHALL split large service files (>250 lines) into modules
+5. THE System SHALL use httpClient (Dashboard) or HttpClient (Main App)
+6. THE System SHALL maintain consistent error handling patterns
+7. THE System SHALL create index files for clean exports
+8. THE System SHALL update all service consumers after consolidation
+9. THE System SHALL verify no functional regressions
+10. THE System SHALL document service organization structure
 
-### Requirement 13: Friend Network and Social Connections
+### Requirement 7: Posts and Comments Feature
 
-**User Story:** As a user, I want to connect with friends and build my social network, so that I can stay connected with people I know.
-
-#### Acceptance Criteria
-
-1. WHEN a user sends a friend request, THE Friend_Network SHALL notify the recipient immediately
-2. THE Community_Platform SHALL support friend suggestions based on mutual connections and interests
-3. WHEN users become friends, THE Friend_Network SHALL update their feed algorithms to prioritize friend content
-4. THE Community_Platform SHALL allow users to organize friends into lists or groups
-5. WHEN friends are nearby, THE Friend_Network SHALL optionally notify users based on location settings
-6. THE Community_Platform SHALL provide privacy controls for friend visibility and contact permissions
-
-### Requirement 14: Community Pages and Business Profiles
-
-**User Story:** As a business owner, I want to create a community page, so that I can engage with customers and build my brand presence.
+**User Story:** As a user, I want to create and interact with posts, so that I can share content and engage with the community.
 
 #### Acceptance Criteria
 
-1. WHEN a business creates a page, THE Community_Platform SHALL provide verification options for authenticity
-2. THE Community_Platform SHALL support page categories (Business, Organization, Public Figure, Brand)
-3. WHEN users follow a page, THE Community_Platform SHALL include page updates in their feeds
-4. THE Community_Platform SHALL allow page owners to post updates, events, and promotional content
-5. WHEN pages receive messages, THE Community_Platform SHALL provide business messaging tools
-6. THE Community_Platform SHALL provide page analytics including follower growth and engagement metrics
+1. THE System SHALL review existing Post and Comment entities (already exist in Domain)
+2. THE System SHALL create PostsController only if it doesn't exist
+3. THE System SHALL ensure PostsController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard posts types matching backend DTOs
+5. THE System SHALL ensure Dashboard posts types are <200 lines per file
+6. THE System SHALL create Main App posts models matching backend DTOs
+7. THE System SHALL ensure Main App posts models are <200 lines per file
+8. THE System SHALL create/enhance posts services in both frontends
+9. THE System SHALL ensure posts services are <250 lines per file
+10. THE System SHALL support CRUD operations, likes, comments, and sharing
 
-### Requirement 15: News Feed and Content Curation
+### Requirement 8: Groups Feature
 
-**User Story:** As a user, I want to stay informed with relevant news and updates, so that I can be aware of important developments in my areas of interest.
-
-#### Acceptance Criteria
-
-1. WHEN news is published, THE News_Feed SHALL categorize content by topic and relevance
-2. THE Community_Platform SHALL support both automated news aggregation and manual curation
-3. WHEN users interact with news content, THE News_Feed SHALL learn their preferences for better personalization
-4. THE Community_Platform SHALL allow users to follow specific news sources and topics
-5. WHEN breaking news occurs, THE News_Feed SHALL prioritize urgent updates in user feeds
-6. THE Community_Platform SHALL provide fact-checking indicators and source credibility ratings
-
-### Requirement 16: Maps and Location-Based Features
-
-**User Story:** As a user, I want to share and discover location-based content, so that I can connect with my local community and find nearby activities.
+**User Story:** As a user, I want to create and join groups, so that I can engage in focused community discussions.
 
 #### Acceptance Criteria
 
-1. WHEN users create posts with location data, THE Map_Integration SHALL display content on interactive maps
-2. THE Community_Platform SHALL support location-based event discovery and promotion
-3. WHEN users check in at locations, THE Map_Integration SHALL update their activity and notify friends
-4. THE Community_Platform SHALL provide location-based group suggestions and local community discovery
-5. WHEN users search for nearby content, THE Map_Integration SHALL return results within specified radius
-6. THE Community_Platform SHALL respect user privacy settings for location sharing and visibility
+1. THE System SHALL review existing Group and GroupMember entities (already exist)
+2. THE System SHALL create GroupsController only if it doesn't exist
+3. THE System SHALL ensure GroupsController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard groups types matching backend DTOs
+5. THE System SHALL ensure Dashboard groups types are <200 lines per file
+6. THE System SHALL create Main App groups models matching backend DTOs
+7. THE System SHALL ensure Main App groups models are <200 lines per file
+8. THE System SHALL create/enhance groups services in both frontends
+9. THE System SHALL ensure groups services are <250 lines per file
+10. THE System SHALL support group management, membership, and moderation
 
-### Requirement 17: Guides and Tutorial System
+### Requirement 9: QA System Feature
 
-**User Story:** As a user, I want to create and access step-by-step guides, so that I can learn new skills and share my expertise.
+**User Story:** As a user, I want to ask questions and provide answers, so that I can share knowledge with the community.
 
 #### Acceptance Criteria
 
-1. WHEN users create guides, THE Guide_System SHALL support multimedia content including images, videos, and interactive elements
-2. THE Community_Platform SHALL organize guides by categories, difficulty levels, and estimated completion time
-3. WHEN users complete guide steps, THE Guide_System SHALL track progress and provide completion certificates
-4. THE Community_Platform SHALL allow guide creators to update content and receive feedback from users
-5. WHEN guides receive high ratings, THE Guide_System SHALL feature them in relevant discovery sections
-6. THE Community_Platform SHALL support collaborative guide creation with multiple contributors
+1. THE System SHALL review existing QA entities (Question, Answer, QAExpert, etc. - already exist)
+2. THE System SHALL create QAController only if it doesn't exist
+3. THE System SHALL ensure QAController is <300 lines (split Questions/Answers if needed)
+4. THE System SHALL create Dashboard QA types matching backend DTOs
+5. THE System SHALL ensure Dashboard QA types are <200 lines per file
+6. THE System SHALL create Main App QA models matching backend DTOs
+7. THE System SHALL ensure Main App QA models are <200 lines per file
+8. THE System SHALL create/enhance QA services in both frontends
+9. THE System SHALL ensure QA services are <250 lines per file
+10. THE System SHALL support questions, answers, voting, and reputation
 
-## Non-Functional Requirements
+### Requirement 10: Social Connections Feature
 
-### Performance Requirements
-- Page load time < 2 seconds for 95% of requests
-- Real-time notifications delivered within 5 seconds
-- Support for 100,000 concurrent users
-- 99.9% uptime availability
-- Database queries optimized for sub-500ms response times
+**User Story:** As a user, I want to connect with friends and build my network, so that I can stay connected with people I know.
 
-### Security Requirements
-- End-to-end encryption for private messages
-- Multi-factor authentication support
-- Regular security audits and penetration testing
-- Protection against common web vulnerabilities (OWASP Top 10)
-- Secure file upload with malware scanning
+#### Acceptance Criteria
 
-### Scalability Requirements
-- Horizontal scaling capability for all services
-- Auto-scaling based on traffic patterns
-- CDN integration for global content delivery
-- Database sharding for large datasets
-- Microservices architecture for independent scaling
+1. THE System SHALL review existing Social entities (UserProfile, UserFriend, UserConnection - already exist)
+2. THE System SHALL create SocialController only if it doesn't exist
+3. THE System SHALL ensure SocialController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard social types matching backend DTOs
+5. THE System SHALL ensure Dashboard social types are <200 lines per file
+6. THE System SHALL create Main App social models matching backend DTOs
+7. THE System SHALL ensure Main App social models are <200 lines per file
+8. THE System SHALL create/enhance social services in both frontends
+9. THE System SHALL ensure social services are <250 lines per file
+10. THE System SHALL support profiles, friendships, and connections
 
-### Usability Requirements
-- Intuitive interface requiring no training for basic functions
-- Accessibility compliance (WCAG 2.1 AA)
-- Multi-language support for international users
-- Consistent design system across all platforms
-- Mobile-first responsive design
+### Requirement 11: Reviews Feature
 
-## Success Metrics
+**User Story:** As a user, I want to review and rate content, so that I can help others make informed decisions.
 
-### User Engagement
-- Daily active users > 70% of registered users
-- Average session duration > 20 minutes
-- Post engagement rate > 15%
-- User retention rate > 80% after 30 days
+#### Acceptance Criteria
 
-### Community Health
-- Content moderation response time < 2 hours
-- User satisfaction score > 4.2/5
-- Community growth rate > 10% monthly
-- Successful conflict resolution rate > 90%
+1. THE System SHALL review existing Review entities (Review, CommunityReview, ReviewComment - already exist)
+2. THE System SHALL create ReviewsController only if it doesn't exist
+3. THE System SHALL ensure ReviewsController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard reviews types matching backend DTOs
+5. THE System SHALL ensure Dashboard reviews types are <200 lines per file
+6. THE System SHALL create Main App reviews models matching backend DTOs
+7. THE System SHALL ensure Main App reviews models are <200 lines per file
+8. THE System SHALL create/enhance reviews services in both frontends
+9. THE System SHALL ensure reviews services are <250 lines per file
+10. THE System SHALL support reviews, ratings, comments, and helpfulness
 
-### Technical Performance
-- API response time < 300ms average
-- Mobile app crash rate < 0.1%
-- Search result relevance score > 85%
-- Content delivery speed > 95% within 3 seconds
+### Requirement 12: News and Articles Feature
 
-## Dependencies
+**User Story:** As a user, I want to read and share news articles, so that I can stay informed about topics I care about.
 
-### External Services
-- Cloud storage provider (AWS S3, Azure Blob)
-- CDN service (CloudFlare, AWS CloudFront)
-- Push notification service (Firebase, AWS SNS)
-- Email service provider (SendGrid, AWS SES)
-- Image/video processing service
-- Content moderation API (AWS Rekognition, Google Vision)
-- Maps and geolocation service (Google Maps, Mapbox)
-- News aggregation API (NewsAPI, RSS feeds)
-- Fact-checking service integration
-- Location services (GPS, IP geolocation)
+#### Acceptance Criteria
 
-### Internal Systems
-- User authentication and authorization service
-- Real-time messaging infrastructure (SignalR, WebSockets)
-- Search and indexing service (Elasticsearch)
-- Analytics and reporting system
-- File upload and processing pipeline
-- QA system with reputation tracking
-- Review and rating aggregation service
-- Friend network and social graph management
-- Page verification and business tools
-- News curation and content filtering
-- Map integration and location services
-- Guide creation and progress tracking
+1. THE System SHALL review existing News entities (Article, NewsCategory, NewsComment - already exist)
+2. THE System SHALL create NewsController only if it doesn't exist
+3. THE System SHALL ensure NewsController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard news types matching backend DTOs
+5. THE System SHALL ensure Dashboard news types are <200 lines per file
+6. THE System SHALL create Main App news models matching backend DTOs
+7. THE System SHALL ensure Main App news models are <200 lines per file
+8. THE System SHALL create/enhance news services in both frontends
+9. THE System SHALL ensure news services are <250 lines per file
+10. THE System SHALL support articles, categories, comments, and sharing
 
-## Constraints and Assumptions
+### Requirement 13: Pages Feature
 
-### Technical Constraints
-- Must integrate with existing authentication system
-- Must support existing database schema where possible
-- Must maintain API compatibility with current mobile apps
-- Must comply with existing security policies
+**User Story:** As a user, I want to create and edit community pages, so that I can build collaborative knowledge bases.
 
-### Business Constraints
-- Development timeline: 24 weeks for comprehensive platform (expanded from 16 weeks)
-- Budget limitations for third-party services (maps, news APIs, location services)
-- Compliance with content regulations in target markets
-- Integration with existing customer support systems
-- Location data privacy compliance (GDPR, CCPA location requirements)
-- News content licensing and attribution requirements
+#### Acceptance Criteria
 
-### Assumptions
-- Users have reliable internet connectivity for real-time features
-- Mobile devices support modern web standards
-- Third-party services maintain acceptable SLA levels
-- User base will grow gradually allowing for iterative scaling
+1. THE System SHALL review existing Page entities (Page, PageContent, PageComment - already exist)
+2. THE System SHALL create PagesController only if it doesn't exist
+3. THE System SHALL ensure PagesController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard pages types matching backend DTOs
+5. THE System SHALL ensure Dashboard pages types are <200 lines per file
+6. THE System SHALL create Main App pages models matching backend DTOs
+7. THE System SHALL ensure Main App pages models are <200 lines per file
+8. THE System SHALL create/enhance pages services in both frontends
+9. THE System SHALL ensure pages services are <250 lines per file
+10. THE System SHALL support page creation, editing, revisions, and comments
+
+### Requirement 14: Maps and Locations Feature
+
+**User Story:** As a user, I want to share and discover location-based content, so that I can connect with my local community.
+
+#### Acceptance Criteria
+
+1. THE System SHALL review existing Maps entities (Location, CheckIn, PlaceReview - already exist)
+2. THE System SHALL create MapsController only if it doesn't exist
+3. THE System SHALL ensure MapsController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard maps types matching backend DTOs
+5. THE System SHALL ensure Dashboard maps types are <200 lines per file
+6. THE System SHALL create Main App maps models matching backend DTOs
+7. THE System SHALL ensure Main App maps models are <200 lines per file
+8. THE System SHALL create/enhance maps services in both frontends
+9. THE System SHALL ensure maps services are <250 lines per file
+10. THE System SHALL support locations, check-ins, reviews, and discovery
+
+### Requirement 15: Guides Feature
+
+**User Story:** As a user, I want to create and follow step-by-step guides, so that I can learn and share knowledge.
+
+#### Acceptance Criteria
+
+1. THE System SHALL review existing Guide entities (Guide, GuideStep, GuideBookmark - already exist)
+2. THE System SHALL create GuidesController only if it doesn't exist
+3. THE System SHALL ensure GuidesController is <300 lines (split if needed)
+4. THE System SHALL create Dashboard guides types matching backend DTOs
+5. THE System SHALL ensure Dashboard guides types are <200 lines per file
+6. THE System SHALL create Main App guides models matching backend DTOs
+7. THE System SHALL ensure Main App guides models are <200 lines per file
+8. THE System SHALL create/enhance guides services in both frontends
+9. THE System SHALL ensure guides services are <250 lines per file
+10. THE System SHALL support guide creation, steps, bookmarks, and ratings
+
+## Implementation Priorities
+
+### Phase 1: Discovery (MUST DO FIRST)
+1. Review all existing backend controllers
+2. Review all existing backend services
+3. Review all existing frontend types
+4. Review all existing frontend services
+5. Document what exists vs what needs creation
+6. Identify all duplicates
+7. Identify all files exceeding size limits
+
+### Phase 2: Consolidation (HIGH PRIORITY)
+1. Remove duplicate types
+2. Remove duplicate services
+3. Consolidate similar implementations
+4. Update all imports
+
+### Phase 3: File Splitting (HIGH PRIORITY)
+1. Split backend files >300 lines
+2. Split type files >200 lines
+3. Split service files >250 lines
+4. Create index files for exports
+
+### Phase 4: Enhancement (MEDIUM PRIORITY)
+1. Enhance existing controllers with missing endpoints
+2. Enhance existing services with missing methods
+3. Create missing controllers (only if truly needed)
+4. Create missing services (only if truly needed)
+
+### Phase 5: Frontend Integration (MEDIUM PRIORITY)
+1. Create/enhance Dashboard types and services
+2. Create/enhance Main App models and services
+3. Ensure consistency across both frontends
+
+## Success Criteria
+
+✅ All existing implementations reviewed and documented
+✅ No duplicate code between Dashboard and Main App
+✅ All files under size limits (Backend: 300, Types: 200, Services: 250)
+✅ Clear separation of concerns in all modules
+✅ Consistent API patterns across all endpoints
+✅ Types match backend DTOs exactly
+✅ All TypeScript diagnostics pass with no errors
+✅ No functional regressions after consolidation
+
+## Notes
+
+- **CRITICAL**: Always review existing files before creating new ones
+- **CRITICAL**: Split files that exceed size limits
+- **CRITICAL**: Remove duplicates immediately when found
+- **CRITICAL**: Enhance existing code rather than recreate
+- **CRITICAL**: Document all changes for traceability
+- Focus on consolidation and enhancement, not recreation
+- Leverage extensive existing backend infrastructure
+- Maintain backward compatibility during refactoring

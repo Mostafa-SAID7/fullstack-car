@@ -8,7 +8,7 @@ import { environment } from '../../../../../../environments/environment';
 import { Result, PaginatedResult } from '../../../../../core/models/result.model';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { HttpClientService } from '../../../../../core/services/http-client.service';
-import { NotificationService } from '../../../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 import { LoadingService } from '../../../../../shared/services/loading/loading.service';
 
 // Import the specialized QA services
@@ -74,7 +74,7 @@ export class QAService {
         private qaReputationService: QAReputationService,
         private qaSearchService: QASearchService,
         private qaSignalRService: QASignalRService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) {
         this.initializeRealtimeUpdates();
@@ -163,7 +163,7 @@ export class QAService {
                         lastActivityAt: response.data.createdAt
                     };
                     this.questionsSubject.next([questionListItem, ...currentQuestions]);
-                    this.notificationService.success('Question posted successfully');
+                    this.toastService.success('Question posted successfully');
 
                     return response;
                 }
@@ -198,7 +198,7 @@ export class QAService {
                         });
                     }
 
-                    this.notificationService.success('Answer posted successfully');
+                    this.toastService.success('Answer posted successfully');
                     return response;
                 }
                 throw new Error(response.message || 'Failed to create answer');
@@ -307,7 +307,7 @@ export class QAService {
                         });
                     }
 
-                    this.notificationService.success('Answer accepted successfully');
+                    this.toastService.success('Answer accepted successfully');
                     return response;
                 }
                 throw new Error(response.message || 'Failed to accept answer');
@@ -540,7 +540,7 @@ export class QAService {
         }
 
         this.errorSubject.next(errorMessage);
-        this.notificationService.error(errorMessage);
+        this.toastService.error(errorMessage);
         this.loadingService.hide();
     }
 

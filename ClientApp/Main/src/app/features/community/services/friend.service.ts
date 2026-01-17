@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { FriendApiService } from '../../../shared/services/api/friend-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import { Friend, FriendRequest } from '../../../core/models/friend.model';
 import { FriendDto, FriendRequestDto } from '../../../shared/models/community/friend.model';
@@ -20,7 +20,7 @@ export class FriendService {
 
     constructor(
         private friendApi: FriendApiService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
 
@@ -35,7 +35,7 @@ export class FriendService {
                 }
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load friends', error.message);
+                this.toastService.error('Failed to load friends', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('friends-list'))
@@ -53,7 +53,7 @@ export class FriendService {
                 }
             }),
             catchError(error => {
-                this.notificationService.error('Failed to load friend requests', error.message);
+                this.toastService.error('Failed to load friend requests', error.message);
                 return throwError(() => error);
             }),
             finalize(() => this.loadingService.hide('friend-requests'))
@@ -63,11 +63,11 @@ export class FriendService {
     sendFriendRequest(friendId: string): Observable<Result<any>> {
         return this.friendApi.sendFriendRequest({ receiverId: friendId }).pipe(
             tap(() => {
-                this.notificationService.success('Friend request sent successfully');
+                this.toastService.success('Friend request sent successfully');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to send friend request', error.message);
+                this.toastService.error('Failed to send friend request', error.message);
                 return throwError(() => error);
             })
         );
@@ -78,11 +78,11 @@ export class FriendService {
             tap(() => {
                 const requests = this.requestsSubject.value.filter(r => r.id !== requestId);
                 this.requestsSubject.next(requests);
-                this.notificationService.success('Friend request accepted');
+                this.toastService.success('Friend request accepted');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to accept friend request', error.message);
+                this.toastService.error('Failed to accept friend request', error.message);
                 return throwError(() => error);
             })
         );
@@ -93,11 +93,11 @@ export class FriendService {
             tap(() => {
                 const requests = this.requestsSubject.value.filter(r => r.id !== requestId);
                 this.requestsSubject.next(requests);
-                this.notificationService.success('Friend request declined');
+                this.toastService.success('Friend request declined');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to decline friend request', error.message);
+                this.toastService.error('Failed to decline friend request', error.message);
                 return throwError(() => error);
             })
         );
@@ -108,11 +108,11 @@ export class FriendService {
             tap(() => {
                 const friends = this.friendsSubject.value.filter(f => f.id !== friendId);
                 this.friendsSubject.next(friends);
-                this.notificationService.success('Friend removed successfully');
+                this.toastService.success('Friend removed successfully');
             }),
             map(() => ({ succeeded: true } as Result<any>)),
             catchError(error => {
-                this.notificationService.error('Failed to remove friend', error.message);
+                this.toastService.error('Failed to remove friend', error.message);
                 return throwError(() => error);
             })
         );

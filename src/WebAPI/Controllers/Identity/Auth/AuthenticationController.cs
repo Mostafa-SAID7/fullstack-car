@@ -1,5 +1,6 @@
 using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
+using Application.Features.Identity.Profile.Interfaces;
 using Application.Features.Shared.Localization.Interfaces;
 using Application.Features.Identity.Auth.DTOs.Requests;
 using Application.Features.Identity.Auth.DTOs.Responses;
@@ -16,17 +17,20 @@ namespace WebAPI.Controllers.Identity.Auth
     public class AuthenticationController : BaseController
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IProfileService _profileService;
         private readonly ICurrentUserService _currentUserService;
         private readonly ILocalizationProvider _localizationProvider;
         private readonly ILanguageDetector _languageDetector;
 
         public AuthenticationController(
             IAuthenticationService authenticationService,
+            IProfileService profileService,
             ICurrentUserService currentUserService,
             ILocalizationProvider localizationProvider,
             ILanguageDetector languageDetector)
         {
             _authenticationService = authenticationService;
+            _profileService = profileService;
             _currentUserService = currentUserService;
             _localizationProvider = localizationProvider;
             _languageDetector = languageDetector;
@@ -106,6 +110,40 @@ namespace WebAPI.Controllers.Identity.Auth
         public async Task<IActionResult> RevokeToken([FromBody] string token)
         {
             var result = await _authenticationService.RevokeTokenAsync(token);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get current authenticated user information
+        /// </summary>
+        /// <returns>Current user profile</returns>
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            if (string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Ok(Result.Failure("User not authenticated"));
+            }
+
+            var result = await _profileService.GetProfileAsync(_currentUserService.UserId);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Revoke all refresh tokens for the current user
+        /// </summary>
+        /// <returns>Success result</returns>
+        [Authorize]
+        [HttpPost("revoke-all-tokens")]
+        public async Task<IActionResult> RevokeAllTokens()
+        {
+            if (string.IsNullOrEmpty(_currentUserService.UserId))
+            {
+                return Ok(Result.Failure("User not authenticated"));
+            }
+
+            var result = await _authenticationService.RevokeAllUserTokensAsync(_currentUserService.UserId);
             return Ok(result);
         }
     }

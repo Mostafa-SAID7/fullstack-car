@@ -1,1452 +1,1024 @@
-# Community Platform - Implementation Tasks
-
-## Implementation Overview
-
-This implementation plan spans **12 sprints over 24 weeks**, building incrementally on the existing codebase architecture. Each sprint delivers working functionality while maintaining system stability and performance. The plan has been expanded to include 7 additional features: QA system, reviews, friends network, community pages, news feed, maps integration, and guides system.
-
-### Sprint Structure
-- **Sprint Duration**: 2 weeks each
-- **Total Timeline**: 24 weeks (expanded from 14 weeks)
-- **Approach**: Incremental delivery with continuous integration
-- **Architecture**: Extends existing Clean Architecture with CQRS + MediatR
-
-## Sprint 1: Foundation and User Profiles (Weeks 1-2)
-
-### Backend Tasks
-
-#### Database Schema Setup
-- [x] **Task 1.1**: Extend Users table with community profile fields
-  - Add Bio, ProfileImageUrl, CoverImageUrl, Location, Website columns
-  - Add DateOfBirth, IsPrivateProfile, LastActiveAt columns
-  - Add NotificationPreferences, PrivacySettings JSON columns
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 4 hours
-
-- [x] **Task 1.2**: Create UserConnections table and relationships
-  - Implement friend/follow connection system
-  - Add indexes for performance optimization
-  - Create foreign key constraints
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 6 hours
-
-#### Domain Models and Entities
-- [-] **Task 1.3**: Create UserProfile domain entity
-  - Implement profile validation logic
-  - Add privacy setting enums
-  - Create value objects for profile data
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 1.4**: Create UserConnection domain entity
-  - Implement connection request logic
-  - Add connection status management
-  - Create domain events for connections
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 6 hours
-
-#### API Controllers
-- [ ] **Task 1.5**: Create UserProfilesController
-  - Implement GET /api/v7/community/users/{id}/profile
-  - Implement PUT /api/v7/community/users/profile
-  - Add authorization and validation
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 1.6**: Add connection endpoints to UserProfilesController
-  - Implement POST /api/v7/community/users/{id}/connect
-  - Implement GET /api/v7/community/users/connections
-  - Add connection status management endpoints
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 8 hours
-
-#### CQRS Commands and Queries
-- [ ] **Task 1.7**: Implement profile management commands
-  - CreateUpdateProfileCommand and handler
-  - UpdatePrivacySettingsCommand and handler
-  - Add validation and business rules
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 1.8**: Implement connection management commands
-  - CreateConnectionCommand and handler
-  - AcceptConnectionCommand and handler
-  - BlockUserCommand and handler
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 10 hours
-
-### Frontend Tasks
-
-#### Angular Components
-- [ ] **Task 1.9**: Create UserProfileComponent
-  - Profile display with edit capabilities
-  - Privacy settings management
-  - Profile image upload integration
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 1.10**: Create ConnectionsComponent
-  - Friend/follower list display
-  - Connection request management
-  - Search and discover users
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 12 hours
-
-#### Services and State Management
-- [ ] **Task 1.11**: Create UserProfileService
-  - Profile CRUD operations
-  - Image upload handling
-  - Privacy settings management
-  - **Requirement**: User Profile Management (Req 1)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 1.12**: Create ConnectionService
-  - Connection request handling
-  - Status management
-  - Real-time connection updates
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 6 hours
-
-### Sprint 1 Deliverables
-- User profile creation and editing
-- Basic connection system (friend/follow)
-- Profile privacy controls
-- User discovery functionality
-
----
-
-## Sprint 2: Posts and Content Management (Weeks 3-4)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 2.1**: Create Posts table with full schema
-  - Implement content types, visibility, scheduling
-  - Add media URL storage and link preview
-  - Create performance indexes
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 2.2**: Create PostInteractions table
-  - Support multiple reaction types
-  - Implement unique constraints
-  - Add aggregation indexes
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 4 hours
-
-- [ ] **Task 2.3**: Create Comments table with threading
-  - Support nested comments (5 levels deep)
-  - Add soft delete functionality
-  - Implement hierarchical queries
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 8 hours
-
-#### Domain Models
-- [ ] **Task 2.4**: Create Post domain entity
-  - Implement content validation
-  - Add scheduling logic
-  - Create post visibility rules
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 2.5**: Create PostInteraction domain entity
-  - Implement reaction types
-  - Add interaction validation
-  - Create aggregation methods
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 2.6**: Create Comment domain entity
-  - Implement threading logic
-  - Add mention detection
-  - Create comment validation
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 8 hours
-
-#### API Controllers
-- [ ] **Task 2.7**: Create PostsController
-  - Implement full CRUD operations
-  - Add feed generation endpoint
-  - Include interaction endpoints
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 2.8**: Create CommentsController
-  - Implement comment CRUD operations
-  - Add threaded comment retrieval
-  - Include mention handling
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 10 hours
-
-#### CQRS Implementation
-- [ ] **Task 2.9**: Implement post management commands
-  - CreatePostCommand, UpdatePostCommand, DeletePostCommand
-  - SchedulePostCommand for future publishing
-  - Add content validation and processing
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 2.10**: Implement interaction commands
-  - CreatePostInteractionCommand (like, love, etc.)
-  - CreateCommentCommand with threading
-  - Add real-time event publishing
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 2.11**: Implement feed query handlers
-  - GetFeedQuery with personalization
-  - GetPostQuery with interaction counts
-  - Add caching for performance
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 14 hours
-
-### Frontend Tasks
-
-#### Components Enhancement
-- [ ] **Task 2.12**: Enhance PostItemComponent
-  - Add all interaction types (like, love, laugh, etc.)
-  - Implement real-time interaction updates
-  - Add sharing functionality
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 2.13**: Enhance CreatePostComponent
-  - Add media upload capabilities
-  - Implement post scheduling
-  - Add content type selection
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 2.14**: Create CommentThreadComponent
-  - Implement nested comment display
-  - Add comment creation and editing
-  - Include mention functionality
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 18 hours
-
-#### Services
-- [ ] **Task 2.15**: Enhance PostService
-  - Add all CRUD operations
-  - Implement feed loading with pagination
-  - Add real-time updates integration
-  - **Requirement**: Post Creation and Management (Req 2)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 2.16**: Create CommentService
-  - Implement comment operations
-  - Add threading support
-  - Include mention handling
-  - **Requirement**: Social Interactions (Req 4)
-  - **Estimate**: 8 hours
-
-### Sprint 2 Deliverables
-- Complete post creation and management
-- Multi-type reactions (like, love, laugh, etc.)
-- Threaded comment system
-- Basic feed functionality
-- Media upload support
-
----
-
-## Sprint 3: Groups and Communities (Weeks 5-6)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 3.1**: Create Groups table
-  - Implement visibility levels and join approval
-  - Add category and tagging system
-  - Create member and post counters
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 3.2**: Create GroupMembers table
-  - Implement role-based permissions
-  - Add invitation and approval system
-  - Create member status management
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 6 hours
-
-#### Domain Models
-- [ ] **Task 3.3**: Create Group domain entity
-  - Implement group creation logic
-  - Add visibility and permission rules
-  - Create member management methods
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 3.4**: Create GroupMember domain entity
-  - Implement role hierarchy
-  - Add invitation and approval logic
-  - Create permission checking methods
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 8 hours
-
-#### API Controllers
-- [ ] **Task 3.5**: Create GroupsController
-  - Implement group CRUD operations
-  - Add member management endpoints
-  - Include group discovery features
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 3.6**: Create GroupMembersController
-  - Implement member role management
-  - Add invitation system endpoints
-  - Include member activity tracking
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 12 hours
-
-#### CQRS Implementation
-- [ ] **Task 3.7**: Implement group management commands
-  - CreateGroupCommand, UpdateGroupCommand
-  - JoinGroupCommand, LeaveGroupCommand
-  - Add permission validation
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 3.8**: Implement member management commands
-  - InviteMemberCommand, AcceptInvitationCommand
-  - UpdateMemberRoleCommand, RemoveMemberCommand
-  - Add role-based authorization
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 3.9**: Implement group query handlers
-  - GetGroupsQuery with filtering and search
-  - GetGroupMembersQuery with role information
-  - GetGroupPostsQuery with permissions
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 10 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 3.10**: Enhance GroupListComponent
-  - Add group creation functionality
-  - Implement search and filtering
-  - Include category-based browsing
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 3.11**: Create GroupDetailComponent
-  - Display group information and members
-  - Add join/leave functionality
-  - Include group post feed
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 3.12**: Create GroupManagementComponent
-  - Member role management interface
-  - Group settings and configuration
-  - Invitation management system
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 18 hours
-
-#### Services
-- [ ] **Task 3.13**: Create GroupService
-  - Implement all group operations
-  - Add member management functions
-  - Include real-time group updates
-  - **Requirement**: Group Management (Req 3)
-  - **Estimate**: 12 hours
-
-### Sprint 3 Deliverables
-- Complete group creation and management
-- Role-based member permissions
-- Group invitation system
-- Group-specific post feeds
-- Group discovery and search
-
----
-
-## Sprint 4: Real-time Features and Notifications (Weeks 7-8)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 4.1**: Create Notifications table
-  - Implement notification types and categories
-  - Add read status and timestamp tracking
-  - Create user preference integration
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 4 hours
-
-- [ ] **Task 4.2**: Create DirectMessages table
-  - Implement encrypted messaging
-  - Add read receipts and timestamps
-  - Create conversation threading
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 6 hours
-
-#### SignalR Implementation
-- [ ] **Task 4.3**: Create CommunityHub
-  - Implement real-time post updates
-  - Add notification broadcasting
-  - Include typing indicators
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 4.4**: Create NotificationHub
-  - Implement user-specific notifications
-  - Add group notification broadcasting
-  - Include connection management
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 10 hours
-
-#### Services
-- [ ] **Task 4.5**: Create NotificationService
-  - Implement notification creation and delivery
-  - Add user preference handling
-  - Include batch notification processing
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 4.6**: Create PushNotificationService
-  - Implement mobile push notifications
-  - Add device registration management
-  - Include platform-specific handling
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 16 hours
-
-#### Event Handlers
-- [ ] **Task 4.7**: Implement domain event handlers
-  - PostCreatedEventHandler for notifications
-  - PostInteractionEventHandler for real-time updates
-  - GroupActivityEventHandler for group notifications
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 12 hours
-
-### Frontend Tasks
-
-#### SignalR Integration
-- [ ] **Task 4.8**: Create CommunitySignalRService
-  - Implement real-time connection management
-  - Add automatic reconnection logic
-  - Include event handler registration
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 4.9**: Create NotificationService (Frontend)
-  - Implement notification display system
-  - Add notification preferences management
-  - Include real-time notification updates
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 12 hours
-
-#### Components
-- [ ] **Task 4.10**: Create NotificationDropdownComponent
-  - Display recent notifications
-  - Add mark as read functionality
-  - Include notification filtering
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 4.11**: Create DirectMessagingComponent
-  - Implement chat interface
-  - Add real-time message updates
-  - Include typing indicators
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 18 hours
-
-#### State Management
-- [ ] **Task 4.12**: Implement notification state management
-  - Add NgRx actions and reducers
-  - Include real-time state updates
-  - Add notification persistence
-  - **Requirement**: Real-time Notifications (Req 5)
-  - **Estimate**: 10 hours
-
-### Sprint 4 Deliverables
-- Real-time post updates and interactions
-- Comprehensive notification system
-- Direct messaging functionality
-- Push notification support
-- Live activity indicators
-
----
-
-## Sprint 5: Content Discovery and Feed Algorithm (Weeks 9-10)
-
-### Backend Tasks
-
-#### Feed Algorithm Service
-- [ ] **Task 5.1**: Create FeedAlgorithmService
-  - Implement personalized feed generation
-  - Add trending content detection
-  - Include engagement-based ranking
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 5.2**: Implement content recommendation engine
-  - Add user interest tracking
-  - Implement collaborative filtering
-  - Include content similarity matching
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 20 hours
-
-#### Search Implementation
-- [ ] **Task 5.3**: Create SearchService
-  - Implement full-text search for posts
-  - Add user and group search
-  - Include search result ranking
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 5.4**: Add Elasticsearch integration
-  - Set up search indexing
-  - Implement real-time index updates
-  - Add advanced search filters
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 18 hours
-
-#### Trending and Analytics
-- [ ] **Task 5.5**: Create TrendingService
-  - Implement trending topic detection
-  - Add hashtag tracking and analysis
-  - Include viral content identification
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 5.6**: Implement content analytics
-  - Add engagement metrics tracking
-  - Implement view and interaction analytics
-  - Include content performance insights
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 14 hours
-
-### Frontend Tasks
-
-#### Discovery Components
-- [ ] **Task 5.7**: Create DiscoveryPageComponent
-  - Implement trending content display
-  - Add personalized recommendations
-  - Include category-based browsing
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 5.8**: Create SearchComponent
-  - Implement advanced search interface
-  - Add real-time search suggestions
-  - Include search result filtering
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 5.9**: Enhance FeedComponent
-  - Add feed type switching (Following, Trending, Recent)
-  - Implement infinite scroll with performance optimization
-  - Include content type filtering
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 12 hours
-
-#### Services
-- [ ] **Task 5.10**: Create DiscoveryService
-  - Implement recommendation fetching
-  - Add trending content retrieval
-  - Include search functionality
-  - **Requirement**: Content Discovery (Req 6)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 5.11**: Create AnalyticsService
-  - Implement user interaction tracking
-  - Add content engagement metrics
-  - Include performance analytics
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 8 hours
-
-### Sprint 5 Deliverables
-- Personalized content feed algorithm
-- Advanced search functionality
-- Trending topics and hashtags
-- Content recommendation system
-- User engagement analytics
-
----
-
-## Sprint 6: Moderation and Safety Features (Weeks 11-12)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 6.1**: Create ContentReports table
-  - Implement report types and categories
-  - Add report status tracking
-  - Create moderator assignment system
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 4 hours
-
-- [ ] **Task 6.2**: Create ModerationActions table
-  - Implement action types and durations
-  - Add appeal system support
-  - Create audit trail functionality
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 6 hours
-
-#### Content Filtering
-- [ ] **Task 6.3**: Create ContentModerationService
-  - Implement automated content filtering
-  - Add spam detection algorithms
-  - Include inappropriate content detection
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 6.4**: Integrate external moderation APIs
-  - Add image content analysis
-  - Implement text toxicity detection
-  - Include video content scanning
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 16 hours
-
-#### Moderation Tools
-- [ ] **Task 6.5**: Create ModerationController
-  - Implement report management endpoints
-  - Add moderation action endpoints
-  - Include appeal system endpoints
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 6.6**: Implement moderation commands
-  - CreateReportCommand, ReviewReportCommand
-  - ApplyModerationActionCommand
-  - ProcessAppealCommand
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 12 hours
-
-#### Privacy and Blocking
-- [ ] **Task 6.7**: Implement privacy controls
-  - Add content visibility management
-  - Implement user blocking system
-  - Create privacy setting enforcement
-  - **Requirement**: Privacy and Data Protection (Req 8)
-  - **Estimate**: 14 hours
-
-### Frontend Tasks
-
-#### Moderation Interface
-- [ ] **Task 6.8**: Create ModerationDashboardComponent
-  - Implement report queue management
-  - Add moderation action interface
-  - Include moderation analytics
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 20 hours
-
-- [ ] **Task 6.9**: Create ReportContentComponent
-  - Implement content reporting interface
-  - Add report category selection
-  - Include evidence submission
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 12 hours
-
-#### Privacy Controls
-- [ ] **Task 6.10**: Create PrivacySettingsComponent
-  - Implement privacy preference management
-  - Add blocking and unblocking interface
-  - Include data export/deletion requests
-  - **Requirement**: Privacy and Data Protection (Req 8)
-  - **Estimate**: 16 hours
-
-#### Services
-- [ ] **Task 6.11**: Create ModerationService
-  - Implement report submission
-  - Add moderation action handling
-  - Include appeal process management
-  - **Requirement**: Moderation and Safety (Req 7)
-  - **Estimate**: 10 hours
-
-### Sprint 6 Deliverables
-- Comprehensive content moderation system
-- Automated content filtering
-- User reporting and appeal system
-- Privacy controls and blocking
-- Moderation dashboard and tools
-
----
-
-## Sprint 7: Mobile Optimization and Analytics (Weeks 13-14)
-
-### Backend Tasks
-
-#### Mobile API Optimization
-- [ ] **Task 7.1**: Optimize APIs for mobile performance
-  - Implement response compression
-  - Add mobile-specific endpoints
-  - Include offline sync capabilities
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 7.2**: Implement push notification infrastructure
-  - Add Firebase Cloud Messaging integration
-  - Implement Apple Push Notification service
-  - Create notification scheduling system
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 16 hours
-
-#### Analytics and Reporting
-- [ ] **Task 7.3**: Create comprehensive analytics system
-  - Implement user engagement tracking
-  - Add content performance metrics
-  - Include community health indicators
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 7.4**: Create admin reporting dashboard
-  - Implement automated report generation
-  - Add custom analytics queries
-  - Include data export functionality
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 14 hours
-
-#### Performance Optimization
-- [ ] **Task 7.5**: Implement advanced caching strategies
-  - Add Redis caching for feeds
-  - Implement CDN integration
-  - Create cache invalidation system
-  - **Requirement**: Performance optimization
-  - **Estimate**: 16 hours
-
-### Frontend Tasks
-
-#### Mobile Optimization
-- [ ] **Task 7.6**: Optimize responsive design
-  - Enhance mobile component layouts
-  - Implement touch-friendly interactions
-  - Add mobile-specific navigation
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 20 hours
-
-- [ ] **Task 7.7**: Implement Progressive Web App features
-  - Add service worker for offline support
-  - Implement app manifest
-  - Create offline content caching
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 7.8**: Add mobile push notification handling
-  - Implement notification permission requests
-  - Add notification click handling
-  - Create notification preferences UI
-  - **Requirement**: Mobile Experience (Req 9)
-  - **Estimate**: 12 hours
-
-#### Analytics Dashboard
-- [ ] **Task 7.9**: Create AnalyticsDashboardComponent
-  - Implement user engagement metrics display
-  - Add content performance charts
-  - Include community growth indicators
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 7.10**: Create AdminReportsComponent
-  - Implement custom report builder
-  - Add data visualization tools
-  - Include export functionality
-  - **Requirement**: Analytics and Insights (Req 10)
-  - **Estimate**: 14 hours
-
-#### Performance Enhancements
-- [ ] **Task 7.11**: Implement lazy loading and code splitting
-  - Add route-based code splitting
-  - Implement component lazy loading
-  - Create performance monitoring
-  - **Requirement**: Performance optimization
-  - **Estimate**: 12 hours
-
-### Sprint 7 Deliverables
-- Fully optimized mobile experience
-- Progressive Web App capabilities
-- Comprehensive analytics dashboard
-- Advanced performance optimizations
-- Complete admin reporting system
-
----
-
-## Sprint 8: Question and Answer System (Weeks 15-16)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 8.1**: Create Questions table with full schema
-  - Implement question categories, tags, and voting
-  - Add view count and answer tracking
-  - Create performance indexes
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 8.2**: Create Answers table with voting system
-  - Support answer acceptance and voting
-  - Add reputation point tracking
-  - Implement answer ranking logic
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 8.3**: Create QAVotes and UserReputation tables
-  - Implement voting constraints and validation
-  - Add reputation calculation logic
-  - Create reputation history tracking
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 8 hours
-
-#### Domain Models
-- [ ] **Task 8.4**: Create Question domain entity
-  - Implement question validation and categorization
-  - Add tag management and search optimization
-  - Create question status management
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 8.5**: Create Answer domain entity
-  - Implement answer validation and acceptance logic
-  - Add voting and reputation calculation
-  - Create answer quality scoring
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 8.6**: Create UserReputation domain entity
-  - Implement reputation calculation algorithms
-  - Add achievement and badge systems
-  - Create reputation history tracking
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 12 hours
-
-#### API Controllers
-- [ ] **Task 8.7**: Create QAController
-  - Implement question CRUD operations
-  - Add answer management endpoints
-  - Include voting and reputation endpoints
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 16 hours
-
-#### CQRS Implementation
-- [ ] **Task 8.8**: Implement QA management commands
-  - CreateQuestionCommand, CreateAnswerCommand
-  - AcceptAnswerCommand, VoteCommand
-  - Add expert notification logic
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 8.9**: Implement QA query handlers
-  - GetQuestionsQuery with filtering and search
-  - GetQuestionDetailQuery with answers
-  - GetUserReputationQuery with history
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 14 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 8.10**: Create QAMainComponent
-  - Implement question browsing interface
-  - Add category and tag filtering
-  - Include search functionality
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 8.11**: Create QuestionDetailComponent
-  - Display question with answers
-  - Add voting and acceptance interface
-  - Include answer creation form
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 8.12**: Create ReputationDisplayComponent
-  - Show user reputation and badges
-  - Display reputation history
-  - Include achievement tracking
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 12 hours
-
-#### Services
-- [ ] **Task 8.13**: Create QAService
-  - Implement all QA operations
-  - Add real-time updates integration
-  - Include reputation management
-  - **Requirement**: Question and Answer System (Req 11)
-  - **Estimate**: 14 hours
-
-### Sprint 8 Deliverables
-- Complete Q&A system with voting
-- User reputation and badge system
-- Expert notification system
-- Question categorization and search
-- Answer acceptance and ranking
-
----
-
-## Sprint 9: Review and Rating System (Weeks 17-18)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 9.1**: Create Reviews table with full schema
-  - Implement rating system (1-5 stars)
-  - Add review verification and moderation
-  - Create helpfulness voting system
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 9.2**: Create ReviewImages and ReviewHelpfulness tables
-  - Support multiple images per review
-  - Implement helpfulness voting constraints
-  - Add image optimization and storage
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 6 hours
-
-#### Domain Models
-- [ ] **Task 9.3**: Create Review domain entity
-  - Implement review validation and authenticity checks
-  - Add spam detection and quality scoring
-  - Create review aggregation methods
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 9.4**: Create ReviewImage domain entity
-  - Implement image validation and processing
-  - Add caption and positioning logic
-  - Create image optimization workflows
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 8 hours
-
-#### API Controllers
-- [ ] **Task 9.5**: Create ReviewsController
-  - Implement review CRUD operations
-  - Add image upload endpoints
-  - Include helpfulness voting endpoints
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 14 hours
-
-#### CQRS Implementation
-- [ ] **Task 9.6**: Implement review management commands
-  - CreateReviewCommand, UpdateReviewCommand
-  - MarkReviewHelpfulCommand
-  - Add review verification logic
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 9.7**: Implement review query handlers
-  - GetReviewsQuery with filtering
-  - GetTargetReviewsQuery with aggregation
-  - GetReviewSummaryQuery with statistics
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 12 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 9.8**: Create ReviewListComponent
-  - Display reviews with ratings
-  - Add filtering and sorting options
-  - Include helpfulness voting interface
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 9.9**: Create CreateReviewComponent
-  - Implement review creation form
-  - Add image upload functionality
-  - Include rating selection interface
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 9.10**: Create ReviewSummaryComponent
-  - Display average ratings and statistics
-  - Show rating distribution charts
-  - Include review highlights
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 12 hours
-
-#### Services
-- [ ] **Task 9.11**: Create ReviewService
-  - Implement all review operations
-  - Add image upload handling
-  - Include real-time review updates
-  - **Requirement**: Review and Rating System (Req 12)
-  - **Estimate**: 10 hours
-
-### Sprint 9 Deliverables
-- Complete review and rating system
-- Image upload for reviews
-- Review helpfulness voting
-- Review aggregation and statistics
-- Spam detection and moderation
-
----
-
-## Sprint 10: Friends Network and Social Connections (Weeks 19-20)
-
-### Backend Tasks
-
-#### Database Schema Enhancement
-- [ ] **Task 10.1**: Enhance UserConnections table
-  - Add friend list organization
-  - Implement connection privacy settings
-  - Create mutual friend tracking
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 4 hours
-
-- [ ] **Task 10.2**: Create FriendLists table
-  - Support custom friend categorization
-  - Add list privacy and sharing settings
-  - Implement list-based content filtering
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 6 hours
-
-#### Domain Models
-- [ ] **Task 10.3**: Enhance UserConnection domain entity
-  - Implement friend suggestion algorithms
-  - Add mutual connection detection
-  - Create connection strength scoring
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 10.4**: Create FriendList domain entity
-  - Implement list management logic
-  - Add privacy and sharing controls
-  - Create list-based notification settings
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 8 hours
-
-#### API Controllers
-- [ ] **Task 10.5**: Create FriendsController
-  - Implement friend management endpoints
-  - Add friend suggestion endpoints
-  - Include friend list management
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 16 hours
-
-#### CQRS Implementation
-- [ ] **Task 10.6**: Implement friend management commands
-  - SendFriendRequestCommand, AcceptFriendRequestCommand
-  - CreateFriendListCommand, AddFriendToListCommand
-  - Add friend suggestion generation
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 10.7**: Implement friend query handlers
-  - GetFriendsQuery with list filtering
-  - GetFriendSuggestionsQuery with algorithms
-  - GetMutualFriendsQuery with privacy
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 14 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 10.8**: Create FriendsListComponent
-  - Display friends with organization options
-  - Add search and filtering capabilities
-  - Include friend list management
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 10.9**: Create FriendRequestsComponent
-  - Show pending friend requests
-  - Add accept/decline functionality
-  - Include request management interface
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 10.10**: Create FriendSuggestionsComponent
-  - Display friend suggestions with reasons
-  - Add suggestion interaction options
-  - Include mutual friend information
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 14 hours
-
-#### Services
-- [ ] **Task 10.11**: Create FriendsService
-  - Implement all friend operations
-  - Add real-time friend updates
-  - Include suggestion algorithms
-  - **Requirement**: Friend Network and Social Connections (Req 13)
-  - **Estimate**: 12 hours
-
-### Sprint 10 Deliverables
-- Complete friends network system
-- Friend suggestion algorithms
-- Friend list organization
-- Real-time friend activity updates
-- Privacy controls for connections
-
----
-
-## Sprint 11: Community Pages and Business Profiles (Weeks 21-22)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 11.1**: Create CommunityPages table with full schema
-  - Implement page categories and verification
-  - Add business information and location data
-  - Create follower and analytics tracking
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 11.2**: Create PageFollowers table
-  - Implement follower management
-  - Add notification preferences per page
-  - Create follower analytics tracking
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 4 hours
-
-#### Domain Models
-- [ ] **Task 11.3**: Create CommunityPage domain entity
-  - Implement page validation and verification
-  - Add business hours and contact management
-  - Create page analytics and insights
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 11.4**: Create PageFollower domain entity
-  - Implement follower relationship management
-  - Add notification and privacy settings
-  - Create engagement tracking
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 6 hours
-
-#### API Controllers
-- [ ] **Task 11.5**: Create CommunityPagesController
-  - Implement page CRUD operations
-  - Add follower management endpoints
-  - Include page analytics endpoints
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 18 hours
-
-#### CQRS Implementation
-- [ ] **Task 11.6**: Implement page management commands
-  - CreatePageCommand, UpdatePageCommand
-  - FollowPageCommand, VerifyPageCommand
-  - Add page content management
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 20 hours
-
-- [ ] **Task 11.7**: Implement page query handlers
-  - GetPagesQuery with filtering and search
-  - GetPageAnalyticsQuery with insights
-  - GetPageFollowersQuery with management
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 16 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 11.8**: Create CommunityPagesListComponent
-  - Display pages with categories
-  - Add search and discovery features
-  - Include page creation interface
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 11.9**: Create PageDetailComponent
-  - Show complete page information
-  - Add follow/unfollow functionality
-  - Include page post feed
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 11.10**: Create PageAnalyticsComponent
-  - Display page performance metrics
-  - Show follower growth and engagement
-  - Include content analytics
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 14 hours
-
-#### Services
-- [ ] **Task 11.11**: Create CommunityPagesService
-  - Implement all page operations
-  - Add analytics data handling
-  - Include real-time page updates
-  - **Requirement**: Community Pages and Business Profiles (Req 14)
-  - **Estimate**: 12 hours
-
-### Sprint 11 Deliverables
-- Complete community pages system
-- Business profile verification
-- Page analytics and insights
-- Follower management system
-- Page content and messaging tools
-
----
-
-## Sprint 12: News Feed, Maps, and Guides System (Weeks 23-24)
-
-### Backend Tasks
-
-#### Database Schema
-- [ ] **Task 12.1**: Create NewsArticles table
-  - Implement news categorization and tagging
-  - Add fact-checking and credibility scoring
-  - Create view and share tracking
-  - **Requirement**: News Feed and Content Curation (Req 15)
-  - **Estimate**: 6 hours
-
-- [ ] **Task 12.2**: Create Locations and UserCheckins tables
-  - Implement location data with coordinates
-  - Add check-in functionality and privacy
-  - Create location-based content linking
-  - **Requirement**: Maps and Location-Based Features (Req 16)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 12.3**: Create Guides and GuideSteps tables
-  - Implement guide creation and management
-  - Add step-by-step progress tracking
-  - Create collaborative guide features
-  - **Requirement**: Guides and Tutorial System (Req 17)
-  - **Estimate**: 10 hours
-
-#### Domain Models
-- [ ] **Task 12.4**: Create NewsArticle domain entity
-  - Implement news validation and curation
-  - Add fact-checking integration
-  - Create personalization algorithms
-  - **Requirement**: News Feed and Content Curation (Req 15)
-  - **Estimate**: 12 hours
-
-- [ ] **Task 12.5**: Create Location and Checkin domain entities
-  - Implement location validation and verification
-  - Add privacy and sharing controls
-  - Create location-based discovery
-  - **Requirement**: Maps and Location-Based Features (Req 16)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 12.6**: Create Guide and GuideStep domain entities
-  - Implement guide validation and publishing
-  - Add progress tracking and certificates
-  - Create collaborative editing features
-  - **Requirement**: Guides and Tutorial System (Req 17)
-  - **Estimate**: 16 hours
-
-#### API Controllers
-- [ ] **Task 12.7**: Create NewsController
-  - Implement news browsing and preferences
-  - Add news sharing and interaction
-  - Include personalization endpoints
-  - **Requirement**: News Feed and Content Curation (Req 15)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 12.8**: Create MapsController
-  - Implement location and check-in management
-  - Add nearby content discovery
-  - Include location-based search
-  - **Requirement**: Maps and Location-Based Features (Req 16)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 12.9**: Create GuidesController
-  - Implement guide CRUD operations
-  - Add progress tracking endpoints
-  - Include collaboration management
-  - **Requirement**: Guides and Tutorial System (Req 17)
-  - **Estimate**: 18 hours
-
-#### CQRS Implementation
-- [ ] **Task 12.10**: Implement news, maps, and guides commands
-  - News preference and interaction commands
-  - Location and check-in commands
-  - Guide creation and progress commands
-  - **Requirements**: News (Req 15), Maps (Req 16), Guides (Req 17)
-  - **Estimate**: 24 hours
-
-- [ ] **Task 12.11**: Implement news, maps, and guides queries
-  - Personalized news and location queries
-  - Guide discovery and progress queries
-  - Location-based content queries
-  - **Requirements**: News (Req 15), Maps (Req 16), Guides (Req 17)
-  - **Estimate**: 20 hours
-
-### Frontend Tasks
-
-#### Components
-- [ ] **Task 12.12**: Create News components
-  - NewsListComponent, NewsArticleComponent
-  - NewsPreferencesComponent
-  - Include fact-checking indicators
-  - **Requirement**: News Feed and Content Curation (Req 15)
-  - **Estimate**: 18 hours
-
-- [ ] **Task 12.13**: Create Maps components
-  - MapViewComponent, LocationDetailComponent
-  - CheckinComponent, NearbyContentComponent
-  - Include location privacy controls
-  - **Requirement**: Maps and Location-Based Features (Req 16)
-  - **Estimate**: 20 hours
-
-- [ ] **Task 12.14**: Create Guides components
-  - GuidesListComponent, GuideDetailComponent
-  - GuideProgressComponent, GuideStepComponent
-  - Include collaboration features
-  - **Requirement**: Guides and Tutorial System (Req 17)
-  - **Estimate**: 22 hours
-
-#### Services
-- [ ] **Task 12.15**: Create NewsService, MapsService, and GuidesService
-  - Implement all operations for the three systems
-  - Add real-time updates and notifications
-  - Include offline support for guides
-  - **Requirements**: News (Req 15), Maps (Req 16), Guides (Req 17)
-  - **Estimate**: 18 hours
-
-### Sprint 12 Deliverables
-- Complete news feed with personalization
-- Maps integration with location features
-- Comprehensive guides and tutorial system
-- Fact-checking and credibility features
-- Location-based content discovery
-- Collaborative guide creation
-
----
-
-## Testing and Quality Assurance
-
-### Unit Testing Tasks
-- [ ] **Task T.1**: Backend unit tests for all command/query handlers (including new features)
-  - **Estimate**: 60 hours (expanded from 40)
-- [ ] **Task T.2**: Frontend unit tests for all components and services (including new features)
-  - **Estimate**: 50 hours (expanded from 35)
-- [ ] **Task T.3**: Domain model unit tests (including new entities)
-  - **Estimate**: 35 hours (expanded from 20)
-
-### Integration Testing Tasks
-- [ ] **Task T.4**: API integration tests (including new endpoints)
-  - **Estimate**: 45 hours (expanded from 30)
-- [ ] **Task T.5**: Database integration tests (including new schemas)
-  - **Estimate**: 30 hours (expanded from 20)
-- [ ] **Task T.6**: SignalR hub integration tests (including new hubs)
-  - **Estimate**: 25 hours (expanded from 15)
-
-### End-to-End Testing Tasks
-- [ ] **Task T.7**: User journey E2E tests (including new features)
-  - **Estimate**: 40 hours (expanded from 25)
-- [ ] **Task T.8**: Mobile responsive E2E tests (including new features)
-  - **Estimate**: 25 hours (expanded from 15)
-
-### Feature-Specific Testing Tasks
-- [ ] **Task T.9**: QA system testing (questions, answers, reputation)
-  - **Estimate**: 15 hours
-- [ ] **Task T.10**: Review system testing (ratings, images, helpfulness)
-  - **Estimate**: 12 hours
-- [ ] **Task T.11**: Friends network testing (connections, suggestions, lists)
-  - **Estimate**: 10 hours
-- [ ] **Task T.12**: Community pages testing (verification, analytics, followers)
-  - **Estimate**: 12 hours
-- [ ] **Task T.13**: News system testing (curation, personalization, fact-checking)
-  - **Estimate**: 10 hours
-- [ ] **Task T.14**: Maps integration testing (locations, check-ins, nearby content)
-  - **Estimate**: 15 hours
-- [ ] **Task T.15**: Guides system testing (creation, progress, collaboration)
-  - **Estimate**: 18 hours
-
-## Deployment and DevOps
-
-### Infrastructure Tasks
-- [ ] **Task D.1**: Set up production database schema (including new tables)
-  - **Estimate**: 12 hours (expanded from 8)
-- [ ] **Task D.2**: Configure CDN for media files (including review images, guide media)
-  - **Estimate**: 8 hours (expanded from 6)
-- [ ] **Task D.3**: Set up Redis caching infrastructure (including new cache patterns)
-  - **Estimate**: 6 hours (expanded from 4)
-- [ ] **Task D.4**: Configure push notification services (including new notification types)
-  - **Estimate**: 10 hours (expanded from 8)
-- [ ] **Task D.5**: Set up Elasticsearch for enhanced search (QA, guides, news)
-  - **Estimate**: 12 hours
-- [ ] **Task D.6**: Configure maps API integration (Google Maps/Mapbox)
-  - **Estimate**: 8 hours
-- [ ] **Task D.7**: Set up news aggregation APIs and fact-checking services
-  - **Estimate**: 10 hours
-
-### Monitoring and Logging
-- [ ] **Task D.8**: Implement Application Insights integration (expanded coverage)
-  - **Estimate**: 8 hours (expanded from 6)
-- [ ] **Task D.9**: Set up performance monitoring (including new features)
-  - **Estimate**: 6 hours (expanded from 4)
-- [ ] **Task D.10**: Configure error tracking and alerting (expanded coverage)
-  - **Estimate**: 6 hours (expanded from 4)
-- [ ] **Task D.11**: Set up analytics tracking for new features
-  - **Estimate**: 8 hours
+# Implementation Plan: Community Platform Integration
+
+## Overview
+
+Implementation tasks for reviewing, consolidating, and enhancing the community platform. **CRITICAL: Complete Phase 1 (Discovery) before any other work.** This ensures we review all existing code before making changes.
+
+## Tasks
+
+### Phase 1: Discovery and Documentation (MUST COMPLETE FIRST)
+
+- [x] 1. Review Backend Community Controllers
+  - List all controllers in `src/WebAPI/Controllers/Community/`
+  - List all controllers in `src/WebAPI/Controllers/` that handle community features
+  - Document which features have controllers
+  - Document which features need controllers
+  - Measure file sizes (flag if >300 lines)
+  - Document existing endpoint patterns
+  - _Requirements: 1.1, 1.8_
+
+- [x] 2. Review Backend Community Services
+  - List all services in `src/Application/Features/Community/`
+  - Measure file sizes (flag if >300 lines)
+  - Document service responsibilities
+  - Identify services that need splitting
+  - Identify missing services
+  - Document existing patterns
+  - _Requirements: 1.2, 1.8, 2.2_
+
+- [x] 3. Review Backend Community Entities
+  - List all entities in `src/Domain/Entities/Community/`
+  - Document entity relationships
+  - Verify entities match requirements
+  - Identify any missing entities
+  - _Requirements: 1.3, 1.8_
+
+- [x] 4. Review Dashboard Community Types
+  - List all types in `ClientApp/Dashboard/src/types/community/`
+  - List all types in `ClientApp/Dashboard/src/types/` related to community
+  - Measure file sizes (flag if >200 lines)
+  - Identify duplicate type definitions
+  - Document type organization
+  - Compare with backend DTOs
+  - _Requirements: 1.4, 1.9, 2.3, 3.1_
+
+- [x] 5. Review Dashboard Community Services
+  - List all services in `ClientApp/Dashboard/src/services/` related to community
+  - Check `services/qa/`, `services/community/`, etc.
+  - Measure file sizes (flag if >250 lines)
+  - Identify duplicate service implementations
+  - Document service patterns
+  - _Requirements: 1.5, 1.9, 2.4, 3.2_
+
+- [x] 6. Review Main App Community Models
+  - List all models in `ClientApp/Main/src/app/core/models/` related to community
+  - Check `features/community/` for additional models
+  - Measure file sizes (flag if >200 lines)
+  - Identify duplicate model definitions
+  - Compare with backend DTOs
+  - _Requirements: 1.6, 1.9, 2.3, 3.1_
+
+- [x] 7. Review Main App Community Services
+  - List all services in `ClientApp/Main/src/app/core/services/` related to community
+  - Check `features/community/` for additional services
+  - Measure file sizes (flag if >250 lines)
+  - Identify duplicate service implementations
+  - Document service patterns
+  - _Requirements: 1.7, 1.9, 2.4, 3.2_
+
+- [x] 8. Create Discovery Report
+  - Compile all findings from tasks 1-7
+  - List all files exceeding size limits
+  - List all duplicate implementations
+  - List all missing implementations
+  - Create consolidation plan
+  - Create file splitting plan
+  - _Requirements: 1.8, 1.9, 1.10_
+
+### Phase 2: Duplicate Elimination
+
+- [x] 9. Remove Duplicate Dashboard Types
+  - Identify exact duplicate type definitions
+  - Choose source of truth for each duplicate
+  - Remove duplicate files
+  - Update all imports to use source of truth
+  - Verify TypeScript diagnostics pass
+  - _Requirements: 3.1, 3.2, 3.6, 3.8_
+
+- [x] 10. Remove Duplicate Main App Models
+  - Identify exact duplicate model definitions
+  - Choose source of truth for each duplicate
+  - Remove duplicate files
+  - Update all imports to use source of truth
+  - Verify TypeScript diagnostics pass
+  - _Requirements: 3.1, 3.2, 3.6, 3.8_
+
+- [x] 11. Remove Duplicate Dashboard Services
+  - Identify duplicate service implementations
+  - Consolidate into single service per feature
+  - Remove duplicate files
+  - Update service consumers
+  - Verify no functional regressions
+  - _Requirements: 3.2, 3.4, 3.6, 3.9_
+
+- [x] 12. Remove Duplicate Main App Services
+  - Identify duplicate service implementations
+  - Consolidate into single service per feature
+  - Remove duplicate files
+  - Update service consumers
+  - Verify no functional regressions
+  - _Requirements: 3.2, 3.4, 3.6, 3.9_
+
+- [x] 13. Document Removed Duplicates
+  - List all removed duplicate files
+  - Document consolidation decisions
+  - Update migration guide
+  - _Requirements: 3.8, 3.10_
+
+### Phase 3: File Splitting
+
+- [x] 14. Split QuestionsController (404 lines → <300 lines)
+  - [x] 14.1 Analyze QuestionsController responsibilities
+    - Identify logical boundaries (CRUD vs Search vs Analytics)
+    - Plan split strategy
+    - _Requirements: 2.1, 2.5_
+  - [x] 14.2 Create QuestionsManagementController
+    - Move CRUD operations (Create, Read, Update, Delete)
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 14.3 Keep QuestionsController for queries
+    - Keep listing, filtering, pagination
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 14.4 Update dependency injection and routing
+    - Register new controller
+    - Update route configurations
+    - _Requirements: 2.6, 2.10_
+  - [x] 14.5 Verify all endpoints work
+    - Test all CRUD operations
+    - Test all query operations
+    - _Requirements: 2.9, 2.10_
+
+- [x] 15. Split VotingController (335 lines → <300 lines)
+  - [x] 15.1 Analyze VotingController responsibilities
+    - Identify logical boundaries (Question votes vs Answer votes)
+    - Plan split strategy
+    - _Requirements: 2.1, 2.5_
+  - [x] 15.2 Create QuestionVotingController
+    - Move question voting operations
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 15.3 Create AnswerVotingController
+    - Move answer voting operations
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 15.4 Update dependency injection and routing
+    - Register new controllers
+    - Update route configurations
+    - _Requirements: 2.6, 2.10_
+  - [x] 15.5 Verify all endpoints work
+    - Test question voting
+    - Test answer voting
+    - _Requirements: 2.9, 2.10_
+
+- [x] 16. Split SearchController (308 lines → <300 lines)
+  - [x] 16.1 Analyze SearchController responsibilities
+    - Identify logical boundaries (Questions vs Answers vs Users)
+    - Plan split strategy
+    - _Requirements: 2.1, 2.5_
+  - [x] 16.2 Refactor SearchController
+    - Extract common search logic to service
+    - Simplify controller to <300 lines
+    - Keep unified search endpoint
+    - _Requirements: 2.1, 2.6, 2.7_
+  - [x] 16.3 Update dependency injection
+    - Register refactored services
+    - Update configurations
+    - _Requirements: 2.6, 2.10_
+  - [x] 16.4 Verify all endpoints work
+    - Test all search operations
+    - Verify performance maintained
+    - _Requirements: 2.9, 2.10_
+
+- [x] 17. Split ExpertsController (482 lines → <300 lines)
+  - [x] 17.1 Analyze ExpertsController responsibilities
+    - Identify logical boundaries (Expert management vs Analytics vs Verification)
+    - Plan split strategy
+    - _Requirements: 2.1, 2.5_
+  - [x] 17.2 Create ExpertManagementController
+    - Move CRUD operations for experts
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 17.3 Create ExpertAnalyticsController
+    - Move analytics and reporting
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 17.4 Keep ExpertsController for queries
+    - Keep listing, filtering, search
+    - Ensure <300 lines
+    - _Requirements: 2.1, 2.6_
+  - [x] 17.5 Update dependency injection and routing
+    - Register new controllers
+    - Update route configurations
+    - _Requirements: 2.6, 2.10_
+  - [x] 17.6 Verify all endpoints work
+    - Test all expert operations
+    - Test analytics endpoints
+    - _Requirements: 2.9, 2.10_
+
+- [x] 18. Checkpoint - Verify Backend Controller Splits
+  - Ensure all 4 controllers now <300 lines
+  - Verify no broken endpoints
+  - Run integration tests
+  - Ask user if questions arise
+  - _Requirements: 2.1, 2.9, 2.10_
+
+- [x] 19. Split Large Backend Services
+  - Identify services >300 lines (from Task 2 findings)
+  - Plan split into focused services
+  - Execute split maintaining functionality
+  - Update dependency injection
+  - Verify all methods work
+  - _Requirements: 2.2, 2.5, 2.6, 2.9_
+
+- [x] 20. Split Large Dashboard Type Files
+  - Identify type files >200 lines (from Task 4 findings)
+  - Plan split into feature modules
+  - Execute split with index exports
+  - Update all imports
+  - Verify TypeScript diagnostics pass
+  - _Requirements: 2.3, 2.5, 2.7, 2.9_
+
+- [x] 21. Split Large Dashboard Service Files
+  - Identify service files >250 lines (from Task 5 findings)
+  - Plan split into focused services
+  - Execute split with index exports
+  - Update service consumers
+  - Verify no functional regressions
+  - _Requirements: 2.4, 2.5, 2.7, 2.9_
+
+- [x] 22. Split Large Main App Model Files
+  - Identify model files >200 lines (from Task 6 findings)
+  - Plan split into feature modules
+  - Execute split with barrel exports
+  - Update all imports
+  - Verify TypeScript diagnostics pass
+  - _Requirements: 2.3, 2.5, 2.7, 2.9_
+
+- [x] 23. Split Large Main App Service Files
+  - Identify service files >250 lines (from Task 7 findings)
+  - Plan split into focused services
+  - Execute split with barrel exports
+  - Update service consumers
+  - Verify no functional regressions
+  - _Requirements: 2.4, 2.5, 2.7, 2.9_
+
+- [x] 24. Checkpoint - Verify All File Splits Complete
+  - Ensure all backend files <300 lines
+  - Ensure all type files <200 lines
+  - Ensure all service files <250 lines
+  - Run full TypeScript diagnostics
+  - Ask user if questions arise
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.9_
+
+- [x] 25. Document File Splits
+  - List all split files
+  - Document new file organization
+  - Update architecture documentation
+  - _Requirements: 2.8, 2.10_
+
+### Phase 4: Backend API Enhancement - Posts Feature
+
+- [x] 26. Enhance PostsController (Already exists - 188 lines)
+  - [x] 26.1 Review existing endpoints
+    - Document current functionality
+    - Identify missing endpoints
+    - _Requirements: 4.1, 4.2, 7.2_
+  - [x] 26.2 Add missing endpoints if needed
+    - Implement any missing CRUD operations
+    - Add sharing functionality
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 7.10_
+  - [x] 26.3 Verify PostsController remains <300 lines
+    - Check line count after enhancements
+    - Split if approaching limit
+    - _Requirements: 2.1, 7.3_
+
+- [x] 27. Review CachedPostsController (Already exists - 54 lines)
+  - Review caching strategy
+  - Ensure consistency with PostsController
+  - Document caching patterns
+  - _Requirements: 4.1, 4.8_
+
+- [x] 28. Create CommentsController (Check if needed)
+  - [x] 28.1 Check if comments are in PostsController
+    - Review PostsController for comment endpoints
+    - Decide if separate controller needed
+    - _Requirements: 4.1, 7.2_
+  - [x] 28.2 Create CommentsController if needed
+    - Implement comment CRUD endpoints
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.3, 4.8, 7.3_
+
+- [ ] 29. Create Dashboard Posts Types
+  - [ ] 29.1 Review existing posts types
+    - Check ClientApp/Dashboard/src/types for post types
+    - Identify what exists vs what's missing
+    - _Requirements: 5.1, 7.4_
+  - [ ] 29.2 Create missing types matching backend DTOs
+    - Create Post, Comment, PostLike types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 7.5_
+  - [ ] 29.3 Create request/response types
+    - CreatePostRequest, UpdatePostRequest
+    - PostResponse, PostListResponse
+    - Ensure <200 lines per file
+    - _Requirements: 5.3, 5.4, 7.5_
+
+- [ ] 30. Create Main App Posts Models
+  - [ ] 30.1 Review existing posts models
+    - Check ClientApp/Main/src/app/core/models for post models
+    - Identify what exists vs what's missing
+    - _Requirements: 5.1, 7.6_
+  - [ ] 30.2 Create missing models matching backend DTOs
+    - Create Post, Comment, PostLike models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 7.7_
+
+- [ ] 31. Create/Enhance Dashboard Posts Service
+  - [ ] 31.1 Review existing posts service
+    - Check ClientApp/Dashboard/src/services for posts service
+    - Document existing methods
+    - _Requirements: 6.1, 7.8_
+  - [ ] 31.2 Create or enhance posts service
+    - Implement all CRUD operations
+    - Add like, comment, share methods
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 7.9_
+
+- [ ] 32. Create/Enhance Main App Posts Service
+  - [ ] 32.1 Review existing posts service
+    - Check ClientApp/Main/src/app/core/services for posts service
+    - Document existing methods
+    - _Requirements: 6.1, 7.8_
+  - [ ] 32.2 Create or enhance posts service
+    - Implement all CRUD operations
+    - Add like, comment, share methods
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 7.9_
+
+- [ ] 33. Checkpoint - Posts Feature Complete
+  - Verify all posts endpoints work
+  - Verify frontend types match backend DTOs
+  - Run TypeScript diagnostics
+  - Test posts CRUD operations
+  - Ask user if questions arise
+  - _Requirements: 7.1-7.10_
+
+### Phase 5: Backend API Enhancement - Groups Feature
+
+- [ ] 34. Enhance GroupsController (Already exists - 170 lines)
+  - [ ] 34.1 Review existing endpoints
+    - Document current functionality
+    - Identify missing endpoints
+    - _Requirements: 4.1, 4.2, 8.2_
+  - [ ] 34.2 Add missing endpoints if needed
+    - Implement any missing group management operations
+    - Add member management endpoints
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 8.10_
+  - [ ] 34.3 Verify GroupsController remains <300 lines
+    - Check line count after enhancements
+    - Split if approaching limit
+    - _Requirements: 2.1, 8.3_
+
+- [ ] 35. Create Dashboard Groups Types
+  - [ ] 35.1 Review existing groups types
+    - Check for existing group type definitions
+    - Identify what's missing
+    - _Requirements: 5.1, 8.4_
+  - [ ] 35.2 Create missing types matching backend DTOs
+    - Create Group, GroupMember types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 8.5_
+
+- [ ] 36. Create Main App Groups Models
+  - [ ] 36.1 Review existing groups models
+    - Check for existing group models
+    - Identify what's missing
+    - _Requirements: 5.1, 8.6_
+  - [ ] 36.2 Create missing models matching backend DTOs
+    - Create Group, GroupMember models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 8.7_
+
+- [ ] 37. Create/Enhance Dashboard Groups Service
+  - [ ] 37.1 Review existing groups service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 8.8_
+  - [ ] 37.2 Create or enhance groups service
+    - Implement group management operations
+    - Add member management methods
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 8.9_
+
+- [ ] 38. Create/Enhance Main App Groups Service
+  - [ ] 38.1 Review existing groups service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 8.8_
+  - [ ] 38.2 Create or enhance groups service
+    - Implement group management operations
+    - Add member management methods
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 8.9_
+
+- [ ] 39. Checkpoint - Groups Feature Complete
+  - Verify all groups endpoints work
+  - Verify frontend types match backend DTOs
+  - Run TypeScript diagnostics
+  - Test group management operations
+  - Ask user if questions arise
+  - _Requirements: 8.1-8.10_
+
+### Phase 6: Backend API Enhancement - QA Feature
+
+- [ ] 40. Enhance QuestionsController (After split from Task 14)
+  - [ ] 40.1 Review split controllers
+    - Verify QuestionsController <300 lines
+    - Verify QuestionsManagementController <300 lines
+    - _Requirements: 4.1, 4.2, 9.2_
+  - [ ] 40.2 Add missing endpoints if needed
+    - Implement any missing question operations
+    - Add bookmarking functionality
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 9.10_
+
+- [ ] 41. Enhance AnswersController (Already exists - 259 lines)
+  - [ ] 41.1 Review existing endpoints
+    - Document current functionality
+    - Identify missing endpoints
+    - _Requirements: 4.1, 4.2, 9.2_
+  - [ ] 41.2 Add missing endpoints if needed
+    - Implement any missing answer operations
+    - Add acceptance functionality
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 9.10_
+  - [ ] 41.3 Verify AnswersController remains <300 lines
+    - Check line count after enhancements
+    - _Requirements: 2.1, 9.3_
+
+- [ ] 42. Enhance Voting Controllers (After split from Task 15)
+  - [ ] 42.1 Review split controllers
+    - Verify QuestionVotingController <300 lines
+    - Verify AnswerVotingController <300 lines
+    - _Requirements: 4.1, 4.2, 9.2_
+  - [ ] 42.2 Ensure voting endpoints complete
+    - Verify upvote/downvote functionality
+    - Add vote removal if missing
+    - _Requirements: 4.2, 9.10_
+
+- [ ] 43. Review Supporting QA Controllers
+  - Review CategoriesController (136 lines)
+  - Review TagsController (193 lines)
+  - Review ReputationController (271 lines)
+  - Review AnalyticsController (69 lines)
+  - Document existing functionality
+  - _Requirements: 4.1, 4.8_
+
+- [ ] 44. Create Dashboard QA Types
+  - [ ] 44.1 Review existing QA types
+    - Check for existing question/answer types
+    - Identify what's missing
+    - _Requirements: 5.1, 9.4_
+  - [ ] 44.2 Create Question types
+    - Create Question, QuestionVote, QuestionBookmark types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.5_
+  - [ ] 44.3 Create Answer types
+    - Create Answer, AnswerVote types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.5_
+  - [ ] 44.4 Create Reputation types
+    - Create UserReputation, ReputationHistory types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.5_
+
+- [ ] 45. Create Main App QA Models
+  - [ ] 45.1 Review existing QA models
+    - Check for existing question/answer models
+    - Identify what's missing
+    - _Requirements: 5.1, 9.6_
+  - [ ] 45.2 Create Question models
+    - Create Question, QuestionVote, QuestionBookmark models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.7_
+  - [ ] 45.3 Create Answer models
+    - Create Answer, AnswerVote models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.7_
+  - [ ] 45.4 Create Reputation models
+    - Create UserReputation, ReputationHistory models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 9.7_
+
+- [ ] 46. Create/Enhance Dashboard QA Service
+  - [ ] 46.1 Review existing QA service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 9.8_
+  - [ ] 46.2 Create QuestionsService
+    - Implement question CRUD operations
+    - Add voting, bookmarking methods
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 9.9_
+  - [ ] 46.3 Create AnswersService
+    - Implement answer CRUD operations
+    - Add voting, acceptance methods
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 9.9_
+
+- [ ] 47. Create/Enhance Main App QA Service
+  - [ ] 47.1 Review existing QA service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 9.8_
+  - [ ] 47.2 Create QuestionsService
+    - Implement question CRUD operations
+    - Add voting, bookmarking methods
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 9.9_
+  - [ ] 47.3 Create AnswersService
+    - Implement answer CRUD operations
+    - Add voting, acceptance methods
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 9.9_
+
+- [ ] 48. Checkpoint - QA Feature Complete
+  - Verify all QA endpoints work
+  - Verify frontend types match backend DTOs
+  - Run TypeScript diagnostics
+  - Test questions, answers, voting, reputation
+  - Ask user if questions arise
+  - _Requirements: 9.1-9.10_
+
+### Phase 7: Backend API Enhancement - Social Feature
+
+- [ ] 49. Enhance FriendsController (Already exists - 107 lines)
+  - [ ] 49.1 Review existing endpoints
+    - Document current functionality
+    - Identify missing endpoints
+    - _Requirements: 4.1, 4.2, 10.2_
+  - [ ] 49.2 Add missing endpoints if needed
+    - Implement any missing friend operations
+    - Add friend request management
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 10.10_
+  - [ ] 49.3 Verify FriendsController remains <300 lines
+    - Check line count after enhancements
+    - _Requirements: 2.1, 10.3_
+
+- [ ] 50. Create ProfilesController (Missing)
+  - [ ] 50.1 Create ProfilesController
+    - Implement profile CRUD endpoints
+    - Add profile viewing, updating
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.1, 4.3, 10.2, 10.3_
+
+- [ ] 51. Create ConnectionsController (Missing)
+  - [ ] 51.1 Create ConnectionsController
+    - Implement connection management endpoints
+    - Add follow/unfollow functionality
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.1, 4.3, 10.2, 10.3_
+
+- [ ] 52. Create Dashboard Social Types
+  - [ ] 52.1 Review existing social types
+    - Check for existing social type definitions
+    - Identify what's missing
+    - _Requirements: 5.1, 10.4_
+  - [ ] 52.2 Create UserProfile types
+    - Create UserProfile, ProfileSettings types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 10.5_
+  - [ ] 52.3 Create Friend/Connection types
+    - Create UserFriend, UserConnection types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 10.5_
+
+- [ ] 53. Create Main App Social Models
+  - [ ] 53.1 Review existing social models
+    - Check for existing social models
+    - Identify what's missing
+    - _Requirements: 5.1, 10.6_
+  - [ ] 53.2 Create UserProfile models
+    - Create UserProfile, ProfileSettings models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 10.7_
+  - [ ] 53.3 Create Friend/Connection models
+    - Create UserFriend, UserConnection models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 10.7_
+
+- [ ] 54. Create/Enhance Dashboard Social Service
+  - [ ] 54.1 Review existing social service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 10.8_
+  - [ ] 54.2 Create ProfileService
+    - Implement profile operations
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+  - [ ] 54.3 Create FriendsService
+    - Implement friend management operations
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+  - [ ] 54.4 Create ConnectionsService
+    - Implement connection operations
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+
+- [ ] 55. Create/Enhance Main App Social Service
+  - [ ] 55.1 Review existing social service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 10.8_
+  - [ ] 55.2 Create ProfileService
+    - Implement profile operations
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+  - [ ] 55.3 Create FriendsService
+    - Implement friend management operations
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+  - [ ] 55.4 Create ConnectionsService
+    - Implement connection operations
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 10.9_
+
+- [ ] 56. Checkpoint - Social Feature Complete
+  - Verify all social endpoints work
+  - Verify frontend types match backend DTOs
+  - Run TypeScript diagnostics
+  - Test profiles, friends, connections
+  - Ask user if questions arise
+  - _Requirements: 10.1-10.10_
+
+### Phase 8: Backend API Enhancement - Reviews Feature
+
+- [ ] 57. Enhance ReviewsController (Already exists - 120 lines)
+  - [ ] 57.1 Review existing endpoints
+    - Document current functionality
+    - Identify missing endpoints
+    - _Requirements: 4.1, 4.2, 11.2_
+  - [ ] 57.2 Add missing endpoints if needed
+    - Implement any missing review operations
+    - Add helpfulness voting
+    - Ensure proper authorization
+    - _Requirements: 4.2, 4.8, 11.10_
+  - [ ] 57.3 Verify ReviewsController remains <300 lines
+    - Check line count after enhancements
+    - _Requirements: 2.1, 11.3_
+
+- [ ] 58. Create Dashboard Reviews Types
+  - [ ] 58.1 Review existing reviews types
+    - Check for existing review type definitions
+    - Identify what's missing
+    - _Requirements: 5.1, 11.4_
+  - [ ] 58.2 Create missing types matching backend DTOs
+    - Create Review, CommunityReview, ReviewComment types
+    - Create ReviewHelpfulness, ReviewImage types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 11.5_
+
+- [ ] 59. Create Main App Reviews Models
+  - [ ] 59.1 Review existing reviews models
+    - Check for existing review models
+    - Identify what's missing
+    - _Requirements: 5.1, 11.6_
+  - [ ] 59.2 Create missing models matching backend DTOs
+    - Create Review, CommunityReview, ReviewComment models
+    - Create ReviewHelpfulness, ReviewImage models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 11.7_
+
+- [ ] 60. Create/Enhance Dashboard Reviews Service
+  - [ ] 60.1 Review existing reviews service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 11.8_
+  - [ ] 60.2 Create or enhance reviews service
+    - Implement review CRUD operations
+    - Add helpfulness voting methods
+    - Use httpClient
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 11.9_
+
+- [ ] 61. Create/Enhance Main App Reviews Service
+  - [ ] 61.1 Review existing reviews service
+    - Check for existing service
+    - Document existing methods
+    - _Requirements: 6.1, 11.8_
+  - [ ] 61.2 Create or enhance reviews service
+    - Implement review CRUD operations
+    - Add helpfulness voting methods
+    - Use HttpClient (Angular)
+    - Ensure <250 lines
+    - _Requirements: 6.3, 6.4, 6.5, 11.9_
+
+- [ ] 62. Checkpoint - Reviews Feature Complete
+  - Verify all reviews endpoints work
+  - Verify frontend types match backend DTOs
+  - Run TypeScript diagnostics
+  - Test reviews, ratings, helpfulness
+  - Ask user if questions arise
+  - _Requirements: 11.1-11.10_
+
+### Phase 9: Additional Features (Lower Priority)
+
+- [ ] 63. News Feature Implementation
+  - [ ] 63.1 Create NewsController (Missing)
+    - Implement article CRUD endpoints
+    - Add category management
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.1, 4.3, 12.2, 12.3_
+  - [ ] 63.2 Create Dashboard news types
+    - Create Article, NewsCategory, NewsComment types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 12.4, 12.5_
+  - [ ] 63.3 Create Main App news models
+    - Create Article, NewsCategory, NewsComment models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 12.6, 12.7_
+  - [ ] 63.4 Create/enhance news services
+    - Implement Dashboard news service
+    - Implement Main App news service
+    - Ensure <250 lines per service
+    - _Requirements: 6.3, 6.4, 6.5, 12.8, 12.9_
+  - [ ] 63.5 Checkpoint - News Feature Complete
+    - Verify all news endpoints work
+    - Test article operations
+    - Ask user if questions arise
+    - _Requirements: 12.1-12.10_
+
+- [ ] 64. Pages Feature Implementation
+  - [ ] 64.1 Create PagesController (Missing)
+    - Implement page CRUD endpoints
+    - Add revision management
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.1, 4.3, 13.2, 13.3_
+  - [ ] 64.2 Create Dashboard pages types
+    - Create Page, PageContent, PageRevision types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 13.4, 13.5_
+  - [ ] 64.3 Create Main App pages models
+    - Create Page, PageContent, PageRevision models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 13.6, 13.7_
+  - [ ] 64.4 Create/enhance pages services
+    - Implement Dashboard pages service
+    - Implement Main App pages service
+    - Ensure <250 lines per service
+    - _Requirements: 6.3, 6.4, 6.5, 13.8, 13.9_
+  - [ ] 64.5 Checkpoint - Pages Feature Complete
+    - Verify all pages endpoints work
+    - Test page operations
+    - Ask user if questions arise
+    - _Requirements: 13.1-13.10_
+
+- [ ] 65. Maps Feature Implementation
+  - [ ] 65.1 Create MapsController (Missing)
+    - Implement location CRUD endpoints
+    - Add check-in functionality
+    - Ensure <300 lines
+    - Add proper authorization
+    - _Requirements: 4.1, 4.3, 14.2, 14.3_
+  - [ ] 65.2 Create Dashboard maps types
+    - Create Location, CheckIn, PlaceReview types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 14.4, 14.5_
+  - [ ] 65.3 Create Main App maps models
+    - Create Location, CheckIn, PlaceReview models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 14.6, 14.7_
+  - [ ] 65.4 Create/enhance maps services
+    - Implement Dashboard maps service
+    - Implement Main App maps service
+    - Ensure <250 lines per service
+    - _Requirements: 6.3, 6.4, 6.5, 14.8, 14.9_
+  - [ ] 65.5 Checkpoint - Maps Feature Complete
+    - Verify all maps endpoints work
+    - Test location operations
+    - Ask user if questions arise
+    - _Requirements: 14.1-14.10_
+
+- [ ] 66. Guides Feature Implementation
+  - [ ] 66.1 Enhance GuidesController (Already exists - 138 lines)
+    - Review existing endpoints
+    - Add missing functionality
+    - Verify remains <300 lines
+    - _Requirements: 4.1, 4.2, 15.2, 15.3_
+  - [ ] 66.2 Create Dashboard guides types
+    - Create Guide, GuideStep, GuideBookmark types
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 15.4, 15.5_
+  - [ ] 66.3 Create Main App guides models
+    - Create Guide, GuideStep, GuideBookmark models
+    - Ensure <200 lines per file
+    - Add JSDoc comments
+    - _Requirements: 5.3, 5.4, 5.6, 15.6, 15.7_
+  - [ ] 66.4 Create/enhance guides services
+    - Implement Dashboard guides service
+    - Implement Main App guides service
+    - Ensure <250 lines per service
+    - _Requirements: 6.3, 6.4, 6.5, 15.8, 15.9_
+  - [ ] 66.5 Checkpoint - Guides Feature Complete
+    - Verify all guides endpoints work
+    - Test guide operations
+    - Ask user if questions arise
+    - _Requirements: 15.1-15.10_
+
+### Phase 10: Verification and Documentation
+
+- [ ] 67. Verify No Duplicates Remain
+  - [ ] 67.1 Search for duplicate types across applications
+    - Compare Dashboard types with Main App models
+    - Document any remaining duplicates
+    - _Requirements: 3.5, 3.7_
+  - [ ] 67.2 Search for duplicate services
+    - Compare Dashboard services with Main App services
+    - Document any remaining duplicates
+    - _Requirements: 3.5, 3.7_
+  - [ ] 67.3 Search for duplicate utilities
+    - Check for duplicate helper functions
+    - Document any remaining duplicates with justification
+    - _Requirements: 3.5, 3.10_
+
+- [ ] 68. Verify File Sizes
+  - [ ] 68.1 Check all backend files <300 lines
+    - Run line count on all controllers
+    - Run line count on all services
+    - Document any exceptions with justification
+    - _Requirements: 2.1, 2.2_
+  - [ ] 68.2 Check all type files <200 lines
+    - Run line count on Dashboard types
+    - Run line count on Main App models
+    - Document any exceptions with justification
+    - _Requirements: 2.3_
+  - [ ] 68.3 Check all service files <250 lines
+    - Run line count on Dashboard services
+    - Run line count on Main App services
+    - Document any exceptions with justification
+    - _Requirements: 2.4_
+
+- [ ] 69. Verify TypeScript Diagnostics
+  - [ ] 69.1 Run diagnostics on all Dashboard files
+    - Check for TypeScript errors
+    - Check for linting issues
+    - Fix any errors found
+    - _Requirements: 5.9_
+  - [ ] 69.2 Run diagnostics on all Main App files
+    - Check for TypeScript errors
+    - Check for linting issues
+    - Fix any errors found
+    - _Requirements: 6.9_
+  - [ ] 69.3 Ensure 0 errors across all files
+    - Verify clean build
+    - Document any warnings
+    - _Requirements: 5.9, 6.9_
+
+- [ ] 70. Create Final Documentation
+  - [ ] 70.1 Document all files reviewed
+    - List all controllers reviewed
+    - List all services reviewed
+    - List all types/models reviewed
+    - _Requirements: 4.10, 5.10, 6.10_
+  - [ ] 70.2 Document all files split
+    - List all split controllers
+    - List all split services
+    - List all split types/models
+    - Document split rationale
+    - _Requirements: 2.8, 2.10_
+  - [ ] 70.3 Document all duplicates removed
+    - List all removed duplicate files
+    - Document consolidation decisions
+    - _Requirements: 3.8, 3.10_
+  - [ ] 70.4 Document all new files created
+    - List all new controllers
+    - List all new types/models
+    - List all new services
+    - _Requirements: 4.10, 5.10, 6.10_
+  - [ ] 70.5 Create migration guide
+    - Document breaking changes
+    - Provide migration steps
+    - Include code examples
+    - _Requirements: 2.10, 3.10_
+  - [ ] 70.6 Update architecture documentation
+    - Update system architecture diagrams
+    - Document new file organization
+    - Update API documentation
+    - _Requirements: 2.8, 4.10_
+
+- [ ] 71. Final Checkpoint - Project Complete
+  - Review all success criteria
+  - Verify all requirements met
+  - Run full test suite
+  - Ask user for final approval
+  - _Requirements: All_
+
+## Implementation Status
+
+**COMPLETED: 1 of 71 tasks (1.4%)**
+**PENDING: 70 of 71 tasks (98.6%)**
+
+### 🎯 Implementation Phases
+- **Phase 1**: Discovery (8 tasks) - **1/8 COMPLETE** - MUST COMPLETE BEFORE OTHER PHASES
+- **Phase 2**: Duplicate Elimination (5 tasks) - 0/5 complete
+- **Phase 3**: File Splitting (12 tasks with sub-tasks) - 0/12 complete
+- **Phase 4**: Posts Feature (8 tasks with sub-tasks) - 0/8 complete
+- **Phase 5**: Groups Feature (6 tasks with sub-tasks) - 0/6 complete
+- **Phase 6**: QA Feature (9 tasks with sub-tasks) - 0/9 complete
+- **Phase 7**: Social Feature (8 tasks with sub-tasks) - 0/8 complete
+- **Phase 8**: Reviews Feature (6 tasks with sub-tasks) - 0/6 complete
+- **Phase 9**: Additional Features (4 tasks with sub-tasks) - 0/4 complete
+- **Phase 10**: Verification (5 tasks with sub-tasks) - 0/5 complete
+
+### 📋 Priority Order
+1. **CRITICAL**: Phase 1 (Discovery) - Complete Tasks 2-8 before anything else
+2. **HIGH**: Phase 3 (File Splitting) - Split 4 oversized controllers immediately after discovery
+3. **HIGH**: Phase 2 (Duplicate Elimination) - Remove duplicates found during discovery
+4. **MEDIUM**: Phase 4-8 (Core Features) - Posts, Groups, QA, Social, Reviews
+5. **LOW**: Phase 9 (Additional Features) - News, Pages, Maps, Guides
+6. **LOW**: Phase 10 (Verification) - Final checks and documentation
+
+### 🔍 Discovery Findings (Task 1 Complete)
+**Controllers Found**: 20 total
+- ✅ 16 controllers under 300 lines
+- ⚠️ 4 controllers exceeding limits (need splitting in Phase 3):
+  - QuestionsController.cs (404 lines)
+  - VotingController.cs (335 lines)
+  - SearchController.cs (308 lines)
+  - ExpertsController.cs (482 lines)
+
+**Missing Controllers**: 5 need creation
+- NewsController
+- ArticlesController
+- PagesController
+- MapsController
+- LocationsController
+
+**Existing Controllers**: Many already exist and just need enhancement
+- PostsController ✅ (188 lines)
+- GroupsController ✅ (170 lines)
+- ReviewsController ✅ (120 lines)
+- GuidesController ✅ (138 lines)
+- FriendsController ✅ (107 lines)
+
+### 📊 Task Breakdown
+- **Total Tasks**: 71 (up from 55)
+- **Tasks with Sub-tasks**: 45 tasks broken into granular steps
+- **Checkpoint Tasks**: 10 validation checkpoints added
+- **File Splitting Tasks**: 4 specific controller splits detailed
 
 ## Success Criteria
 
-### Technical Metrics
-- [ ] All API endpoints respond within 300ms average
-- [ ] Real-time notifications delivered within 5 seconds
-- [ ] Mobile app achieves 95+ Lighthouse performance score
-- [ ] System supports 10,000+ concurrent users
-- [ ] 99.9% uptime achieved in production
-- [ ] Search response time < 200ms for all content types
-- [ ] Location-based queries respond within 500ms
-- [ ] Guide progress tracking updates in real-time
+✅ All existing implementations reviewed and documented
+✅ No duplicate code between Dashboard and Main App
+✅ All files under size limits (Backend: 300, Types: 200, Services: 250)
+✅ Clear separation of concerns in all modules
+✅ Consistent API patterns across all endpoints
+✅ Types match backend DTOs exactly
+✅ All TypeScript diagnostics pass with no errors
+✅ No functional regressions after consolidation
 
-### Functional Metrics
-- [ ] All 17 requirements fully implemented and tested (expanded from 10)
-- [ ] User acceptance testing completed with 90%+ satisfaction
-- [ ] Security audit passed with no critical vulnerabilities
-- [ ] Performance testing meets all specified benchmarks
-- [ ] Mobile experience optimized for iOS and Android
-- [ ] QA system achieves 80%+ answer acceptance rate
-- [ ] Review system maintains 95%+ authenticity score
-- [ ] Friend suggestions achieve 60%+ acceptance rate
-- [ ] News personalization achieves 70%+ user satisfaction
-- [ ] Location features maintain privacy compliance
-- [ ] Guides system achieves 75%+ completion rate
+## Critical Rules
 
-### Business Metrics
-- [ ] User engagement rate > 15% on posts
-- [ ] Average session duration > 25 minutes (increased from 20)
-- [ ] Community growth rate > 10% monthly
-- [ ] Content moderation response time < 2 hours
-- [ ] QA system generates 40%+ of daily content
-- [ ] Review system covers 80%+ of businesses/services
-- [ ] Friend network connections grow by 15% monthly
-- [ ] Community pages achieve 60%+ follower engagement
-- [ ] News consumption increases session time by 30%
-- [ ] Location features used by 50%+ of active users
-- [ ] Guides system achieves 85% user satisfaction
-
-## Risk Mitigation
-
-### Technical Risks
-- **Database Performance**: Implement proper indexing and query optimization from Sprint 1, with additional focus on new complex queries
-- **Real-time Scalability**: Use SignalR with Redis backplane for horizontal scaling, including new real-time features
-- **Mobile Performance**: Implement progressive loading and caching strategies, especially for maps and media-rich content
-- **Security Vulnerabilities**: Conduct security reviews at end of each sprint, with special attention to location privacy and user data
-- **Search Performance**: Implement Elasticsearch with proper indexing for QA, guides, and news content
-- **Third-party API Dependencies**: Implement fallback mechanisms for maps, news, and fact-checking APIs
-- **Location Privacy**: Ensure GDPR/CCPA compliance for all location-based features
-
-### Project Risks
-- **Scope Creep**: Maintain strict adherence to defined requirements across all 17 requirements
-- **Integration Complexity**: Leverage existing architecture patterns consistently across all new features
-- **Performance Issues**: Implement monitoring and optimization from early sprints, with focus on new data-heavy features
-- **User Adoption**: Conduct user testing throughout development process, especially for new complex features
-- **Third-party Service Costs**: Monitor and optimize usage of external APIs (maps, news, fact-checking)
-- **Data Storage Costs**: Implement efficient storage strategies for media files, location data, and guide content
-
-## Dependencies and Prerequisites
-
-### External Dependencies
-- Redis server for caching and SignalR scaling
-- CDN service for media file delivery
-- Push notification services (Firebase, APNS)
-- Search service (Elasticsearch) for content discovery
-- Content moderation APIs for automated filtering
-- Maps API service (Google Maps, Mapbox) for location features
-- News aggregation APIs (NewsAPI, RSS feeds) for news content
-- Fact-checking service integration for news verification
-- Location services (GPS, IP geolocation) for maps features
-- Image processing service for review images and guide media
-
-### Internal Dependencies
-- Existing authentication and authorization system
-- Current database schema and Entity Framework setup
-- Established API versioning and response patterns
-- Existing frontend component library and styling
-- File upload and storage infrastructure
-- Notification system for real-time updates
-- Analytics and reporting infrastructure
-- Content moderation and safety systems
-
-### New Infrastructure Requirements
-- Elasticsearch cluster for enhanced search capabilities
-- Additional Redis instances for location-based caching
-- Expanded blob storage for guide media and review images
-- Enhanced CDN configuration for global content delivery
-- Additional database read replicas for query performance
-- Monitoring and alerting for new service dependencies
-
-This comprehensive implementation plan provides a detailed roadmap for building the enhanced Community Platform with all 7 additional features while maintaining consistency with the existing codebase architecture and ensuring incremental delivery of value over 24 weeks.
+⚠️ **NEVER create a file without checking if it exists first**
+⚠️ **NEVER exceed file size limits (split immediately)**
+⚠️ **NEVER duplicate code between applications**
+⚠️ **ALWAYS enhance existing code rather than recreate**
+⚠️ **ALWAYS document changes for traceability**
+⚠️ **ALWAYS complete Phase 1 before other phases**

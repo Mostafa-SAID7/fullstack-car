@@ -1,37 +1,159 @@
 import { apiClient } from '../api';
-import type { LoginRequest, RegisterRequest } from '../../types/auth';
+import type { 
+  LoginRequest, 
+  LoginResponse,
+  RegisterRequest, 
+  RefreshTokenRequest,
+  UserDto 
+} from '../../types/auth';
 import { API_ENDPOINTS } from '../../config/api';
 
+/**
+ * Auth Core Service
+ * Handles core authentication operations
+ */
 export class AuthCoreService {
-  async login(request: LoginRequest) {
+  /**
+   * Login with email and password
+   */
+  async login(request: LoginRequest): Promise<any> {
     const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, request);
-    return response as any;
+    return response;
   }
 
-  async register(request: RegisterRequest) {
+  /**
+   * Register new user account
+   */
+  async register(request: RegisterRequest): Promise<any> {
     const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, request);
-    return response as any;
+    return response;
   }
 
-  async logout() {
+  /**
+   * Logout current user
+   */
+  async logout(): Promise<any> {
     const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT, {});
-    return response as any;
+    return response;
   }
 
-  async refreshToken() {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH, {});
-    return response as any;
+  /**
+   * Refresh access token using refresh token
+   */
+  async refreshToken(): Promise<any> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    const token = localStorage.getItem('auth_token');
+    
+    if (!refreshToken || !token) {
+      throw new Error('No refresh token available');
+    }
+
+    const request: RefreshTokenRequest = {
+      token,
+      refreshToken
+    };
+
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH, request);
+    
+    // Update stored tokens if refresh successful
+    if (response.succeeded && response.data?.token) {
+      localStorage.setItem('auth_token', response.data.token);
+      if (response.data.refreshToken) {
+        localStorage.setItem('refresh_token', response.data.refreshToken);
+      }
+      apiClient.setAuthToken(response.data.token);
+    }
+    
+    return response;
   }
 
-  async verifyToken(_token: string): Promise<boolean> {
-    // Mock token verification
-    return true;
+  /**
+   * Get current authenticated user
+   */
+  async getCurrentUser(): Promise<any> {
+    const response = await apiClient.get('/v1/auth/me');
+    return response;
+  }
+
+  /**
+   * Verify token validity
+   */
+  async verifyToken(token: string): Promise<boolean> {
+    try {
+      // Set the token temporarily
+      const originalToken = apiClient.getAuthToken();
+      apiClient.setAuthToken(token);
+      
+      // Try to get current user
+      const response = await this.getCurrentUser();
+      
+      // Restore original token
+      if (originalToken) {
+        apiClient.setAuthToken(originalToken);
+      }
+      
+      return response.succeeded;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * Confirm email address
+   */
+  async confirmEmail(userId: string, token: string): Promise<any> {
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.CONFIRM_EMAIL, {
+      userId,
+      token
+    });
+    return response;
+  }
+
+  /**
+   * Resend email confirmation
+   */
+  async resendEmailConfirmation(email: string): Promise<any> {
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.RESEND_CONFIRMATION, email);
+    return response;
+  }
+
+  /**
+   * Revoke specific token
+   */
+  async revokeToken(token: string): Promise<any> {
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REVOKE_TOKEN, token);
+    return response;
+  }
+
+  /**
+   * Store authentication tokens
+   */
+  storeTokens(token: string, refreshToken: string): void {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('refresh_token', refreshToken);
+    apiClient.setAuthToken(token);
+  }
+
+  /**
+   * Clear authentication tokens
+   */
+  clearTokens(): void {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
+    apiClient.clearAuthToken();
+  }
+
+  /**
+   * Get stored access token
+   */
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
+
+  /**
+   * Get stored refresh token
+   */
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
   }
 }
-
-
-
-
-
-
-

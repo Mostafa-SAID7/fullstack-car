@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import { Card, Button, Badge } from '../../../components';
 import { notificationService } from '../../../services/notification';
-import type { Notification, NotificationFilters, NotificationType, NotificationCategory } from '../../../types/notification';
+import { formatNotificationTime } from '../../../utils/notification';
+import type { NotificationDto, NotificationFilters, NotificationType, NotificationCategory, NotificationStatsResponse } from '../../../types/notification';
 
 interface NotificationStats {
     total: number;
@@ -27,7 +28,7 @@ interface NotificationStats {
 }
 
 export const NotificationManagement: React.FC = () => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationDto[]>([]);
     const [stats, setStats] = useState<NotificationStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedNotifications, setSelectedNotifications] = useState<Set<string>>(new Set());
@@ -56,16 +57,13 @@ export const NotificationManagement: React.FC = () => {
                 pageSize: 100
             };
 
-            if (filter.type) filters.type = filter.type as NotificationType;
-            if (filter.category) filters.category = filter.category as NotificationCategory;
-            if (filter.read === 'read') filters.read = true;
-            if (filter.read === 'unread') filters.read = false;
+            if (filter.type) filters.type = filter.type as string;
+            if (filter.category) filters.category = filter.category as string;
+            if (filter.read === 'read') filters.isRead = true;
+            if (filter.read === 'unread') filters.isRead = false;
 
             const response = await notificationService.getNotifications(filters);
-            
-            if (response.succeeded && response.data) {
-                setNotifications(response.data);
-            }
+            setNotifications(response.notifications);
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
         } finally {
@@ -75,10 +73,8 @@ export const NotificationManagement: React.FC = () => {
 
     const fetchStats = async () => {
         try {
-            const response = await notificationService.getNotificationStats();
-            if (response.succeeded && response.data) {
-                setStats(response.data);
-            }
+            const response = await notificationService.getStats();
+            setStats(response);
         } catch (error) {
             console.error('Failed to fetch notification stats:', error);
         }
@@ -87,7 +83,7 @@ export const NotificationManagement: React.FC = () => {
     const handleMarkAsRead = async (id: string) => {
         try {
             await notificationService.markAsRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
             fetchStats();
         } catch (error) {
             console.error('Failed to mark notification as read:', error);
@@ -97,7 +93,7 @@ export const NotificationManagement: React.FC = () => {
     const handleMarkAllAsRead = async () => {
         try {
             await notificationService.markAllAsRead();
-            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
             fetchStats();
         } catch (error) {
             console.error('Failed to mark all notifications as read:', error);
@@ -185,8 +181,8 @@ export const NotificationManagement: React.FC = () => {
     const filteredNotifications = notifications.filter(notification => {
         if (filter.type && notification.type !== filter.type) return false;
         if (filter.category && notification.category !== filter.category) return false;
-        if (filter.read === 'read' && !notification.read) return false;
-        if (filter.read === 'unread' && notification.read) return false;
+        if (filter.read === 'read' && !notification.isRead) return false;
+        if (filter.read === 'unread' && notification.isRead) return false;
         if (filter.search && !notification.title.toLowerCase().includes(filter.search.toLowerCase()) && 
             !notification.message.toLowerCase().includes(filter.search.toLowerCase())) return false;
         return true;
@@ -366,7 +362,7 @@ export const NotificationManagement: React.FC = () => {
                                 key={notification.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className={`p-6 hover:bg-gray-50 transition-colors ${!notification.read ? 'bg-blue-50/50' : ''}`}
+                                className={`p-6 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-blue-50/50' : ''}`}
                             >
                                 <div className="flex items-start gap-4">
                                     <input
@@ -392,7 +388,7 @@ export const NotificationManagement: React.FC = () => {
                                                 <Badge className={getCategoryColor(notification.category)}>
                                                     {notification.category}
                                                 </Badge>
-                                                {!notification.read && (
+                                                {!notification.isRead && (
                                                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                                                 )}
                                             </div>
@@ -404,11 +400,11 @@ export const NotificationManagement: React.FC = () => {
 
                                         <div className="flex items-center justify-between">
                                             <p className="text-xs text-gray-500">
-                                                {notificationService.formatNotificationTime(notification.createdAt)}
+                                                {formatNotificationTime(notification.createdAt)}
                                             </p>
 
                                             <div className="flex items-center gap-2">
-                                                {!notification.read && (
+                                                {!notification.isRead && (
                                                     <Button
                                                         onClick={() => handleMarkAsRead(notification.id)}
                                                         size="sm"

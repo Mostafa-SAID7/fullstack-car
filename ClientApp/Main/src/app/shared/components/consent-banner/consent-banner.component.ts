@@ -1,0 +1,591 @@
+import { 
+  Component, 
+  Input, 
+  Output, 
+  EventEmitter, 
+  signal, 
+  computed, 
+  inject,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy 
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PrivacyConsentService, ConsentPreferences, CookieInfo } from '../../../core/services/privacy-consent.service';
+import { Subscription } from 'rxjs';
+
+export interface ConsentBannerConfig {
+  position: 'top' | 'bottom' | 'center';
+  theme: 'light' | 'dark' | 'auto';
+  showDetailsButton: boolean;
+  showRejectButton: boolean;
+  autoHide: boolean;
+  autoHideDelay: number;
+  compactMode: boolean;
+}
+
+/**
+ * Consent Banner Component
+ * 
+ * GDPR/CCPA compliant consent banner with:
+ * - Cookie consent management
+ * - Granular privacy controls
+ * - Cookie information display
+ * - Accessibility compliance
+ * - Customizable appearance
+ */
+@Component({
+  selector: 'app-consent-banner',
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div 
+      *ngIf="shouldShowBanner()"
+      class="consent-banner fixed z-50 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg"
+      [class.top-0]="config().position === 'top'"
+      [class.bottom-0]="config().position === 'bottom'"
+      [class.top-1/2]="config().position === 'center'"
+      [class.transform]="config().position === 'center'"
+      [class.-translate-y-1/2]="config().position === 'center'"
+      role="dialog"
+      aria-labelledby="consent-title"
+      aria-describedby="consent-description"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Compact Mode -->
+        <div *ngIf="config().compactMode && !showDetails()" class="py-4">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex-1 min-w-0">
+              <h3 id="consent-title" class="text-sm font-medium text-gray-900 dark:text-white">
+                Cookie Consent
+              </h3>
+              <p id="consent-description" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                We use cookies to enhance your experience. 
+                <button 
+                  (click)="toggleDetails()"
+                  class="text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Learn more
+                </button>
+              </p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <button 
+                *ngIf="config().showRejectButton"
+                (click)="rejectAll()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Reject All
+              </button>
+              <button 
+                (click)="acceptAll()"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Accept All
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Mode -->
+        <div *ngIf="!config().compactMode || showDetails()" class="py-6">
+          <!-- Header -->
+          <div class="mb-6">
+            <h3 id="consent-title" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Your Privacy Choices
+            </h3>
+            <p id="consent-description" class="text-sm text-gray-600 dark:text-gray-400">
+              We respect your privacy and are committed to protecting your personal data. 
+              Please review and customize your consent preferences below.
+            </p>
+          </div>
+
+          <!-- Consent Categories -->
+          <div class="space-y-4 mb-6">
+            <!-- Necessary Cookies -->
+            <div class="consent-category p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="necessary"
+                      checked
+                      disabled
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 opacity-50"
+                    >
+                    <label for="necessary" class="text-sm font-medium text-gray-900 dark:text-white">
+                      Necessary Cookies
+                      <span class="ml-2 px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded">
+                        Always Active
+                      </span>
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+                    These cookies are essential for the website to function properly. 
+                    They enable basic features like page navigation and access to secure areas.
+                  </p>
+                  <button 
+                    (click)="toggleCookieDetails('necessary')"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 ml-7"
+                  >
+                    {{ showCookieDetails().necessary ? 'Hide' : 'Show' }} cookies ({{ getCookiesByCategory('necessary').length }})
+                  </button>
+                  
+                  <!-- Cookie Details -->
+                  <div *ngIf="showCookieDetails().necessary" class="mt-3 ml-7">
+                    <div class="space-y-2">
+                      <div *ngFor="let cookie of getCookiesByCategory('necessary')" 
+                           class="text-xs bg-white dark:bg-gray-900 p-2 rounded border">
+                        <div class="font-medium">{{ cookie.name }}</div>
+                        <div class="text-gray-600 dark:text-gray-400">{{ cookie.purpose }}</div>
+                        <div class="text-gray-500 dark:text-gray-500">Duration: {{ cookie.duration }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Analytics Cookies -->
+            <div class="consent-category p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="analytics"
+                      [checked]="currentPreferences().analytics"
+                      (change)="updatePreference('analytics', $event)"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <label for="analytics" class="text-sm font-medium text-gray-900 dark:text-white">
+                      Analytics Cookies
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+                    These cookies help us understand how visitors interact with our website 
+                    by collecting and reporting information anonymously.
+                  </p>
+                  <button 
+                    (click)="toggleCookieDetails('analytics')"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 ml-7"
+                  >
+                    {{ showCookieDetails().analytics ? 'Hide' : 'Show' }} cookies ({{ getCookiesByCategory('analytics').length }})
+                  </button>
+                  
+                  <!-- Cookie Details -->
+                  <div *ngIf="showCookieDetails().analytics" class="mt-3 ml-7">
+                    <div class="space-y-2">
+                      <div *ngFor="let cookie of getCookiesByCategory('analytics')" 
+                           class="text-xs bg-white dark:bg-gray-900 p-2 rounded border">
+                        <div class="font-medium">{{ cookie.name }}</div>
+                        <div class="text-gray-600 dark:text-gray-400">{{ cookie.purpose }}</div>
+                        <div class="text-gray-500 dark:text-gray-500">
+                          Duration: {{ cookie.duration }} | Provider: {{ cookie.provider }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Marketing Cookies -->
+            <div class="consent-category p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="marketing"
+                      [checked]="currentPreferences().marketing"
+                      (change)="updatePreference('marketing', $event)"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <label for="marketing" class="text-sm font-medium text-gray-900 dark:text-white">
+                      Marketing Cookies
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+                    These cookies are used to deliver advertisements more relevant to you and your interests.
+                  </p>
+                  <button 
+                    (click)="toggleCookieDetails('marketing')"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 ml-7"
+                  >
+                    {{ showCookieDetails().marketing ? 'Hide' : 'Show' }} cookies ({{ getCookiesByCategory('marketing').length }})
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Performance Cookies -->
+            <div class="consent-category p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="performance"
+                      [checked]="currentPreferences().performance"
+                      (change)="updatePreference('performance', $event)"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <label for="performance" class="text-sm font-medium text-gray-900 dark:text-white">
+                      Performance Cookies
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+                    These cookies allow us to count visits and traffic sources to measure and improve performance.
+                  </p>
+                  <button 
+                    (click)="toggleCookieDetails('performance')"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 ml-7"
+                  >
+                    {{ showCookieDetails().performance ? 'Hide' : 'Show' }} cookies ({{ getCookiesByCategory('performance').length }})
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personalization Cookies -->
+            <div class="consent-category p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="personalization"
+                      [checked]="currentPreferences().personalization"
+                      (change)="updatePreference('personalization', $event)"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <label for="personalization" class="text-sm font-medium text-gray-900 dark:text-white">
+                      Personalization Cookies
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+                    These cookies enable enhanced functionality and personalization based on your preferences.
+                  </p>
+                  <button 
+                    (click)="toggleCookieDetails('personalization')"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 ml-7"
+                  >
+                    {{ showCookieDetails().personalization ? 'Hide' : 'Show' }} cookies ({{ getCookiesByCategory('personalization').length }})
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center space-x-4">
+              <button 
+                (click)="openPrivacyPolicy()"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Privacy Policy
+              </button>
+              <button 
+                (click)="openCookiePolicy()"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Cookie Policy
+              </button>
+            </div>
+            <div class="flex items-center space-x-3">
+              <button 
+                *ngIf="config().showRejectButton"
+                (click)="rejectAll()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Reject All
+              </button>
+              <button 
+                (click)="savePreferences()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Save Preferences
+              </button>
+              <button 
+                (click)="acceptAll()"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Accept All
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backdrop -->
+    <div 
+      *ngIf="shouldShowBanner() && config().position === 'center'"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40"
+      (click)="closeBanner()"
+    ></div>
+  `,
+  styles: [`
+    .consent-banner {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .consent-category {
+      transition: all 0.2s ease-in-out;
+    }
+
+    .consent-category:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+    }
+
+    .consent-banner.top-0 {
+      animation: slideInFromTop 0.3s ease-out;
+    }
+
+    @keyframes slideInFromTop {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+  `]
+})
+export class ConsentBannerComponent implements OnInit, OnDestroy {
+  @Input() config = signal<ConsentBannerConfig>({
+    position: 'bottom',
+    theme: 'auto',
+    showDetailsButton: true,
+    showRejectButton: true,
+    autoHide: false,
+    autoHideDelay: 10000,
+    compactMode: false
+  });
+
+  @Output() consentGiven = new EventEmitter<ConsentPreferences>();
+  @Output() consentRejected = new EventEmitter<void>();
+  @Output() preferencesUpdated = new EventEmitter<ConsentPreferences>();
+
+  private privacyService = inject(PrivacyConsentService);
+
+  // Signals for reactive state
+  private showBanner = signal(false);
+  private showDetails = signal(false);
+  private currentPreferences = signal<ConsentPreferences>({
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    personalization: false,
+    performance: false
+  });
+
+  private showCookieDetails = signal({
+    necessary: false,
+    analytics: false,
+    marketing: false,
+    personalization: false,
+    performance: false
+  });
+
+  private subscriptions = new Subscription();
+  private autoHideTimer?: number;
+
+  // Computed values
+  protected readonly shouldShowBanner = computed(() => {
+    return this.showBanner() && !this.privacyService.getConsentStatus().given;
+  });
+
+  ngOnInit(): void {
+    this.initializeConsentBanner();
+    this.setupSubscriptions();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    if (this.autoHideTimer) {
+      clearTimeout(this.autoHideTimer);
+    }
+  }
+
+  /**
+   * Initialize consent banner
+   */
+  private initializeConsentBanner(): void {
+    const consentStatus = this.privacyService.getConsentStatus();
+    
+    if (!consentStatus.given || consentStatus.expired) {
+      this.showBanner.set(true);
+      this.currentPreferences.set(this.privacyService.getCurrentPreferences());
+      
+      if (this.config().autoHide) {
+        this.startAutoHideTimer();
+      }
+    }
+  }
+
+  /**
+   * Setup subscriptions
+   */
+  private setupSubscriptions(): void {
+    this.subscriptions.add(
+      this.privacyService.consentGiven$.subscribe(given => {
+        if (given) {
+          this.showBanner.set(false);
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.privacyService.consentPreferences$.subscribe(preferences => {
+        this.currentPreferences.set(preferences);
+      })
+    );
+  }
+
+  /**
+   * Start auto hide timer
+   */
+  private startAutoHideTimer(): void {
+    this.autoHideTimer = window.setTimeout(() => {
+      this.closeBanner();
+    }, this.config().autoHideDelay);
+  }
+
+  /**
+   * Toggle details view
+   */
+  toggleDetails(): void {
+    this.showDetails.set(!this.showDetails());
+  }
+
+  /**
+   * Toggle cookie details for category
+   */
+  toggleCookieDetails(category: keyof ConsentPreferences): void {
+    const current = this.showCookieDetails();
+    this.showCookieDetails.set({
+      ...current,
+      [category]: !current[category]
+    });
+  }
+
+  /**
+   * Update preference for category
+   */
+  updatePreference(category: keyof ConsentPreferences, event: Event): void {
+    if (category === 'necessary') return; // Cannot change necessary cookies
+
+    const target = event.target as HTMLInputElement;
+    const current = this.currentPreferences();
+    
+    this.currentPreferences.set({
+      ...current,
+      [category]: target.checked
+    });
+  }
+
+  /**
+   * Accept all cookies
+   */
+  acceptAll(): void {
+    const preferences: ConsentPreferences = {
+      necessary: true,
+      analytics: true,
+      marketing: true,
+      personalization: true,
+      performance: true
+    };
+
+    this.privacyService.setConsentPreferences(preferences);
+    this.consentGiven.emit(preferences);
+    this.showBanner.set(false);
+  }
+
+  /**
+   * Reject all non-necessary cookies
+   */
+  rejectAll(): void {
+    const preferences: ConsentPreferences = {
+      necessary: true,
+      analytics: false,
+      marketing: false,
+      personalization: false,
+      performance: false
+    };
+
+    this.privacyService.setConsentPreferences(preferences);
+    this.consentRejected.emit();
+    this.showBanner.set(false);
+  }
+
+  /**
+   * Save current preferences
+   */
+  savePreferences(): void {
+    const preferences = this.currentPreferences();
+    this.privacyService.setConsentPreferences(preferences);
+    this.preferencesUpdated.emit(preferences);
+    this.showBanner.set(false);
+  }
+
+  /**
+   * Close banner without saving
+   */
+  closeBanner(): void {
+    this.showBanner.set(false);
+  }
+
+  /**
+   * Get cookies by category
+   */
+  getCookiesByCategory(category: CookieInfo['category']): CookieInfo[] {
+    return this.privacyService.getCookiesByCategory(category);
+  }
+
+  /**
+   * Open privacy policy
+   */
+  openPrivacyPolicy(): void {
+    window.open('/privacy-policy', '_blank');
+  }
+
+  /**
+   * Open cookie policy
+   */
+  openCookiePolicy(): void {
+    window.open('/cookie-policy', '_blank');
+  }
+
+  /**
+   * Show banner manually
+   */
+  showConsentBanner(): void {
+    this.showBanner.set(true);
+  }
+
+  /**
+   * Hide banner manually
+   */
+  hideConsentBanner(): void {
+    this.showBanner.set(false);
+  }
+}

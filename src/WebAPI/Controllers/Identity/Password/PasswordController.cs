@@ -28,35 +28,35 @@ namespace WebAPI.Controllers.Identity.Password
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             var result = await _passwordService.ChangePasswordAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(new { Message = "Password changed successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("forgot")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var result = await _passwordService.ForgotPasswordAsync(request);
-            return result.Succeeded ? Ok(new { Message = "Password reset email sent" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("reset")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var result = await _passwordService.ResetPasswordAsync(request);
-            return result.Succeeded ? Ok(new { Message = "Password reset successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePassword([FromBody] string password)
         {
             var result = await _passwordService.ValidatePasswordAsync(password);
-            return result.Succeeded ? Ok(new { Message = "Password is valid" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [HttpPost("strength")]
         public async Task<IActionResult> CheckPasswordStrength([FromBody] string password)
         {
             var result = await _passwordService.CheckPasswordStrengthAsync(password);
-            return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [Authorize]
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers.Identity.Password
         public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request)
         {
             var result = await _passwordService.SetPasswordAsync(_currentUserService.UserId!, request);
-            return result.Succeeded ? Ok(new { Message = "Password set successfully" }) : BadRequest(result.Errors);
+            return Ok(result);
         }
 
         [Authorize]
@@ -72,7 +72,7 @@ namespace WebAPI.Controllers.Identity.Password
         public async Task<IActionResult> HasPassword()
         {
             var result = await _passwordService.HasPasswordAsync(_currentUserService.UserId!);
-            return result.Succeeded ? Ok(new { HasPassword = result.Data }) : BadRequest(result.Errors);
+            return Ok(result);
         }
     }
 }

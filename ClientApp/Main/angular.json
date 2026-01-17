@@ -37,13 +37,25 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "150kb",
-                  "maximumError": "200kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "vendor",
+                  "maximumWarning": "300kb",
+                  "maximumError": "500kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "runtime",
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
                 }
               ],
               "fileReplacements": [
@@ -53,12 +65,34 @@
                 }
               ],
               "outputHashing": "all",
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": true
+                }
+              },
               "buildOptimizer": true,
               "aot": true,
               "extractLicenses": true,
-              "sourceMap": false,
-              "namedChunks": false
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "vendor": false
+              },
+              "namedChunks": false,
+              "vendorChunk": true,
+              "commonChunk": true,
+              "statsJson": true,
+              "crossOrigin": "anonymous",
+              "subresourceIntegrity": true,
+              "deleteOutputPath": true,
+              "preserveSymlinks": false,
+              "watch": false,
+              "poll": undefined
             },
             "development": {
               "buildOptimizer": false,
@@ -73,6 +107,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "hmr": true,
+            "liveReload": true
+          },
           "configurations": {
             "production": {
               "buildTarget": "media-streaming-main-app:build:production"

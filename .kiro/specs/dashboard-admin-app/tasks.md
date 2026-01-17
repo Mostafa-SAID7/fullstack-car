@@ -2,112 +2,118 @@
 
 ## Implementation Overview
 
-This implementation plan spans **8 sprints over 16 weeks**, building a comprehensive React-based admin dashboard with role-based access control. Each sprint delivers working functionality while maintaining modern React patterns and TypeScript best practices.
+This implementation plan spans **8 sprints over 16 weeks**, building a comprehensive React 18+ administrative dashboard with role-based access control and modern architecture. The dashboard uses shadcn/ui components, Tailwind CSS, and Lucide React icons to deliver a professional administrative experience completely separate from the main user-facing frontend.
 
 ### Sprint Structure
 - **Sprint Duration**: 2 weeks each
 - **Total Timeline**: 16 weeks
-- **Approach**: Incremental delivery with role-based module development
-- **Technology**: React 18+, TypeScript, Vite, Tailwind CSS
+- **Approach**: Administrative module-driven development with role-based access
+- **Technology**: React 18+, TypeScript, Vite, Shadcn/ui, Tailwind CSS, Lucide React
 
-## Sprint 1: Foundation and Authentication (Weeks 1-2)
+### Administrative Architecture
+- **Separation**: Completely independent from Angular-based main frontend
+- **Focus**: Backend management, content moderation, system administration
+- **Users**: Administrative staff, not end users
+- **Patterns**: Modern React hooks, functional components, TypeScript
 
-### Core Infrastructure Setup
-- [ ] **Task 1.1**: Set up enhanced project structure with TypeScript
-  - Configure Vite with React 18+ and TypeScript
-  - Set up Tailwind CSS with dark mode support
-  - Configure ESLint and Prettier for code quality
-  - **Requirement**: Modern UI/UX (Req 8)
-  - **Estimate**: 8 hours
+## Sprint 1: Foundation and Administrative Authentication (Weeks 1-2)
 
-- [ ] **Task 1.2**: Implement role-based authentication system
-  - Create AdminRole enum and permission definitions
-  - Implement ROLE_PERMISSIONS configuration
-  - Create usePermissions hook for permission checking
+### Modern React Infrastructure Setup
+- [ ] **Task 1.1**: Set up React 18+ project with modern architecture
+  - Configure Vite with React 18+ and TypeScript for optimal development
+  - Set up Shadcn/ui component library with Tailwind CSS integration
+  - Configure Lucide React icons for consistent administrative iconography
+  - **Requirement**: Modern React Architecture (Req 8)
+  - **Estimate**: 10 hours
+
+- [ ] **Task 1.2**: Implement administrative role-based authentication system
+  - Create AdminRole enum and administrative permission definitions
+  - Implement ADMIN_ROLE_PERMISSIONS configuration for all admin types
+  - Create useAdminPermissions hook for administrative permission checking
+  - **Requirement**: Role-Based Authentication (Req 1)
+  - **Estimate**: 14 hours
+
+- [ ] **Task 1.3**: Create AdminAuthContext and AdminAuthProvider
+  - Implement comprehensive administrative authentication state management
+  - Add administrative role-based access control methods
+  - Create administrative token management and refresh logic
   - **Requirement**: Role-Based Authentication (Req 1)
   - **Estimate**: 12 hours
 
-- [ ] **Task 1.3**: Create enhanced AuthContext and AuthProvider
-  - Implement comprehensive authentication state management
-  - Add role-based access control methods
-  - Create token management and refresh logic
+- [ ] **Task 1.4**: Build ProtectedAdminRoute component with role validation
+  - Implement administrative route protection based on roles and permissions
+  - Create fallback components for unauthorized administrative access
+  - Add navigation guards for administrative modules
   - **Requirement**: Role-Based Authentication (Req 1)
   - **Estimate**: 10 hours
 
-- [ ] **Task 1.4**: Build ProtectedRoute component with role validation
-  - Implement route protection based on roles and permissions
-  - Create fallback components for unauthorized access
-  - Add navigation guards for admin modules
+### Administrative Authentication UI Components
+- [ ] **Task 1.5**: Create administrative login form with role support
+  - Build responsive administrative login interface with Shadcn/ui
+  - Add administrative role-specific login validation
+  - Implement administrative security features and session management
   - **Requirement**: Role-Based Authentication (Req 1)
-  - **Estimate**: 8 hours
+  - **Estimate**: 12 hours
 
-### Authentication UI Components
-- [ ] **Task 1.5**: Create enhanced login form with admin role support
-  - Build responsive login interface
-  - Add role-specific login validation
-  - Implement remember me and security features
-  - **Requirement**: Role-Based Authentication (Req 1)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 1.6**: Implement admin user registration flow
-  - Create admin registration form (Super Admin only)
-  - Add role assignment during registration
-  - Implement email verification for admin accounts
+- [ ] **Task 1.6**: Implement administrative user registration flow
+  - Create administrative user registration form (Super Admin only)
+  - Add administrative role assignment during registration
+  - Implement email verification for administrative accounts
   - **Requirement**: Super Admin Management (Req 2)
-  - **Estimate**: 12 hours
+  - **Estimate**: 14 hours
 
 ### Sprint 1 Deliverables
-- Complete authentication system with role-based access
-- Protected routing with permission validation
-- Admin user registration and management foundation
-- Secure token management and session handling
+- Complete administrative authentication system with role-based access
+- Protected administrative routing with permission validation
+- Administrative user registration and management foundation
+- Secure administrative token management and session handling
 
 ---
 
-## Sprint 2: Core Layout and Navigation (Weeks 3-4)
+## Sprint 2: Administrative Layout and Shadcn/ui Integration (Weeks 3-4)
 
-### Layout Components
-- [ ] **Task 2.1**: Build responsive MainLayout with role-based navigation
-  - Create adaptive sidebar with role-specific menu items
-  - Implement collapsible navigation for mobile devices
-  - Add breadcrumb navigation and page titles
-  - **Requirement**: Responsive Design (Req 8)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 2.2**: Create Header component with admin features
-  - Build user profile dropdown with role display
-  - Add notification center and real-time alerts
-  - Implement theme toggle and settings access
-  - **Requirement**: Real-time Data (Req 9)
-  - **Estimate**: 10 hours
-
-- [ ] **Task 2.3**: Implement Sidebar with dynamic menu generation
-  - Create navigation items based on user permissions
-  - Add active state management and route highlighting
-  - Implement search functionality for navigation
-  - **Requirement**: Role-Based Authentication (Req 1)
-  - **Estimate**: 12 hours
-
-### Theme and UI System
-- [ ] **Task 2.4**: Set up comprehensive theme system
-  - Implement light/dark theme with user preferences
-  - Create theme context and persistence
-  - Add smooth theme transitions and animations
-  - **Requirement**: Responsive Design (Req 8)
-  - **Estimate**: 8 hours
-
-- [ ] **Task 2.5**: Build reusable UI component library
-  - Create Button, Card, Input, and form components
-  - Implement MetricCard and dashboard widgets
-  - Add loading states and error boundaries
-  - **Requirement**: Responsive Design (Req 8)
+### Administrative Layout Components with Shadcn/ui
+- [ ] **Task 2.1**: Build responsive AdminMainLayout with role-based navigation
+  - Create adaptive administrative sidebar with role-specific menu items using Shadcn/ui
+  - Implement collapsible navigation optimized for administrative workflows
+  - Add administrative breadcrumb navigation and contextual page titles
+  - **Requirement**: Modern React Architecture (Req 8)
   - **Estimate**: 16 hours
 
+- [ ] **Task 2.2**: Create AdminHeader component with administrative features
+  - Build administrative user profile dropdown with role display using Shadcn/ui
+  - Add administrative notification center and real-time system alerts
+  - Implement administrative theme toggle and system settings access
+  - **Requirement**: Real-time Administrative Data (Req 9)
+  - **Estimate**: 12 hours
+
+- [ ] **Task 2.3**: Implement AdminSidebar with dynamic administrative menu generation
+  - Create administrative navigation items based on user permissions
+  - Add active state management and administrative route highlighting
+  - Implement search functionality for administrative navigation
+  - **Requirement**: Role-Based Authentication (Req 1)
+  - **Estimate**: 14 hours
+
+### Administrative Theme and Shadcn/ui System
+- [ ] **Task 2.4**: Set up comprehensive administrative theme system
+  - Implement light/dark theme with administrative user preferences using Shadcn/ui
+  - Create AdminThemeContext and administrative theme persistence
+  - Add smooth theme transitions optimized for administrative interfaces
+  - **Requirement**: Modern React Architecture (Req 8)
+  - **Estimate**: 10 hours
+
+- [ ] **Task 2.5**: Build administrative UI component library with Shadcn/ui
+  - Create AdminButton, AdminCard, AdminInput, and administrative form components
+  - Implement AdminMetricCard and administrative dashboard widgets
+  - Add administrative loading states and error boundaries
+  - **Requirement**: Modern React Architecture (Req 8)
+  - **Estimate**: 18 hours
+
 ### Sprint 2 Deliverables
-- Complete responsive layout with role-based navigation
-- Comprehensive theme system with user preferences
-- Reusable UI component library
-- Mobile-optimized admin interface
+- Complete responsive administrative layout with role-based navigation
+- Comprehensive administrative theme system with user preferences
+- Administrative UI component library built on Shadcn/ui
+- Mobile-optimized administrative interface
 
 ---
 
@@ -205,85 +211,85 @@ This implementation plan spans **8 sprints over 16 weeks**, building a comprehen
 
 ---
 
-## Sprint 5: Enhanced Content Management System (CMS) Admin Module (Weeks 9-10)
+## Sprint 5: Enhanced Administrative Content Management System (Weeks 9-10)
 
-### Enhanced Content Management Dashboard
-- [ ] **Task 5.1**: Create Enhanced ContentAdminDashboard component
-  - Build comprehensive content overview with statistics and metrics
-  - Display recent content activity, publishing queue, and community moderation queue
-  - Add content performance analytics widgets and media review metrics
-  - Integrate community content monitoring and media review system
+### Administrative Content Management Dashboard
+- [ ] **Task 5.1**: Create Enhanced AdminContentDashboard component
+  - Build comprehensive administrative content overview with platform-wide statistics
+  - Display administrative content activity, moderation queues, and system-wide analytics
+  - Add administrative content performance analytics and media review metrics
+  - Integrate administrative community content monitoring and media review system
   - **Requirement**: Enhanced Content Management System (Req 4)
-  - **Estimate**: 18 hours
+  - **Estimate**: 20 hours
 
-- [ ] **Task 5.2**: Implement rich content editor interface with community features
-  - Create WYSIWYG editor with media integration and community content support
-  - Build content templates and reusable components for various content types
-  - Add content preview, draft management, and collaborative editing features
-  - Implement community post editing and formatting tools
+- [ ] **Task 5.2**: Implement administrative content management interface
+  - Create administrative content editor with system-wide content support
+  - Build administrative content templates and reusable components for platform management
+  - Add administrative content preview, draft management, and system-wide publishing
+  - Implement administrative content policies and platform-wide content management
   - **Requirement**: Enhanced Content Management System (Req 4)
-  - **Estimate**: 28 hours
+  - **Estimate**: 30 hours
 
-- [ ] **Task 5.3**: Build enhanced media library and asset management
-  - Create media upload and organization system with folder structure support
-  - Implement image optimization, processing, and media review workflows
-  - Add media search, tagging capabilities, and hierarchical folder management
-  - Build media review system for user-uploaded content validation
+- [ ] **Task 5.3**: Build administrative media library and asset management
+  - Create administrative media upload and organization system with system-wide folder support
+  - Implement administrative image optimization, processing, and media review workflows
+  - Add administrative media search, tagging capabilities, and hierarchical folder management
+  - Build comprehensive media review system for all platform content validation
+  - **Requirement**: Enhanced Content Management System (Req 4)
+  - **Estimate**: 26 hours
+
+### Administrative Community Content Moderation System
+- [ ] **Task 5.4**: Create comprehensive administrative moderation interface
+  - Build administrative community content moderation queue with system-wide flagged content
+  - Implement administrative automated flagging system and moderation rules engine
+  - Add administrative bulk moderation actions and community content analytics
+  - Create administrative reported comments management and resolution workflows
   - **Requirement**: Enhanced Content Management System (Req 4)
   - **Estimate**: 24 hours
 
-### Community Content Moderation System
-- [ ] **Task 5.4**: Create comprehensive community moderation interface
-  - Build community content moderation queue with flagged content management
-  - Implement automated flagging system and moderation rules engine
-  - Add bulk moderation actions and community content analytics
-  - Create reported comments management and resolution workflows
+- [ ] **Task 5.5**: Implement administrative media review and approval system
+  - Create administrative media review dashboard for all platform videos, podcasts, and images
+  - Build administrative media quality assessment tools and content validation workflows
+  - Add administrative media approval/rejection system with detailed feedback mechanisms
+  - Implement administrative bulk media review actions and automated quality checks
   - **Requirement**: Enhanced Content Management System (Req 4)
   - **Estimate**: 22 hours
 
-- [ ] **Task 5.5**: Implement media review and approval system
-  - Create media review dashboard for videos, podcasts, and images
-  - Build media quality assessment tools and content validation workflows
-  - Add media approval/rejection system with detailed feedback mechanisms
-  - Implement bulk media review actions and automated quality checks
+### Administrative Folder Management and Organization
+- [ ] **Task 5.6**: Build administrative hierarchical folder management system
+  - Create administrative drag-and-drop folder structure with system-wide nested organization
+  - Implement administrative folder permissions and access control management
+  - Add administrative bulk content organization and folder-based content operations
+  - Build administrative folder analytics and content distribution tracking
   - **Requirement**: Enhanced Content Management System (Req 4)
   - **Estimate**: 20 hours
 
-### Advanced Folder Management and Organization
-- [ ] **Task 5.6**: Build hierarchical folder management system
-  - Create drag-and-drop folder structure with nested organization
-  - Implement folder permissions and access control management
-  - Add bulk content organization and folder-based content operations
-  - Build folder analytics and content distribution tracking
+### Administrative Content Workflow and Publishing Enhancement
+- [ ] **Task 5.7**: Create administrative content workflow management system
+  - Build advanced administrative content approval and review process with system integration
+  - Implement administrative content scheduling, publishing, and automated moderation workflows
+  - Add administrative collaborative editing, comments, and multi-stage approval processes
+  - Create administrative workflow templates for different content types and community content
   - **Requirement**: Enhanced Content Management System (Req 4)
-  - **Estimate**: 18 hours
+  - **Estimate**: 26 hours
 
-### Content Workflow and Publishing Enhancement
-- [ ] **Task 5.7**: Create enhanced content workflow management system
-  - Build advanced content approval and review process with community integration
-  - Implement content scheduling, publishing, and automated moderation workflows
-  - Add collaborative editing, comments, and multi-stage approval processes
-  - Create workflow templates for different content types and community content
+- [ ] **Task 5.8**: Implement administrative SEO and content optimization tools
+  - Create administrative SEO analysis and recommendations for all platform content
+  - Build administrative meta tag and schema markup management with system-wide support
+  - Add administrative content performance tracking, engagement analytics, and system metrics
+  - Implement administrative advanced search and filtering across all content and folder structures
   - **Requirement**: Enhanced Content Management System (Req 4)
-  - **Estimate**: 24 hours
-
-- [ ] **Task 5.8**: Implement SEO and content optimization tools with analytics
-  - Create SEO analysis and recommendations for all content types
-  - Build meta tag and schema markup management with community content support
-  - Add content performance tracking, engagement analytics, and community metrics
-  - Implement advanced search and filtering across all content and folder structures
-  - **Requirement**: Enhanced Content Management System (Req 4)
-  - **Estimate**: 20 hours
+  - **Estimate**: 22 hours
 
 ### Sprint 5 Deliverables
-- Complete Enhanced Content Management dashboard with community and media review features
-- Rich content editor with community content support and media integration
-- Comprehensive media library with hierarchical folder management and review system
-- Community moderation system with automated flagging and bulk operations
-- Media review and approval system with quality assessment tools
-- Advanced folder management with permissions and drag-and-drop organization
-- Enhanced content workflow with multi-stage approval and community integration
-- SEO optimization tools with comprehensive analytics and advanced search capabilities
+- Complete Administrative Content Management dashboard with system-wide oversight
+- Administrative content editor with platform-wide content support and media integration
+- Comprehensive administrative media library with hierarchical folder management and review system
+- Administrative community moderation system with automated flagging and bulk operations
+- Administrative media review and approval system with quality assessment tools
+- Advanced administrative folder management with permissions and drag-and-drop organization
+- Administrative content workflow with multi-stage approval and system integration
+- Administrative SEO optimization tools with comprehensive analytics and advanced search capabilities
 
 ---
 
@@ -388,57 +394,57 @@ This implementation plan spans **8 sprints over 16 weeks**, building a comprehen
 
 ---
 
-## Sprint 8: Real-time Features and Performance Optimization (Weeks 15-16)
+## Sprint 8: Real-time Administrative Features and Performance Optimization (Weeks 15-16)
 
-### Real-time Integration
-- [ ] **Task 8.1**: Implement SignalR real-time communication
-  - Set up SignalR connection and hub management
-  - Create real-time notification system
-  - Add live data updates for all admin modules
-  - **Requirement**: Real-time Data (Req 9)
-  - **Estimate**: 16 hours
-
-- [ ] **Task 8.2**: Build comprehensive notification system
-  - Create notification center with categorization
-  - Implement push notifications for critical events
-  - Add notification preferences and management
-  - **Requirement**: Real-time Data (Req 9)
-  - **Estimate**: 14 hours
-
-- [ ] **Task 8.3**: Add real-time collaboration features
-  - Implement live user presence indicators
-  - Create real-time activity feeds
-  - Add collaborative editing notifications
-  - **Requirement**: Real-time Data (Req 9)
-  - **Estimate**: 12 hours
-
-### Performance and Security
-- [ ] **Task 8.4**: Implement performance optimization strategies
-  - Add code splitting and lazy loading for all modules
-  - Implement virtual scrolling for large data sets
-  - Optimize bundle size and loading performance
-  - **Requirement**: Performance and Security (Req 10)
+### Administrative Real-time Integration
+- [ ] **Task 8.1**: Implement WebSocket/Server-Sent Events for administrative real-time communication
+  - Set up administrative real-time connection and hub management
+  - Create administrative real-time notification system for system events
+  - Add live administrative data updates for all admin modules
+  - **Requirement**: Real-time Administrative Data (Req 9)
   - **Estimate**: 18 hours
 
-- [ ] **Task 8.5**: Enhance security and audit logging
-  - Implement comprehensive audit logging for all admin actions
-  - Add security monitoring and threat detection
-  - Create security dashboard and alert system
-  - **Requirement**: Performance and Security (Req 10)
+- [ ] **Task 8.2**: Build comprehensive administrative notification system
+  - Create administrative notification center with system event categorization
+  - Implement administrative push notifications for critical system events
+  - Add administrative notification preferences and management
+  - **Requirement**: Real-time Administrative Data (Req 9)
   - **Estimate**: 16 hours
 
-- [ ] **Task 8.6**: Add accessibility and mobile optimization
-  - Implement WCAG 2.1 AA compliance
-  - Optimize mobile experience for all admin modules
-  - Add keyboard navigation and screen reader support
-  - **Requirement**: Responsive Design (Req 8)
+- [ ] **Task 8.3**: Add administrative real-time collaboration features
+  - Implement administrative live user presence indicators
+  - Create administrative real-time activity feeds for system events
+  - Add administrative collaborative editing notifications
+  - **Requirement**: Real-time Administrative Data (Req 9)
   - **Estimate**: 14 hours
 
+### Administrative Performance and Security
+- [ ] **Task 8.4**: Implement React performance optimization strategies
+  - Add administrative code splitting and lazy loading for all modules
+  - Implement React virtualization for large administrative data sets
+  - Optimize administrative bundle size and loading performance with Vite
+  - **Requirement**: Performance Optimization and Security (Req 10)
+  - **Estimate**: 20 hours
+
+- [ ] **Task 8.5**: Enhance administrative security and audit logging
+  - Implement comprehensive administrative audit logging for all admin actions
+  - Add administrative security monitoring and threat detection
+  - Create administrative security dashboard and alert system
+  - **Requirement**: Performance Optimization and Security (Req 10)
+  - **Estimate**: 18 hours
+
+- [ ] **Task 8.6**: Add administrative accessibility and responsive optimization
+  - Implement WCAG 2.1 AA compliance for all administrative interfaces
+  - Optimize administrative mobile experience for all admin modules
+  - Add administrative keyboard navigation and screen reader support
+  - **Requirement**: Modern React Architecture (Req 8)
+  - **Estimate**: 16 hours
+
 ### Sprint 8 Deliverables
-- Complete real-time communication system
-- Comprehensive notification and collaboration features
-- Performance optimization and security enhancements
-- Full accessibility compliance and mobile optimization
+- Complete administrative real-time communication system
+- Comprehensive administrative notification and collaboration features
+- Administrative performance optimization and security enhancements
+- Full administrative accessibility compliance and responsive optimization
 
 ---
 
@@ -525,19 +531,23 @@ This implementation plan spans **8 sprints over 16 weeks**, building a comprehen
 ## Dependencies and Prerequisites
 
 ### External Dependencies
-- React 18+ and TypeScript for modern development
-- Vite build tool for optimal performance
-- Tailwind CSS for responsive design system
-- SignalR for real-time communication
-- Chart.js or similar for data visualization
-- Axios for API communication
+- React 18+ and TypeScript for modern administrative development
+- Vite build tool for optimal administrative development experience
+- Shadcn/ui component library for consistent administrative design system
+- Tailwind CSS for administrative responsive design system
+- Lucide React for consistent administrative iconography
+- WebSocket/Server-Sent Events for administrative real-time communication
+- Chart.js or Recharts for administrative data visualization
+- Axios for administrative API communication
+- React Query/SWR for administrative data fetching and caching
 
 ### Internal Dependencies
-- Existing authentication and authorization APIs
-- Backend APIs for all admin modules
-- Real-time notification infrastructure
-- File upload and media management services
-- Audit logging and security monitoring systems
+- Administrative authentication and authorization APIs
+- Administrative backend APIs for all admin modules
+- Administrative real-time notification infrastructure
+- Administrative file upload and media management services
+- Administrative audit logging and security monitoring systems
+- Administrative system monitoring and health check APIs
 
 ### Infrastructure Requirements
 - Modern browser support (Chrome 90+, Firefox 88+, Safari 14+)

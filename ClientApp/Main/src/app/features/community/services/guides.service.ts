@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { GuideApiService } from '../../../shared/services/api/guide-api.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import { 
   GuideDto,
@@ -37,7 +37,7 @@ export class GuidesService {
 
   constructor(
     private guideApi: GuideApiService,
-    private notificationService: NotificationService,
+    private toastService: ToastService,
     private loadingService: LoadingService
   ) {}
 
@@ -57,7 +57,7 @@ export class GuidesService {
         }
       }),
       catchError(error => {
-        this.notificationService.error('Failed to load guides', error.message);
+        this.toastService.error('Failed to load guides', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('guides-list'))
@@ -74,7 +74,7 @@ export class GuidesService {
         return guide;
       }),
       catchError(error => {
-        this.notificationService.error('Failed to load guide', error.message);
+        this.toastService.error('Failed to load guide', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('guide-detail'))
@@ -105,11 +105,11 @@ export class GuidesService {
     return this.guideApi.createGuide(newRequest).pipe(
       map(dto => {
         const guide = this.mapDtoToGuide(dto);
-        this.notificationService.success('Guide created successfully');
+        this.toastService.success('Guide created successfully');
         return guide;
       }),
       catchError(error => {
-        this.notificationService.error('Failed to create guide', error.message);
+        this.toastService.error('Failed to create guide', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('create-guide'))
@@ -131,11 +131,11 @@ export class GuidesService {
     return this.guideApi.updateGuide(id.toString(), updateRequest).pipe(
       map(dto => {
         const guide = this.mapDtoToGuide(dto);
-        this.notificationService.success('Guide updated successfully');
+        this.toastService.success('Guide updated successfully');
         return guide;
       }),
       catchError(error => {
-        this.notificationService.error('Failed to update guide', error.message);
+        this.toastService.error('Failed to update guide', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('update-guide'))
@@ -147,10 +147,10 @@ export class GuidesService {
     
     return this.guideApi.rateGuide(request.guideId.toString(), request.rating, request.comment).pipe(
       map(() => {
-        this.notificationService.success('Rating submitted successfully');
+        this.toastService.success('Rating submitted successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to submit rating', error.message);
+        this.toastService.error('Failed to submit rating', error.message);
         return throwError(() => error);
       }),
       finalize(() => this.loadingService.hide('rate-guide'))
@@ -160,17 +160,17 @@ export class GuidesService {
   bookmarkGuide(id: number, notes?: string): Observable<void> {
     return this.guideApi.bookmarkGuide(id.toString()).pipe(
       tap(() => {
-        this.notificationService.success('Guide bookmarked successfully');
+        this.toastService.success('Guide bookmarked successfully');
       }),
       catchError(error => {
-        this.notificationService.error('Failed to bookmark guide', error.message);
+        this.toastService.error('Failed to bookmark guide', error.message);
         return throwError(() => error);
       })
     );
   }
 
   getBookmarkedGuides(page: number = 1, pageSize: number = 10): Observable<PaginatedResult<GuideListItem>> {
-    this.notificationService.info('Bookmarked guides feature coming soon');
+    this.toastService.info('Bookmarked guides feature coming soon');
     return new Observable(observer => {
       observer.next({
         items: [],

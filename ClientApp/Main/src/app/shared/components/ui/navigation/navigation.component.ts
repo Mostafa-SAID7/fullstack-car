@@ -1,0 +1,143 @@
+import { Component, signal, computed, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+export interface NavigationItem {
+  id: string;
+  label: string;
+  href: string;
+  icon?: string;
+  badge?: string | number;
+  children?: NavigationItem[];
+  active?: boolean;
+}
+
+/**
+ * Responsive Navigation Component
+ * 
+ * Modern Angular 19 navigation component with:
+ * - Responsive design with mobile menu
+ * - Angular Signals for state management
+ * - New control flow syntax
+ * - Tailwind CSS styling
+ */
+@Component({
+  selector: 'app-navigation',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  template: `
+    <nav class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      <!-- Desktop Navigation -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <!-- Logo and Primary Nav -->
+          <div class="flex">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center">
+              <ng-content select="[slot=logo]"></ng-content>
+            </div>
+            
+            <!-- Primary Navigation -->
+            <div class="hidden md:ml-6 md:flex md:space-x-8">
+              @for (item of items(); track item.id) {
+                @if (!item.children) {
+                  <a
+                    [routerLink]="item.href"
+                    routerLinkActive="border-primary text-primary"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                    @if (item.icon) {
+                      <i [class]="item.icon + ' mr-2'"></i>
+                    }
+                    {{ item.label }}
+                    @if (item.badge) {
+                      <span class="ml-2 bg-primary text-white text-xs px-2 py-1 rounded-full">
+                        {{ item.badge }}
+                      </span>
+                    }
+                  </a>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Secondary Nav -->
+          <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+            <ng-content select="[slot=secondary]"></ng-content>
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="md:hidden flex items-center">
+            <button
+              type="button"
+              (click)="toggleMobileMenu()"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              aria-controls="mobile-menu"
+              [attr.aria-expanded]="isMobileMenuOpen()">
+              <span class="sr-only">Open main menu</span>
+              @if (!isMobileMenuOpen()) {
+                <i class="fa-solid fa-bars w-6 h-6"></i>
+              } @else {
+                <i class="fa-solid fa-times w-6 h-6"></i>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      @if (isMobileMenuOpen()) {
+        <div class="md:hidden" id="mobile-menu">
+          <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            @for (item of items(); track item.id) {
+              @if (!item.children) {
+                <a
+                  [routerLink]="item.href"
+                  routerLinkActive="bg-primary text-white"
+                  (click)="closeMobileMenu()"
+                  class="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">
+                  @if (item.icon) {
+                    <i [class]="item.icon + ' mr-3'"></i>
+                  }
+                  {{ item.label }}
+                  @if (item.badge) {
+                    <span class="ml-2 bg-primary text-white text-xs px-2 py-1 rounded-full">
+                      {{ item.badge }}
+                    </span>
+                  }
+                </a>
+              }
+            }
+          </div>
+          
+          <!-- Mobile Secondary Nav -->
+          <div class="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-2 space-y-1">
+              <ng-content select="[slot=mobile-secondary]"></ng-content>
+            </div>
+          </div>
+        </div>
+      }
+    </nav>
+  `
+})
+export class NavigationComponent {
+  // Input signals
+  items = input<NavigationItem[]>([]);
+  
+  // Local state
+  isMobileMenuOpen = signal(false);
+  
+  // Events
+  menuToggle = output<boolean>();
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update(open => !open);
+    this.menuToggle.emit(this.isMobileMenuOpen());
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
+    this.menuToggle.emit(false);
+  }
+}

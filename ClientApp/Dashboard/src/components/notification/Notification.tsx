@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { notificationService, Notification as NotificationType } from '../../services/notification/notification.service';
+import { signalRManager } from '../../services/notification/signalr';
+import type { NotificationDto } from '../../types/notification';
 
-const NotificationIcon = ({ type }: { type: NotificationType['type'] }) => {
-  const icons = {
+const NotificationIcon = ({ type }: { type: NotificationDto['type'] }) => {
+  const icons: Record<string, React.ReactElement> = {
     success: (
       <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
@@ -24,11 +25,11 @@ const NotificationIcon = ({ type }: { type: NotificationType['type'] }) => {
       </svg>
     )
   };
-  return icons[type];
+  return icons[type] || icons.info;
 };
 
-const NotificationItem = ({ notification, onDismiss }: { notification: NotificationType; onDismiss: (id: string) => void }) => {
-  const typeClasses = {
+const NotificationItem = ({ notification, onDismiss }: { notification: NotificationDto; onDismiss: (id: string) => void }) => {
+  const typeClasses: Record<string, string> = {
     success: 'bg-green-50 text-green-800',
     error: 'bg-red-50 text-red-800',
     warning: 'bg-yellow-50 text-yellow-800',
@@ -37,7 +38,7 @@ const NotificationItem = ({ notification, onDismiss }: { notification: Notificat
 
   return (
     <div
-      className={`rounded-lg p-4 shadow-lg animate-slide-in ${typeClasses[notification.type]}`}
+      className={`rounded-lg p-4 shadow-lg animate-slide-in ${typeClasses[notification.type] || typeClasses.info}`}
       role="alert"
       aria-live={notification.type === 'error' ? 'assertive' : 'polite'}
     >
@@ -53,38 +54,47 @@ const NotificationItem = ({ notification, onDismiss }: { notification: Notificat
             {notification.message}
           </p>
         </div>
-        {notification.dismissible && (
-          <div className="ml-4 flex-shrink-0 flex">
-            <button
-              onClick={() => onDismiss(notification.id)}
-              className="inline-flex rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
-              aria-label={`Dismiss ${notification.type} notification`}
-            >
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/>
-              </svg>
-            </button>
-          </div>
-        )}
+        {/* Always show dismiss button for toast notifications */}
+        <div className="ml-4 flex-shrink-0 flex">
+          <button
+            onClick={() => onDismiss(notification.id)}
+            className="inline-flex rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+            aria-label={`Dismiss ${notification.type} notification`}
+          >
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
 export const NotificationContainer = () => {
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [notifications, setNotifications] = useState<NotificationDto[]>([]);
 
   useEffect(() => {
-    const unsubscribe = notificationService.subscribe((notification) => {
+    // Connect to SignalR
+    signalRManager.connect().catch(console.error);
+
+    // Subscribe to real-time notifications
+    const unsubscribe = signalRManager.subscribe((notification) => {
       setNotifications(prev => [...prev, notification]);
+      
+      // Auto-dismiss after 5 seconds if dismissible
+      setTimeout(() => {
+        setNotifications(prev => prev.filter(n => n.id !== notification.id));
+      }, 5000);
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleDismiss = (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
-    notificationService.dismiss(id);
   };
 
   return (

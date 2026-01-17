@@ -5,7 +5,7 @@ import { Result, PaginatedResult } from '../../../core/models/result.model';
 import { TranslationService } from '../../../core/services/translation.service';
 import { ReviewApiService } from '../../../shared/services/api/review-api.service';
 import { ReviewDto } from '../../../shared/models/community/review.model';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class ReviewService {
     constructor(
         private reviewApiService: ReviewApiService,
         private translationService: TranslationService,
-        private notificationService: NotificationService,
+        private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
 
@@ -108,7 +108,7 @@ export class ReviewService {
             }),
             catchError(error => {
                 this.loadingService.hide('reviews-list');
-                this.notificationService.error('Failed to load reviews');
+                this.toastService.error('Failed to load reviews');
                 console.error('Error loading reviews:', error);
                 return of({
                     items: [],
@@ -137,7 +137,7 @@ export class ReviewService {
             }),
             catchError(error => {
                 this.loadingService.hide('review-detail');
-                this.notificationService.error('Failed to load review');
+                this.toastService.error('Failed to load review');
                 console.error('Error loading review:', error);
                 return of({
                     succeeded: false,
@@ -167,11 +167,11 @@ export class ReviewService {
             }),
             tap(() => {
                 this.loadingService.hide('create-review');
-                this.notificationService.success('Review created successfully');
+                this.toastService.success('Review created successfully');
             }),
             catchError(error => {
                 this.loadingService.hide('create-review');
-                this.notificationService.error('Failed to create review');
+                this.toastService.error('Failed to create review');
                 console.error('Error creating review:', error);
                 return of({
                     succeeded: false,
@@ -201,10 +201,10 @@ export class ReviewService {
                 } as Result<any>;
             }),
             tap(() => {
-                this.notificationService.success('Marked as helpful');
+                this.toastService.success('Marked as helpful');
             }),
             catchError(error => {
-                this.notificationService.error('Failed to mark as helpful');
+                this.toastService.error('Failed to mark as helpful');
                 console.error('Error marking review as helpful:', error);
                 return of({
                     succeeded: false,

@@ -1,44 +1,95 @@
-// Auth Service - Profile Management
-
 import { apiClient, type ApiResult } from '../api';
-import type { UpdateProfileRequest, ChangePasswordRequest, ProfileResponse } from '../../types/auth';
+import type { 
+  UpdateProfileRequest, 
+  ProfileDto,
+  UploadProfileImageResponse 
+} from '../../types/auth';
 import { API_ENDPOINTS } from '../../config/api';
 
-export class AuthProfileService {
-  async updateProfile(request: UpdateProfileRequest) {
-    const response = await apiClient.put(API_ENDPOINTS.PROFILE.BASE, request);
-    return response as any;
+/**
+ * Profile Service
+ * Handles user profile management operations
+ */
+export class ProfileService {
+  /**
+   * Get current user profile
+   */
+  async getProfile(): Promise<ApiResult<ProfileDto>> {
+    const response = await apiClient.get<ProfileDto>(API_ENDPOINTS.PROFILE.BASE);
+    return response;
   }
 
-  async changePassword(request: ChangePasswordRequest) {
-    const response = await apiClient.post(API_ENDPOINTS.PASSWORD.CHANGE, request);
-    return response as any;
+  /**
+   * Update user profile
+   */
+  async updateProfile(request: UpdateProfileRequest): Promise<ApiResult<ProfileDto>> {
+    const response = await apiClient.put<ProfileDto>(API_ENDPOINTS.PROFILE.BASE, request);
+    return response;
   }
 
-  async getProfile(): Promise<ApiResult<ProfileResponse>> {
-    const response = await apiClient.get<ProfileResponse>(API_ENDPOINTS.PROFILE.BASE);
-    return response as any;
+  /**
+   * Upload profile image
+   */
+  async uploadProfileImage(file: File): Promise<ApiResult<UploadProfileImageResponse>> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await apiClient.post<UploadProfileImageResponse>(
+      API_ENDPOINTS.PROFILE.AVATAR, 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+    return response;
   }
 
-  async confirmEmail(request: { userId: string; token: string }) {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.CONFIRM_EMAIL, request);
-    return response as any;
+  /**
+   * Delete profile image
+   */
+  async deleteProfileImage(): Promise<ApiResult<void>> {
+    const response = await apiClient.delete<void>(API_ENDPOINTS.PROFILE.AVATAR);
+    return response;
   }
 
-  async forgotPassword(request: { email: string }) {
-    const response = await apiClient.post(API_ENDPOINTS.PASSWORD.FORGOT, request);
-    return response as any;
+  /**
+   * Get privacy settings
+   */
+  async getPrivacySettings(): Promise<ApiResult<any>> {
+    const response = await apiClient.get(API_ENDPOINTS.PROFILE.PRIVACY);
+    return response;
   }
 
-  async resetPassword(request: { email: string; token: string; newPassword: string; confirmPassword: string }) {
-    const response = await apiClient.post(API_ENDPOINTS.PASSWORD.RESET, request);
-    return response as any;
+  /**
+   * Update privacy settings
+   */
+  async updatePrivacySettings(request: any): Promise<ApiResult<void>> {
+    const response = await apiClient.put(API_ENDPOINTS.PROFILE.PRIVACY, request);
+    return response;
+  }
+
+  /**
+   * Deactivate account
+   */
+  async deactivateAccount(request: { password: string; reason?: string }): Promise<ApiResult<void>> {
+    const response = await apiClient.post(API_ENDPOINTS.PROFILE.DEACTIVATE, request);
+    return response;
+  }
+
+  /**
+   * Delete account permanently
+   */
+  async deleteAccount(request: { password: string; confirmation: string }): Promise<ApiResult<void>> {
+    const response = await apiClient.delete(API_ENDPOINTS.PROFILE.DELETE, { data: request });
+    return response;
   }
 }
 
+/**
+ * @deprecated Use ProfileService instead
+ */
+export class AuthProfileService extends ProfileService {}
 
-
-
-
-
-
+export const profileService = new ProfileService();

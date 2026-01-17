@@ -1,0 +1,304 @@
+<div class="h-16 relative bg-inherit flex items-center justify-between px-4 sm:px-6 transition-all duration-300 z-50">
+
+    <!-- LEFT: Logo -->
+    <div class="flex items-center gap-2 sm:gap-3 z-10">
+        <!-- Mobile Toggle + Logo -->
+        <div
+            class="md:hidden flex items-center gap-1 bg-white dark:bg-background border border-gray-200 dark:border-gray-700 rounded-2xl p-1 shadow-xl transition-all">
+            <!-- Sidebar Toggle -->
+            <button
+                class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                (click)="layoutService.toggleMobileMenu()">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+
+            <!-- Mobile Logo -->
+            <div routerLink="/"
+                class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0 shadow-lg">
+                <span class="text-white font-black text-xl tracking-tighter italic">CC</span>
+            </div>
+        </div>
+
+        <!-- Desktop Brand -->
+        <div routerLink="/"
+            class="hidden md:flex items-center gap-3 bg-white dark:bg-background border border-gray-200 dark:border-gray-700 rounded-full p-1.5 pr-6 shadow-xl hover:shadow-2xl transition-all cursor-pointer group">
+            <div
+                class="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                <span class="text-white font-black text-xl tracking-tighter italic">CC</span>
+            </div>
+            <span class="font-bold text-lg tracking-tight text-gray-900 dark:text-white">Community Car</span>
+        </div>
+    </div>
+
+    <!-- CENTER: Search + Nav + Theme -->
+    <div
+        class="flex items-center justify-between bg-white dark:bg-background border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow-xl absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 max-w-4xl w-fit transition-all duration-300">
+
+        <!-- Search Bar -->
+        <div (click)="toggleSearch()"
+            class="hidden lg:flex items-center gap-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-transparent rounded-full px-4 h-10 w-64 cursor-text group mr-2">
+            <i
+                class="fa-solid fa-search text-lg text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors"></i>
+            <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Search</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex items-center gap-1 mx-2">
+            <!-- Home -->
+            <div routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full group active:scale-95"
+                matTooltipClass="custom-tooltip" matTooltip="Home">
+                <i
+                    class="fa-solid fa-house text-xl text-black dark:text-white group-hover:text-primary transition-colors group-hover:scale-110"></i>
+            </div>
+
+            <!-- Video -->
+            <div routerLink="/media" routerLinkActive="active"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full group active:scale-95"
+                matTooltipClass="custom-tooltip" matTooltip="Media">
+                <div class="relative">
+                    <i
+                        class="fa-solid fa-video text-xl text-black dark:text-white group-hover:text-primary transition-colors group-hover:scale-110"></i>
+                    <span
+                        class="absolute -top-1.5 -right-1.5 bg-primary text-xs font-black text-white px-1 py-0.5 rounded-full border-2 border-white dark:border-gray-900 min-w-4 h-4 flex items-center justify-center">9+</span>
+                </div>
+            </div>
+
+            <!-- Marketplace -->
+            <div routerLink="/marketplace" routerLinkActive="active"
+                class="relative w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full group active:scale-95"
+                matTooltipClass="custom-tooltip" matTooltip="Marketplace">
+                <i
+                    class="fa-solid fa-store text-xl text-black dark:text-white group-hover:text-primary transition-colors group-hover:scale-110"></i>
+            </div>
+        </nav>
+
+        <!-- Vertical Divider -->
+        <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+
+        <!-- Theme Toggle -->
+        <button
+            class="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer active:scale-90 group"
+            (click)="toggleTheme()" matTooltipClass="custom-tooltip" [matTooltip]="themeTooltip()">
+            <i [class]="'fa-solid text-xl transition-all duration-500 group-hover:rotate-12 ' + (themeService.isDark() ? 'fa-moon' : 'fa-sun')"
+                class="text-primary"></i>
+        </button>
+    </div>
+
+    <!-- RIGHT: Option Icons -->
+    <div
+        class="flex items-center gap-1 lg:gap-1 flex-shrink-0 z-10 bg-white dark:bg-background border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow-xl transition-all duration-300">
+
+        <!-- Language Switcher - Using @if instead of *ngIf -->
+        <button
+            class="hidden lg:flex w-10 h-10 rounded-full items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer active:scale-90 group relative"
+            [matMenuTriggerFor]="langMenu" matTooltipClass="custom-tooltip" matTooltip="Switch Language"
+            [disabled]="isLoading()" [class.opacity-50]="isLoading()"
+            [class.cursor-not-allowed]="isLoading()">
+
+            <!-- Loading spinner - Using @if -->
+            @if (isLoading()) {
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            }
+
+            <!-- Globe icon - Using @if -->
+            @if (!isLoading()) {
+                <i class="fa-solid fa-globe text-xl text-black dark:text-white group-hover:scale-110 transition-transform group-hover:text-primary"
+                    [class.transform]="isRTL()" [class.scale-x-[-1]]="isRTL()"></i>
+            }
+
+            <!-- Current language indicator - Using @if -->
+            @if (!isLoading()) {
+                <span class="absolute -bottom-1 -right-1 text-xs leading-none bg-primary text-white rounded-full w-4 h-4 flex items-center justify-center font-bold border border-white dark:border-gray-900"
+                    [class.-left-1]="isRTL()" [class.-right-1]="!isRTL()">
+                    {{ getCurrentLanguage().flag }}
+                </span>
+            }
+        </button>
+
+        <!-- Notifications - Using @if for badge -->
+        <button
+            class="hidden lg:flex w-10 h-10 rounded-full items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer active:scale-90 relative group"
+            [matMenuTriggerFor]="notificationMenu" matTooltipClass="custom-tooltip" matTooltip="Notifications">
+            <i class="fa-solid fa-bell text-xl text-black dark:text-white group-hover:rotate-12 group-hover:scale-110 transition-transform group-hover:text-primary"
+                [class.text-primary]="hasUnreadNotifications()"></i>
+            
+            @if (hasUnreadNotifications()) {
+                <span class="absolute -top-1 -right-1 bg-primary text-xs font-black text-white px-1 py-0.5 rounded-full border-2 border-white dark:border-gray-900 shadow-lg min-w-4 h-4 flex items-center justify-center z-10">
+                    {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+                </span>
+            }
+        </button>
+
+        <!-- Account Dropdown -->
+        <button [matMenuTriggerFor]="accountMenu"
+            class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-90 lg:ml-1 group"
+            matTooltipClass="custom-tooltip" matTooltip="Account">
+            <div
+                class="w-full h-full flex items-center justify-center text-primary font-black italic text-xs group-hover:scale-110 transition-transform">
+                {{ userInitials() }}
+            </div>
+        </button>
+
+        <!-- Mobile More Options -->
+        <button
+            class="flex lg:hidden w-10 h-10 rounded-full items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer active:scale-90 ml-1 group"
+            [matMenuTriggerFor]="mobileOptionsMenu" matTooltipClass="custom-tooltip" matTooltip="Options">
+            <i
+                class="fa-solid fa-ellipsis-vertical text-xl text-black dark:text-white group-hover:scale-110 transition-transform group-hover:text-primary"></i>
+        </button>
+    </div>
+
+    <!-- Search Overlay - Using @if -->
+    @if (isSearchOpen()) {
+        <div class="fixed inset-0 z-50 flex items-start justify-center pt-2 sm:pt-4 px-2 sm:px-4">
+            <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md" (click)="toggleSearch()"></div>
+            <div
+                class="relative w-full max-w-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl overflow-hidden mt-2">
+                <div class="flex items-center p-4 gap-4">
+                    <i class="fa-solid fa-search text-2xl text-primary"></i>
+                    <input type="text" placeholder="Search Community Car..."
+                        class="w-full bg-transparent border-none outline-none text-lg text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                        autoFocus (keyup.escape)="toggleSearch()">
+                    <button
+                        class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-xs font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        (click)="toggleSearch()">ESC</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Language Menu - Using @for -->
+    <mat-menu #langMenu="matMenu" class="custom-mat-menu language-menu">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
+            (click)="$event.stopPropagation()">
+            <p class="text-xs text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Select Language</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ getCurrentLanguage().name }}</p>
+        </div>
+        <div class="max-h-80 overflow-y-auto">
+            @for (language of supportedLanguages(); track language.code) {
+                <button mat-menu-item (click)="switchLanguage(language.code)"
+                    class="flex items-center gap-3 py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full text-left"
+                    [class.bg-primary]="isLanguageSelected(language.code)"
+                    [class.bg-opacity-10]="isLanguageSelected(language.code)"
+                    [class.text-primary]="isLanguageSelected(language.code)" [attr.dir]="language.isRTL ? 'rtl' : 'ltr'">
+                    <span class="text-lg flex-shrink-0"
+                        [class.ml-auto]="language.isRTL && !isLanguageSelected(language.code)"
+                        [class.mr-auto]="language.isRTL && isLanguageSelected(language.code)">{{ language.flag }}</span>
+                    <span class="text-sm font-medium flex-1" [class.text-right]="language.isRTL">{{ language.name }}</span>
+                    
+                    @if (isLanguageSelected(language.code)) {
+                        <i class="fa-solid fa-check text-primary text-sm flex-shrink-0"
+                            [class.order-first]="language.isRTL"></i>
+                    }
+                </button>
+            }
+        </div>
+        <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-2 bg-gray-50 dark:bg-gray-800"
+            (click)="$event.stopPropagation()">
+            <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                <span>Current Language</span>
+                <span class="font-medium">{{ getCurrentLanguage().code }}</span>
+            </div>
+        </div>
+    </mat-menu>
+
+    <!-- Notification Menu - Using @if and @for -->
+    <mat-menu #notificationMenu="matMenu" class="notification-menu w-80 sm:w-96">
+        <ng-template matMenuContent>
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800"
+                (click)="$event.stopPropagation()">
+                <h3 class="font-bold text-sm uppercase tracking-widest text-gray-600 dark:text-gray-400">Notifications</h3>
+                <button class="text-xs text-primary hover:underline font-bold" (click)="markAllRead()">Mark all as read</button>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+                @if (!hasNotifications()) {
+                    <div class="p-8 text-center text-gray-600 dark:text-gray-400">
+                        <i class="fa-solid fa-bell-slash text-4xl mb-2 opacity-30"></i>
+                        <p class="text-xs font-medium">No notifications yet</p>
+                    </div>
+                } @else {
+                    @for (note of notifications(); track note.id) {
+                        <a mat-menu-item
+                            class="block py-3 px-4 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors no-underline"
+                            [ngClass]="{'bg-blue-50 dark:bg-blue-900 dark:bg-opacity-20': !note.isRead}"
+                            (click)="handleNotificationClick(note)">
+                            <span class="flex items-start gap-3 w-full text-left">
+                                <span
+                                    class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0 overflow-hidden relative block">
+                                    @if (note.sourceUserAvatar) {
+                                        <img [src]="note.sourceUserAvatar" class="w-full h-full object-cover" />
+                                    } @else {
+                                        <i class="fa-solid fa-user absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+                                    }
+                                    
+                                    @if (!note.isRead) {
+                                        <span class="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                                    }
+                                </span>
+                                <span class="flex-1 min-w-0 flex flex-col items-start">
+                                    <span class="text-sm font-medium leading-tight mb-1 text-gray-900 dark:text-white">{{ note.message }}</span>
+                                    <span class="text-xs text-gray-600 dark:text-gray-400">{{ note.createdAt | date:'short' }}</span>
+                                </span>
+                            </span>
+                        </a>
+                    }
+                }
+            </div>
+        </ng-template>
+    </mat-menu>
+
+    <!-- Account Menu -->
+    <mat-menu #accountMenu="matMenu" class="custom-mat-menu w-56">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
+            (click)="$event.stopPropagation()">
+            <p class="text-xs text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wide mb-1">Signed in as</p>
+            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+                {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+            </p>
+        </div>
+        <button mat-menu-item routerLink="/community/profile"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i class="fa-solid fa-user-circle text-lg text-primary opacity-70"></i>
+            <span class="text-sm font-medium">My Profile</span>
+        </button>
+        <button mat-menu-item routerLink="/settings"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i class="fa-solid fa-cog text-lg text-primary opacity-70"></i>
+            <span class="text-sm font-medium">Settings</span>
+        </button>
+        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+        <button mat-menu-item (click)="logout()"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-red-600 dark:text-red-400">
+            <i class="fa-solid fa-sign-out-alt text-lg"></i>
+            <span class="text-sm font-medium">Sign Out</span>
+        </button>
+    </mat-menu>
+
+    <!-- Mobile Options Menu -->
+    <mat-menu #mobileOptionsMenu="matMenu" class="custom-mat-menu w-64">
+        <button mat-menu-item (click)="toggleSearch()"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i class="fa-solid fa-search text-lg"></i>
+            <span>Search</span>
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="langMenu"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i class="fa-solid fa-globe text-lg"></i>
+            <span>Language</span>
+            <span class="ml-auto text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">{{ getCurrentLanguage().flag }}</span>
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="notificationMenu"
+            class="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i class="fa-solid fa-bell text-lg"></i>
+            <span>Notifications</span>
+            
+            @if (hasUnreadNotifications()) {
+                <span class="ml-auto bg-primary text-white text-xs px-1.5 py-0.5 rounded-full">{{ unreadCount() }}</span>
+            }
+        </button>
+    </mat-menu>
+
+</div>
