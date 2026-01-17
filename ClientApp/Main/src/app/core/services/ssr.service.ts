@@ -73,7 +73,7 @@ export class SSRService {
       updatedMetrics.serverRenderEnd = performance.now();
       updatedMetrics.renderTime = updatedMetrics.serverRenderEnd - (updatedMetrics.serverRenderStart || 0);
       this.ssrMetrics.next(updatedMetrics);
-      
+
       console.log(`🖥️ Server rendering completed in ${updatedMetrics.renderTime?.toFixed(2)}ms`);
     }, 0);
   }
@@ -83,7 +83,7 @@ export class SSRService {
    */
   private initializeClientHydration(): void {
     const hydrationStart = performance.now();
-    
+
     // Wait for Angular to complete hydration
     setTimeout(() => {
       const hydrationEnd = performance.now();
@@ -95,9 +95,9 @@ export class SSRService {
       this.ssrMetrics.next(metrics);
 
       this.hydrationComplete.next(true);
-      
+
       console.log(`🌊 Client hydration completed in ${hydrationTime.toFixed(2)}ms`);
-      
+
       // Transfer server data if available
       this.transferServerData();
     }, 100);
@@ -160,14 +160,14 @@ export class SSRService {
   setServerData(data: any): void {
     if (this.isServer()) {
       this.serverData.next(data);
-      
+
       // Inject data into HTML for client transfer
       const script = this.document.createElement('script');
       script.id = 'server-data';
       script.type = 'application/json';
       script.textContent = JSON.stringify(data);
       this.document.head.appendChild(script);
-      
+
       console.log('📦 Server data prepared for transfer');
     }
   }
@@ -213,9 +213,10 @@ export class SSRService {
    * Safe localStorage access
    */
   safelyAccessLocalStorage(key: string, defaultValue?: string): string | null {
-    return this.safelyAccessWindow(() => {
+    const result = this.safelyAccessWindow(() => {
       return localStorage.getItem(key);
     }, defaultValue || null);
+    return result === undefined ? (defaultValue || null) : result;
   }
 
   /**
@@ -232,9 +233,10 @@ export class SSRService {
    * Safe sessionStorage access
    */
   safelyAccessSessionStorage(key: string, defaultValue?: string): string | null {
-    return this.safelyAccessWindow(() => {
+    const result = this.safelyAccessWindow(() => {
       return sessionStorage.getItem(key);
     }, defaultValue || null);
+    return result === undefined ? (defaultValue || null) : result;
   }
 
   /**
@@ -262,7 +264,7 @@ export class SSRService {
         }
         this.document.head.appendChild(link);
       });
-      
+
       console.log(`🚀 Preloaded ${resources.length} critical resources`);
     }
   }
@@ -276,7 +278,7 @@ export class SSRService {
       style.textContent = css;
       style.setAttribute('data-critical', 'true');
       this.document.head.appendChild(style);
-      
+
       console.log('🎨 Critical CSS added');
     }
   }
@@ -292,7 +294,7 @@ export class SSRService {
       meta.httpEquiv = 'Cache-Control';
       meta.content = `public, max-age=${maxAge}`;
       this.document.head.appendChild(meta);
-      
+
       console.log(`⏰ Cache headers set: max-age=${maxAge}`);
     }
   }
@@ -357,7 +359,7 @@ export class SSRService {
    */
   handleSSRError(error: any, context: string): void {
     console.error(`SSR Error in ${context}:`, error);
-    
+
     // Log error for monitoring (in production, send to error tracking service)
     if (this.isServer()) {
       // Server-side error logging
@@ -382,7 +384,7 @@ export class SSRService {
    */
   getPerformanceMetrics(): any {
     const metrics = this.ssrMetrics.value;
-    
+
     return {
       platform: metrics.isServer ? 'server' : 'browser',
       renderTime: metrics.renderTime,

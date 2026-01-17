@@ -15,7 +15,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-600/20 to-primary/20 flex items-center justify-center">
           <div 
             class="w-full h-full bg-cover bg-center"
-            [style.background-image]="profile?.coverImageUrl ? 'url(' + profile.coverImageUrl + ')' : 'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1500)'">
+            [style.background-image]="profile?.coverImageUrl ? 'url(' + profile?.coverImageUrl + ')' : 'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1500)'">
           </div>
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -38,8 +38,8 @@ import { AuthService } from '../../../../core/services/auth.service';
                  [class.cursor-default]="!isOwnProfile()">
               <img 
                 *ngIf="profile?.profileImageUrl" 
-                [src]="profile.profileImageUrl"
-                [alt]="profile.firstName + ' ' + profile.lastName"
+                [src]="profile?.profileImageUrl"
+                [alt]="profile?.firstName + ' ' + profile?.lastName"
                 class="w-full h-full object-cover">
               <span 
                 *ngIf="!profile?.profileImageUrl" 
@@ -92,7 +92,7 @@ import { AuthService } from '../../../../core/services/auth.service';
               <span *ngIf="profile?.location" class="hidden sm:inline w-1 h-1 bg-white/40 rounded-full"></span>
               <span *ngIf="profile?.location" class="flex items-center gap-1.5">
                 <i class="fas fa-map-marker-alt text-primary"></i> 
-                {{ profile.location }}
+                {{ profile?.location }}
               </span>
             </div>
             
@@ -100,7 +100,7 @@ import { AuthService } from '../../../../core/services/auth.service';
             <p 
               *ngIf="profile?.bio" 
               class="text-white/90 text-sm max-w-md mx-auto sm:mx-0 leading-relaxed">
-              {{ profile.bio }}
+              {{ profile?.bio }}
             </p>
           </div>
 
@@ -254,7 +254,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class ProfileHeaderComponent {
   @Input() profile: UserProfile | null = null;
   @Input() connectionStatus: ConnectionStatus | null = null;
-  
+
   @Output() editProfile = new EventEmitter<void>();
   @Output() profileImageEdit = new EventEmitter<void>();
   @Output() coverImageEdit = new EventEmitter<void>();
@@ -267,34 +267,35 @@ export class ProfileHeaderComponent {
   @Output() reportUser = new EventEmitter<void>();
   @Output() shareProfile = new EventEmitter<void>();
   @Output() viewConnections = new EventEmitter<'friends' | 'followers' | 'following'>();
-  
+
   private authService = inject(AuthService);
   private userProfileService = inject(UserProfileService);
-  
+
   showMoreMenu = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  
+
   isOwnProfile = computed(() => {
     const currentUser = this.authService.currentUser();
     return currentUser && this.profile && currentUser.id === this.profile.id;
   });
-  
+
   toggleMoreMenu(): void {
     this.showMoreMenu.update(show => !show);
   }
-  
+
   shouldShowOnlineStatus(): boolean {
     if (this.isOwnProfile()) return true;
-    return this.profile?.privacySettings?.onlineStatusVisibility === 'public' ||
-           (this.profile?.privacySettings?.onlineStatusVisibility === 'friends' && this.connectionStatus?.isFriend);
+    if (!this.profile) return false;
+    return this.profile.privacySettings.onlineStatusVisibility === 'public' ||
+      (this.profile.privacySettings.onlineStatusVisibility === 'friends' && !!this.connectionStatus?.isFriend);
   }
-  
+
   formatJoinDate(dateString?: string): string {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   }
-  
+
   formatNumber(num: number): string {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
@@ -303,58 +304,58 @@ export class ProfileHeaderComponent {
     }
     return num.toString();
   }
-  
+
   // Event handlers
   onEditProfile(): void {
     this.editProfile.emit();
   }
-  
+
   onProfileImageEdit(): void {
     this.profileImageEdit.emit();
   }
-  
+
   onCoverImageEdit(): void {
     this.coverImageEdit.emit();
   }
-  
+
   onSendFriendRequest(): void {
     this.isLoading.set(true);
     this.sendFriendRequest.emit();
     // Loading will be reset by parent component
   }
-  
+
   onAcceptFriendRequest(): void {
     this.acceptFriendRequest.emit();
   }
-  
+
   onRemoveFriend(): void {
     this.removeFriend.emit();
   }
-  
+
   onFollowUser(): void {
     this.isLoading.set(true);
     this.followUser.emit();
   }
-  
+
   onUnfollowUser(): void {
     this.unfollowUser.emit();
   }
-  
+
   onBlockUser(): void {
     this.showMoreMenu.set(false);
     this.blockUser.emit();
   }
-  
+
   onReportUser(): void {
     this.showMoreMenu.set(false);
     this.reportUser.emit();
   }
-  
+
   onShareProfile(): void {
     this.showMoreMenu.set(false);
     this.shareProfile.emit();
   }
-  
+
   onViewConnections(type: 'friends' | 'followers' | 'following'): void {
     this.viewConnections.emit(type);
   }

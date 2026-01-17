@@ -194,10 +194,10 @@ export class PWAInstallPromptComponent {
   private pwaService = inject(PWAService);
 
   // Local state
-  private isInstalling = signal(false);
-  private isUpdating = signal(false);
-  private isDismissed = signal(false);
-  private updateDismissed = signal(false);
+  protected isInstalling = signal(false);
+  protected isUpdating = signal(false);
+  protected isDismissed = signal(false);
+  protected updateDismissed = signal(false);
 
   // Computed properties from PWA service
   readonly canInstall = computed(() => this.pwaService.canInstall());
@@ -206,19 +206,19 @@ export class PWAInstallPromptComponent {
   readonly isStandalone = computed(() => this.pwaService.isStandalone());
 
   // Display logic
-  readonly showInstallBanner = computed(() => 
+  readonly showInstallBanner = computed(() =>
     this.canInstall() && !this.isDismissed() && !this.isIOSDevice()
   );
 
-  readonly showInstallCard = computed(() => 
+  readonly showInstallCard = computed(() =>
     this.canInstall() && !this.isDismissed() && !this.isIOSDevice()
   );
 
-  readonly showIOSInstructions = computed(() => 
+  readonly showIOSInstructions = computed(() =>
     this.isIOSDevice() && !this.isStandalone() && !this.isDismissed()
   );
 
-  readonly showUpdateBanner = computed(() => 
+  readonly showUpdateBanner = computed(() =>
     this.updateAvailable() && !this.updateDismissed()
   );
 
@@ -233,7 +233,7 @@ export class PWAInstallPromptComponent {
 
     try {
       const success = await this.pwaService.promptInstall();
-      
+
       if (success) {
         this.isDismissed.set(true);
         this.showInstallSuccessMessage();
@@ -263,7 +263,7 @@ export class PWAInstallPromptComponent {
 
   dismissInstallPrompt(): void {
     this.isDismissed.set(true);
-    
+
     // Remember dismissal for 7 days
     const dismissedUntil = Date.now() + (7 * 24 * 60 * 60 * 1000);
     localStorage.setItem('pwa_install_dismissed', dismissedUntil.toString());

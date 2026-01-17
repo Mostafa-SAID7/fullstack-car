@@ -253,37 +253,37 @@ export class GroupListComponent {
   filtersChange = output<GroupSearchFilters>();
 
   // Local state
-  private searchQuery = signal<string>('');
-  private selectedCategory = signal<string>('');
-  private selectedType = signal<string>('');
-  private sortBy = signal<string>('name');
-  private viewMode = signal<'grid' | 'list'>('grid');
+  protected searchQuery = signal<string>('');
+  protected selectedCategory = signal<string>('');
+  protected selectedType = signal<string>('');
+  protected sortBy = signal<string>('name');
+  protected viewMode = signal<'grid' | 'list'>('grid');
 
   // Computed properties
   filteredGroups = computed(() => {
     let filtered = this.groups();
-    
+
     // Apply search filter
     if (this.searchQuery()) {
       const query = this.searchQuery().toLowerCase();
-      filtered = filtered.filter(group => 
+      filtered = filtered.filter(group =>
         group.name.toLowerCase().includes(query) ||
         group.description.toLowerCase().includes(query) ||
         group.category.toLowerCase().includes(query) ||
         group.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
-    
+
     // Apply category filter
     if (this.selectedCategory()) {
       filtered = filtered.filter(group => group.category === this.selectedCategory());
     }
-    
+
     // Apply type filter
     if (this.selectedType()) {
       filtered = filtered.filter(group => group.type === this.selectedType());
     }
-    
+
     // Apply sorting
     filtered = [...filtered].sort((a, b) => {
       switch (this.sortBy()) {
@@ -299,17 +299,17 @@ export class GroupListComponent {
           return 0;
       }
     });
-    
+
     return filtered;
   });
 
-  hasActiveFilters = computed(() => 
+  hasActiveFilters = computed(() =>
     this.searchQuery() || this.selectedCategory() || this.selectedType()
   );
 
   gridClasses = computed(() => {
     const baseClasses = 'gap-6';
-    return this.viewMode() === 'grid' 
+    return this.viewMode() === 'grid'
       ? `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${baseClasses}`
       : `flex flex-col ${baseClasses}`;
   });
@@ -397,7 +397,7 @@ export class GroupListComponent {
       sortBy: this.sortBy() as any,
       sortOrder: 'desc'
     };
-    
+
     this.filtersChange.emit(filters);
   }
 }

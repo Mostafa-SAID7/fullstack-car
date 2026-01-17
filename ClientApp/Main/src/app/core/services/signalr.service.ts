@@ -159,4 +159,22 @@ export class SignalRService {
   isConnected(): boolean {
     return this.connection?.state === signalR.HubConnectionState.Connected;
   }
+
+  /**
+   * Register an event handler
+   */
+  on<T>(eventName: string, handler: (data: T) => void): void {
+    if (this.connection) {
+      this.connection.on(eventName, handler);
+    }
+  }
+
+  /**
+   * Unregister an event handler
+   */
+  off(eventName: string): void {
+    if (this.connection) {
+      this.connection.off(eventName);
+    }
+  }
 }

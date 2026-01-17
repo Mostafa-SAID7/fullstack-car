@@ -1,0 +1,22 @@
+<div [class]="groupClasses()" role="radiogroup" [attr.aria-labelledby]="ariaLabelledBy()"
+    [attr.aria-describedby]="ariaDescribedBy()" [attr.aria-invalid]="isInvalid()" [attr.aria-required]="required()"
+    (keydown)="onKeyDown($event)">
+    @for (option of options(); track option.value; let i = $index) {
+    <div class="flex items-start space-x-2">
+        <ui-radio [value]="option.value" [disabled]="disabled() || !!option.disabled" [size]="size()"
+            [radioId]="getRadioId(option, i)" [ariaDescribedBy]="option.description ? getDescriptionId(option, i) : ''"
+            [required]="required()" (selectionChange)="onSelectionChange($event)"
+            (keyDown)="onRadioKeyDown($event, i)"></ui-radio>
+        <div class="grid gap-1.5 leading-none">
+            <label [for]="getRadioId(option, i)" [class]="labelClasses(option)" (click)="selectOption(option)">
+                {{ option.label }}
+            </label>
+            @if (option.description) {
+            <p [id]="getDescriptionId(option, i)" class="text-sm text-muted-foreground">
+                {{ option.description }}
+            </p>
+            }
+        </div>
+    </div>
+    }
+</div>

@@ -20,7 +20,7 @@ import { AuthService } from './core/services/auth.service';
         <div class="p-4 bg-gray-100 rounded">
           <h3 class="font-bold">Authentication Status</h3>
           <p>Authenticated: {{ authService.isAuthenticated }}</p>
-          <p>User: {{ authService.currentUser?.email || 'Not logged in' }}</p>
+          <p>User: {{ authService.currentUser()?.firstName + ' ' + authService.currentUser()?.lastName || 'Not logged in' }}</p>
         </div>
 
         <div class="space-y-2">

@@ -23,7 +23,7 @@ export interface ChatResponse {
     conversationId: string;
     agent: string;
     metadata?: Record<string, any>;
-    timestamp: Date;
+    timestamp: string;
 }
 
 export interface Message {

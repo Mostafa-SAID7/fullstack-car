@@ -335,17 +335,18 @@ export class CreateGroupModalComponent {
 
   // Form state
   createGroupForm: FormGroup;
-  private isSubmitting = signal(false);
-  private coverImagePreview = signal<string>('');
-  private avatarPreview = signal<string>('');
-  private tags = signal<string[]>([]);
-  private rules = signal<string[]>([]);
-  private newTag = signal<string>('');
+  protected isSubmitting = signal(false);
+  protected coverImagePreview = signal<string>('');
+  protected avatarPreview = signal<string>('');
+  protected tags = signal<string[]>([]);
+  protected rules = signal<string[]>([]);
+  protected newTag = signal<string>('');
 
   // Categories (would typically come from a service)
-  private categories = signal<string[]>([
+  protected categories = signal<string[]>([
     'Technology',
     'Business',
+    // ... rest of the categories
     'Education',
     'Entertainment',
     'Sports',
@@ -385,7 +386,7 @@ export class CreateGroupModalComponent {
   onCoverImageChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    
+
     if (file) {
       this.coverImageFile = file;
       const reader = new FileReader();
@@ -399,7 +400,7 @@ export class CreateGroupModalComponent {
   onAvatarChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    
+
     if (file) {
       this.avatarFile = file;
       const reader = new FileReader();
@@ -429,7 +430,7 @@ export class CreateGroupModalComponent {
     if (event) {
       event.preventDefault();
     }
-    
+
     const tag = this.newTag().trim().toLowerCase();
     if (tag && !this.tags().includes(tag)) {
       this.tags.update(tags => [...tags, tag]);
@@ -461,7 +462,7 @@ export class CreateGroupModalComponent {
   onSubmit(): void {
     if (this.createGroupForm.valid) {
       this.isSubmitting.set(true);
-      
+
       const formValue = this.createGroupForm.value;
       const request: CreateGroupRequest = {
         name: formValue.name,

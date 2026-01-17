@@ -24,7 +24,7 @@ export class GroupCardComponent {
             next: (result) => {
                 if (result.succeeded) {
                     // Update state or emit event
-                    this.group.membersCount++;
+                    this.group.memberCount++;
                 }
             },
             error: (error) => {
@@ -37,28 +37,28 @@ export class GroupCardComponent {
     /**
      * Get localized privacy level description
      */
-    getPrivacyLabel(privacy: number): string {
-        const privacyKeys = {
-            0: 'privacy.public',
-            1: 'privacy.private', 
-            2: 'privacy.secret'
+    getPrivacyLabel(privacy: string): string {
+        const privacyKeys: Record<string, string> = {
+            'public': 'privacy.public',
+            'private': 'privacy.private',
+            'secret': 'privacy.secret'
         };
-        
-        const key = privacyKeys[privacy as keyof typeof privacyKeys] || 'privacy.public';
+
+        const key = privacyKeys[privacy] || 'privacy.public';
         return this.translateService.instant(key);
     }
 
     /**
      * Get privacy level description for accessibility
      */
-    getPrivacyDescription(privacy: number): string {
-        const descriptionKeys = {
-            0: 'groups.public',
-            1: 'groups.private',
-            2: 'groups.secret'
+    getPrivacyDescription(privacy: string): string {
+        const descriptionKeys: Record<string, string> = {
+            'public': 'groups.public',
+            'private': 'groups.private',
+            'secret': 'groups.secret'
         };
-        
-        const key = descriptionKeys[privacy as keyof typeof descriptionKeys] || 'groups.public';
+
+        const key = descriptionKeys[privacy] || 'groups.public';
         return this.translateService.instant(key);
     }
 }

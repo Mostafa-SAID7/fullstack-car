@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { CanActivate, CanActivateChild, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, map, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { UserRole } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +82,7 @@ export class RoleGuard implements CanActivate {
           return true;
         }
 
-        const hasRole = requiredRoles.some(role => user.roles.includes(role));
+        const hasRole = requiredRoles.some(role => user.roles.includes(role as UserRole));
         if (hasRole) {
           return true;
         }
@@ -110,9 +111,9 @@ export class ContentCreatorGuard implements CanActivate {
         }
 
         // Check if user is a content creator or admin
-        const isContentCreator = user.roles.includes('ContentCreator') || 
-                                user.roles.includes('Admin') ||
-                                user.roles.includes('Moderator');
+        const isContentCreator = user.roles.includes(UserRole.Premium) || 
+                                user.roles.includes(UserRole.Admin) ||
+                                user.roles.includes(UserRole.Moderator);
         
         if (isContentCreator) {
           return true;
@@ -142,7 +143,7 @@ export class AdminGuard implements CanActivate {
         }
 
         // Check if user is an admin
-        const isAdmin = user.roles.includes('Admin');
+        const isAdmin = user.roles.includes(UserRole.Admin);
         
         if (isAdmin) {
           return true;

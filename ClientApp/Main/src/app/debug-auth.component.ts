@@ -20,7 +20,7 @@ import { environment } from '../environments/environment';
             <p><strong>Is Authenticated:</strong> {{ authService.isAuthenticated }}</p>
             <p><strong>Has Token:</strong> {{ !!authService.token }}</p>
             <p><strong>Has User:</strong> {{ !!authService.currentUser }}</p>
-            <p><strong>User Email:</strong> {{ authService.currentUser?.email || 'N/A' }}</p>
+            <p><strong>User Name:</strong> {{ authService.currentUser()?.firstName + ' ' + authService.currentUser()?.lastName || 'N/A' }}</p>
           </div>
         </div>
 

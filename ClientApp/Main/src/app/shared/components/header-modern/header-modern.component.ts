@@ -11,7 +11,7 @@ import { LayoutService } from '../../../core/services/layout.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TranslationService, SupportedLanguage } from '../../../core/services/translation.service';
-import { Notification } from '../../../core/models/notification.model';
+import { Notification, NotificationDto } from '../../../core/models/notification.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 /**
@@ -48,20 +48,20 @@ export class HeaderModernComponent implements OnInit {
 
   // Local state using Signals
   isSearchOpen = signal(false);
-  
+
   // Convert Observables to Signals using toSignal()
-  currentLanguage = toSignal(this.translationService.currentLanguage$, { 
-    initialValue: this.translationService.getCurrentLanguage() 
+  currentLanguage = toSignal(this.translationService.currentLanguage$, {
+    initialValue: this.translationService.getCurrentLanguage().code
   });
   isRTL = toSignal(this.translationService.isRTL$, { initialValue: false });
   isLoading = toSignal(this.translationService.isLoading$, { initialValue: false });
-  notifications = toSignal(this.notificationService.notifications$, { initialValue: [] });
+  notifications = toSignal(this.notificationService.notifications$, { initialValue: [] as NotificationDto[] });
   unreadCount = toSignal(this.notificationService.unreadCount$, { initialValue: 0 });
   currentUser = toSignal(this.authService.currentUser$, { initialValue: null });
 
   // Computed signals
   supportedLanguages = signal<SupportedLanguage[]>(this.translationService.supportedLanguages);
-  
+
   hasNotifications = computed(() => this.notifications().length > 0);
   hasUnreadNotifications = computed(() => this.unreadCount() > 0);
   userInitials = computed(() => {
@@ -71,8 +71,8 @@ export class HeaderModernComponent implements OnInit {
     const last = user.lastName?.[0] || 'P';
     return `${first}${last}`;
   });
-  
-  themeTooltip = computed(() => 
+
+  themeTooltip = computed(() =>
     `Theme: ${this.themeService.isDark() ? 'Dark' : 'Light'}`
   );
 
@@ -101,9 +101,14 @@ export class HeaderModernComponent implements OnInit {
   }
 
   // Notification Methods
-  handleNotificationClick(note: Notification): void {
+  handleNotificationClick(note: NotificationDto): void {
     if (!note.isRead) {
       this.notificationService.markAsRead(note.id).subscribe();
+    }
+    
+    // Navigate to target URL if provided
+    if (note.targetUrl) {
+      this.router.navigate([note.targetUrl]);
     }
   }
 

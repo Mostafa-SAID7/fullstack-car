@@ -1,6 +1,6 @@
 import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
 import { provideServerRendering } from '@angular/platform-server';
-import { provideServerRoutesConfig } from '@angular/ssr';
+import { provideServerRoutesConfig, RenderMode } from '@angular/ssr';
 import { appConfig } from './app.config';
 
 /**
@@ -17,27 +17,27 @@ const serverConfig: ApplicationConfig = {
     provideServerRoutesConfig([
       {
         path: '',
-        renderMode: 'prerender'
+        renderMode: RenderMode.Prerender
       },
       {
         path: 'media',
-        renderMode: 'prerender'
+        renderMode: RenderMode.Prerender
       },
       {
         path: 'community',
-        renderMode: 'prerender'
+        renderMode: RenderMode.Prerender
       },
       {
         path: 'marketplace',
-        renderMode: 'prerender'
+        renderMode: RenderMode.Prerender
       },
       {
         path: 'performance-demo',
-        renderMode: 'server-side-render'
+        renderMode: RenderMode.Server
       },
       {
         path: '**',
-        renderMode: 'server-side-render'
+        renderMode: RenderMode.Server
       }
     ])
   ]

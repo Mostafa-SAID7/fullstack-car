@@ -179,10 +179,10 @@ export class MessageInputComponent {
   cancelEdit = output<void>();
 
   // Local state
-  private messageText = signal('');
-  private selectedFiles = signal<File[]>([]);
-  private isSending = signal(false);
-  private isTyping = signal(false);
+  messageText = signal('');
+  selectedFiles = signal<File[]>([]);
+  isSending = signal(false);
+  isTyping = signal(false);
   private typingTimeout: any = null;
   private showEmojiPicker = signal(false);
 

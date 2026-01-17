@@ -12,11 +12,8 @@ export type SectionSpacing = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   selector: 'app-section',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section [class]="sectionClasses()">
-      <ng-content></ng-content>
-    </section>
-  `
+  templateUrl: './section.component.html',
+  styleUrls: ['./section.component.scss']
 })
 export class SectionComponent {
   // Input signals
@@ -27,7 +24,7 @@ export class SectionComponent {
   // Computed section classes
   sectionClasses = computed(() => {
     const classes = [];
-    
+
     // Spacing
     switch (this.spacing()) {
       case 'none':
@@ -48,7 +45,7 @@ export class SectionComponent {
         classes.push('py-24');
         break;
     }
-    
+
     // Background
     switch (this.background()) {
       case 'default':
@@ -61,12 +58,12 @@ export class SectionComponent {
         classes.push('bg-primary/5 dark:bg-primary/10');
         break;
     }
-    
+
     // Additional classes
     if (this.className()) {
       classes.push(this.className());
     }
-    
+
     return classes.join(' ');
   });
 }

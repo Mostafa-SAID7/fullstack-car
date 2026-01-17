@@ -1,0 +1,10 @@
+@if (shouldShowMessage()) {
+<p [class]="messageClasses()" [id]="messageId()" role="alert" aria-live="polite">
+    @if (message()) {
+    {{ message() }}
+    } @else if (control() && control()!.errors && control()!.touched) {
+    {{ getValidationMessage() }}
+    }
+    <ng-content></ng-content>
+</p>
+}

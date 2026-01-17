@@ -406,7 +406,7 @@ export class ContentOptimizationService {
     if (!hasMetaDescription) {
       issues.push('Missing meta description');
     } else {
-      const descLength = metaDescription.getAttribute('content')?.length || 0;
+      const descLength = metaDescription?.getAttribute('content')?.length || 0;
       if (descLength > 160) {
         issues.push('Meta description too long (over 160 characters)');
       } else if (descLength < 50) {

@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '@core/services/auth.service';
 import { ToastService } from '@core/services/toast.service';
+import { UserRole } from '@core/models/auth.model';
 
 export interface AnswerAcceptanceEvent {
   answerId: string;
@@ -81,11 +82,11 @@ export class AnswerAcceptanceComponent implements OnInit, OnDestroy {
   }
 
   private checkAcceptancePermissions(): void {
-    const currentUser = this.authService.currentUser;
+    const currentUser = this.authService.currentUser();
     if (currentUser && this.questionAuthorId) {
       this.canAccept = currentUser.id === this.questionAuthorId ||
-        currentUser.roles?.includes('Admin') ||
-        currentUser.roles?.includes('Moderator');
+        currentUser.roles?.includes(UserRole.Admin) ||
+        currentUser.roles?.includes(UserRole.Moderator);
     }
   }
 

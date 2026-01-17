@@ -3,10 +3,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { 
-  UserProfile, 
-  UpdateProfileRequest, 
-  UpdatePrivacySettingsRequest, 
+import {
+  UserProfile,
+  UpdateProfileRequest,
+  UpdatePrivacySettingsRequest,
   UpdatePreferencesRequest,
   SocialConnection,
   FollowRequest,
@@ -27,40 +27,40 @@ export class UserProfileService {
   private http = inject(HttpClient);
   private toastService = inject(ToastService);
   private loadingService = inject(LoadingService);
-  
+
   private readonly apiUrl = `${environment.apiUrl}/api/profile`;
-  
+
   // Reactive state
   private currentProfileSubject = new BehaviorSubject<UserProfile | null>(null);
   public currentProfile$ = this.currentProfileSubject.asObservable();
-  
+
   private connectionsSubject = new BehaviorSubject<SocialConnection[]>([]);
   public connections$ = this.connectionsSubject.asObservable();
-  
+
   private followRequestsSubject = new BehaviorSubject<FollowRequest[]>([]);
   public followRequests$ = this.followRequestsSubject.asObservable();
-  
+
   // Signals for reactive UI
   currentProfile = signal<UserProfile | null>(null);
   isLoading = signal<boolean>(false);
-  
+
   // Computed values
   isProfileComplete = computed(() => {
     const profile = this.currentProfile();
     return profile && profile.bio && profile.location && profile.profileImageUrl;
   });
-  
+
   constructor() {
     // Subscribe to profile changes
     this.currentProfile$.subscribe(profile => {
       this.currentProfile.set(profile);
     });
   }
-  
+
   // Profile Management
   getCurrentProfile(): Observable<UserProfile> {
     this.isLoading.set(true);
-    
+
     return this.http.get<UserProfile>(`${this.apiUrl}/me`).pipe(
       tap(profile => {
         this.currentProfileSubject.next(profile);
@@ -72,7 +72,7 @@ export class UserProfileService {
       finalize(() => this.isLoading.set(false))
     );
   }
-  
+
   getProfile(userId: string): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.apiUrl}/${userId}`).pipe(
       catchError(error => {
@@ -81,10 +81,10 @@ export class UserProfileService {
       })
     );
   }
-  
+
   updateProfile(request: UpdateProfileRequest): Observable<UserProfile> {
     this.loadingService.show('update-profile', 'Updating profile...');
-    
+
     return this.http.put<UserProfile>(`${this.apiUrl}/me`, request).pipe(
       tap(profile => {
         this.currentProfileSubject.next(profile);
@@ -97,7 +97,7 @@ export class UserProfileService {
       finalize(() => this.loadingService.hide('update-profile'))
     );
   }
-  
+
   updatePrivacySettings(request: UpdatePrivacySettingsRequest): Observable<UserProfile> {
     return this.http.put<UserProfile>(`${this.apiUrl}/me/privacy`, request).pipe(
       tap(profile => {
@@ -110,7 +110,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   updatePreferences(request: UpdatePreferencesRequest): Observable<UserProfile> {
     return this.http.put<UserProfile>(`${this.apiUrl}/me/preferences`, request).pipe(
       tap(profile => {
@@ -123,13 +123,13 @@ export class UserProfileService {
       })
     );
   }
-  
+
   uploadProfileImage(file: File): Observable<{ imageUrl: string }> {
     const formData = new FormData();
     formData.append('image', file);
-    
+
     this.loadingService.show('upload-image', 'Uploading image...');
-    
+
     return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/me/image`, formData).pipe(
       tap(response => {
         const currentProfile = this.currentProfileSubject.value;
@@ -146,13 +146,13 @@ export class UserProfileService {
       finalize(() => this.loadingService.hide('upload-image'))
     );
   }
-  
+
   uploadCoverImage(file: File): Observable<{ imageUrl: string }> {
     const formData = new FormData();
     formData.append('image', file);
-    
+
     this.loadingService.show('upload-cover', 'Uploading cover image...');
-    
+
     return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/me/cover`, formData).pipe(
       tap(response => {
         const currentProfile = this.currentProfileSubject.value;
@@ -169,14 +169,14 @@ export class UserProfileService {
       finalize(() => this.loadingService.hide('upload-cover'))
     );
   }
-  
+
   // Social Connections
   getConnections(type: 'friends' | 'followers' | 'following', pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<SocialConnection>> {
     const params = new HttpParams()
       .set('type', type)
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     return this.http.get<PaginatedResult<SocialConnection>>(`${this.apiUrl}/me/connections`, { params }).pipe(
       tap(result => {
         if (type === 'friends') {
@@ -189,13 +189,13 @@ export class UserProfileService {
       })
     );
   }
-  
+
   getUserConnections(userId: string, type: 'friends' | 'followers' | 'following', pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<SocialConnection>> {
     const params = new HttpParams()
       .set('type', type)
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     return this.http.get<PaginatedResult<SocialConnection>>(`${this.apiUrl}/${userId}/connections`, { params }).pipe(
       catchError(error => {
         this.toastService.error(`Failed to load user ${type}`, error.message);
@@ -203,7 +203,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // Friend System
   sendFriendRequest(userId: string, message?: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/friends/request`, { userId, message }).pipe(
@@ -216,7 +216,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   acceptFriendRequest(requestId: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/friends/accept/${requestId}`, {}).pipe(
       tap(() => {
@@ -229,7 +229,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   declineFriendRequest(requestId: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/friends/decline/${requestId}`, {}).pipe(
       tap(() => {
@@ -242,7 +242,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   removeFriend(userId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/friends/${userId}`).pipe(
       tap(() => {
@@ -255,7 +255,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // Follow System
   followUser(userId: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/follow/${userId}`, {}).pipe(
@@ -268,7 +268,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   unfollowUser(userId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/follow/${userId}`).pipe(
       tap(() => {
@@ -280,12 +280,12 @@ export class UserProfileService {
       })
     );
   }
-  
+
   getFollowRequests(pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<FollowRequest>> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     return this.http.get<PaginatedResult<FollowRequest>>(`${this.apiUrl}/follow/requests`, { params }).pipe(
       tap(result => {
         this.followRequestsSubject.next(result.items);
@@ -296,14 +296,14 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // User Search and Discovery
   searchUsers(query: string, pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<UserSearchResult>> {
     const params = new HttpParams()
       .set('query', query)
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     return this.http.get<PaginatedResult<UserSearchResult>>(`${this.apiUrl}/search`, { params }).pipe(
       catchError(error => {
         this.toastService.error('Failed to search users', error.message);
@@ -311,12 +311,12 @@ export class UserProfileService {
       })
     );
   }
-  
+
   getSuggestedUsers(pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<UserSearchResult>> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     return this.http.get<PaginatedResult<UserSearchResult>>(`${this.apiUrl}/suggestions`, { params }).pipe(
       catchError(error => {
         this.toastService.error('Failed to load suggested users', error.message);
@@ -324,15 +324,15 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // Profile Activity
   getProfileActivity(userId?: string, pageNumber: number = 1, pageSize: number = 20): Observable<PaginatedResult<ProfileActivity>> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
-    
+
     const url = userId ? `${this.apiUrl}/${userId}/activity` : `${this.apiUrl}/me/activity`;
-    
+
     return this.http.get<PaginatedResult<ProfileActivity>>(url, { params }).pipe(
       catchError(error => {
         this.toastService.error('Failed to load activity', error.message);
@@ -340,10 +340,10 @@ export class UserProfileService {
       })
     );
   }
-  
+
   getProfileStats(userId?: string): Observable<ProfileStats> {
     const url = userId ? `${this.apiUrl}/${userId}/stats` : `${this.apiUrl}/me/stats`;
-    
+
     return this.http.get<ProfileStats>(url).pipe(
       catchError(error => {
         this.toastService.error('Failed to load profile stats', error.message);
@@ -351,7 +351,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // Blocking and Reporting
   blockUser(request: BlockUserRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/block`, request).pipe(
@@ -364,7 +364,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   unblockUser(userId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/block/${userId}`).pipe(
       tap(() => {
@@ -376,7 +376,7 @@ export class UserProfileService {
       })
     );
   }
-  
+
   reportUser(request: ReportUserRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/report`, request).pipe(
       tap(() => {
@@ -388,14 +388,21 @@ export class UserProfileService {
       })
     );
   }
-  
+
   // Helper methods
   private refreshConnections(): void {
     this.getConnections('friends').subscribe();
   }
-  
+
   private refreshFriendRequests(): void {
     // Refresh friend requests from the friend service
     // This would typically be handled by the existing FriendService
+  }
+
+  /**
+   * Get the current user profile (helper for backward compatibility)
+   */
+  getCurrentUser(): UserProfile | null {
+    return this.currentProfile();
   }
 }

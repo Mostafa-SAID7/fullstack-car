@@ -33,17 +33,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     
     # Backend Integration
-    BACKEND_API_URL: str = "http://localhost:5000"
+    BACKEND_API_URL: str = "http://localhost:5100"
     BACKEND_API_KEY: str = ""
     
     # CORS
     ALLOWED_HOSTS: List[str] = ["*"]
-    
-    # Rate Limiting
-    RATE_LIMIT_USER: int = 100  # Requests per user per hour
-    RATE_LIMIT_IP: int = 200  # Requests per IP per hour
-    RATE_LIMIT_WINDOW: int = 3600  # Time window in seconds (1 hour)
-    RATE_LIMIT_ADMIN_BYPASS: bool = True  # Allow admins to bypass limits
     
     # Logging
     LOG_LEVEL: str = "INFO"

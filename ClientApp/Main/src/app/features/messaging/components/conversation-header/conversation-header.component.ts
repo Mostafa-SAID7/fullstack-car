@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConversationDto, ConversationType, TypingIndicator, OnlineStatus } from '../../../../core/models/messaging.model';
 
@@ -165,7 +165,8 @@ export class ConversationHeaderComponent {
   settingsClick = output<void>();
 
   // Local state
-  private showMenu = signal(false);
+  protected showMenu = signal(false);
+  protected showDeleteModal = signal(false);
 
   // Expose enums for template
   readonly ConversationType = ConversationType;
@@ -193,20 +194,20 @@ export class ConversationHeaderComponent {
 
   readonly isOnline = computed(() => {
     if (this.conversation().type !== ConversationType.Direct) return false;
-    
+
     const otherParticipant = this.conversation().participants.find(p => p.userId !== this.getCurrentUserId());
     if (!otherParticipant) return false;
-    
+
     const onlineStatus = this.onlineUsers().find(u => u.userId === otherParticipant.userId);
     return onlineStatus?.isOnline || false;
   });
 
   readonly lastSeen = computed(() => {
     if (this.conversation().type !== ConversationType.Direct) return null;
-    
+
     const otherParticipant = this.conversation().participants.find(p => p.userId !== this.getCurrentUserId());
     if (!otherParticipant) return null;
-    
+
     const onlineStatus = this.onlineUsers().find(u => u.userId === otherParticipant.userId);
     return onlineStatus?.lastSeen || otherParticipant.lastSeen;
   });
@@ -236,7 +237,7 @@ export class ConversationHeaderComponent {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    
+
     return date.toLocaleDateString();
   }
 

@@ -1,0 +1,8 @@
+<button #radioElement type="button" role="radio" [attr.aria-checked]="isChecked()"
+    [attr.aria-describedby]="ariaDescribedBy()" [attr.aria-invalid]="isInvalid()" [attr.aria-required]="required()"
+    [id]="radioId()" [class]="radioClasses()" [disabled]="disabled()" (click)="select()" (blur)="onBlur()"
+    (focus)="onFocus()" (keydown)="onKeyDown($event)">
+    @if (isChecked()) {
+    <div class="h-2 w-2 rounded-full bg-current"></div>
+    }
+</button>

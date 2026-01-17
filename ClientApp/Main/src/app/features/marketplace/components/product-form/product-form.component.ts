@@ -83,7 +83,7 @@ export class ProductFormComponent implements OnInit {
       tags: ['', [tagsValidator()]],
       
       // Status (only for edit mode)
-      status: [ProductStatus.Active, [statusValidator()]]
+      status: [ProductStatus.Active, [Validators.required]]
     });
 
     // Listen to price changes to revalidate discount price

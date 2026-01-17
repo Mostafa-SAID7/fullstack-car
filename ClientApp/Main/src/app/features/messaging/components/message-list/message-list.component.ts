@@ -105,7 +105,7 @@ export class MessageListComponent implements AfterViewInit {
   messageReact = output<{ message: MessageDto; emoji: string }>();
 
   // Local state
-  private showScrollButton = signal(false);
+  showScrollButton = signal(false);
   private lastScrollTop = 0;
 
   // Computed properties

@@ -1,0 +1,23 @@
+<form [formGroup]="formGroup()" (ngSubmit)="onSubmit()" [class]="formClasses()" [attr.novalidate]="novalidate()"
+    [attr.aria-label]="ariaLabel()" [attr.aria-describedby]="ariaDescribedBy()" role="form">
+    <ng-content></ng-content>
+
+    @if (showErrorSummary() && hasErrors()) {
+    <div class="mt-4 p-4 border border-destructive/20 bg-destructive/5 rounded-md" role="alert" aria-live="polite">
+        <h3 class="text-sm font-medium text-destructive mb-2">
+            Please correct the following errors:
+        </h3>
+        <ul class="text-sm text-destructive space-y-1">
+            @for (error of getErrorList(); track error.field) {
+            <li>
+                <a [href]="'#' + error.field"
+                    class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
+                    (click)="focusField(error.field, $event)">
+                    {{ error.message }}
+                </a>
+            </li>
+            }
+        </ul>
+    </div>
+    }
+</form>

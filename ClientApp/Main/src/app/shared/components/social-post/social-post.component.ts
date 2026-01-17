@@ -175,8 +175,8 @@ import { UserProfileService } from '../../../core/services/user-profile.service'
           @if (currentUser()) {
             <div class="flex items-start space-x-3 mb-4">
               <img 
-                [src]="currentUser()!.avatar" 
-                [alt]="currentUser()!.displayName"
+                [src]="currentUser()!.profileImageUrl" 
+                [alt]="currentUser()!.firstName + ' ' + currentUser()!.lastName"
                 class="w-8 h-8 rounded-full"
               >
               <div class="flex-1">
@@ -284,7 +284,7 @@ export class SocialPostComponent {
   protected showComments = signal(false);
   protected comments = signal<Comment[]>([]);
   protected newCommentText = '';
-  protected currentUser = this.userService.currentUser;
+  protected currentUser = this.userService.currentProfile;
 
   ngOnInit() {
     this.loadComments();
@@ -368,17 +368,17 @@ export class SocialPostComponent {
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     if (days < 7) return `${days}d ago`;
-    
+
     return date.toLocaleDateString();
   }
 
   protected formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }

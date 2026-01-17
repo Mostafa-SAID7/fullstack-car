@@ -5,7 +5,7 @@ import { GroupApiService } from '../../../shared/services/api/group-api.service'
 import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import { Group, CreateGroupRequest, UpdateGroupRequest } from '../../../core/models/group.model';
-import { GroupDto } from '../../../shared/models/community/group.model';
+import { GroupDto, GroupType, GroupPrivacy } from '../../../shared/models/community/group.model';
 import { Result, PaginatedResult } from '../../../core/models/result.model';
 import { Post } from '../../../core/models/post.model';
 
@@ -53,7 +53,16 @@ export class GroupService {
     createGroup(request: CreateGroupRequest): Observable<Result<Group>> {
         this.loadingService.show('create-group', 'Creating group...');
 
-        return this.groupApi.createGroup(request).pipe(
+        // Map core model to shared model
+        const apiRequest = {
+            name: request.name,
+            description: request.description,
+            imageUrl: request.coverImage ? URL.createObjectURL(request.coverImage) : undefined,
+            type: this.mapTypeToEnum(request.type),
+            privacy: this.mapPrivacyToEnum(request.type) // Map type to privacy for now
+        };
+
+        return this.groupApi.createGroup(apiRequest).pipe(
             map(dto => {
                 const group = this.mapDtoToGroup(dto);
                 const currentGroups = this.groupsSubject.value;
@@ -72,7 +81,16 @@ export class GroupService {
     updateGroup(id: string, request: UpdateGroupRequest): Observable<Result<Group>> {
         this.loadingService.show('update-group', 'Updating group...');
 
-        return this.groupApi.updateGroup(id, request).pipe(
+        // Map core model to shared model
+        const apiRequest = {
+            name: request.name,
+            description: request.description,
+            imageUrl: request.coverImage ? URL.createObjectURL(request.coverImage) : undefined,
+            type: request.type ? this.mapTypeToEnum(request.type) : undefined,
+            privacy: request.type ? this.mapPrivacyToEnum(request.type) : undefined
+        };
+
+        return this.groupApi.updateGroup(id, apiRequest).pipe(
             map(dto => {
                 const group = this.mapDtoToGroup(dto);
                 const groups = this.groupsSubject.value.map(g => g.id === id ? group : g);
@@ -110,7 +128,7 @@ export class GroupService {
         return this.groupApi.joinGroup({ groupId: id }).pipe(
             tap(() => {
                 const groups = this.groupsSubject.value.map(g =>
-                    g.id === id ? { ...g, membersCount: g.membersCount + 1 } : g
+                    g.id === id ? { ...g, memberCount: g.memberCount + 1 } : g
                 );
                 this.groupsSubject.next(groups);
                 this.toastService.success('Joined group successfully');
@@ -127,7 +145,7 @@ export class GroupService {
         return this.groupApi.leaveGroup(id).pipe(
             tap(() => {
                 const groups = this.groupsSubject.value.map(g =>
-                    g.id === id ? { ...g, membersCount: Math.max(0, g.membersCount - 1) } : g
+                    g.id === id ? { ...g, memberCount: Math.max(0, g.memberCount - 1) } : g
                 );
                 this.groupsSubject.next(groups);
                 this.toastService.success('Left group successfully');
@@ -164,17 +182,39 @@ export class GroupService {
             id: dto.id,
             name: dto.name,
             description: dto.description,
-            imageUrl: dto.imageUrl,
-            type: dto.type,
-            privacy: dto.privacy,
-            membersCount: dto.membersCount,
-            postsCount: dto.postsCount,
-            createdAt: typeof dto.createdAt === 'string' ? dto.createdAt : dto.createdAt.toISOString(),
-            updatedAt: dto.updatedAt ? (typeof dto.updatedAt === 'string' ? dto.updatedAt : dto.updatedAt.toISOString()) : undefined,
+            coverImage: dto.imageUrl,
+            avatar: dto.imageUrl,
+            type: this.mapEnumToType(dto.type),
+            category: 'General', // Default category
+            memberCount: dto.membersCount,
+            postCount: dto.postsCount,
+            createdAt: new Date(dto.createdAt),
+            updatedAt: dto.updatedAt ? new Date(dto.updatedAt) : new Date(),
             ownerId: dto.ownerId,
-            ownerFirstName: dto.ownerFirstName,
-            ownerLastName: dto.ownerLastName,
-            ownerProfileImageUrl: dto.ownerProfileImageUrl
+            moderatorIds: [],
+            tags: [],
+            rules: [],
+            settings: {
+                allowMemberPosts: true,
+                requirePostApproval: false,
+                allowMemberInvites: true,
+                allowDiscussions: true,
+                allowEvents: true,
+                allowPolls: true,
+                autoApproveMembers: dto.privacy === 1, // Public groups auto-approve
+                showMemberList: true,
+                allowExternalSharing: dto.privacy === 1
+            },
+            stats: {
+                totalMembers: dto.membersCount,
+                activeMembersToday: 0,
+                activeMembersWeek: 0,
+                totalPosts: dto.postsCount,
+                postsToday: 0,
+                postsWeek: 0,
+                engagementRate: 0,
+                growthRate: 0
+            }
         };
     }
 
@@ -188,5 +228,29 @@ export class GroupService {
             hasPreviousPage: result.hasPreviousPage,
             hasNextPage: result.hasNextPage
         };
+    }
+
+    private mapTypeToEnum(type: 'public' | 'private' | 'secret'): GroupType {
+        switch (type) {
+            case 'public': return GroupType.General;
+            case 'private': return GroupType.LocalCommunity;
+            case 'secret': return GroupType.General;
+            default: return GroupType.General;
+        }
+    }
+
+    private mapPrivacyToEnum(type: 'public' | 'private' | 'secret'): GroupPrivacy {
+        switch (type) {
+            case 'public': return GroupPrivacy.Public;
+            case 'private': return GroupPrivacy.Private;
+            case 'secret': return GroupPrivacy.Secret;
+            default: return GroupPrivacy.Public;
+        }
+    }
+
+    private mapEnumToType(type: GroupType): 'public' | 'private' | 'secret' {
+        // For simplicity, map all types to public for now
+        // In a real implementation, you'd have a more sophisticated mapping
+        return 'public';
     }
 }

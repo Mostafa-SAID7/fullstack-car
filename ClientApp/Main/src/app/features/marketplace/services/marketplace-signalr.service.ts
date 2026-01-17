@@ -8,6 +8,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { SignalRService } from '../../../core/services/signalr.service';
 import { ProductDto, ServiceDto } from '../models';
+import * as signalR from '@microsoft/signalr';
 
 /**
  * Marketplace event types
@@ -76,9 +77,10 @@ export class MarketplaceSignalRService implements OnDestroy {
    */
   private initializeService(): void {
     // Subscribe to connection state changes
-    this.connectionSubscription = this.signalRService.connectionState$.subscribe(isConnected => {
+    this.connectionSubscription = this.signalRService.connectionState$.subscribe(state => {
+      const isConnected = state === signalR.HubConnectionState.Connected;
       this.connectionStatusSubject.next(isConnected);
-      
+
       if (isConnected && !this.handlersRegistered) {
         // Register handlers when connection is established
         this.registerHandlers();
@@ -89,7 +91,7 @@ export class MarketplaceSignalRService implements OnDestroy {
     });
 
     // If already connected, register handlers immediately
-    if (this.signalRService.isConnected && !this.handlersRegistered) {
+    if (this.signalRService.isConnected() && !this.handlersRegistered) {
       this.registerHandlers();
     }
   }
@@ -179,6 +181,6 @@ export class MarketplaceSignalRService implements OnDestroy {
    * Check if the service is connected
    */
   public get isConnected(): boolean {
-    return this.signalRService.isConnected;
+    return this.signalRService.isConnected();
   }
 }

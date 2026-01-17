@@ -16,7 +16,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         <div class="p-4 bg-gray-100 rounded">
           <h3 class="font-bold">Authentication Status</h3>
           <p>Authenticated: {{ authService.isAuthenticated }}</p>
-          <p>User: {{ authService.currentUser?.email || 'Not logged in' }}</p>
+          <p>User: {{ authService.currentUser()?.email || 'Not logged in' }}</p>
           <p>Token: {{ authService.token ? 'Present' : 'Missing' }}</p>
         </div>
 
@@ -62,7 +62,7 @@ export class DebugUploadComponent {
   constructor(
     private http: HttpClient,
     public authService: AuthService
-  ) {}
+  ) { }
 
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
@@ -100,8 +100,8 @@ export class DebugUploadComponent {
       this.result = { success: true, data: response };
     } catch (error: any) {
       console.error('Upload error:', error);
-      this.result = { 
-        success: false, 
+      this.result = {
+        success: false,
         error: error.message,
         status: error.status,
         details: error.error
@@ -125,8 +125,8 @@ export class DebugUploadComponent {
 
       this.result = { success: true, data: response };
     } catch (error: any) {
-      this.result = { 
-        success: false, 
+      this.result = {
+        success: false,
         error: 'Auth test failed',
         status: error.status,
         details: error.error
@@ -142,8 +142,8 @@ export class DebugUploadComponent {
 
       this.result = { success: true, message: 'Endpoint is available', data: response };
     } catch (error: any) {
-      this.result = { 
-        success: false, 
+      this.result = {
+        success: false,
         error: 'Endpoint test failed',
         status: error.status,
         details: error.error

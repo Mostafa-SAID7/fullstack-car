@@ -229,7 +229,7 @@ export class QASignalRService {
       this.reconnectionAttempts = 0; // Reset on successful connection
 
       // Join user group for QA notifications if authenticated
-      const userId = this.authService.currentUser?.id;
+      const userId = this.authService.currentUser()?.id;
       if (userId && token) {
         try {
           await this.hubConnection.invoke('JoinUserGroup', userId);
@@ -380,7 +380,7 @@ export class QASignalRService {
       this.reputationUpdatedSubject.next(data);
 
       // Show notification if it's for the current user
-      const currentUserId = this.authService.currentUser?.id;
+      const currentUserId = this.authService.currentUser()?.id;
       if (currentUserId === data.userId && data.change > 0) {
         this.showNotification('Reputation increased', `+${data.change} points: ${data.reason}`);
       }
@@ -391,7 +391,7 @@ export class QASignalRService {
       this.badgeEarnedSubject.next(data);
 
       // Show notification if it's for the current user
-      const currentUserId = this.authService.currentUser?.id;
+      const currentUserId = this.authService.currentUser()?.id;
       if (currentUserId === data.userId) {
         this.showNotification('Badge earned!', `${data.badgeName}: ${data.description}`);
       }
@@ -423,7 +423,7 @@ export class QASignalRService {
     });
   }
   private async rejoinAfterReconnection(): Promise<void> {
-    const userId = this.authService.currentUser?.id;
+    const userId = this.authService.currentUser()?.id;
     if (!userId || !this.hubConnection) return;
 
     try {

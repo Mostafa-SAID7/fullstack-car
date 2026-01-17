@@ -38,7 +38,7 @@ import { UserProfileService } from '../../../../core/services/user-profile.servi
                   <div class="w-20 h-20 rounded-2xl bg-secondary overflow-hidden flex items-center justify-center">
                     <img 
                       *ngIf="profile?.profileImageUrl" 
-                      [src]="profile.profileImageUrl"
+                      [src]="profile?.profileImageUrl"
                       class="w-full h-full object-cover">
                     <span 
                       *ngIf="!profile?.profileImageUrl" 
@@ -64,7 +64,7 @@ import { UserProfileService } from '../../../../core/services/user-profile.servi
                 <div class="relative w-full h-32 rounded-2xl bg-secondary overflow-hidden">
                   <div 
                     class="w-full h-full bg-cover bg-center"
-                    [style.background-image]="profile?.coverImageUrl ? 'url(' + profile.coverImageUrl + ')' : 'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1500)'">
+                    [style.background-image]="profile?.coverImageUrl ? 'url(' + profile?.coverImageUrl + ')' : 'url(https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1500)'">
                   </div>
                   <button
                     type="button"
@@ -254,17 +254,17 @@ export class ProfileEditComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
   @Output() profileImageUpload = new EventEmitter<File>();
   @Output() coverImageUpload = new EventEmitter<File>();
-  
+
   private fb = inject(FormBuilder);
   private userProfileService = inject(UserProfileService);
-  
+
   profileForm!: FormGroup;
   isLoading = signal<boolean>(false);
-  
+
   ngOnInit(): void {
     this.initializeForm();
   }
-  
+
   private initializeForm(): void {
     this.profileForm = this.fb.group({
       firstName: [this.profile?.firstName || '', [Validators.required, Validators.minLength(2)]],
@@ -276,19 +276,19 @@ export class ProfileEditComponent implements OnInit {
       gender: [this.profile?.gender || ''],
       isPublicProfile: [this.profile?.privacySettings?.profileVisibility === 'public'],
       allowFriendRequests: [this.profile?.privacySettings?.allowFriendRequests ?? true],
-      showOnlineStatus: [this.profile?.privacySettings?.showOnlineStatus ?? true]
+      showOnlineStatus: [this.profile?.preferences?.showOnlineStatus ?? true]
     });
   }
-  
+
   private formatDateForInput(dateString: string): string {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
   }
-  
+
   onSubmit(): void {
     if (this.profileForm.valid) {
       this.isLoading.set(true);
-      
+
       const formValue = this.profileForm.value;
       const updateRequest: UpdateProfileRequest = {
         firstName: formValue.firstName,
@@ -299,35 +299,35 @@ export class ProfileEditComponent implements OnInit {
         dateOfBirth: formValue.dateOfBirth || undefined,
         gender: formValue.gender || undefined
       };
-      
+
       this.save.emit(updateRequest);
     }
   }
-  
+
   onCancel(): void {
     this.cancel.emit();
   }
-  
+
   onBackdropClick(event: Event): void {
     if (event.target === event.currentTarget) {
       this.onCancel();
     }
   }
-  
+
   onProfileImageUpload(): void {
     const input = document.querySelector('#profileImageInput') as HTMLInputElement;
     if (input) {
       input.click();
     }
   }
-  
+
   onCoverImageUpload(): void {
     const input = document.querySelector('#coverImageInput') as HTMLInputElement;
     if (input) {
       input.click();
     }
   }
-  
+
   onProfileImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -337,7 +337,7 @@ export class ProfileEditComponent implements OnInit {
       }
     }
   }
-  
+
   onCoverImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -347,24 +347,24 @@ export class ProfileEditComponent implements OnInit {
       }
     }
   }
-  
+
   private validateImageFile(file: File, maxSizeMB: number): boolean {
     // Check file type
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file.');
       return false;
     }
-    
+
     // Check file size
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
       alert(`File size must be less than ${maxSizeMB}MB.`);
       return false;
     }
-    
+
     return true;
   }
-  
+
   setLoading(loading: boolean): void {
     this.isLoading.set(loading);
   }

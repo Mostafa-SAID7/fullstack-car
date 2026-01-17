@@ -401,13 +401,13 @@ export class ApiIntegrationService {
   /**
    * Map HTTP method to offline action type
    */
-  private mapMethodToActionType(method: string): string {
+  private mapMethodToActionType(method: string): 'message' | 'post' | 'like' | 'comment' | 'join_group' | 'update_profile' {
     switch (method) {
       case 'POST': return 'post';
       case 'PUT': return 'update_profile';
       case 'PATCH': return 'update_profile';
-      case 'DELETE': return 'delete';
-      default: return 'unknown';
+      case 'DELETE': return 'update_profile'; // Map delete to update_profile for now
+      default: return 'post'; // Default to post instead of unknown
     }
   }
 

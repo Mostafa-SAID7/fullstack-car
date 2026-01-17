@@ -1,3 +1,4 @@
+import { jest, expect } from '@jest/globals';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,7 @@ import { AgentType, ChatResponse } from '../../models/ai-agent.models';
 describe('AIChatWidgetComponent', () => {
   let component: AIChatWidgetComponent;
   let fixture: ComponentFixture<AIChatWidgetComponent>;
-  let aiAgentService: jasmine.SpyObj<AIAgentService>;
+  let aiAgentService: any;
 
   const mockChatResponse: ChatResponse = {
     message: 'Test response from AI',
@@ -25,11 +26,11 @@ describe('AIChatWidgetComponent', () => {
   };
 
   beforeEach(async () => {
-    const aiAgentServiceSpy = jasmine.createSpyObj('AIAgentService', [
-      'chat',
-      'submitPositiveFeedback',
-      'submitNegativeFeedback'
-    ]);
+    const aiAgentServiceSpy = {
+      chat: jest.fn(),
+      submitPositiveFeedback: jest.fn(),
+      submitNegativeFeedback: jest.fn()
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -42,7 +43,7 @@ describe('AIChatWidgetComponent', () => {
       ]
     }).compileComponents();
 
-    aiAgentService = TestBed.inject(AIAgentService) as jasmine.SpyObj<AIAgentService>;
+    aiAgentService = TestBed.inject(AIAgentService);
     fixture = TestBed.createComponent(AIChatWidgetComponent);
     component = fixture.componentInstance;
   });
@@ -100,9 +101,9 @@ describe('AIChatWidgetComponent', () => {
     it('should change agent mode', () => {
       fixture.detectChanges();
       const initialMessageCount = component.messages.length;
-      
+
       component.setMode(AgentType.MECHANIC);
-      
+
       expect(component.selectedMode).toBe(AgentType.MECHANIC);
       expect(component.showModes).toBe(false);
       expect(component.messages.length).toBe(initialMessageCount + 1);
@@ -112,7 +113,7 @@ describe('AIChatWidgetComponent', () => {
     it('should add system message when mode changes', () => {
       fixture.detectChanges();
       component.setMode(AgentType.BUYER_GUIDE);
-      
+
       const lastMessage = component.messages[component.messages.length - 1];
       expect(lastMessage.isUser).toBe(false);
       expect(lastMessage.agent).toBe('system');
@@ -122,7 +123,7 @@ describe('AIChatWidgetComponent', () => {
     it('should get current mode label', () => {
       component.selectedMode = AgentType.MECHANIC;
       expect(component.getCurrentModeLabel()).toBe('Mechanic');
-      
+
       component.selectedMode = AgentType.BUYER_GUIDE;
       expect(component.getCurrentModeLabel()).toBe('Buying Guide');
     });
@@ -137,16 +138,16 @@ describe('AIChatWidgetComponent', () => {
     it('should send message successfully', fakeAsync(() => {
       component.currentMessage = 'Test message';
       component.sendMessage();
-      
+
       expect(component.messages.length).toBe(2); // Welcome + user message
       expect(component.messages[1].text).toBe('Test message');
       expect(component.messages[1].isUser).toBe(true);
       expect(component.isTyping).toBe(true);
       expect(component.currentMessage).toBe('');
-      
+
       tick();
-      
-      expect(aiAgentService.chat).toHaveBeenCalledWith(jasmine.objectContaining({
+
+      expect(aiAgentService.chat).toHaveBeenCalledWith(expect.objectContaining({
         message: 'Test message',
         mode: AgentType.GENERAL
       }));
@@ -159,7 +160,7 @@ describe('AIChatWidgetComponent', () => {
     it('should not send empty message', () => {
       component.currentMessage = '   ';
       component.sendMessage();
-      
+
       expect(aiAgentService.chat).not.toHaveBeenCalled();
       expect(component.messages.length).toBe(1); // Only welcome message
     });
@@ -168,7 +169,7 @@ describe('AIChatWidgetComponent', () => {
       component.currentMessage = 'Test';
       component.isTyping = true;
       component.sendMessage();
-      
+
       expect(aiAgentService.chat).not.toHaveBeenCalled();
     });
 
@@ -176,24 +177,24 @@ describe('AIChatWidgetComponent', () => {
       component.currentMessage = 'First message';
       component.sendMessage();
       tick();
-      
+
       expect(component.conversationId).toBe('conv-123');
-      
+
       component.currentMessage = 'Second message';
       component.sendMessage();
-      
-      expect(aiAgentService.chat).toHaveBeenCalledWith(jasmine.objectContaining({
+
+      expect(aiAgentService.chat).toHaveBeenCalledWith(expect.objectContaining({
         conversationId: 'conv-123'
       }));
     }));
 
     it('should handle API error gracefully', fakeAsync(() => {
-      aiAgentService.chat.and.returnValue(throwError(() => new Error('API Error')));
-      
+      aiAgentService.chat.mockReturnValue(throwError(() => new Error('API Error')));
+
       component.currentMessage = 'Test message';
       component.sendMessage();
       tick();
-      
+
       expect(component.isTyping).toBe(false);
       expect(component.messages.length).toBe(3);
       const errorMessage = component.messages[2];
@@ -205,8 +206,8 @@ describe('AIChatWidgetComponent', () => {
       component.selectedMode = AgentType.MECHANIC;
       component.currentMessage = 'Check my engine';
       component.sendMessage();
-      
-      expect(aiAgentService.chat).toHaveBeenCalledWith(jasmine.objectContaining({
+
+      expect(aiAgentService.chat).toHaveBeenCalledWith(expect.objectContaining({
         mode: AgentType.MECHANIC
       }));
     }));
@@ -221,9 +222,9 @@ describe('AIChatWidgetComponent', () => {
     it('should send message when suggestion is selected', fakeAsync(() => {
       const suggestion = 'Recommend a family SUV';
       component.selectSuggestion(suggestion);
-      
+
       expect(component.currentMessage).toBe('');
-      expect(aiAgentService.chat).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(aiAgentService.chat).toHaveBeenCalledWith(expect.objectContaining({
         message: suggestion
       }));
     }));
@@ -233,18 +234,18 @@ describe('AIChatWidgetComponent', () => {
     it('should handle image file selection', () => {
       const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
       const event = { target: { files: [file] } };
-      
+
       component.onFileSelected(event);
-      
+
       expect(component.selectedImage).toBe(file);
     });
 
     it('should create image preview', (done) => {
       const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
       const event = { target: { files: [file] } };
-      
+
       component.onFileSelected(event);
-      
+
       setTimeout(() => {
         expect(component.imagePreview).toBeDefined();
         done();
@@ -254,9 +255,9 @@ describe('AIChatWidgetComponent', () => {
     it('should remove selected image', () => {
       component.selectedImage = new File([''], 'test.jpg', { type: 'image/jpeg' });
       component.imagePreview = 'data:image/jpeg;base64,test';
-      
+
       component.removeImage();
-      
+
       expect(component.selectedImage).toBeUndefined();
       expect(component.imagePreview).toBeUndefined();
     });
@@ -265,12 +266,12 @@ describe('AIChatWidgetComponent', () => {
       aiAgentService.chat.and.returnValue(of(mockChatResponse));
       component.selectedImage = new File([''], 'test.jpg', { type: 'image/jpeg' });
       component.imagePreview = 'data:image/jpeg;base64,test';
-      
+
       component.sendMessage();
       tick();
-      
-      expect(aiAgentService.chat).toHaveBeenCalledWith(jasmine.objectContaining({
-        context: jasmine.objectContaining({
+
+      expect(aiAgentService.chat).toHaveBeenCalledWith(expect.objectContaining({
+        context: expect.objectContaining({
           hasImage: true
         })
       }));
@@ -343,31 +344,31 @@ describe('AIChatWidgetComponent', () => {
     });
 
     it('should copy message to clipboard', async () => {
-      spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
-      
+      jest.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
+
       await component.copyMessage(testMessage);
-      
+
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Test message');
     });
 
     it('should save message to localStorage', () => {
-      spyOn(localStorage, 'getItem').and.returnValue('[]');
-      spyOn(localStorage, 'setItem');
-      
+      jest.spyOn(localStorage, 'getItem').mockReturnValue('[]');
+      jest.spyOn(localStorage, 'setItem').mockImplementation(() => { });
+
       component.saveMessage(testMessage);
-      
+
       expect(localStorage.setItem).toHaveBeenCalledWith(
         'saved_messages',
-        jasmine.stringContaining('Test message')
+        expect.stringContaining('Test message')
       );
     });
 
     it('should submit positive feedback', () => {
-      aiAgentService.submitPositiveFeedback.and.returnValue(of({ success: true }));
+      aiAgentService.submitPositiveFeedback.mockReturnValue(of({ success: true }));
       component.conversationId = 'conv-123';
-      
+
       component.rateMessage(testMessage, true);
-      
+
       expect(aiAgentService.submitPositiveFeedback).toHaveBeenCalledWith(
         'conv-123',
         'msg-1',
@@ -376,11 +377,11 @@ describe('AIChatWidgetComponent', () => {
     });
 
     it('should submit negative feedback', () => {
-      aiAgentService.submitNegativeFeedback.and.returnValue(of({ success: true }));
+      aiAgentService.submitNegativeFeedback.mockReturnValue(of({ success: true }));
       component.conversationId = 'conv-123';
-      
+
       component.rateMessage(testMessage, false);
-      
+
       expect(aiAgentService.submitNegativeFeedback).toHaveBeenCalledWith(
         'conv-123',
         'msg-1',
@@ -390,9 +391,9 @@ describe('AIChatWidgetComponent', () => {
 
     it('should not submit feedback without conversation ID', () => {
       component.conversationId = undefined;
-      
+
       component.rateMessage(testMessage, true);
-      
+
       expect(aiAgentService.submitPositiveFeedback).not.toHaveBeenCalled();
     });
   });
@@ -429,14 +430,14 @@ describe('AIChatWidgetComponent', () => {
     it('should mark messages as unread when chat is closed', () => {
       fixture.detectChanges();
       component.isOpen = false;
-      
+
       component['addMessage']({
         id: 'msg-1',
         text: 'New message',
         isUser: false,
         timestamp: new Date()
       });
-      
+
       expect(component.hasUnreadMessages).toBe(true);
     });
 
@@ -444,28 +445,28 @@ describe('AIChatWidgetComponent', () => {
       fixture.detectChanges();
       component.isOpen = true;
       component.hasUnreadMessages = false;
-      
+
       component['addMessage']({
         id: 'msg-1',
         text: 'New message',
         isUser: false,
         timestamp: new Date()
       });
-      
+
       expect(component.hasUnreadMessages).toBe(false);
     });
 
     it('should not mark user messages as unread', () => {
       fixture.detectChanges();
       component.isOpen = false;
-      
+
       component['addMessage']({
         id: 'msg-1',
         text: 'User message',
         isUser: true,
         timestamp: new Date()
       });
-      
+
       expect(component.hasUnreadMessages).toBe(false);
     });
   });

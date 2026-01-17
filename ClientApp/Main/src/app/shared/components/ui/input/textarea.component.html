@@ -1,0 +1,5 @@
+<textarea #textareaElement [placeholder]="placeholder()" [disabled]="disabled()" [readonly]="readonly()" [rows]="rows()"
+    [class]="textareaClasses()" [value]="value()" [id]="textareaId()" [attr.aria-describedby]="ariaDescribedBy()"
+    [attr.aria-invalid]="isInvalid()" [attr.aria-required]="required()" [attr.maxlength]="maxLength()"
+    [attr.minlength]="minLength()" (input)="onInput($event)" (blur)="onBlur()" (focus)="onFocus()"
+    (keydown)="onKeyDown($event)"></textarea>

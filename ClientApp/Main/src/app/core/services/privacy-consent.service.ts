@@ -159,9 +159,9 @@ export class PrivacyConsentService {
         const preferences = JSON.parse(storedConsent) as ConsentPreferences;
         const timestamp = new Date(storedTimestamp);
 
-        this.consentPreferences.set(preferences);
-        this.consentTimestamp.set(timestamp);
-        this.consentGiven.set(true);
+        this.consentPreferences.next(preferences);
+        this.consentTimestamp.next(timestamp);
+        this.consentGiven.next(true);
 
         // Apply consent to services
         this.applyConsentToServices(preferences);
@@ -212,9 +212,9 @@ export class PrivacyConsentService {
       necessary: true // Always true
     };
 
-    this.consentPreferences.set(newPreferences);
-    this.consentGiven.set(true);
-    this.consentTimestamp.set(new Date());
+    this.consentPreferences.next(newPreferences);
+    this.consentGiven.next(true);
+    this.consentTimestamp.next(new Date());
 
     // Store in localStorage
     this.storeConsent(newPreferences);
@@ -256,15 +256,15 @@ export class PrivacyConsentService {
    * Reset all consent
    */
   resetConsent(): void {
-    this.consentPreferences.set({
+    this.consentPreferences.next({
       necessary: true,
       analytics: false,
       marketing: false,
       personalization: false,
       performance: false
     });
-    this.consentGiven.set(false);
-    this.consentTimestamp.set(null);
+    this.consentGiven.next(false);
+    this.consentTimestamp.next(null);
 
     // Clear stored consent
     localStorage.removeItem('privacy_consent');

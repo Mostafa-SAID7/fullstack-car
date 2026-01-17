@@ -12,11 +12,8 @@ export type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   selector: 'app-container',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div [class]="containerClasses()">
-      <ng-content></ng-content>
-    </div>
-  `
+  templateUrl: './container.component.html',
+  styleUrls: ['./container.component.scss']
 })
 export class ContainerComponent {
   // Input signals
@@ -28,7 +25,7 @@ export class ContainerComponent {
   // Computed container classes
   containerClasses = computed(() => {
     const classes = [];
-    
+
     // Base container class
     if (this.size() === 'full') {
       classes.push('w-full');
@@ -36,22 +33,22 @@ export class ContainerComponent {
       classes.push('container');
       classes.push(`max-w-${this.size()}`);
     }
-    
+
     // Centering
     if (this.centered()) {
       classes.push('mx-auto');
     }
-    
+
     // Padding
     if (this.padding()) {
       classes.push('px-4 sm:px-6 lg:px-8');
     }
-    
+
     // Additional classes
     if (this.className()) {
       classes.push(this.className());
     }
-    
+
     return classes.join(' ');
   });
 }

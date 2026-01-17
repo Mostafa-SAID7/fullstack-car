@@ -1,0 +1,20 @@
+:host {
+    display: block;
+}
+
+/* Touch optimization */
+.touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth transitions */
+.transition-transform {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Haptic feedback simulation */
+.touch-manipulation:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease-in-out;
+}

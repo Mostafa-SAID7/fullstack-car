@@ -160,7 +160,7 @@ export class SocialInteractionService {
     this.loadShares();
     this.loadBookmarks();
     this.loadNotifications();
-    
+
     console.log('💬 Social interaction service initialized');
   }
 
@@ -288,7 +288,7 @@ export class SocialInteractionService {
    * Like or unlike a post
    */
   async togglePostLike(postId: string): Promise<void> {
-    const currentUser = this.userProfileService.getCurrentUser();
+    const currentUser = this.userProfileService.currentProfile();
     if (!currentUser) throw new Error('User not authenticated');
 
     const posts = this.posts.value;
@@ -304,12 +304,12 @@ export class SocialInteractionService {
       // Remove like
       const updatedReactions = reactions.filter(r => r.id !== existingReaction.id);
       this.reactions.next(updatedReactions);
-      
+
       // Update post stats
       post.stats.likesCount = Math.max(0, post.stats.likesCount - 1);
       post.userInteraction.isLiked = false;
       post.userInteraction.reactionType = undefined;
-      
+
       this.eventTrackingService.trackCustomEvent({
         name: 'post_unliked',
         category: 'social',
@@ -329,29 +329,29 @@ export class SocialInteractionService {
         type: 'like',
         createdAt: new Date()
       };
-      
+
       const updatedReactions = [...reactions, newReaction];
       this.reactions.next(updatedReactions);
-      
+
       // Update post stats
       post.stats.likesCount++;
       post.userInteraction.isLiked = true;
       post.userInteraction.reactionType = 'like';
-      
+
       // Create notification for post author
       if (post.authorId !== currentUser.id) {
         this.createNotification({
           userId: post.authorId,
           type: 'like',
           actorId: currentUser.id,
-          actorName: currentUser.displayName,
-          actorAvatar: currentUser.avatar,
+          actorName: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+          actorAvatar: currentUser.profileImageUrl || '',
           targetId: postId,
           targetType: 'post',
-          content: `${currentUser.displayName} liked your post`
+          content: `${currentUser.firstName} ${currentUser.lastName}`.trim() + ' liked your post'
         });
       }
-      
+
       this.eventTrackingService.trackCustomEvent({
         name: 'post_liked',
         category: 'social',
@@ -373,7 +373,7 @@ export class SocialInteractionService {
    * Add reaction to post
    */
   async addPostReaction(postId: string, reactionType: Reaction['type']): Promise<void> {
-    const currentUser = this.userProfileService.getCurrentUser();
+    const currentUser = this.userProfileService.currentProfile();
     if (!currentUser) throw new Error('User not authenticated');
 
     const posts = this.posts.value;
@@ -381,12 +381,12 @@ export class SocialInteractionService {
     if (!post) throw new Error('Post not found');
 
     const reactions = this.reactions.value;
-    
+
     // Remove existing reaction if any
     const existingReaction = reactions.find(
       r => r.userId === currentUser.id && r.targetId === postId && r.targetType === 'post'
     );
-    
+
     let updatedReactions = reactions;
     if (existingReaction) {
       updatedReactions = reactions.filter(r => r.id !== existingReaction.id);
@@ -402,29 +402,29 @@ export class SocialInteractionService {
       type: reactionType,
       createdAt: new Date()
     };
-    
+
     updatedReactions.push(newReaction);
     this.reactions.next(updatedReactions);
-    
+
     // Update post stats
     post.stats.likesCount++;
     post.userInteraction.isLiked = true;
     post.userInteraction.reactionType = reactionType;
-    
+
     // Create notification for post author
     if (post.authorId !== currentUser.id) {
       this.createNotification({
         userId: post.authorId,
         type: 'reaction',
         actorId: currentUser.id,
-        actorName: currentUser.displayName,
-        actorAvatar: currentUser.avatar,
+        actorName: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+        actorAvatar: currentUser.profileImageUrl || '',
         targetId: postId,
         targetType: 'post',
-        content: `${currentUser.displayName} reacted ${reactionType} to your post`
+        content: `${currentUser.firstName} ${currentUser.lastName}`.trim() + ` reacted ${reactionType} to your post`
       });
     }
-    
+
     this.eventTrackingService.trackCustomEvent({
       name: 'post_reaction_added',
       category: 'social',
@@ -446,7 +446,7 @@ export class SocialInteractionService {
    * Add comment to post
    */
   async addComment(postId: string, content: string, parentCommentId?: string): Promise<Comment> {
-    const currentUser = this.userProfileService.getCurrentUser();
+    const currentUser = this.userProfileService.currentProfile();
     if (!currentUser) throw new Error('User not authenticated');
 
     const posts = this.posts.value;
@@ -457,8 +457,8 @@ export class SocialInteractionService {
       id: this.generateId(),
       postId,
       authorId: currentUser.id,
-      authorName: currentUser.displayName,
-      authorAvatar: currentUser.avatar,
+      authorName: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+      authorAvatar: currentUser.profileImageUrl || '',
       content,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -475,7 +475,7 @@ export class SocialInteractionService {
     };
 
     const comments = this.comments.value;
-    
+
     if (parentCommentId) {
       // Add as reply to parent comment
       const parentComment = comments.find(c => c.id === parentCommentId);
@@ -487,27 +487,27 @@ export class SocialInteractionService {
       // Add as top-level comment
       comments.push(newComment);
     }
-    
+
     // Update post comment count
     post.stats.commentsCount++;
-    
+
     this.comments.next(comments);
     this.posts.next(posts);
-    
+
     // Create notification for post author
     if (post.authorId !== currentUser.id) {
       this.createNotification({
         userId: post.authorId,
         type: 'comment',
         actorId: currentUser.id,
-        actorName: currentUser.displayName,
-        actorAvatar: currentUser.avatar,
+        actorName: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+        actorAvatar: currentUser.profileImageUrl || '',
         targetId: postId,
         targetType: 'post',
-        content: `${currentUser.displayName} commented on your post`
+        content: `${currentUser.firstName} ${currentUser.lastName}`.trim() + ' commented on your post'
       });
     }
-    
+
     this.eventTrackingService.trackCustomEvent({
       name: 'comment_added',
       category: 'social',
@@ -522,7 +522,7 @@ export class SocialInteractionService {
 
     this.saveComments();
     this.savePosts();
-    
+
     return newComment;
   }
 
@@ -530,7 +530,7 @@ export class SocialInteractionService {
    * Share a post
    */
   async sharePost(postId: string, shareType: Share['shareType'], shareContent?: string, platform?: string): Promise<void> {
-    const currentUser = this.userProfileService.getCurrentUser();
+    const currentUser = this.userProfileService.currentProfile();
     if (!currentUser) throw new Error('User not authenticated');
 
     const posts = this.posts.value;
@@ -550,25 +550,25 @@ export class SocialInteractionService {
     const shares = this.shares.value;
     shares.push(newShare);
     this.shares.next(shares);
-    
+
     // Update post share count
     post.stats.sharesCount++;
     post.userInteraction.isShared = true;
-    
+
     // Create notification for post author
     if (post.authorId !== currentUser.id) {
       this.createNotification({
         userId: post.authorId,
         type: 'share',
         actorId: currentUser.id,
-        actorName: currentUser.displayName,
-        actorAvatar: currentUser.avatar,
+        actorName: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+        actorAvatar: currentUser.profileImageUrl || '',
         targetId: postId,
         targetType: 'post',
-        content: `${currentUser.displayName} shared your post`
+        content: `${currentUser.firstName} ${currentUser.lastName}`.trim() + ' shared your post'
       });
     }
-    
+
     this.eventTrackingService.trackCustomEvent({
       name: 'post_shared',
       category: 'social',
@@ -590,7 +590,7 @@ export class SocialInteractionService {
    * Bookmark or unbookmark a post
    */
   async toggleBookmark(postId: string, collectionId?: string): Promise<void> {
-    const currentUser = this.userProfileService.getCurrentUser();
+    const currentUser = this.userProfileService.currentProfile();
     if (!currentUser) throw new Error('User not authenticated');
 
     const posts = this.posts.value;
@@ -606,11 +606,11 @@ export class SocialInteractionService {
       // Remove bookmark
       const updatedBookmarks = bookmarks.filter(b => b.id !== existingBookmark.id);
       this.bookmarks.next(updatedBookmarks);
-      
+
       // Update post stats
       post.stats.bookmarksCount = Math.max(0, post.stats.bookmarksCount - 1);
       post.userInteraction.isBookmarked = false;
-      
+
       this.eventTrackingService.trackCustomEvent({
         name: 'post_unbookmarked',
         category: 'social',
@@ -629,14 +629,14 @@ export class SocialInteractionService {
         collectionId,
         createdAt: new Date()
       };
-      
+
       const updatedBookmarks = [...bookmarks, newBookmark];
       this.bookmarks.next(updatedBookmarks);
-      
+
       // Update post stats
       post.stats.bookmarksCount++;
       post.userInteraction.isBookmarked = true;
-      
+
       this.eventTrackingService.trackCustomEvent({
         name: 'post_bookmarked',
         category: 'social',
@@ -667,12 +667,12 @@ export class SocialInteractionService {
 
     const notifications = this.notifications.value;
     notifications.unshift(notification); // Add to beginning
-    
+
     // Keep only last 100 notifications
     if (notifications.length > 100) {
       notifications.splice(100);
     }
-    
+
     this.notifications.next(notifications);
     this.saveNotifications();
   }
@@ -683,7 +683,7 @@ export class SocialInteractionService {
   markNotificationAsRead(notificationId: string): void {
     const notifications = this.notifications.value;
     const notification = notifications.find(n => n.id === notificationId);
-    
+
     if (notification && !notification.isRead) {
       notification.isRead = true;
       this.notifications.next(notifications);
@@ -697,14 +697,14 @@ export class SocialInteractionService {
   markAllNotificationsAsRead(): void {
     const notifications = this.notifications.value;
     let hasChanges = false;
-    
+
     notifications.forEach(notification => {
       if (!notification.isRead) {
         notification.isRead = true;
         hasChanges = true;
       }
     });
-    
+
     if (hasChanges) {
       this.notifications.next(notifications);
       this.saveNotifications();
@@ -729,9 +729,9 @@ export class SocialInteractionService {
    * Get user bookmarks
    */
   getUserBookmarks(userId?: string): Bookmark[] {
-    const targetUserId = userId || this.userProfileService.getCurrentUser()?.id;
+    const targetUserId = userId || this.userProfileService.currentProfile()?.id;
     if (!targetUserId) return [];
-    
+
     return this.bookmarks.value.filter(b => b.userId === targetUserId);
   }
 
@@ -793,7 +793,7 @@ export class SocialInteractionService {
     this.shares.next([]);
     this.bookmarks.next([]);
     this.notifications.next([]);
-    
+
     // Clear storage
     localStorage.removeItem('social-posts');
     localStorage.removeItem('social-comments');

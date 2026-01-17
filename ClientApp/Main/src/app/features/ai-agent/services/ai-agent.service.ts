@@ -255,7 +255,7 @@ export class AIAgentService {
             conversationId: request.conversationId || '',
             agent: 'system',
             metadata: { queued: true },
-            timestamp: new Date()
+            timestamp: new Date().toISOString()
         });
     }
 

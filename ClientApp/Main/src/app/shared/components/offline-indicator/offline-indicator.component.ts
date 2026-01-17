@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfflineService } from '../../../core/services/offline.service';
 import { PWAService } from '../../../core/services/pwa.service';
@@ -135,7 +135,7 @@ export class OfflineIndicatorComponent {
   private pwaService = inject(PWAService);
 
   // Local state
-  private showPendingDetails = false;
+  showPendingDetails = signal(false);
   private wasOffline = false;
   private backOnlineTimer: any = null;
 
@@ -266,11 +266,11 @@ export class OfflineIndicatorComponent {
   }
 
   showPendingDetailsPanel(): void {
-    this.showPendingDetails = true;
+    this.showPendingDetails.set(true);
   }
 
   hidePendingDetails(): void {
-    this.showPendingDetails = false;
+    this.showPendingDetails.set(false);
   }
 
   async forceSync(): Promise<void> {

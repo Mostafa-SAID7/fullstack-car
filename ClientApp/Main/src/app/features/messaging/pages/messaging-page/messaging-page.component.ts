@@ -191,11 +191,11 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   // Local state
-  private selectedConversation = signal<ConversationDto | null>(null);
-  private showInfoPanel = signal(false);
-  private showNewConversationModal = signal(false);
-  private onlineUsers = signal<OnlineStatus[]>([]);
-  private typingUsers = signal<TypingIndicator[]>([]);
+  selectedConversation = signal<ConversationDto | null>(null);
+  showInfoPanel = signal(false);
+  showNewConversationModal = signal(false);
+  onlineUsers = signal<OnlineStatus[]>([]);
+  typingUsers = signal<TypingIndicator[]>([]);
 
   // Computed properties from service
   readonly conversations = computed(() => this.messagingService.conversations());

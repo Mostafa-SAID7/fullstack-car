@@ -433,6 +433,13 @@ export class FIDOptimizationService {
   }
 
   /**
+   * Public API: Schedule task during idle time
+   */
+  scheduleIdleTask(task: () => void): void {
+    this.scheduleTask(task);
+  }
+
+  /**
    * Public API: Enable optimization
    */
   enableOptimization(): void {

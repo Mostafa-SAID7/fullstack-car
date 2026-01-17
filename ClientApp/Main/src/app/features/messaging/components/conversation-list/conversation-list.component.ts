@@ -201,8 +201,8 @@ export class ConversationListComponent {
   newConversation = output<void>();
 
   // Local state
-  private searchQuery = signal('');
-  private activeFilter = signal<'all' | 'unread' | 'archived'>('all');
+  searchQuery = signal('');
+  activeFilter = signal<'all' | 'unread' | 'archived'>('all');
 
   // Expose enums for template
   readonly ConversationType = ConversationType;

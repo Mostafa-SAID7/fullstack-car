@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed, ErrorHandler } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { NotificationService } from './notification.service';
+import { ToastService } from './toast.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -31,7 +31,7 @@ export interface ErrorRecoveryAction {
 })
 export class ErrorHandlerService implements ErrorHandler {
   private router = inject(Router);
-  private notificationService = inject(NotificationService);
+  private toastService = inject(ToastService);
   private authService = inject(AuthService);
 
   // Reactive state
@@ -302,14 +302,11 @@ export class ErrorHandlerService implements ErrorHandler {
     if (error.severity === 'critical') {
       this.showCriticalErrorDialog(error, actions);
     } else if (error.severity === 'high') {
-      this.notificationService.error(error.message, { 
-        duration: 10000,
-        actions: actions.map(a => ({ label: a.label, action: a.action }))
-      });
+      this.toastService.error(error.message);
     } else if (error.severity === 'medium') {
-      this.notificationService.warning(error.message, { duration: 5000 });
+      this.toastService.warning(error.message);
     } else {
-      this.notificationService.info(error.message, { duration: 3000 });
+      this.toastService.info(error.message);
     }
   }
 
@@ -343,9 +340,9 @@ export class ErrorHandlerService implements ErrorHandler {
    */
   private checkNetworkConnection(): void {
     if (navigator.onLine) {
-      this.notificationService.success('Network connection is available');
+      this.toastService.success('Network connection is available');
     } else {
-      this.notificationService.error('No network connection detected');
+      this.toastService.error('No network connection detected');
     }
   }
 
@@ -355,12 +352,12 @@ export class ErrorHandlerService implements ErrorHandler {
   private setupNetworkListeners(): void {
     window.addEventListener('online', () => {
       this._isOnline.set(true);
-      this.notificationService.success('Connection restored');
+      this.toastService.success('Connection restored');
     });
 
     window.addEventListener('offline', () => {
       this._isOnline.set(false);
-      this.notificationService.warning('Connection lost - working offline');
+      this.toastService.warning('Connection lost - working offline');
     });
   }
 

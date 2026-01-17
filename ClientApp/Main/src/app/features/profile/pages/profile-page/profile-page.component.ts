@@ -2,10 +2,10 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap, catchError, of } from 'rxjs';
-import { 
-  UserProfile, 
-  ConnectionStatus, 
-  UpdateProfileRequest, 
+import {
+  UserProfile,
+  ConnectionStatus,
+  UpdateProfileRequest,
   UpdatePrivacySettingsRequest,
   BlockUserRequest,
   ReportUserRequest
@@ -13,6 +13,7 @@ import {
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';
+import { FormsModule } from '@angular/forms';
 import { ProfileHeaderComponent } from '../../components/profile-header/profile-header.component';
 import { ProfileEditComponent } from '../../components/profile-edit/profile-edit.component';
 import { PrivacySettingsComponent } from '../../components/privacy-settings/privacy-settings.component';
@@ -23,6 +24,7 @@ import { ConnectionsListComponent } from '../../components/connections-list/conn
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ProfileHeaderComponent,
     ProfileEditComponent,
     PrivacySettingsComponent,
@@ -316,13 +318,13 @@ export class ProfilePageComponent implements OnInit {
   private userProfileService = inject(UserProfileService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
-  
+
   // State
   profile = signal<UserProfile | null>(null);
   connectionStatus = signal<ConnectionStatus | null>(null);
   isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
-  
+
   // UI State
   activeTab = signal<string>('posts');
   showEditProfileModal = signal<boolean>(false);
@@ -332,7 +334,7 @@ export class ProfilePageComponent implements OnInit {
   showBlockDialog = signal<boolean>(false);
   showReportDialog = signal<boolean>(false);
   selectedReportReason = signal<string>('');
-  
+
   // Profile tabs
   profileTabs = [
     { id: 'posts', label: 'Posts', icon: 'fas fa-file-alt' },
@@ -340,7 +342,7 @@ export class ProfilePageComponent implements OnInit {
     { id: 'friends', label: 'Friends', icon: 'fas fa-users' },
     { id: 'media', label: 'Media', icon: 'fas fa-photo-video' }
   ];
-  
+
   // Report reasons
   reportReasons = [
     { value: 'spam', label: 'Spam', description: 'Unwanted commercial content or repetitive posts' },
@@ -349,13 +351,13 @@ export class ProfilePageComponent implements OnInit {
     { value: 'fake-account', label: 'Fake Account', description: 'Impersonation or fake profile' },
     { value: 'other', label: 'Other', description: 'Other reason not listed above' }
   ];
-  
+
   // Computed values
   isOwnProfile = computed(() => {
     const currentUser = this.authService.currentUser();
     return currentUser && this.profile() && currentUser.id === this.profile()?.id;
   });
-  
+
   ngOnInit(): void {
     this.route.params.pipe(
       switchMap(params => {
@@ -378,28 +380,28 @@ export class ProfilePageComponent implements OnInit {
       this.isLoading.set(false);
     });
   }
-  
+
   // Tab management
   setActiveTab(tabId: string): void {
     this.activeTab.set(tabId);
   }
-  
+
   getTabClasses(tabId: string): string {
     const isActive = this.activeTab() === tabId;
-    return isActive 
-      ? 'bg-primary text-white shadow-lg' 
+    return isActive
+      ? 'bg-primary text-white shadow-lg'
       : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50';
   }
-  
+
   // Profile editing
   showEditProfile(): void {
     this.showEditProfileModal.set(true);
   }
-  
+
   hideEditProfile(): void {
     this.showEditProfileModal.set(false);
   }
-  
+
   updateProfile(request: UpdateProfileRequest): void {
     this.userProfileService.updateProfile(request).subscribe({
       next: (updatedProfile) => {
@@ -411,7 +413,7 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-  
+
   uploadProfileImage(file: File): void {
     this.userProfileService.uploadProfileImage(file).subscribe({
       next: () => {
@@ -422,7 +424,7 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-  
+
   uploadCoverImage(file: File): void {
     this.userProfileService.uploadCoverImage(file).subscribe({
       next: () => {
@@ -433,16 +435,16 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-  
+
   // Privacy settings
   showPrivacySettings(): void {
     this.showPrivacySettingsModal.set(true);
   }
-  
+
   hidePrivacySettings(): void {
     this.showPrivacySettingsModal.set(false);
   }
-  
+
   updatePrivacySettings(request: UpdatePrivacySettingsRequest): void {
     this.userProfileService.updatePrivacySettings(request).subscribe({
       next: (updatedProfile) => {
@@ -451,27 +453,27 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-  
+
   // Connections
   showConnections(type: 'friends' | 'followers' | 'following'): void {
     this.activeConnectionType.set(type);
     this.showConnectionsModal.set(true);
   }
-  
+
   hideConnections(): void {
     this.showConnectionsModal.set(false);
   }
-  
+
   navigateToProfile(userId: string): void {
     this.hideConnections();
     this.router.navigate(['/profile', userId]);
   }
-  
+
   sendMessage(userId: string): void {
     // Navigate to messaging or open message modal
     this.toastService.info('Messaging feature coming soon');
   }
-  
+
   // Social actions
   sendFriendRequest(): void {
     const profileId = this.profile()?.id;
@@ -487,12 +489,12 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   acceptFriendRequest(): void {
     // This would need the request ID, which should be available in the connection status
     this.toastService.info('Friend request accepted');
   }
-  
+
   removeFriend(): void {
     const profileId = this.profile()?.id;
     if (profileId && confirm('Are you sure you want to remove this friend?')) {
@@ -506,7 +508,7 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   followUser(): void {
     const profileId = this.profile()?.id;
     if (profileId) {
@@ -520,7 +522,7 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   unfollowUser(): void {
     const profileId = this.profile()?.id;
     if (profileId) {
@@ -534,16 +536,16 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   // Block user
   showBlockUserDialog(): void {
     this.showBlockDialog.set(true);
   }
-  
+
   hideBlockUserDialog(): void {
     this.showBlockDialog.set(false);
   }
-  
+
   confirmBlockUser(): void {
     const profileId = this.profile()?.id;
     if (profileId) {
@@ -551,7 +553,7 @@ export class ProfilePageComponent implements OnInit {
         userId: profileId,
         reason: 'User blocked from profile'
       };
-      
+
       this.userProfileService.blockUser(request).subscribe({
         next: () => {
           this.hideBlockUserDialog();
@@ -560,37 +562,37 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   blockUser(userId: string): void {
     const request: BlockUserRequest = {
       userId,
       reason: 'User blocked from connections'
     };
-    
+
     this.userProfileService.blockUser(request).subscribe();
   }
-  
+
   // Report user
   showReportUserDialog(): void {
     this.showReportDialog.set(true);
   }
-  
+
   hideReportUserDialog(): void {
     this.showReportDialog.set(false);
     this.selectedReportReason.set('');
   }
-  
+
   confirmReportUser(): void {
     const profileId = this.profile()?.id;
     const reason = this.selectedReportReason();
-    
+
     if (profileId && reason) {
       const request: ReportUserRequest = {
         userId: profileId,
         reason: reason as any,
         description: `User reported from profile page`
       };
-      
+
       this.userProfileService.reportUser(request).subscribe({
         next: () => {
           this.hideReportUserDialog();
@@ -598,17 +600,17 @@ export class ProfilePageComponent implements OnInit {
       });
     }
   }
-  
+
   reportUser(userId: string): void {
     const request: ReportUserRequest = {
       userId,
       reason: 'other',
       description: 'User reported from connections'
     };
-    
+
     this.userProfileService.reportUser(request).subscribe();
   }
-  
+
   // Profile image uploads
   showProfileImageUpload(): void {
     const input = document.createElement('input');
@@ -622,7 +624,7 @@ export class ProfilePageComponent implements OnInit {
     };
     input.click();
   }
-  
+
   showCoverImageUpload(): void {
     const input = document.createElement('input');
     input.type = 'file';
@@ -635,14 +637,14 @@ export class ProfilePageComponent implements OnInit {
     };
     input.click();
   }
-  
+
   // Share profile
   shareProfile(): void {
     const profile = this.profile();
     if (profile) {
       const url = `${window.location.origin}/profile/${profile.id}`;
       const text = `Check out ${profile.firstName} ${profile.lastName}'s profile`;
-      
+
       if (navigator.share) {
         navigator.share({
           title: `${profile.firstName} ${profile.lastName}`,
@@ -656,17 +658,17 @@ export class ProfilePageComponent implements OnInit {
       }
     }
   }
-  
+
   // Helper methods
   formatJoinDate(dateString?: string): string {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
     });
   }
-  
+
   goBack(): void {
     this.router.navigate(['/']);
   }

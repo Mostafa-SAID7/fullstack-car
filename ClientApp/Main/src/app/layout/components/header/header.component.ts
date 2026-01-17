@@ -12,7 +12,7 @@ import { LayoutService } from '../../../core/services/layout.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TranslationService, SupportedLanguage } from '../../../core/services/translation.service';
-import { Notification } from '../../../core/models/notification.model';
+import { NotificationDto } from '../../../core/models/notification.model';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit {
     router = inject(Router);
 
     isSearchOpen = false;
-    
+
     // Language properties
     supportedLanguages = this.translationService.supportedLanguages;
     currentLanguage$ = this.translationService.currentLanguage$;
@@ -79,9 +79,14 @@ export class HeaderComponent implements OnInit {
         return `Theme: ${this.themeService.isDark() ? 'Dark' : 'Light'}`;
     }
 
-    handleNotificationClick(note: Notification) {
+    handleNotificationClick(note: any) {
         if (!note.isRead) {
             this.notificationService.markAsRead(note.id).subscribe();
+        }
+
+        // Navigate to target URL if provided
+        if (note.targetUrl) {
+            this.router.navigate([note.targetUrl]);
         }
     }
 
@@ -101,16 +106,16 @@ export class HeaderComponent implements OnInit {
         try {
             console.log(`Switching to language: ${languageCode}`);
             await this.translationService.changeLanguage(languageCode);
-            
+
             // Show success feedback (optional - could be a toast notification)
             console.log(`Successfully switched to ${languageCode}`);
-            
+
             // Update document title if needed
             this.updateDocumentTitle();
-            
+
         } catch (error) {
             console.error(`Failed to switch language to ${languageCode}:`, error);
-            
+
             // Show error feedback (optional - could be a toast notification)
             // For now, just log the error
         }

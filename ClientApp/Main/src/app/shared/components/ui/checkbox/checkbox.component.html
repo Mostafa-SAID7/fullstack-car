@@ -1,0 +1,16 @@
+<button #checkboxElement type="button" role="checkbox" [attr.aria-checked]="isChecked()"
+    [attr.aria-describedby]="ariaDescribedBy()" [attr.aria-invalid]="isInvalid()" [attr.aria-required]="required()"
+    [id]="checkboxId()" [class]="checkboxClasses()" [disabled]="disabled()" (click)="toggle()" (blur)="onBlur()"
+    (focus)="onFocus()" (keydown)="onKeyDown($event)">
+    @if (isChecked()) {
+    <svg class="h-4 w-4 text-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <path fill-rule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clip-rule="evenodd"></path>
+    </svg>
+    } @else if (indeterminate()) {
+    <svg class="h-4 w-4 text-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <path fill-rule="evenodd" d="M4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+    </svg>
+    }
+</button>

@@ -1,0 +1,6 @@
+<label [class]="labelClasses()" [for]="htmlFor()">
+    <ng-content></ng-content>
+    @if (required()) {
+    <span class="text-destructive ml-1">*</span>
+    }
+</label>

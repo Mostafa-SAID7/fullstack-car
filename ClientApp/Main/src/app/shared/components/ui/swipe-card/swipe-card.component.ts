@@ -32,7 +32,7 @@ export interface SwipeAction {
       <!-- Swipe Actions Background -->
       @if (leftActions().length > 0) {
         <div class="absolute inset-y-0 left-0 flex items-center justify-start bg-green-500 text-white px-4 rounded-l-lg"
-             [style.width.px]="Math.max(0, translateX())">
+             [style.width.px]="getMaxWidth(translateX())">
           @if (translateX() > 60) {
             <div class="flex items-center space-x-2">
               <i [class]="getActiveLeftAction()?.icon + ' text-xl'"></i>
@@ -44,7 +44,7 @@ export interface SwipeAction {
       
       @if (rightActions().length > 0) {
         <div class="absolute inset-y-0 right-0 flex items-center justify-end bg-red-500 text-white px-4 rounded-r-lg"
-             [style.width.px]="Math.max(0, -translateX())">
+             [style.width.px]="getMaxWidth(-translateX())">
           @if (translateX() < -60) {
             <div class="flex items-center space-x-2">
               <span class="font-medium">{{ getActiveRightAction()?.label }}</span>
@@ -231,6 +231,10 @@ export class SwipeCardComponent {
 
   getActiveRightAction(): SwipeAction | undefined {
     return this.rightActions()[0];
+  }
+
+  getMaxWidth(value: number): number {
+    return Math.max(0, value);
   }
 
   private triggerHapticFeedback(): void {

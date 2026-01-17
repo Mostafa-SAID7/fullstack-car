@@ -8,23 +8,20 @@ import { CommonModule } from '@angular/common';
   selector: 'ui-card',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div [class]="cardClasses()">
-      <ng-content></ng-content>
-    </div>
-  `
+  templateUrl: './card.component.html',
+  styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
   variant = input<'default' | 'outline'>('default');
-  
+
   cardClasses = computed(() => {
     const baseClasses = 'rounded-lg border bg-card text-card-foreground shadow-sm';
-    
+
     const variantClasses = {
       default: '',
       outline: 'border-2'
     };
-    
+
     return `${baseClasses} ${variantClasses[this.variant()]}`;
   });
 }
@@ -42,7 +39,7 @@ export class CardComponent {
     </div>
   `
 })
-export class CardHeaderComponent {}
+export class CardHeaderComponent { }
 
 /**
  * Card Title Component
@@ -57,7 +54,7 @@ export class CardHeaderComponent {}
     </h3>
   `
 })
-export class CardTitleComponent {}
+export class CardTitleComponent { }
 
 /**
  * Card Description Component
@@ -72,7 +69,7 @@ export class CardTitleComponent {}
     </p>
   `
 })
-export class CardDescriptionComponent {}
+export class CardDescriptionComponent { }
 
 /**
  * Card Content Component
@@ -87,7 +84,7 @@ export class CardDescriptionComponent {}
     </div>
   `
 })
-export class CardContentComponent {}
+export class CardContentComponent { }
 
 /**
  * Card Footer Component
@@ -102,4 +99,11 @@ export class CardContentComponent {}
     </div>
   `
 })
-export class CardFooterComponent {}
+export class CardFooterComponent { }
+
+// Re-export sub-components for backward compatibility
+export * from './card-header.component';
+export * from './card-title.component';
+export * from './card-description.component';
+export * from './card-content.component';
+export * from './card-footer.component';

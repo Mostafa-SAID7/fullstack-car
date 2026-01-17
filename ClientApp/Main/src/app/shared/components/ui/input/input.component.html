@@ -1,0 +1,6 @@
+<input #inputElement [type]="type()" [placeholder]="placeholder()" [disabled]="disabled()" [readonly]="readonly()"
+    [class]="inputClasses()" [value]="value()" [id]="inputId()" [attr.aria-describedby]="ariaDescribedBy()"
+    [attr.aria-invalid]="isInvalid()" [attr.aria-required]="required()" [attr.autocomplete]="autocomplete()"
+    [attr.maxlength]="maxLength()" [attr.minlength]="minLength()" [attr.min]="min()" [attr.max]="max()"
+    [attr.step]="step()" (input)="onInput($event)" (blur)="onBlur()" (focus)="onFocus()"
+    (keydown)="onKeyDown($event)" />

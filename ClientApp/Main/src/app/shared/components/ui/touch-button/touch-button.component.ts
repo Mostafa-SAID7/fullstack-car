@@ -201,7 +201,7 @@ export class TouchButtonComponent {
     }
   }
 
-  private getIconSize(): string {
+  getIconSize(): string {
     switch (this.size()) {
       case 'sm':
         return 'text-sm';

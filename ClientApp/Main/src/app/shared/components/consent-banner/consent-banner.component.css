@@ -1,0 +1,102 @@
+/* Consent Banner Component Styles */
+
+.consent-banner {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.consent-category {
+  transition: all 0.2s ease-in-out;
+}
+
+.consent-category:hover {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+.consent-banner.top-0 {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .consent-category:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .consent-banner {
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .consent-banner .max-w-7xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Focus states for accessibility */
+.consent-banner button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.consent-banner input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animation for center position */
+.consent-banner.top-1\/2 {
+  animation: slideInFromCenter 0.3s ease-out;
+}
+
+@keyframes slideInFromCenter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Smooth transitions for cookie details */
+.consent-category .space-y-2 {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}

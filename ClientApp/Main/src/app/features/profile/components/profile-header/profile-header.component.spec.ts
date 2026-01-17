@@ -8,8 +8,8 @@ import { signal } from '@angular/core';
 describe('ProfileHeaderComponent', () => {
   let component: ProfileHeaderComponent;
   let fixture: ComponentFixture<ProfileHeaderComponent>;
-  let mockUserProfileService: jasmine.SpyObj<UserProfileService>;
-  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockUserProfileService: any;
+  let mockAuthService: any;
 
   const mockProfile: UserProfile = {
     id: 'test-user-1',
@@ -70,10 +70,23 @@ describe('ProfileHeaderComponent', () => {
   };
 
   beforeEach(async () => {
-    const userProfileServiceSpy = jasmine.createSpyObj('UserProfileService', ['getCurrentProfile']);
-    const authServiceSpy = jasmine.createSpyObj('AuthService', ['currentUser'], {
-      currentUser: signal({ id: 'current-user-id', firstName: 'Current', lastName: 'User', email: 'current@example.com', roles: [] })
-    });
+    const userProfileServiceSpy = {
+      getCurrentProfile: () => Promise.resolve(mockProfile)
+    };
+    
+    const authServiceSpy = {
+      currentUser: signal({ 
+        id: 'current-user-id', 
+        firstName: 'Current', 
+        lastName: 'User', 
+        email: 'current@example.com', 
+        roles: [],
+        isActive: true,
+        isEmailConfirmed: true,
+        status: 1,
+        createdAt: '2023-01-01T00:00:00Z'
+      })
+    };
 
     await TestBed.configureTestingModule({
       imports: [ProfileHeaderComponent],
@@ -85,8 +98,8 @@ describe('ProfileHeaderComponent', () => {
 
     fixture = TestBed.createComponent(ProfileHeaderComponent);
     component = fixture.componentInstance;
-    mockUserProfileService = TestBed.inject(UserProfileService) as jasmine.SpyObj<UserProfileService>;
-    mockAuthService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    mockUserProfileService = TestBed.inject(UserProfileService) as any;
+    mockAuthService = TestBed.inject(AuthService) as any;
 
     // Set up component inputs
     component.profile = mockProfile;
@@ -125,27 +138,27 @@ describe('ProfileHeaderComponent', () => {
   });
 
   it('should emit editProfile event when edit button is clicked', () => {
-    spyOn(component.editProfile, 'emit');
+    const emitSpy = spyOn(component.editProfile, 'emit');
     
     component.onEditProfile();
     
-    expect(component.editProfile.emit).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit sendFriendRequest event when add friend button is clicked', () => {
-    spyOn(component.sendFriendRequest, 'emit');
+    const emitSpy = spyOn(component.sendFriendRequest, 'emit');
     
     component.onSendFriendRequest();
     
-    expect(component.sendFriendRequest.emit).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit followUser event when follow button is clicked', () => {
-    spyOn(component.followUser, 'emit');
+    const emitSpy = spyOn(component.followUser, 'emit');
     
     component.onFollowUser();
     
-    expect(component.followUser.emit).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should format numbers correctly', () => {
@@ -160,14 +173,21 @@ describe('ProfileHeaderComponent', () => {
   });
 
   it('should determine if profile is own profile correctly', () => {
-    // Mock current user
-    mockAuthService.currentUser = signal({ 
+    // Create a new signal with the same ID as the profile
+    const currentUserSignal = signal({ 
       id: 'test-user-1', 
       firstName: 'John', 
       lastName: 'Doe', 
       email: 'john.doe@example.com', 
-      roles: [] 
+      roles: [],
+      isActive: true,
+      isEmailConfirmed: true,
+      status: 1,
+      createdAt: '2023-01-01T00:00:00Z'
     });
+    
+    // Mock the authService currentUser signal
+    mockAuthService.currentUser = currentUserSignal;
     
     fixture.detectChanges();
     

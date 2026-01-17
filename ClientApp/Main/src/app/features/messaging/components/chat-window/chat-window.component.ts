@@ -17,10 +17,10 @@ import { ConversationHeaderComponent } from '../conversation-header/conversation
   selector: 'app-chat-window',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MessageListComponent, 
-    MessageInputComponent, 
+    CommonModule,
+    FormsModule,
+    MessageListComponent,
+    MessageInputComponent,
     ConversationHeaderComponent
   ],
   template: `
@@ -114,10 +114,10 @@ export class ChatWindowComponent implements AfterViewInit {
   messageSent = output<MessageDto>();
 
   // Local state
-  private replyToMessage = signal<MessageDto | null>(null);
-  private editingMessage = signal<MessageDto | null>(null);
-  private isLoading = signal(false);
-  private hasMore = signal(true);
+  protected replyToMessage = signal<MessageDto | null>(null);
+  protected editingMessage = signal<MessageDto | null>(null);
+  protected isLoading = signal(false);
+  protected hasMore = signal(true);
 
   // Computed properties
   readonly messages = computed(() => this.messagingService.activeConversationMessages());
@@ -130,9 +130,9 @@ export class ChatWindowComponent implements AfterViewInit {
   readonly conversationTypingUsers = computed(() => {
     const convId = this.conversation()?.id;
     const currentUserId = this.currentUserId();
-    return this.typingUsers().filter(t => 
-      t.conversationId === convId && 
-      t.userId !== currentUserId && 
+    return this.typingUsers().filter(t =>
+      t.conversationId === convId &&
+      t.userId !== currentUserId &&
       t.isTyping
     );
   });
@@ -173,7 +173,7 @@ export class ChatWindowComponent implements AfterViewInit {
     if (!conv) return;
 
     this.isLoading.set(true);
-    
+
     try {
       await this.messagingService.getMessages(conv.id, { page: 1, pageSize: 50 }).toPromise();
       this.markConversationAsRead();

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../../core/services/auth.service';
-import { UserInfo } from '../../../../../core/models/auth.model';
+import { UserDto } from '../../../../../core/models/auth.model';
 
 @Component({
     selector: 'app-user-profile',
@@ -16,7 +16,7 @@ import { UserInfo } from '../../../../../core/models/auth.model';
 })
 export class UserProfileComponent implements OnInit {
     private authService = inject(AuthService);
-    currentUser: UserInfo | null = null;
+    currentUser: UserDto | null = null;
     activeTab = 'posts';
 
     stats = [

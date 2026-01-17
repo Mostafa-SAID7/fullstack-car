@@ -459,7 +459,7 @@ export class SeoService {
    * Generate structured data for content
    */
   private generateContentStructuredData(contentData: any): any {
-    const baseStructuredData = {
+    const baseStructuredData: any = {
       '@context': 'https://schema.org',
       '@type': this.getSchemaType(contentData.type),
       name: contentData.title,
@@ -504,7 +504,7 @@ export class SeoService {
    * Get Schema.org type based on content type
    */
   private getSchemaType(type?: string): string {
-    const typeMap = {
+    const typeMap: Record<string, string> = {
       'article': 'Article',
       'video': 'VideoObject',
       'audio': 'AudioObject',

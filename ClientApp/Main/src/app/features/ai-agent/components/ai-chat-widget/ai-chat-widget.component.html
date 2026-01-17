@@ -9,8 +9,8 @@
 
     <!-- Chat Window -->
     <div
-        class="absolute bottom-16 sm:bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[400px] h-[calc(100vh-120px)] sm:h-[650px] max-h-[650px] bg-background/80 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-2xl flex flex-col overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom-right [transform:translateY(20px)_scale(0.95)] opacity-0 pointer-events-none group-[.open]:opacity-100 group-[.open]:transform-none group-[.open]:pointer-events-auto">
-        
+        class="absolute bottom-16 sm:bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[400px] h-[calc(100vh-120px)] sm:h-[650px] max-h-[650px] bg-background/80 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-2xl flex flex-col overflow-hidden transition-all duration-400 ease-in-out origin-bottom-right [transform:translateY(20px)_scale(0.95)] opacity-0 pointer-events-none group-[.open]:opacity-100 group-[.open]:transform-none group-[.open]:pointer-events-auto">
+
         <!-- Header -->
         <div class="p-4 flex items-center justify-between border-b border-border/50 bg-white/5 relative">
             <div class="flex items-center gap-3">
@@ -24,7 +24,8 @@
                         <i class="fas fa-chevron-down text-[10px] text-muted-foreground transition-transform duration-300"
                             [class.rotate-180]="showModes"></i>
                     </div>
-                    <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-[0.2em] block leading-none mt-1">
+                    <span
+                        class="text-[10px] text-emerald-500 font-bold uppercase tracking-[0.2em] block leading-none mt-1">
                         {{ getCurrentModeLabel() }} Mode
                     </span>
                 </div>
@@ -56,31 +57,30 @@
             <div *ngFor="let msg of messages" class="flex flex-col max-w-[85%] relative animate-slide-up group/message"
                 [class.self-end]="msg.isUser" [class.items-end]="msg.isUser" [class.self-start]="!msg.isUser"
                 [class.items-start]="!msg.isUser">
-                
+
                 <!-- Message Bubble -->
                 <div class="relative">
                     <!-- Image if present -->
-                    <img *ngIf="msg.imageUrl" [src]="msg.imageUrl" alt="Uploaded image" 
+                    <img *ngIf="msg.imageUrl" [src]="msg.imageUrl" alt="Uploaded image"
                         class="max-w-full rounded-xl mb-2 border border-border/50">
-                    
+
                     <!-- Text Content -->
                     <div class="p-3.5 text-sm leading-relaxed"
                         [class]="msg.isUser ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-lg shadow-primary/20' : 'bg-secondary/50 text-foreground rounded-2xl rounded-tl-none border border-border/50'"
                         [innerHTML]="renderMarkdown(msg.text || '')">
                     </div>
-                    
+
                     <!-- Message Actions (for AI messages only) -->
-                    <div *ngIf="!msg.isUser && msg.agent !== 'system'" 
+                    <div *ngIf="!msg.isUser && msg.agent !== 'system'"
                         class="absolute -bottom-8 left-0 flex gap-1 opacity-0 group-hover/message:opacity-100 transition-opacity">
-                        <button *ngFor="let action of getMessageActions(msg)" 
-                            (click)="action.action()"
+                        <button *ngFor="let action of getMessageActions(msg)" (click)="action.action()"
                             class="w-7 h-7 rounded-lg bg-secondary/80 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all text-xs"
                             [title]="action.label">
                             <i class="fas {{action.icon}}"></i>
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Timestamp -->
                 <span class="text-[9px] text-muted-foreground/60 mt-1 px-1 font-bold uppercase tracking-wider">
                     {{ getRelativeTime(msg.timestamp) }}
@@ -121,7 +121,7 @@
                     <i class="fas fa-times text-xs"></i>
                 </button>
             </div>
-            
+
             <!-- Input Row -->
             <div class="flex gap-2">
                 <!-- Image Upload Button -->
@@ -130,12 +130,12 @@
                     class="bg-secondary/50 border border-transparent rounded-2xl w-12 h-12 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                     <i class="fas fa-image"></i>
                 </button>
-                
+
                 <!-- Text Input -->
                 <input type="text" [(ngModel)]="currentMessage" (keyup.enter)="sendMessage()"
                     placeholder="Ask me anything..." [disabled]="isTyping"
                     class="flex-1 bg-secondary/50 border border-transparent rounded-2xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground/40 shadow-inner">
-                
+
                 <!-- Send Button -->
                 <button (click)="sendMessage()" [disabled]="(!currentMessage.trim() && !selectedImage) || isTyping"
                     class="bg-primary text-white rounded-2xl w-12 h-12 flex items-center justify-center transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/40 disabled:opacity-30 disabled:cursor-not-allowed disabled:bg-secondary disabled:translate-y-0 disabled:shadow-none hover:bg-primary/90 active:scale-95">

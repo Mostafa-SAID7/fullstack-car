@@ -48,7 +48,7 @@ export class LazyMediaDirective implements OnInit, OnDestroy {
   @Input() lazyErrorPlaceholder?: string;
 
   @Output() lazyLoad = new EventEmitter<LazyLoadEvent>();
-  @Output() lazyError = new EventEmitter<{ element: HTMLElement; error: Event; retryCount: number }>();
+  @Output() lazyError = new EventEmitter<{ element: HTMLElement; error: string | Event; retryCount: number }>();
   @Output() lazyRetry = new EventEmitter<{ element: HTMLElement; retryCount: number }>();
 
   private intersectionObserver?: IntersectionObserver;
@@ -272,7 +272,7 @@ export class LazyMediaDirective implements OnInit, OnDestroy {
     }
   }
 
-  private onLoadError(error: Event): void {
+  private onLoadError(error: string | Event): void {
     this._isLoading.set(false);
     this._hasError.set(true);
 
@@ -287,7 +287,8 @@ export class LazyMediaDirective implements OnInit, OnDestroy {
       retryCount: this.retryCount
     });
 
-    console.warn(`Failed to lazy load: ${this.targetSrc} (attempt ${this.retryCount + 1})`);
+    const errorMessage = typeof error === 'string' ? error : 'Failed to load media';
+    console.warn(`Failed to lazy load: ${this.targetSrc} (attempt ${this.retryCount + 1}) - ${errorMessage}`);
   }
 
   private scheduleRetry(): void {
@@ -337,7 +338,7 @@ export class LazyBackgroundDirective implements OnInit, OnDestroy {
   @Input() lazyBackgroundConfig: LazyLoadConfig = {};
 
   @Output() backgroundLoad = new EventEmitter<LazyLoadEvent>();
-  @Output() backgroundError = new EventEmitter<Event>();
+  @Output() backgroundError = new EventEmitter<string | Event>();
 
   private intersectionObserver?: IntersectionObserver;
   private loadStartTime = 0;

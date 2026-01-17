@@ -54,6 +54,7 @@ export interface NotificationDto {
   relatedEntityId?: string;
   relatedEntityType?: string;
   sourceUserId?: string;
+  sourceUserAvatar?: string;
   targetUrl?: string;
   readAt?: string;
   expiresAt?: string;

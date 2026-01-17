@@ -150,17 +150,20 @@ export class PWAService {
         badge: '/assets/icons/icon-72x72.png',
         tag: 'app-update',
         requireInteraction: true,
-        actions: [
-          {
-            action: 'update',
-            title: 'Update Now'
-          },
-          {
-            action: 'dismiss',
-            title: 'Later'
-          }
-        ]
-      });
+        // Note: actions are not supported in all browsers
+        ...(('actions' in Notification.prototype) && {
+          actions: [
+            {
+              action: 'update',
+              title: 'Update Now'
+            },
+            {
+              action: 'dismiss',
+              title: 'Later'
+            }
+          ]
+        })
+      } as any);
 
       notification.onclick = () => {
         this.applyUpdate();
@@ -274,14 +277,15 @@ export class PWAService {
       return null;
     }
 
-    const defaultOptions: NotificationOptions = {
+    const defaultOptions: NotificationOptions & { vibrate?: number[] } = {
       icon: '/assets/icons/icon-192x192.png',
       badge: '/assets/icons/icon-72x72.png',
-      vibrate: [200, 100, 200],
+      // Note: vibrate is not part of standard NotificationOptions
+      ...('vibrate' in navigator && { vibrate: [200, 100, 200] }),
       ...options
     };
 
-    return new Notification(title, defaultOptions);
+    return new Notification(title, defaultOptions as NotificationOptions);
   }
 
   /**

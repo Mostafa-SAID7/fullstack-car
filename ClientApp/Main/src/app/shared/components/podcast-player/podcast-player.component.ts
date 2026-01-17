@@ -1,16 +1,16 @@
-import { 
-  Component, 
-  Input, 
-  Output, 
-  EventEmitter, 
-  signal, 
-  computed, 
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  computed,
   inject,
   OnInit,
   OnDestroy,
   ViewChild,
   ElementRef,
-  ChangeDetectionStrategy 
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../core/services/analytics.service';
@@ -123,13 +123,13 @@ export interface PodcastPlayerConfig {
             </p>
             <div class="flex items-center space-x-2 mt-1 text-xs text-purple-200">
               <span *ngIf="playbackState().currentEpisode?.episodeNumber">
-                Episode {{ playbackState().currentEpisode.episodeNumber }}
+                Episode {{ playbackState().currentEpisode?.episodeNumber }}
               </span>
               <span *ngIf="playbackState().currentEpisode?.seasonNumber">
-                • Season {{ playbackState().currentEpisode.seasonNumber }}
+                • Season {{ playbackState().currentEpisode?.seasonNumber }}
               </span>
               <span *ngIf="playbackState().currentEpisode?.publishDate">
-                • {{ playbackState().currentEpisode.publishDate | date:'mediumDate' }}
+                • {{ playbackState().currentEpisode?.publishDate | date:'mediumDate' }}
               </span>
             </div>
           </div>
@@ -318,7 +318,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
 
   onPlay(): void {
     this.updatePlaybackState({ paused: false });
-    
+
     if (this.config().enableAnalytics) {
       const episode = this.playbackState().currentEpisode;
       if (episode) {
@@ -329,7 +329,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
 
   onPause(): void {
     this.updatePlaybackState({ paused: true });
-    
+
     if (this.config().enableAnalytics) {
       const episode = this.playbackState().currentEpisode;
       if (episode) {
@@ -340,7 +340,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
 
   onEnded(): void {
     this.updatePlaybackState({ ended: true, paused: true });
-    
+
     if (this.config().enableAnalytics) {
       const episode = this.playbackState().currentEpisode;
       if (episode) {
@@ -373,7 +373,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
   onError(event: Event): void {
     const audio = this.audioElement.nativeElement;
     const error = audio.error;
-    
+
     let message = 'An unknown error occurred';
     if (error) {
       switch (error.code) {
@@ -391,12 +391,12 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
           break;
       }
     }
-    
+
     this.updatePlaybackState({
       error: message,
       isLoading: false
     });
-    
+
     if (this.config().enableAnalytics) {
       this.analyticsService.trackException(new Error(message), false);
     }
@@ -412,7 +412,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
    */
   play(): void {
     if (!this.playbackState().currentEpisode) return;
-    
+
     this.audioElement.nativeElement.play().catch(error => {
       console.error('Failed to play audio:', error);
       this.updatePlaybackState({ error: 'Failed to play audio' });
@@ -436,7 +436,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
    */
   selectEpisode(episode: PodcastEpisode): void {
     const wasPlaying = !this.playbackState().paused;
-    
+
     this.updatePlaybackState({
       currentEpisode: episode,
       currentTime: 0,
@@ -448,7 +448,7 @@ export class PodcastPlayerComponent implements OnInit, OnDestroy {
     // Load new audio
     const audio = this.audioElement.nativeElement;
     audio.src = episode.audioUrl;
-    
+
     if (wasPlaying && this.config().autoplay) {
       audio.addEventListener('canplay', () => this.play(), { once: true });
     }

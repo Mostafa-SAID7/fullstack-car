@@ -14,254 +14,8 @@ import { ChunkSplittingService } from '../../../core/services/chunk-splitting.se
   selector: 'app-bundle-analyzer',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="bundle-analyzer p-6 max-w-6xl mx-auto">
-      <h2 class="text-3xl font-bold mb-8 text-center">📊 Bundle Analysis & Optimization</h2>
-      
-      <!-- Bundle Overview -->
-      <div class="overview-cards grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="stat-card bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-          <div class="text-3xl font-bold text-blue-600">{{ formatBytes(bundleMetrics().totalBundleSize) }}</div>
-          <div class="text-sm text-blue-800 mt-2">Total Bundle Size</div>
-        </div>
-        
-        <div class="stat-card bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-          <div class="text-3xl font-bold text-green-600">{{ formatBytes(bundleMetrics().gzippedSize) }}</div>
-          <div class="text-sm text-green-800 mt-2">Gzipped Size</div>
-        </div>
-        
-        <div class="stat-card bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <div class="text-3xl font-bold text-yellow-600">{{ bundleMetrics().duplicateModules.length }}</div>
-          <div class="text-sm text-yellow-800 mt-2">Duplicate Modules</div>
-        </div>
-        
-        <div class="stat-card bg-purple-50 border border-purple-200 rounded-lg p-6 text-center">
-          <div class="text-3xl font-bold text-purple-600">{{ formatBytes(bundleMetrics().unusedCode) }}</div>
-          <div class="text-sm text-purple-800 mt-2">Estimated Unused</div>
-        </div>
-      </div>
-
-      <!-- Optimization Strategies -->
-      <div class="optimization-section mb-8">
-        <h3 class="text-2xl font-semibold mb-6">🚀 Optimization Strategies</h3>
-        
-        <div class="strategies-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
-          @for (strategy of optimizationStrategies(); track strategy.library) {
-            <div class="strategy-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-              <div class="flex items-center justify-between mb-4">
-                <h4 class="text-lg font-semibold">{{ strategy.library }}</h4>
-                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
-                  -{{ formatBytes(strategy.currentSize - strategy.optimizedSize) }}
-                </span>
-              </div>
-              
-              <div class="mb-4">
-                <div class="text-sm text-gray-600 mb-2">{{ strategy.strategy }}</div>
-                <div class="flex justify-between text-sm">
-                  <span>Current: {{ formatBytes(strategy.currentSize) }}</span>
-                  <span class="text-green-600">Optimized: {{ formatBytes(strategy.optimizedSize) }}</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div 
-                    class="bg-green-500 h-2 rounded-full transition-all duration-300"
-                    [style.width.%]="(strategy.optimizedSize / strategy.currentSize) * 100">
-                  </div>
-                </div>
-              </div>
-              
-              <div class="implementation-steps">
-                <div class="text-sm font-medium text-gray-700 mb-2">Implementation:</div>
-                <ul class="text-xs text-gray-600 space-y-1">
-                  @for (step of strategy.implementation; track step) {
-                    <li class="flex items-start">
-                      <span class="text-green-500 mr-2">•</span>
-                      <span>{{ step }}</span>
-                    </li>
-                  }
-                </ul>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- Tree Shaking Opportunities -->
-      <div class="tree-shaking-section mb-8">
-        <h3 class="text-2xl font-semibold mb-6">🌳 Tree Shaking Opportunities</h3>
-        
-        <div class="opportunities-grid grid grid-cols-1 lg:grid-cols-2 gap-6">
-          @for (opportunity of treeShakingOpportunities(); track opportunity) {
-            <div class="opportunity-card bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div class="flex items-start">
-                <div class="text-yellow-500 mr-3 mt-1">⚠️</div>
-                <div class="flex-1">
-                  <div class="text-sm font-medium text-yellow-800">{{ opportunity }}</div>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- Chunk Analysis -->
-      <div class="chunk-analysis-section mb-8">
-        <h3 class="text-2xl font-semibold mb-6">📦 Chunk Distribution Analysis</h3>
-        
-        <div class="chunk-stats bg-white border border-gray-200 rounded-lg p-6 mb-6">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-800">{{ chunkAnalysis().totalChunks }}</div>
-              <div class="text-sm text-gray-600">Total Chunks</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-800">{{ formatBytes(chunkAnalysis().averageChunkSize) }}</div>
-              <div class="text-sm text-gray-600">Average Size</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-800">{{ chunkAnalysis().distribution.critical }}</div>
-              <div class="text-sm text-gray-600">Critical Chunks</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-800">{{ chunkAnalysis().distribution.high + chunkAnalysis().distribution.medium }}</div>
-              <div class="text-sm text-gray-600">Async Chunks</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chunk Recommendations -->
-        @if (chunkAnalysis().recommendations.length > 0) {
-          <div class="recommendations bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h4 class="text-lg font-semibold text-blue-800 mb-4">💡 Recommendations</h4>
-            <ul class="space-y-2">
-              @for (recommendation of chunkAnalysis().recommendations; track recommendation) {
-                <li class="flex items-start text-sm text-blue-700">
-                  <span class="text-blue-500 mr-2">•</span>
-                  <span>{{ recommendation }}</span>
-                </li>
-              }
-            </ul>
-          </div>
-        }
-      </div>
-
-      <!-- Optimization Actions -->
-      <div class="actions-section mb-8">
-        <h3 class="text-2xl font-semibold mb-6">⚡ Quick Actions</h3>
-        
-        <div class="actions-grid grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button 
-            (click)="generateBundleReport()"
-            class="action-btn bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-            📄 Generate Report
-          </button>
-          
-          <button 
-            (click)="analyzeTreeShaking()"
-            class="action-btn bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
-            🌳 Analyze Tree Shaking
-          </button>
-          
-          <button 
-            (click)="optimizeChunks()"
-            class="action-btn bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
-            📦 Optimize Chunks
-          </button>
-        </div>
-      </div>
-
-      <!-- Generated Report -->
-      @if (generatedReport()) {
-        <div class="report-section">
-          <h3 class="text-2xl font-semibold mb-6">📋 Analysis Report</h3>
-          <div class="report-content bg-gray-50 border border-gray-200 rounded-lg p-6">
-            <pre class="text-sm text-gray-800 whitespace-pre-wrap font-mono">{{ generatedReport() }}</pre>
-          </div>
-        </div>
-      }
-
-      <!-- Webpack Configuration Preview -->
-      <div class="webpack-config-section mt-8">
-        <h3 class="text-2xl font-semibold mb-6">⚙️ Optimized Webpack Configuration</h3>
-        
-        <div class="config-tabs mb-4">
-          <div class="flex space-x-2">
-            <button 
-              (click)="setConfigTab('performance')"
-              [class]="configTab() === 'performance' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg transition-colors">
-              Performance
-            </button>
-            <button 
-              (click)="setConfigTab('cache')"
-              [class]="configTab() === 'cache' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg transition-colors">
-              Cache Optimized
-            </button>
-            <button 
-              (click)="setConfigTab('balanced')"
-              [class]="configTab() === 'balanced' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg transition-colors">
-              Balanced
-            </button>
-          </div>
-        </div>
-        
-        <div class="config-preview bg-gray-900 text-green-400 rounded-lg p-6 overflow-x-auto">
-          <pre class="text-sm font-mono">{{ getWebpackConfigPreview() }}</pre>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .bundle-analyzer {
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    
-    .stat-card {
-      transition: transform 0.2s ease-in-out;
-    }
-    
-    .stat-card:hover {
-      transform: translateY(-2px);
-    }
-    
-    .strategy-card {
-      transition: all 0.2s ease-in-out;
-    }
-    
-    .strategy-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transform: translateY(-1px);
-    }
-    
-    .action-btn {
-      transition: all 0.2s ease-in-out;
-      font-weight: 500;
-    }
-    
-    .action-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .config-preview {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    
-    .config-preview::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .config-preview::-webkit-scrollbar-track {
-      background: #374151;
-    }
-    
-    .config-preview::-webkit-scrollbar-thumb {
-      background: #6b7280;
-      border-radius: 4px;
-    }
-  `]
+  templateUrl: './bundle-analyzer.component.html',
+  styleUrls: ['./bundle-analyzer.component.scss']
 })
 export class BundleAnalyzerComponent implements OnInit {
   private bundleOptimizer = inject(BundleOptimizerService);
@@ -298,13 +52,13 @@ export class BundleAnalyzerComponent implements OnInit {
   analyzeTreeShaking(): void {
     const opportunities = this.bundleOptimizer.getTreeShakingOpportunities();
     const optimizedImports = this.bundleOptimizer.getOptimizedImports();
-    
+
     let report = '# Tree Shaking Analysis\n\n';
     report += '## Opportunities Found:\n';
     opportunities.forEach(op => {
       report += `- ${op}\n`;
     });
-    
+
     report += '\n## Optimized Import Suggestions:\n';
     Object.entries(optimizedImports).forEach(([lib, suggestions]) => {
       report += `\n### ${lib}:\n`;
@@ -322,13 +76,13 @@ export class BundleAnalyzerComponent implements OnInit {
   optimizeChunks(): void {
     const recommendations = this.chunkSplitting.getLoadingRecommendations();
     const config = this.chunkSplitting.getOptimalSplittingConfig();
-    
+
     let report = '# Chunk Optimization Analysis\n\n';
     report += '## Recommendations:\n';
     recommendations.forEach(rec => {
       report += `- ${rec}\n`;
     });
-    
+
     report += '\n## Optimized Configuration:\n';
     report += '```javascript\n';
     report += JSON.stringify(config, null, 2);

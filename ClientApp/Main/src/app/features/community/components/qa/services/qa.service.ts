@@ -391,7 +391,7 @@ export class QAService {
 
         this.qaSignalRService.reputationUpdated$.subscribe(event => {
             // Update user reputation if it's the current user
-            const currentUser = this.authService.currentUser;
+            const currentUser = this.authService.currentUser();
             if (currentUser && currentUser.id === event.userId) {
                 this.getUserReputation().subscribe();
             }
