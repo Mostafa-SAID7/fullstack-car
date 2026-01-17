@@ -1,12 +1,13 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Marketplace.Services.DTOs.Responses;
+using Application.Features.Marketplace.Services.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Marketplace.Services.Handlers;
 
-public class ExportServicesHandler : IRequestHandler<WebAPI.Controllers.Marketplace.ExportServicesQuery, Result<byte[]>>
+public class ExportServicesHandler : IRequestHandler<ExportServicesQuery, Result<byte[]>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,7 +16,7 @@ public class ExportServicesHandler : IRequestHandler<WebAPI.Controllers.Marketpl
         _context = context;
     }
 
-    public async Task<Result<byte[]>> Handle(WebAPI.Controllers.Marketplace.ExportServicesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<byte[]>> Handle(ExportServicesQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -95,7 +96,7 @@ public class ExportServicesHandler : IRequestHandler<WebAPI.Controllers.Marketpl
     }
 }
 
-public class GetPopularServicesHandler : IRequestHandler<WebAPI.Controllers.Marketplace.GetPopularServicesQuery, Result<List<CarServiceDto>>>
+public class GetPopularServicesHandler : IRequestHandler<GetPopularServicesQuery, Result<List<CarServiceDto>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -104,7 +105,7 @@ public class GetPopularServicesHandler : IRequestHandler<WebAPI.Controllers.Mark
         _context = context;
     }
 
-    public async Task<Result<List<CarServiceDto>>> Handle(WebAPI.Controllers.Marketplace.GetPopularServicesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<CarServiceDto>>> Handle(GetPopularServicesQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -119,31 +120,27 @@ public class GetPopularServicesHandler : IRequestHandler<WebAPI.Controllers.Mark
             {
                 Id = s.Id,
                 ServiceProviderId = s.ServiceProviderId,
-                Name = s.Name,
                 Title = s.Title,
                 Description = s.Description,
-                ShortDescription = s.ShortDescription,
                 BasePrice = s.BasePrice,
                 MaxPrice = s.MaxPrice,
-                EstimatedDuration = s.EstimatedDuration,
-                MaxDuration = s.MaxDuration,
-                ServiceType = s.ServiceType,
-                Category = s.Category,
-                SubCategory = s.SubCategory,
+                EstimatedDurationMinutes = s.EstimatedDurationMinutes,
+                Type = s.Type,
                 Status = s.Status,
-                IsActive = s.IsActive,
-                IsPopular = s.IsPopular,
-                RequiresApproval = s.RequiresApproval,
-                Requirements = s.Requirements,
-                Inclusions = s.Inclusions,
-                Exclusions = s.Exclusions,
-                Tags = s.Tags,
-                SortOrder = s.SortOrder,
                 AverageRating = s.AverageRating,
                 TotalReviews = s.TotalReviews,
                 TotalBookings = s.TotalBookings,
                 CreatedAt = s.CreatedAt,
-                UpdatedAt = s.UpdatedAt
+                ServiceProviderName = string.Empty, // Will be populated from navigation property if needed
+                TypeName = s.Type.ToString(),
+                StatusName = s.Status.ToString(),
+                Currency = "USD",
+                EstimatedDuration = $"{s.EstimatedDurationMinutes} minutes",
+                IsEmergencyService = s.IsEmergencyService,
+                IsAvailable24x7 = s.IsAvailable24x7,
+                Requirements = s.Requirements,
+                IncludedItems = s.IncludedItems,
+                ExcludedItems = s.ExcludedItems
             }).ToList();
 
             return Result<List<CarServiceDto>>.Success(serviceDtos);
@@ -155,7 +152,7 @@ public class GetPopularServicesHandler : IRequestHandler<WebAPI.Controllers.Mark
     }
 }
 
-public class GetServiceStatisticsHandler : IRequestHandler<WebAPI.Controllers.Marketplace.GetServiceStatisticsQuery, Result<object>>
+public class GetServiceStatisticsHandler : IRequestHandler<GetServiceStatisticsQuery, Result<object>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -164,7 +161,7 @@ public class GetServiceStatisticsHandler : IRequestHandler<WebAPI.Controllers.Ma
         _context = context;
     }
 
-    public async Task<Result<object>> Handle(WebAPI.Controllers.Marketplace.GetServiceStatisticsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<object>> Handle(GetServiceStatisticsQuery request, CancellationToken cancellationToken)
     {
         try
         {

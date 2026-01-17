@@ -53,7 +53,7 @@ public class ExportProductsQuery : IRequest<Result<byte[]>>
     public bool? IsLowStock { get; set; }
 }
 
-public class GetLowStockProductsQuery : IRequest<Result<List<ProductSummary>>>
+public class GetLowStockProductsSummaryQuery : IRequest<Result<List<ProductSummary>>>
 {
     public int Threshold { get; set; } = 10;
 }

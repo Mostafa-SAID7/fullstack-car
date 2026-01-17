@@ -13,14 +13,7 @@ import { IconService } from '@core/services/icon.service';
 @Component({
   selector: 'app-icon',
   standalone: true,
-  template: `
-    <i 
-      [class]="iconClasses()"
-      [attr.aria-label]="ariaLabel() || name()"
-      [attr.role]="role()"
-      [style.font-size.px]="size()">
-    </i>
-  `,
+  templateUrl: './icon.component.html',
   styles: [`
     :host {
       display: inline-flex;
@@ -51,7 +44,7 @@ export class IconComponent {
     const variantSuffix = this.variant() === 'outline' ? '' : `-${this.variant()}`;
     const baseClass = `hugeicons-${iconName}${variantSuffix}`;
     const custom = this.customClass();
-    
+
     return custom ? `${baseClass} ${custom}` : baseClass;
   });
 }

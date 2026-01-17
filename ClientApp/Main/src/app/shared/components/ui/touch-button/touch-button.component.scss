@@ -1,0 +1,55 @@
+:host {
+    display: inline-block;
+}
+
+button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    transition: all 0.15s ease-in-out;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:disabled {
+    transform: none !important;
+}
+
+/* Haptic feedback simulation */
+@keyframes haptic-light {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.98);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes haptic-medium {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.haptic-light {
+    animation: haptic-light 0.1s ease-in-out;
+}
+
+.haptic-medium {
+    animation: haptic-medium 0.15s ease-in-out;
+}

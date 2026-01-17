@@ -62,7 +62,7 @@ public class ApiResponseDto<T>
 /// </summary>
 public class ApiResponseDto : ApiResponseDto<object>
 {
-    public static new ApiResponseDto Success(string? message = null, int statusCode = 200)
+    public static ApiResponseDto Success(string? message = null, int statusCode = 200)
     {
         return new ApiResponseDto
         {

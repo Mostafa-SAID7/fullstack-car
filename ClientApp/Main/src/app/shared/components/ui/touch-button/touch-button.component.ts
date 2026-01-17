@@ -13,75 +13,8 @@ export type TouchButtonSize = 'sm' | 'md' | 'lg' | 'xl';
   selector: 'app-touch-button',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <button
-      [class]="buttonClasses()"
-      [disabled]="disabled()"
-      (click)="onClick()"
-      (touchstart)="onTouchStart($event)"
-      (touchend)="onTouchEnd($event)"
-      (touchcancel)="onTouchCancel()"
-      [attr.aria-label]="ariaLabel()">
-      
-      @if (loading()) {
-        <div class="flex items-center justify-center">
-          <i class="fa-solid fa-spinner animate-spin mr-2"></i>
-          <span>{{ loadingText() || 'Loading...' }}</span>
-        </div>
-      } @else {
-        <div class="flex items-center justify-center space-x-2">
-          @if (icon()) {
-            <i [class]="icon() + ' ' + getIconSize()"></i>
-          }
-          @if (label()) {
-            <span>{{ label() }}</span>
-          }
-          <ng-content></ng-content>
-        </div>
-      }
-    </button>
-  `,
-  styles: [`
-    :host {
-      display: inline-block;
-    }
-    
-    button {
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      transition: all 0.15s ease-in-out;
-    }
-    
-    button:active {
-      transform: scale(0.95);
-    }
-    
-    button:disabled {
-      transform: none !important;
-    }
-    
-    /* Haptic feedback simulation */
-    @keyframes haptic-light {
-      0% { transform: scale(1); }
-      50% { transform: scale(0.98); }
-      100% { transform: scale(1); }
-    }
-    
-    @keyframes haptic-medium {
-      0% { transform: scale(1); }
-      50% { transform: scale(0.95); }
-      100% { transform: scale(1); }
-    }
-    
-    .haptic-light {
-      animation: haptic-light 0.1s ease-in-out;
-    }
-    
-    .haptic-medium {
-      animation: haptic-medium 0.15s ease-in-out;
-    }
-  `]
+  templateUrl: './touch-button.component.html',
+  styleUrls: ['./touch-button.component.scss']
 })
 export class TouchButtonComponent {
   // Input signals

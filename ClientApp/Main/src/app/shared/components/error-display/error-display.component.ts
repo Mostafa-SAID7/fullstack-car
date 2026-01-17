@@ -10,7 +10,11 @@ export type ErrorSize = 'sm' | 'md' | 'lg';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './error-display.component.html',
-  styleUrls: ['./error-display.component.scss']
+  styles: [`
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] > summary { margin-bottom: 0.5rem; }
+  `]
 })
 export class ErrorDisplayComponent {
   @Input() type: ErrorType = 'generic';

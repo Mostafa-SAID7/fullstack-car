@@ -1,0 +1,89 @@
+<div class="cls-image-container" [class]="containerClasses()" [style.width]="containerWidth()"
+    [style.height]="containerHeight()" [style.aspect-ratio]="config.aspectRatio || computedAspectRatio()"
+    [style.max-width]="maxWidth || '100%'">
+
+    <!-- Blur placeholder (shown while loading) -->
+    @if (config.enableBlurPlaceholder && blurDataUrl && isLoading()) {
+    <div class="blur-placeholder" [style.background-image]="'url(' + blurDataUrl + ')'"
+        [style.aspect-ratio]="config.aspectRatio || computedAspectRatio()">
+    </div>
+    }
+
+    <!-- Skeleton loader (alternative to blur placeholder) -->
+    @if (!config.enableBlurPlaceholder && isLoading()) {
+    <app-skeleton-loader [config]="{
+        variant: 'rectangular',
+        width: '100%',
+        height: containerHeight(),
+        aspectRatio: config.aspectRatio || computedAspectRatio(),
+        animation: 'wave'
+      }" [ariaLabel]="'Loading image: ' + alt">
+    </app-skeleton-loader>
+    }
+
+    <!-- Main image with format optimization -->
+    <picture class="cls-image-picture" [class.loaded]="isLoaded()" [class.loading]="isLoading()"
+        [class.error]="hasError()">
+
+        <!-- AVIF format (best compression) -->
+        @if (config.enableAVIF && avifSrcset()) {
+        <source [srcset]="avifSrcset()" [sizes]="config.sizes" type="image/avif">
+        }
+
+        <!-- WebP format (good compression, wide support) -->
+        @if (config.enableWebP && webpSrcset()) {
+        <source [srcset]="webpSrcset()" [sizes]="config.sizes" type="image/webp">
+        }
+
+        <!-- Fallback image -->
+        <img #imageElement [src]="src" [srcset]="srcset" [sizes]="config.sizes" [alt]="alt" [width]="width"
+            [height]="height" [loading]="config.enableLazyLoading ? 'lazy' : 'eager'"
+            [decoding]="config.priority === 'high' ? 'sync' : 'async'" [attr.fetchpriority]="config.priority"
+            [style.object-fit]="config.objectFit" [style.width]="'100%'" [style.height]="'100%'"
+            (load)="onImageLoad($event)" (error)="onImageError($event)" class="cls-optimized-img">
+    </picture>
+
+    <!-- Loading indicator -->
+    @if (showLoadingIndicator && isLoading()) {
+    <div class="loading-indicator">
+        <div class="loading-spinner"></div>
+    </div>
+    }
+
+    <!-- Error state -->
+    @if (hasError()) {
+    <div class="error-state">
+        <div class="error-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+        </div>
+        <div class="error-message">Failed to load image</div>
+        @if (enableRetry) {
+        <button (click)="retryLoad()" class="retry-button">
+            Retry
+        </button>
+        }
+    </div>
+    }
+
+    <!-- Image info overlay (development only) -->
+    @if (showImageInfo && isLoaded() && imageDimensions()) {
+    <div class="image-info-overlay">
+        <div class="info-item">
+            <span class="label">Size:</span>
+            <span class="value">{{ imageDimensions()!.width }}×{{ imageDimensions()!.height }}</span>
+        </div>
+        <div class="info-item">
+            <span class="label">Ratio:</span>
+            <span class="value">{{ imageDimensions()!.aspectRatio.toFixed(2) }}</span>
+        </div>
+        <div class="info-item">
+            <span class="label">Format:</span>
+            <span class="value">{{ detectedFormat() }}</span>
+        </div>
+    </div>
+    }
+</div>

@@ -1,0 +1,38 @@
+<div #containerElement class="cls-optimized-container" [class]="containerClasses()"
+    [style.min-height]="config.minHeight || 'auto'" [style.aspect-ratio]="config.aspectRatio || 'auto'">
+
+    <!-- Skeleton Loading State -->
+    @if (isLoading() && config.enableSkeletonLoading) {
+    <div class="skeleton-container" [class]="skeletonClasses()">
+        <ng-container [ngTemplateOutlet]="skeletonTemplate()"></ng-container>
+    </div>
+    }
+
+    <!-- Main Content -->
+    @if (!isLoading() || !config.enableSkeletonLoading) {
+    <div class="content-container" [class.fade-in]="config.enableSkeletonLoading && wasLoading()"
+        [style.min-height]="config.reserveSpace ? (config.minHeight || '200px') : 'auto'">
+        <ng-content></ng-content>
+    </div>
+    }
+
+    <!-- CLS Metrics Display (Development Only) -->
+    @if (showMetrics && clsMetrics()) {
+    <div class="cls-metrics-overlay">
+        <div class="cls-metric">
+            <span class="label">CLS Score:</span>
+            <span class="value" [class.warning]="clsMetrics()!.clsScore > 0.1">
+                {{ clsMetrics()!.clsScore.toFixed(4) }}
+            </span>
+        </div>
+        <div class="cls-metric">
+            <span class="label">Shifts:</span>
+            <span class="value">{{ clsMetrics()!.shiftCount }}</span>
+        </div>
+        <div class="cls-metric">
+            <span class="label">Largest:</span>
+            <span class="value">{{ clsMetrics()!.largestShift.toFixed(4) }}</span>
+        </div>
+    </div>
+    }
+</div>

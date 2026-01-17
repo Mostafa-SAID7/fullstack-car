@@ -21,18 +21,7 @@ import { RtlService, LayoutDirection } from '../../../core/services/rtl.service'
   selector: 'app-rtl-layout',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div 
-      class="rtl-layout-wrapper"
-      [attr.dir]="currentDirection"
-      [class.rtl-layout]="isRTL"
-      [class.ltr-layout]="!isRTL"
-      [class.rtl-forced]="forceDirection === 'rtl'"
-      [class.ltr-forced]="forceDirection === 'ltr'"
-      [ngClass]="wrapperClass">
-      <ng-content></ng-content>
-    </div>
-  `,
+  templateUrl: './rtl-layout.component.html',
   styles: [`
     .rtl-layout-wrapper {
       width: 100%;

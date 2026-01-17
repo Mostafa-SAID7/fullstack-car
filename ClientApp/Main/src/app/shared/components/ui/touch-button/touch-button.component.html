@@ -1,0 +1,20 @@
+<button [class]="buttonClasses()" [disabled]="disabled()" (click)="onClick()" (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)" (touchcancel)="onTouchCancel()" [attr.aria-label]="ariaLabel()">
+
+    @if (loading()) {
+    <div class="flex items-center justify-center">
+        <i class="fa-solid fa-spinner animate-spin mr-2"></i>
+        <span>{{ loadingText() || 'Loading...' }}</span>
+    </div>
+    } @else {
+    <div class="flex items-center justify-center space-x-2">
+        @if (icon()) {
+        <i [class]="icon() + ' ' + getIconSize()"></i>
+        }
+        @if (label()) {
+        <span>{{ label() }}</span>
+        }
+        <ng-content></ng-content>
+    </div>
+    }
+</button>

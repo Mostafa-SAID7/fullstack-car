@@ -1,0 +1,5 @@
+<div class="rtl-layout-wrapper" [attr.dir]="currentDirection" [class.rtl-layout]="isRTL" [class.ltr-layout]="!isRTL"
+    [class.rtl-forced]="forceDirection === 'rtl'" [class.ltr-forced]="forceDirection === 'ltr'"
+    [ngClass]="wrapperClass">
+    <ng-content></ng-content>
+</div>

@@ -1,0 +1,9 @@
+:host {
+    display: block;
+}
+
+.touch-manipulation {
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}

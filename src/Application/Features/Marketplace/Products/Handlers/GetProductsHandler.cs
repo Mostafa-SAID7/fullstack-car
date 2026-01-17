@@ -369,16 +369,16 @@ public class ExportProductsHandler : IRequestHandler<ExportProductsQuery, Result
     }
 }
 
-public class GetLowStockProductsHandler : IRequestHandler<GetLowStockProductsQuery, Result<List<ProductSummary>>>
+public class GetLowStockProductsSummaryHandler : IRequestHandler<GetLowStockProductsSummaryQuery, Result<List<ProductSummary>>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetLowStockProductsHandler(IApplicationDbContext context)
+    public GetLowStockProductsSummaryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result<List<ProductSummary>>> Handle(GetLowStockProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<ProductSummary>>> Handle(GetLowStockProductsSummaryQuery request, CancellationToken cancellationToken)
     {
         try
         {

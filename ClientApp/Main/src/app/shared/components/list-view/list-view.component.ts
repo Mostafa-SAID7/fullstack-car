@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, TemplateRef, ContentChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoadingStateComponent } from '../loading-state/loading-state.component';
+import { LoadingSpinnerComponent } from '../ui/loading/loading-spinner.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
-import { PaginationComponent } from '../pagination/pagination.component';
+import { PaginationComponent } from '../ui/pagination/pagination.component';
 
 export interface ListViewConfig {
     showPagination?: boolean;
@@ -21,7 +21,7 @@ export interface PaginationConfig {
 @Component({
     selector: 'app-list-view',
     standalone: true,
-    imports: [CommonModule, LoadingStateComponent, EmptyStateComponent, PaginationComponent],
+    imports: [CommonModule, LoadingSpinnerComponent, EmptyStateComponent, PaginationComponent],
     templateUrl: './list-view.component.html'
 })
 export class ListViewComponent {

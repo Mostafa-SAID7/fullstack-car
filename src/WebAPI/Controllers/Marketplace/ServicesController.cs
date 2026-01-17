@@ -1,5 +1,6 @@
 using Application.Features.Marketplace.Services.Commands;
 using Application.Features.Marketplace.Services.DTOs.Requests;
+using Application.Features.Marketplace.Services.Queries;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -439,29 +440,5 @@ namespace WebAPI.Controllers.Marketplace
         public double RadiusKm { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
-    }
-
-    public class ExportServicesQuery : IRequest<Application.Common.Models.Result<byte[]>>
-    {
-        public string Format { get; set; } = "csv";
-        public string? SearchTerm { get; set; }
-        public Domain.Enums.Marketplace.ServiceType? Type { get; set; }
-        public decimal? MinPrice { get; set; }
-        public decimal? MaxPrice { get; set; }
-        public bool? IsEmergencyService { get; set; }
-        public bool? IsAvailable24x7 { get; set; }
-        public decimal? MinRating { get; set; }
-    }
-
-    public class GetPopularServicesQuery : IRequest<Application.Common.Models.Result<List<Application.Features.Marketplace.Services.DTOs.Responses.CarServiceDto>>>
-    {
-        public int Limit { get; set; } = 10;
-        public string Period { get; set; } = "30d";
-    }
-
-    public class GetServiceStatisticsQuery : IRequest<Application.Common.Models.Result<object>>
-    {
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
     }
 }

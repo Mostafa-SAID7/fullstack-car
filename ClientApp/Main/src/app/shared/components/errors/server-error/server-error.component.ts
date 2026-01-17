@@ -6,36 +6,7 @@ import { RouterModule } from '@angular/router';
     selector: 'app-server-error',
     standalone: true,
     imports: [CommonModule, RouterModule],
-    template: `
-    <div class="min-h-[80vh] flex flex-col items-center justify-center p-6 text-center animate-fade-in">
-        <div class="relative mb-8">
-            <h1 class="text-9xl font-black italic text-primary/10 select-none">500</h1>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fas fa-engine-warning text-6xl text-primary animate-pulse"></i>
-            </div>
-        </div>
-        
-        <h2 class="text-3xl font-black text-foreground mb-4 tracking-tight">Engine Failure!</h2>
-        <p class="text-muted-foreground max-w-md mb-8 font-medium">
-            Our servers encountered an internal stall. Our mechanics are already working on the fix. Please try refreshing or come back later.
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-4">
-            <button (click)="refresh()" 
-                class="px-8 py-3 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/30 hover:bg-primary/90 hover:-translate-y-1 active:scale-95 transition-all flex items-center gap-3">
-                <i class="fas fa-sync"></i> Refresh Engine
-            </button>
-            <button routerLink="/community" 
-                class="px-8 py-3 bg-secondary text-foreground rounded-2xl font-black hover:bg-secondary/80 hover:-translate-y-1 active:scale-95 transition-all flex items-center gap-3 border border-border/40">
-                <i class="fas fa-home"></i> Back to Safety
-            </button>
-        </div>
-        
-        <div class="mt-16 text-[10px] text-muted-foreground/30 font-black uppercase tracking-[0.3em]">
-            Error Code: Stall_Internal_500
-        </div>
-    </div>
-  `
+    templateUrl: './server-error.component.html'
 })
 export class ServerErrorComponent {
     refresh() {

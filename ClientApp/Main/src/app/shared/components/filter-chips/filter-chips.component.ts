@@ -12,19 +12,7 @@ export interface ChipOption {
     selector: 'app-filter-chips',
     standalone: true,
     imports: [CommonModule],
-    template: `
-    <div class="flex flex-wrap gap-2">
-      <button 
-        *ngFor="let option of options" 
-        type="button"
-        (click)="toggle(option)"
-        [ngClass]="isSelected(option) ? 'bg-primary text-white' : 'bg-secondary/50 dark:bg-white/5 text-foreground hover:bg-secondary/70 dark:hover:bg-white/10'"
-        class="px-4 py-2 rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 border border-transparent">
-        <i *ngIf="option.icon" class="fas" [ngClass]="option.icon"></i>
-        <span>{{ option.label }}</span>
-      </button>
-    </div>
-  `
+    templateUrl: './filter-chips.component.html'
 })
 export class FilterChipsComponent {
     @Input() options: ChipOption[] = [];

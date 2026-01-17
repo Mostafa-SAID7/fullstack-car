@@ -18,73 +18,8 @@ export interface SwipeAction {
   selector: 'app-swipe-card',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div 
-      class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 touch-manipulation"
-      (touchstart)="onTouchStart($event)"
-      (touchmove)="onTouchMove($event)"
-      (touchend)="onTouchEnd($event)"
-      (mousedown)="onMouseDown($event)"
-      (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp($event)"
-      (mouseleave)="onMouseLeave($event)">
-      
-      <!-- Swipe Actions Background -->
-      @if (leftActions().length > 0) {
-        <div class="absolute inset-y-0 left-0 flex items-center justify-start bg-green-500 text-white px-4 rounded-l-lg"
-             [style.width.px]="getMaxWidth(translateX())">
-          @if (translateX() > 60) {
-            <div class="flex items-center space-x-2">
-              <i [class]="getActiveLeftAction()?.icon + ' text-xl'"></i>
-              <span class="font-medium">{{ getActiveLeftAction()?.label }}</span>
-            </div>
-          }
-        </div>
-      }
-      
-      @if (rightActions().length > 0) {
-        <div class="absolute inset-y-0 right-0 flex items-center justify-end bg-red-500 text-white px-4 rounded-r-lg"
-             [style.width.px]="getMaxWidth(-translateX())">
-          @if (translateX() < -60) {
-            <div class="flex items-center space-x-2">
-              <span class="font-medium">{{ getActiveRightAction()?.label }}</span>
-              <i [class]="getActiveRightAction()?.icon + ' text-xl'"></i>
-            </div>
-          }
-        </div>
-      }
-      
-      <!-- Card Content -->
-      <div 
-        class="relative z-10 transition-transform duration-200 ease-out"
-        [style.transform]="'translateX(' + translateX() + 'px)'">
-        <ng-content></ng-content>
-      </div>
-      
-      <!-- Swipe Indicators -->
-      @if (showIndicators()) {
-        <div class="absolute top-2 right-2 flex space-x-1">
-          @if (leftActions().length > 0) {
-            <div class="w-2 h-2 bg-green-500 rounded-full opacity-50"></div>
-          }
-          @if (rightActions().length > 0) {
-            <div class="w-2 h-2 bg-red-500 rounded-full opacity-50"></div>
-          }
-        </div>
-      }
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    
-    .touch-manipulation {
-      touch-action: pan-y;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-  `]
+  templateUrl: './swipe-card.component.html',
+  styleUrls: ['./swipe-card.component.scss']
 })
 export class SwipeCardComponent {
   private elementRef = inject(ElementRef);
@@ -133,14 +68,14 @@ export class SwipeCardComponent {
   // Touch event handlers
   onTouchStart(event: TouchEvent): void {
     if (this.disabled()) return;
-    
+
     const touch = event.touches[0];
     this.startDrag(touch.clientX, touch.clientY);
   }
 
   onTouchMove(event: TouchEvent): void {
     if (!this.isDragging() || this.disabled()) return;
-    
+
     event.preventDefault();
     const touch = event.touches[0];
     this.updateDrag(touch.clientX, touch.clientY);
@@ -148,27 +83,27 @@ export class SwipeCardComponent {
 
   onTouchEnd(event: TouchEvent): void {
     if (!this.isDragging() || this.disabled()) return;
-    
+
     this.endDrag();
   }
 
   // Mouse event handlers (for desktop testing)
   onMouseDown(event: MouseEvent): void {
     if (this.disabled()) return;
-    
+
     this.startDrag(event.clientX, event.clientY);
   }
 
   onMouseMove(event: MouseEvent): void {
     if (!this.isDragging() || this.disabled()) return;
-    
+
     event.preventDefault();
     this.updateDrag(event.clientX, event.clientY);
   }
 
   onMouseUp(event: MouseEvent): void {
     if (!this.isDragging() || this.disabled()) return;
-    
+
     this.endDrag();
   }
 

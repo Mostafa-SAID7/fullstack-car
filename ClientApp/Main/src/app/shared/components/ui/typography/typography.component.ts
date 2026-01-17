@@ -1,7 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type TypographyVariant = 
+export type TypographyVariant =
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   | 'body1' | 'body2' | 'caption' | 'overline'
   | 'display1' | 'display2' | 'display3';
@@ -18,31 +18,8 @@ export type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
   selector: 'app-typography',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <ng-container [ngSwitch]="element()">
-      <h1 *ngSwitchCase="'h1'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h1>
-      <h2 *ngSwitchCase="'h2'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h2>
-      <h3 *ngSwitchCase="'h3'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h3>
-      <h4 *ngSwitchCase="'h4'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h4>
-      <h5 *ngSwitchCase="'h5'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h5>
-      <h6 *ngSwitchCase="'h6'" [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </h6>
-      <p *ngSwitchDefault [class]="typographyClasses()">
-        <ng-content></ng-content>
-      </p>
-    </ng-container>
-  `
+  templateUrl: './typography.component.html',
+  styleUrls: ['./typography.component.scss']
 })
 export class TypographyComponent {
   // Input signals
