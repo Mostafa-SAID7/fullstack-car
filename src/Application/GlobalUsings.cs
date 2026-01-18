@@ -26,6 +26,8 @@ global using FluentValidation;
 
 // Application Common
 global using Application.Common.Models;
+global using Application.Common.DTOs;
+global using Application.Common.Interfaces;
 global using Application.Common.Interfaces.Data;
 global using Application.Features.Shared.Logging.Interfaces;
 global using Application.Features.Admin.Analytics.Interfaces;
@@ -46,6 +48,7 @@ global using Application.Features.Shared.System.Models;
 global using Domain.Entities.Identity;
 global using Domain.Entities.Community.Posts;
 global using Domain.Entities.Community.Groups;
+global using Domain.Entities.Community.Events;
 global using Domain.Entities.Marketplace.Services;
 global using Domain.Entities.Marketplace.Providers;
 global using Domain.Entities.Marketplace.Bookings;

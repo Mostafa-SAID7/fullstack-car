@@ -24,7 +24,7 @@ namespace WebAPI.Controllers.Community.Maps
         [HttpGet]
         [AllowAnonymous]
         [OutputCache(Duration = 300, Tags = new[] { "Maps" })]
-        public async Task<IActionResult> GetLocations([FromQuery] GetLocationsQuery query)
+        public async Task<IActionResult> GetLocations([FromQuery] Application.Features.Community.Maps.Queries.GetLocationsQuery query)
         {
             var result = await Mediator.Send(query);
 
@@ -300,7 +300,7 @@ namespace WebAPI.Controllers.Community.Maps
         [HttpGet("search")]
         [AllowAnonymous]
         [OutputCache(Duration = 180, Tags = new[] { "Maps", "Search" })]
-        public async Task<IActionResult> SearchLocations([FromQuery] SearchLocationsQuery query)
+        public async Task<IActionResult> SearchLocations([FromQuery] Application.Features.Community.Maps.Queries.SearchLocationsQuery query)
         {
             var result = await Mediator.Send(query);
 

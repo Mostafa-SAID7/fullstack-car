@@ -1,5 +1,6 @@
 using Application.Features.Media.Analytics.Commands;
 using Application.Features.Media.Analytics.Queries;
+using Application.Features.Media.Analytics.DTOs;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -360,31 +361,3 @@ public class MediaAnalyticsController : BaseController
         return "Other";
     }
 }
-
-    private string ParseOSFromUserAgent(string? userAgent)
-    {
-        if (string.IsNullOrEmpty(userAgent))
-            return "Unknown";
-
-        userAgent = userAgent.ToLowerInvariant();
-
-        if (userAgent.Contains("windows"))
-            return "Windows";
-        
-        if (userAgent.Contains("mac os") || userAgent.Contains("macos"))
-            return "macOS";
-        
-        if (userAgent.Contains("linux"))
-            return "Linux";
-        
-        if (userAgent.Contains("android"))
-            return "Android";
-        
-        if (userAgent.Contains("ios") || userAgent.Contains("iphone") || userAgent.Contains("ipad"))
-            return "iOS";
-        
-        return "Other";
-    }
-}
-
-

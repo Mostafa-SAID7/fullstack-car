@@ -7,6 +7,7 @@ namespace Application.Features.Community.Groups.Queries
 {
     public class GetPopularGroupsQuery : IRequest<Result<List<GroupSummaryDto>>>
     {
+        public int Count { get; set; } = 10;
         public int PageSize { get; set; } = 10;
     }
 
@@ -23,7 +24,7 @@ namespace Application.Features.Community.Groups.Queries
         {
             try
             {
-                var popularGroups = await _groupRepository.GetPopularGroupsAsync(request.PageSize, cancellationToken);
+                var popularGroups = await _groupRepository.GetPopularGroupsAsync(request.Count, cancellationToken);
 
                 var groupDtos = popularGroups.Select(g => new GroupSummaryDto
                 {

@@ -13,8 +13,10 @@ namespace Application.Features.Community.Friends.Queries
         public Guid UserId { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? SearchTerm { get; set; }
+        public string? SortBy { get; set; } = "FriendshipDate";
 
-        public string CacheKey => $"Friends_{UserId}_{PageNumber}_{PageSize}";
+        public string CacheKey => $"Friends_{UserId}_{PageNumber}_{PageSize}_{SearchTerm}_{SortBy}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
         public string[]? CacheTags => new[] { $"Friends_{UserId}" };
     }
@@ -33,8 +35,8 @@ namespace Application.Features.Community.Friends.Queries
             var skip = (request.PageNumber - 1) * request.PageSize;
             var specification = new FriendsListSpecification(request.UserId, skip, request.PageSize);
 
-            var friendships = await _friendRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _friendRepository.CountAsync(specification, cancellationToken);
+            var friendships = await _friendRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _friendRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var friendDtos = friendships.Select(f =>
             {

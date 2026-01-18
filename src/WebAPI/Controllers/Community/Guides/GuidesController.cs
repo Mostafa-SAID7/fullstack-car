@@ -1,5 +1,6 @@
 using Application.Features.Community.Guides.Commands;
 using Application.Features.Community.Guides.DTOs.Requests;
+using Application.Features.Community.Guides.DTOs;
 using Application.Features.Community.Guides.Queries;
 using Application.Features.Identity.Core.Interfaces;
 using Asp.Versioning;

@@ -33,7 +33,7 @@ namespace Application.Features.Community.Friends.Commands
         public async Task<Result<bool>> Handle(RemoveFriendCommand command, CancellationToken cancellationToken)
         {
             var specification = new FriendshipExistenceSpecification(command.UserId, command.FriendId);
-            var friendship = await _friendRepository.FirstOrDefaultAsync(specification, cancellationToken);
+            var friendship = await _friendRepository.FirstOrDefaultAsync(specification.Criteria!, cancellationToken);
 
             if (friendship == null || friendship.Status != FriendshipStatus.Accepted)
             {

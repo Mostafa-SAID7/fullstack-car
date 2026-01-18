@@ -185,16 +185,16 @@ namespace WebAPI.Controllers.Community.Groups
                     userGuid, 
                     _currentUserService.UserName ?? "Unknown User");
                 
-                return Created(result.Data, location!, _localizationService.GetString("Groups.Created"));
+                return Created(result.Data, location!, await _localizationProvider.GetTranslationAsync("en-US", "Groups.Created"));
             }
 
             if (result.Errors.Any(e => e.Contains("duplicate name")))
-                return BadRequest(_localizationService.GetString("Groups.DuplicateName"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.DuplicateName"), result.Errors);
 
             if (result.Errors.Any(e => e.Contains("limit exceeded")))
-                return BadRequest(_localizationService.GetString("Groups.LimitExceeded"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.LimitExceeded"), result.Errors);
 
-            return BadRequest(_localizationService.GetString("Error"), result.Errors);
+            return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Error"), result.Errors);
         }
 
         [HttpPut("{id}")]
@@ -297,22 +297,22 @@ namespace WebAPI.Controllers.Community.Groups
                     userGuid, 
                     _currentUserService.UserName ?? "Unknown User");
                 
-                return Success(result.Data, _localizationService.GetString("Groups.Joined"));
+                return Success(result.Data, await _localizationProvider.GetTranslationAsync("en-US", "Groups.Joined"));
             }
 
             if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound(_localizationService.GetString("Groups.NotFound"));
+                return NotFound(await _localizationProvider.GetTranslationAsync("en-US", "Groups.NotFound"));
 
             if (result.Errors.Any(e => e.Contains("already member")))
-                return BadRequest(_localizationService.GetString("Groups.AlreadyMember"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.AlreadyMember"), result.Errors);
 
             if (result.Errors.Any(e => e.Contains("private group")))
-                return BadRequest(_localizationService.GetString("Groups.PrivateGroup"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.PrivateGroup"), result.Errors);
 
             if (result.Errors.Any(e => e.Contains("banned")))
-                return BadRequest(_localizationService.GetString("Groups.Banned"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.Banned"), result.Errors);
 
-            return BadRequest(_localizationService.GetString("Error"), result.Errors);
+            return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Error"), result.Errors);
         }
 
         [HttpPost("{id}/leave")]
@@ -345,19 +345,19 @@ namespace WebAPI.Controllers.Community.Groups
                     userGuid, 
                     _currentUserService.UserName ?? "Unknown User");
                 
-                return Success(_localizationService.GetString("Groups.Left"));
+                return Success(await _localizationProvider.GetTranslationAsync("en-US", "Groups.Left"));
             }
 
             if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound(_localizationService.GetString("Groups.NotFound"));
+                return NotFound(await _localizationProvider.GetTranslationAsync("en-US", "Groups.NotFound"));
 
             if (result.Errors.Any(e => e.Contains("not member")))
-                return BadRequest(_localizationService.GetString("Groups.NotMember"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.NotMember"), result.Errors);
 
             if (result.Errors.Any(e => e.Contains("owner cannot leave")))
-                return BadRequest(_localizationService.GetString("Groups.OwnerCannotLeave"), result.Errors);
+                return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Groups.OwnerCannotLeave"), result.Errors);
 
-            return BadRequest(_localizationService.GetString("Error"), result.Errors);
+            return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Error"), result.Errors);
         }
 
         [HttpPost("{id}/request-join")]
@@ -599,8 +599,8 @@ namespace WebAPI.Controllers.Community.Groups
 
             var query = new GetGroupRecommendationsQuery
             {
-                UserId = userId,
-                PageSize = pageSize
+                UserId = userId ?? Guid.Empty,
+                Count = pageSize
             };
 
             var result = await Mediator.Send(query);

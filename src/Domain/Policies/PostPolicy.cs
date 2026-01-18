@@ -23,7 +23,7 @@ namespace Domain.Policies
             if (post.Status != PostStatus.Published)
                 return false;
 
-            if (post.Group != null && post.Group.Privacy == GroupPrivacy.Private)
+            if (post.Group != null && !post.Group.IsPublic)
             {
                 return user != null && post.Group.Members.Any(m => m.UserId == user.Id);
             }

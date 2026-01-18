@@ -1,5 +1,5 @@
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Shared;
+using Application.Common.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Extensions;

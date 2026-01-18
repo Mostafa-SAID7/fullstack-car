@@ -52,8 +52,8 @@ namespace Infrastructure.Data.Seeds
                 {
                     Name = groupData.Name,
                     Description = groupData.Description,
-                    Type = groupData.Type,
-                    Privacy = GroupPrivacy.Public,
+                    Type = ((int)groupData.Type).ToString(),
+                    Privacy = ((int)GroupPrivacy.Public).ToString(),
                     OwnerId = owner.Id,
                     MembersCount = Random.Shared.Next(15, 250),
                     PostsCount = 0,
@@ -75,7 +75,7 @@ namespace Infrastructure.Data.Seeds
                     {
                         UserId = member.Id,
                         GroupId = group.Id,
-                        Role = member.Id == owner.Id ? GroupMemberRole.Owner : GroupMemberRole.Member,
+                        Role = member.Id == owner.Id ? GroupMemberRole.Owner.ToString() : GroupMemberRole.Member.ToString(),
                         JoinedAt = group.CreatedAt.AddDays(Random.Shared.Next(0, 30)),
                         CreatedAt = DateTime.UtcNow,
                         CreatedBy = "System"

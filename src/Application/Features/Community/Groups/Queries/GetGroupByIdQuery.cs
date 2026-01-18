@@ -11,6 +11,7 @@ namespace Application.Features.Community.Groups.Queries
     public class GetGroupByIdQuery : IRequest<Result<GroupDto>>, ICacheableRequest
     {
         public Guid Id { get; set; }
+        public Guid? UserId { get; set; }
 
         public string CacheKey => $"Group_{Id}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(15);
@@ -29,7 +30,7 @@ namespace Application.Features.Community.Groups.Queries
         public async Task<Result<GroupDto>> Handle(GetGroupByIdQuery request, CancellationToken cancellationToken)
         {
             var specification = new GroupWithDetailsSpecification(request.Id);
-            var group = await _groupRepository.FirstOrDefaultAsync(specification, cancellationToken);
+            var group = await _groupRepository.FirstOrDefaultAsync(specification.Criteria!, cancellationToken);
             
             if (group == null)
             {
@@ -42,10 +43,10 @@ namespace Application.Features.Community.Groups.Queries
                 Name = group.Name,
                 Description = group.Description,
                 ImageUrl = group.ImageUrl,
-                Type = group.Type,
-                Privacy = group.Privacy,
-                MembersCount = group.MembersCount,
-                PostsCount = group.PostsCount,
+                Category = group.Category,
+                IsPublic = group.IsPublic,
+                MemberCount = group.MemberCount,
+                PostCount = group.PostCount,
                 CreatedAt = group.CreatedAt,
                 UpdatedAt = group.UpdatedAt,
                 OwnerId = group.OwnerId,

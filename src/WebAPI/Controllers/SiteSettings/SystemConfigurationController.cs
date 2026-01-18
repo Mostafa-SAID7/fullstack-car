@@ -1,6 +1,6 @@
-using Application.Features.Admin.SystemConfiguration.Commands;
-using Application.Features.Admin.SystemConfiguration.DTOs;
-using Application.Features.Admin.SystemConfiguration.Queries;
+using Application.Features.Admin.SiteSettings.Commands;
+using Application.Features.Admin.SiteSettings.DTOs;
+using Application.Features.Admin.SiteSettings.Queries;
 using Application.Features.Identity.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

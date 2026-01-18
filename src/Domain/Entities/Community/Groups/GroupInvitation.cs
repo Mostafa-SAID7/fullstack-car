@@ -6,6 +6,7 @@ namespace Domain.Entities.Community.Groups
     public class GroupInvitation : BaseEntity
     {
         public Guid GroupId { get; set; }
+        public Guid? InvitedUserId { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = "Member";
         public string? Message { get; set; }
@@ -21,5 +22,6 @@ namespace Domain.Entities.Community.Groups
         // Navigation Properties
         public virtual Group Group { get; set; } = null!;
         public virtual ApplicationUser InvitedByUser { get; set; } = null!;
+        public virtual ApplicationUser? InvitedUser { get; set; }
     }
 }

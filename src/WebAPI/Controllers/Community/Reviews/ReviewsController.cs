@@ -89,7 +89,7 @@ namespace WebAPI.Controllers.Community.Reviews
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetReview), new { id = result.Data.Id });
+                var location = Url.Action(nameof(GetReview), new { id = result.Data });
                 return Created(result.Data, location!, "Review created successfully");
             }
 

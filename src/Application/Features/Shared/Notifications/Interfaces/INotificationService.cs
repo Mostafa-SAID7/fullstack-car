@@ -41,29 +41,29 @@ namespace Application.Features.Shared.Notifications.Interfaces
         Task NotifyGroupJoinRequestAsync(Guid groupId, Guid requesterId, string requesterName);
         Task NotifyGroupJoinRequestApprovedAsync(Guid groupId, Guid userId, string groupName);
         Task NotifyGroupJoinRequestRejectedAsync(Guid groupId, Guid userId, string groupName, string reason);
-        Task NotifyGroupInvitationAsync(Guid groupId, string email, string groupName, string inviterName);
-        Task NotifyGroupOwnershipTransferredAsync(Guid groupId, Guid newOwnerId, Guid previousOwnerId, string groupName);
+        Task NotifyGroupInvitationAsync(Guid userId, string inviterName, string groupName, string message);
+        Task NotifyGroupOwnershipTransferredAsync(Guid groupId, Guid oldOwnerId, Guid newOwnerId, string groupName);
 
         // Event Notifications
-        Task NotifyEventCreatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime startDate);
-        Task NotifyEventUpdatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime startDate);
+        Task NotifyEventCreatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime eventDate);
+        Task NotifyEventUpdatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime eventDate);
         Task NotifyEventCancelledAsync(Guid groupId, Guid eventId, string eventTitle);
-        Task NotifyEventReminderAsync(Guid eventId, List<Guid> attendeeIds, string eventTitle, DateTime startDate);
+        Task NotifyEventReminderAsync(Guid eventId, List<Guid> attendeeIds, string eventTitle, DateTime eventDate);
         Task NotifyEventAttendanceChangedAsync(Guid eventId, Guid userId, string userName, string attendanceType);
 
         // Discussion Notifications
-        Task NotifyDiscussionCreatedAsync(Guid groupId, Guid discussionId, string title, Guid createdBy, string createdByName);
-        Task NotifyDiscussionReplyAsync(Guid discussionId, Guid replyId, string content, Guid createdBy, string createdByName);
-        Task NotifyDiscussionPinnedAsync(Guid groupId, Guid discussionId, string title);
-        Task NotifyDiscussionLockedAsync(Guid groupId, Guid discussionId, string title, string reason);
-        Task NotifyDiscussionUnlockedAsync(Guid groupId, Guid discussionId, string title);
+        Task NotifyDiscussionCreatedAsync(Guid groupId, Guid discussionId, string discussionTitle, Guid creatorId, string creatorName);
+        Task NotifyDiscussionReplyAsync(Guid groupId, Guid discussionId, string discussionTitle, Guid replyerId, string replierName);
+        Task NotifyDiscussionPinnedAsync(Guid groupId, Guid discussionId, string discussionTitle);
+        Task NotifyDiscussionLockedAsync(Guid groupId, Guid discussionId, string discussionTitle, string reason);
+        Task NotifyDiscussionUnlockedAsync(Guid groupId, Guid discussionId, string discussionTitle);
 
         // Real-time Updates
-        Task SendGroupUpdateAsync(Guid groupId, object data);
-        Task SendEventUpdateAsync(Guid eventId, object data);
-        Task SendDiscussionUpdateAsync(Guid discussionId, object data);
-        Task SendUserNotificationAsync(Guid userId, object notification);
-        Task SendGroupMembersUpdateAsync(Guid groupId, object memberData);
+        Task SendGroupUpdateAsync(Guid groupId, object updateData);
+        Task SendEventUpdateAsync(Guid eventId, object updateData);
+        Task SendDiscussionUpdateAsync(Guid discussionId, object updateData);
+        Task SendUserNotificationAsync(Guid userId, object notificationData);
+        Task SendGroupMembersUpdateAsync(Guid groupId, object updateData);
 
         // Bulk Notifications
         Task NotifyGroupMembersAsync(Guid groupId, string message, object? data = null);
@@ -71,7 +71,14 @@ namespace Application.Features.Shared.Notifications.Interfaces
         Task NotifyDiscussionParticipantsAsync(Guid discussionId, string message, object? data = null);
 
         // System Notifications
-        Task NotifySystemMaintenanceAsync(DateTime scheduledTime, string message);
-        Task NotifySystemUpdateAsync(string version, string releaseNotes);
+        Task NotifySystemMaintenanceAsync(DateTime maintenanceTime, string message);
+        Task NotifySystemUpdateAsync(string version, string updateNotes);
+
+        // Event Comment Notifications
+        Task SendEventCommentNotificationAsync(Guid organizerId, Guid eventId, string eventTitle, Guid commenterId, string commentContent);
+        Task SendEventCommentReplyNotificationAsync(Guid parentCommenterId, Guid eventId, string eventTitle, Guid replierId, string replyContent);
+
+        // Event Update Notifications
+        Task SendEventUpdateNotificationAsync(Guid userId, Guid eventId, string eventTitle, string updateContent);
     }
 }

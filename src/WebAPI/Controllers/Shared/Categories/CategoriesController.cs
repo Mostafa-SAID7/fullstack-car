@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Asp.Versioning;
 using WebAPI.Extensions;
-using Application.Features.Shared.Categories.DTOs;
 
 namespace WebAPI.Controllers.Shared.Categories
 {

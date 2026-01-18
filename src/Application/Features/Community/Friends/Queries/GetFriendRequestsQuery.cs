@@ -13,8 +13,9 @@ namespace Application.Features.Community.Friends.Queries
         public Guid UserId { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? Status { get; set; } = "Pending";
 
-        public string CacheKey => $"FriendRequests_{UserId}_{PageNumber}_{PageSize}";
+        public string CacheKey => $"FriendRequests_{UserId}_{PageNumber}_{PageSize}_{Status}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(5);
         public string[]? CacheTags => new[] { $"Requests_{UserId}" };
     }
@@ -33,8 +34,8 @@ namespace Application.Features.Community.Friends.Queries
             var skip = (request.PageNumber - 1) * request.PageSize;
             var specification = new FriendRequestsSpecification(request.UserId, skip, request.PageSize);
 
-            var requests = await _friendRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _friendRepository.CountAsync(specification, cancellationToken);
+            var requests = await _friendRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _friendRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var requestDtos = requests.Select(r => new FriendRequestDto
             {

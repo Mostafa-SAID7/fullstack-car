@@ -12,6 +12,7 @@ namespace Application.Features.Community.Groups.Commands
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
+        public string? Reason { get; set; }
     }
 
     public class DeleteGroupCommandHandler : IRequestHandler<DeleteGroupCommand, Result<bool>>

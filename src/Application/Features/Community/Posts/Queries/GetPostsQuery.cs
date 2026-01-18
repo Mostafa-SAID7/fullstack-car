@@ -17,8 +17,10 @@ namespace Application.Features.Community.Posts.Queries
         public Guid? UserId { get; set; }
         public Guid? GroupId { get; set; }
         public string? Status { get; set; }
+        public string? SortBy { get; set; }
+        public bool SortDescending { get; set; }
 
-        public string CacheKey => $"GetPosts_{PageNumber}_{PageSize}_{UserId}_{GroupId}_{Status}";
+        public string CacheKey => $"GetPosts_{PageNumber}_{PageSize}_{UserId}_{GroupId}_{Status}_{SortBy}_{SortDescending}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(5);
         public string[]? CacheTags => new[] { "Posts" };
     }
@@ -50,8 +52,8 @@ namespace Application.Features.Community.Posts.Queries
                 specification = new PublicPostsSpecification(skip, request.PageSize);
             }
 
-            var posts = await _postRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _postRepository.CountAsync(specification, cancellationToken);
+            var posts = await _postRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _postRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var postDtos = posts.Select(p => new PostDto
             {

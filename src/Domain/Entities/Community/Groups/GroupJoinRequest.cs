@@ -14,6 +14,7 @@ namespace Domain.Entities.Community.Groups
         public DateTime? ProcessedAt { get; set; }
         public Guid? ProcessedBy { get; set; }
         public string? ProcessingReason { get; set; }
+        public string? RejectionReason { get; set; }
 
         // Navigation Properties
         public virtual Group Group { get; set; } = null!;

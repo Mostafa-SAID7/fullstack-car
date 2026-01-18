@@ -15,8 +15,12 @@ namespace Application.Features.Community.Reviews.Queries
         public string? CarBrand { get; set; }
         public string? CarModel { get; set; }
         public Guid? UserId { get; set; }
+        public string? SortBy { get; set; } = "CreatedAt";
+        public bool SortDescending { get; set; } = true;
+        public int? MinRating { get; set; }
+        public int? MaxRating { get; set; }
 
-        public string CacheKey => $"Reviews_{CarBrand}_{CarModel}_{UserId}_{PageNumber}_{PageSize}";
+        public string CacheKey => $"Reviews_{CarBrand}_{CarModel}_{UserId}_{PageNumber}_{PageSize}_{SortBy}_{SortDescending}_{MinRating}_{MaxRating}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
         public string[]? CacheTags => new[] { "Reviews" };
     }
@@ -35,8 +39,8 @@ namespace Application.Features.Community.Reviews.Queries
             var skip = (request.PageNumber - 1) * request.PageSize;
             var specification = new ReviewsWithDetailsSpecification(skip, request.PageSize, request.CarBrand, request.CarModel, request.UserId);
             
-            var reviews = await _reviewRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _reviewRepository.CountAsync(specification, cancellationToken);
+            var reviews = await _reviewRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _reviewRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var reviewDtos = reviews.Select(r => new ReviewDto
             {

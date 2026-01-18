@@ -46,7 +46,7 @@ namespace Application.Features.Shared.Chat.Queries
         public async Task<Result<List<ConversationDto>>> Handle(GetConversationsQuery request, CancellationToken cancellationToken)
         {
             var spec = new ConversationsByUserSpecification(request.UserId);
-            var conversations = await _conversationRepository.ListAsync(spec, cancellationToken);
+            var conversations = await _conversationRepository.ListAsync(spec.Criteria!, cancellationToken);
 
             var result = conversations.Select(c =>
             {
@@ -82,7 +82,7 @@ namespace Application.Features.Shared.Chat.Queries
         public async Task<Result<List<ChatMessageDto>>> Handle(GetChatHistoryQuery request, CancellationToken cancellationToken)
         {
             var spec = new ChatMessagesByConversationSpecification(request.ConversationId, request.PageSize, request.Before);
-            var messages = await _messageRepository.ListAsync(spec, cancellationToken);
+            var messages = await _messageRepository.ListAsync(spec.Criteria!, cancellationToken);
 
             var result = messages
                 .Select(m => new ChatMessageDto

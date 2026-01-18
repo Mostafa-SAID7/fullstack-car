@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using Application.Features.Community.Groups.Interfaces;
+using Application.Features.Community.Events.Interfaces;
 using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Core.Services;
@@ -26,6 +28,9 @@ using Infrastructure.Services.QA;
 using Application.Features.Identity.Profile.Interfaces;
 using Application.Features.Identity.Profile.Services;
 using Application.Features.Identity.Password.Interfaces;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Builder;
+using System.Globalization;
 using Application.Features.Identity.Password.Services;
 using Application.Features.Identity.Security.Services;
 using Application.Features.Media.Shared.Interfaces;
@@ -36,7 +41,8 @@ using Infrastructure.Data.Seeds.Management;
 using Infrastructure.Data.Seeds.Management.Users;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Media;
-using Infrastructure.Repositories.Community;
+using Infrastructure.Repositories.Community.Groups;
+using Infrastructure.Repositories.Community.Events;
 using Infrastructure.Common;
 using Infrastructure.Services.FileStorage;
 using Infrastructure.Services;
@@ -85,6 +91,19 @@ namespace Infrastructure.Extensions
             services.AddScoped<IGroupInvitationRepository, GroupInvitationRepository>();
             services.AddScoped<IGroupBanRepository, GroupBanRepository>();
             services.AddScoped<IGroupDiscussionRepository, GroupDiscussionRepository>();
+            services.AddScoped<IGroupJoinRequestRepository, GroupJoinRequestRepository>();
+            
+            // Events Repositories
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IEventAttendanceRepository, EventAttendanceRepository>();
+            services.AddScoped<IEventCommentRepository, EventCommentRepository>();
+            services.AddScoped<IEventInvitationRepository, EventInvitationRepository>();
+            services.AddScoped<IEventUpdateRepository, EventUpdateRepository>();
+
+            // Community Services
+            services.AddScoped<Application.Features.Community.Events.Services.IEventService, Application.Features.Community.Events.Services.EventService>();
+            services.AddScoped<Application.Features.Community.Groups.Services.IGroupService, Application.Features.Community.Groups.Services.GroupService>();
+            services.AddScoped<Application.Features.Community.Events.Services.IEventHubService, Infrastructure.Services.Events.EventHubService>();
             services.AddSingleton<ITranslationCacheMetricsService, TranslationCacheMetricsService>();
             
             // Configure translation cache warmup options
@@ -279,8 +298,7 @@ namespace Infrastructure.Extensions
             services.AddHostedService<QAPerformanceMonitoringService>();
             
             // Domain Services
-            services.AddScoped<Domain.Services.IExpertIdentificationService, Domain.Services.ExpertIdentificationService>();
-            services.AddScoped<Domain.Services.IReputationService, Domain.Services.ReputationDomainService>();
+            services.AddScoped<Domain.Services.IExpertIdentificationService, Application.Features.Community.QA.Services.ExpertIdentificationService>();
 
             // File Storage Configuration
             services.Configure<FileStorageSettings>(configuration.GetSection(FileStorageSettings.SectionName));

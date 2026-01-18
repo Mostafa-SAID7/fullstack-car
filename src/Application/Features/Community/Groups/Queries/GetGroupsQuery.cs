@@ -1,5 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Community.Groups.DTOs;
+using Application.Features.Community.Groups.Interfaces;
 using Application.Common.Interfaces;
 using MediatR;
 

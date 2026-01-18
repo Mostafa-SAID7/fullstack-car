@@ -26,7 +26,7 @@ namespace Domain.Entities.Community.Groups
 
         // Navigation Properties
         public virtual Group Group { get; set; } = null!;
-        public virtual ApplicationUser Creator { get; set; } = null!;
+        public virtual ApplicationUser CreatedByUser { get; set; } = null!;
         public virtual ApplicationUser? LockedByUser { get; set; }
         public virtual ICollection<GroupDiscussionReply> Replies { get; set; } = new List<GroupDiscussionReply>();
         public virtual ICollection<GroupDiscussionPollOption> PollOptions { get; set; } = new List<GroupDiscussionPollOption>();

@@ -13,4 +13,9 @@ public interface IQAHubService
     Task NotifyQuestionViewUpdateAsync(QuestionViewUpdateDto viewUpdate);
     Task NotifyNewQuestionToCategoryAsync(NewQuestionNotificationDto notification, string category);
     Task SendConnectionStatusAsync(ConnectionStatusDto connectionStatus);
+    
+    // Methods used in QuestionsController
+    Task NotifyQuestionCreated(QuestionDto question);
+    Task NotifyQuestionUpdated(QuestionDto question);
+    Task NotifyQuestionDeleted(Guid questionId);
 }

@@ -52,4 +52,9 @@ public interface IQAHub
     /// Receive connection status update
     /// </summary>
     Task ReceiveConnectionStatus(ConnectionStatusDto connectionStatus);
+
+    /// <summary>
+    /// Receive question deleted notification
+    /// </summary>
+    Task ReceiveQuestionDeleted(Guid questionId);
 }

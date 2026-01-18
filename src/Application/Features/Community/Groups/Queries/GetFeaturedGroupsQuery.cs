@@ -7,6 +7,7 @@ namespace Application.Features.Community.Groups.Queries
 {
     public class GetFeaturedGroupsQuery : IRequest<Result<List<GroupSummaryDto>>>
     {
+        public int Count { get; set; } = 6;
         public int PageSize { get; set; } = 6;
     }
 
@@ -23,7 +24,7 @@ namespace Application.Features.Community.Groups.Queries
         {
             try
             {
-                var featuredGroups = await _groupRepository.GetFeaturedGroupsAsync(request.PageSize, cancellationToken);
+                var featuredGroups = await _groupRepository.GetFeaturedGroupsAsync(request.Count, cancellationToken);
 
                 var groupDtos = featuredGroups.Select(g => new GroupSummaryDto
                 {

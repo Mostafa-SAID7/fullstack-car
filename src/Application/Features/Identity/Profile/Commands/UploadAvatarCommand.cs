@@ -1,4 +1,5 @@
 using Application.Features.Identity.Profile.Interfaces;
+using Application.Features.Identity.Profile.DTOs;
 using Application.Common.Models;
 using MediatR;
 
@@ -7,6 +8,7 @@ namespace Application.Features.Identity.Profile.Commands
     public class UploadAvatarCommand : IRequest<Result<string>>
     {
         public Guid UserId { get; set; }
+        public UploadAvatarRequest Request { get; set; } = default!;
         public Stream FileStream { get; set; } = default!;
         public string FileName { get; set; } = default!;
         public string ContentType { get; set; } = default!;

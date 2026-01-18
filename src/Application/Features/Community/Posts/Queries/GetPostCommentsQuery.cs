@@ -33,8 +33,8 @@ namespace Application.Features.Community.Posts.Queries
             var skip = (request.PageNumber - 1) * request.PageSize;
             var specification = new PostCommentsSpecification(request.PostId, skip, request.PageSize);
 
-            var comments = await _commentRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _commentRepository.CountAsync(specification, cancellationToken);
+            var comments = await _commentRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _commentRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var commentDtos = comments.Select(c => new CommentDto
             {

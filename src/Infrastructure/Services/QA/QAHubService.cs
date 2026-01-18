@@ -245,4 +245,53 @@ public class QAHubService : IQAHubService
             throw;
         }
     }
+
+    // Methods used in QuestionsController
+    public async Task NotifyQuestionCreated(QuestionDto question)
+    {
+        try
+        {
+            // Notify users following the category
+            var normalizedCategory = question.Category.Trim().ToLowerInvariant().Replace(" ", "_");
+            await _hubContext.Clients.Group($"category_{normalizedCategory}")
+                .ReceiveQuestionUpdate(question);
+
+            // Notify experts
+            await _hubContext.Clients.Group("experts")
+                .ReceiveQuestionUpdate(question);
+
+            _logger.LogInformation("QA Hub: Sent question created notification for question {QuestionId}", 
+                question.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "QA Hub: Failed to send question created notification for question {QuestionId}", 
+                question.Id);
+            throw;
+        }
+    }
+
+    public async Task NotifyQuestionUpdated(QuestionDto question)
+    {
+        await NotifyQuestionUpdateAsync(question);
+    }
+
+    public async Task NotifyQuestionDeleted(Guid questionId)
+    {
+        try
+        {
+            // Notify users viewing the specific question
+            await _hubContext.Clients.Group($"question_{questionId}")
+                .ReceiveQuestionDeleted(questionId);
+
+            _logger.LogInformation("QA Hub: Sent question deleted notification for question {QuestionId}", 
+                questionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "QA Hub: Failed to send question deleted notification for question {QuestionId}", 
+                questionId);
+            throw;
+        }
+    }
 }

@@ -7,6 +7,7 @@ namespace Application.Features.Community.Groups.Queries
 {
     public class GetGroupCategoriesQuery : IRequest<Result<List<GroupCategoryDto>>>
     {
+        public bool IncludeGroupCounts { get; set; } = true;
     }
 
     public class GetGroupCategoriesQueryHandler : IRequestHandler<GetGroupCategoriesQuery, Result<List<GroupCategoryDto>>>

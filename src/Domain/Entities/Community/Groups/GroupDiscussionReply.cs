@@ -16,7 +16,7 @@ namespace Domain.Entities.Community.Groups
 
         // Navigation Properties
         public virtual GroupDiscussion Discussion { get; set; } = null!;
-        public virtual ApplicationUser Creator { get; set; } = null!;
+        public virtual ApplicationUser CreatedByUser { get; set; } = null!;
         public virtual GroupDiscussionReply? ParentReply { get; set; }
         public virtual ICollection<GroupDiscussionReply> ChildReplies { get; set; } = new List<GroupDiscussionReply>();
     }

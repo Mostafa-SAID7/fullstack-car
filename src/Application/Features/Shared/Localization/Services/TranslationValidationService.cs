@@ -194,7 +194,7 @@ public class TranslationValidationService : ITranslationValidationService
 
             // Find existing record or create new one
             var existing = await _completenessRepository.FirstOrDefaultAsync(
-                new TranslationCompletenessSpecification(culture, feature), cancellationToken);
+                new TranslationCompletenessSpecification(culture, feature).Criteria!, cancellationToken);
 
             if (existing != null)
             {

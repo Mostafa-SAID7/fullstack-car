@@ -12,6 +12,7 @@ namespace Domain.Entities.Community.Groups
         public string? Notes { get; set; }
         public bool IsApproved { get; set; } = true;
         public DateTime? ApprovedAt { get; set; }
+        public bool IsGoing => AttendanceType == "Going";
 
         // Navigation Properties
         public virtual GroupEvent Event { get; set; } = null!;

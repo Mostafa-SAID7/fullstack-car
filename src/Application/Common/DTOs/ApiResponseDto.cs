@@ -11,6 +11,9 @@ public class ApiResponseDto<T>
     [JsonPropertyName("succeeded")]
     public bool Succeeded { get; set; }
 
+    [JsonPropertyName("isSuccess")]
+    public bool IsSuccess => Succeeded;
+
     [JsonPropertyName("data")]
     public T? Data { get; set; }
 
@@ -89,4 +92,19 @@ public class ApiResponseDto : ApiResponseDto<object>
     {
         return Failure(new[] { error }, message, statusCode);
     }
+}
+
+/// <summary>
+/// Summary information about a user
+/// </summary>
+public class UserSummaryDto
+{
+    public Guid Id { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string? AvatarUrl { get; set; }
+    public bool IsOnline { get; set; }
 }

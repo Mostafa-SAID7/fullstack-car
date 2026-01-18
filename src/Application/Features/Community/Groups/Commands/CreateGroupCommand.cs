@@ -40,10 +40,10 @@ namespace Application.Features.Community.Groups.Commands
                 Name = command.Request.Name,
                 Description = command.Request.Description,
                 ImageUrl = command.Request.ImageUrl,
-                Type = command.Request.Type,
-                Privacy = command.Request.Privacy,
+                Category = command.Request.Category,
+                IsPublic = command.Request.IsPublic,
                 OwnerId = command.OwnerId,
-                MembersCount = 1
+                MemberCount = 1
             };
 
             await _groupRepository.AddAsync(group, cancellationToken);
@@ -52,7 +52,7 @@ namespace Application.Features.Community.Groups.Commands
             {
                 GroupId = group.Id,
                 UserId = command.OwnerId,
-                Role = GroupMemberRole.Admin
+                Role = GroupMemberRole.Admin.ToString()
             };
 
             await _memberRepository.AddAsync(ownerMember, cancellationToken);
@@ -66,9 +66,9 @@ namespace Application.Features.Community.Groups.Commands
                 Name = group.Name,
                 Description = group.Description,
                 ImageUrl = group.ImageUrl,
-                Type = group.Type,
-                Privacy = group.Privacy,
-                MembersCount = group.MembersCount,
+                Category = group.Category,
+                IsPublic = group.IsPublic,
+                MemberCount = group.MemberCount,
                 CreatedAt = group.CreatedAt,
                 OwnerId = group.OwnerId
             };

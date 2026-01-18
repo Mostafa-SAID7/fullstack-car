@@ -61,7 +61,7 @@ namespace Application.Features.Community.Groups.Queries
                     Location = e.Location,
                     EventType = e.EventType,
                     IsOnline = e.IsOnline,
-                    AttendeeCount = e.AttendeeCount,
+                    AttendeeCount = e.Attendances?.Count(a => a.IsGoing) ?? 0,
                     MaxAttendees = e.MaxAttendees,
                     Status = e.Status,
                     IsUserAttending = false, // TODO: Check if current user is attending

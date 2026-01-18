@@ -136,23 +136,26 @@ public class ExpertsController : BaseController
             _logger.LogError(ex, "Error updating expert stats for user {UserId}", userId);
             return StatusCode(500, "Internal server error");
         }
-        #region Expert Notification System
+    }
+    #endregion
+
+    #region Expert Notification System
     [HttpGet("category/{category}/notifiable")]
     public async Task<IActionResult> GetNotifiableExperts(string category)
     {
         try
         {
-            var query = new GetNotifiableExpertsQuery { Category = category };
-            var result = await Mediator.Send(query);
-            
-            return result.IsSuccess ? Success(result.Data) : BadRequest(result.ErrorMessage);
+                var query = new GetNotifiableExpertsQuery { Category = category };
+                var result = await Mediator.Send(query);
+                
+                return result.IsSuccess ? Success(result.Data) : BadRequest(result.ErrorMessage);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting notifiable experts for category {Category}", category);
+                return StatusCode(500, "Internal server error");
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting notifiable experts for category {Category}", category);
-            return StatusCode(500, "Internal server error");
-        }
-    }
 
     [HttpPost("notify")]
     public async Task<IActionResult> NotifyExpertsForQuestion([FromBody] NotifyExpertsRequest request)
@@ -174,8 +177,6 @@ public class ExpertsController : BaseController
             return StatusCode(500, "Internal server error");
         }
     }
-    #endregion
-}
     #endregion
 
     #region Expert Badge and Recognition
@@ -231,5 +232,3 @@ public class ExpertsController : BaseController
     }
     #endregion
 }
-
-

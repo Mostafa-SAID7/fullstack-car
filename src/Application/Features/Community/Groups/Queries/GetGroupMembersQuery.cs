@@ -13,8 +13,12 @@ namespace Application.Features.Community.Groups.Queries
         public Guid GroupId { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? Role { get; set; }
+        public string? SearchTerm { get; set; }
+        public string? SortBy { get; set; }
+        public bool SortDescending { get; set; }
 
-        public string CacheKey => $"GroupMembers_{GroupId}_{PageNumber}_{PageSize}";
+        public string CacheKey => $"GroupMembers_{GroupId}_{PageNumber}_{PageSize}_{Role}_{SearchTerm}_{SortBy}_{SortDescending}";
         public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(5);
         public string[]? CacheTags => new[] { $"GroupMembers_{GroupId}" };
     }
@@ -33,8 +37,8 @@ namespace Application.Features.Community.Groups.Queries
             var skip = (request.PageNumber - 1) * request.PageSize;
             var specification = new GroupMembersSpecification(request.GroupId, skip, request.PageSize);
             
-            var members = await _memberRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _memberRepository.CountAsync(specification, cancellationToken);
+            var members = await _memberRepository.ListAsync(specification.Criteria!, cancellationToken);
+            var totalCount = await _memberRepository.CountAsync(specification.Criteria!, cancellationToken);
 
             var memberDtos = members.Select(m => new GroupMemberDto
             {

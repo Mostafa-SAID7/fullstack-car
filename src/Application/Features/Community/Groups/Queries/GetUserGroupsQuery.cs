@@ -10,6 +10,7 @@ namespace Application.Features.Community.Groups.Queries
         public Guid UserId { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? Type { get; set; }
         public string? Role { get; set; }
     }
 

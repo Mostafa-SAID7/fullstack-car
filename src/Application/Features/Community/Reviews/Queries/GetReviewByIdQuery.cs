@@ -29,7 +29,7 @@ namespace Application.Features.Community.Reviews.Queries
         public async Task<Result<ReviewDto>> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
         {
             var specification = new ReviewByIdSpecification(request.Id);
-            var review = await _reviewRepository.FirstOrDefaultAsync(specification, cancellationToken);
+            var review = await _reviewRepository.FirstOrDefaultAsync(specification.Criteria!, cancellationToken);
 
             if (review == null)
             {

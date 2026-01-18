@@ -1,6 +1,7 @@
 using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
 using Application.Features.Community.QA.Queries;
+using Application.Features.Identity.Profile.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

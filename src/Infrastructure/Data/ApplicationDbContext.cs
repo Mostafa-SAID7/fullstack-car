@@ -1,6 +1,7 @@
 using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
+using Domain.Entities.Community.Events;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Shared.Chat;
 using Domain.Entities.Community.Social;
@@ -48,6 +49,14 @@ namespace Infrastructure.Data
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
+
+        // Community Events Tables
+        public DbSet<Event> Events { get; set; }
+        public DbSet<EventAttendance> EventAttendances { get; set; }
+        public DbSet<EventComment> EventComments { get; set; }
+        public DbSet<EventCommentLike> EventCommentLikes { get; set; }
+        public DbSet<EventInvitation> EventInvitations { get; set; }
+        public DbSet<EventUpdate> EventUpdates { get; set; }
 
         // Community Q&A Tables
         public DbSet<Domain.Entities.Community.QA.Question> Questions { get; set; }

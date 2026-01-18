@@ -7,6 +7,7 @@ namespace Application.Features.Community.Groups.Queries
 {
     public class GetTrendingGroupsQuery : IRequest<Result<List<GroupSummaryDto>>>
     {
+        public int Count { get; set; } = 10;
         public int PageSize { get; set; } = 10;
         public string Timeframe { get; set; } = "week";
     }
@@ -24,7 +25,7 @@ namespace Application.Features.Community.Groups.Queries
         {
             try
             {
-                var trendingGroups = await _groupRepository.GetTrendingGroupsAsync(request.Timeframe, request.PageSize, cancellationToken);
+                var trendingGroups = await _groupRepository.GetTrendingGroupsAsync(request.Timeframe, request.Count, cancellationToken);
 
                 var groupDtos = trendingGroups.Select(g => new GroupSummaryDto
                 {

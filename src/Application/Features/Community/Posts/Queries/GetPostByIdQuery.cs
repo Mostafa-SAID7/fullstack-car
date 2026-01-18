@@ -30,7 +30,7 @@ namespace Application.Features.Community.Posts.Queries
         public async Task<Result<PostDto>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
         {
             var specification = new PostWithDetailsSpecification(request.Id);
-            var post = await _postRepository.FirstOrDefaultAsync(specification, cancellationToken);
+            var post = await _postRepository.FirstOrDefaultAsync(specification.Criteria!, cancellationToken);
 
             if (post == null)
             {

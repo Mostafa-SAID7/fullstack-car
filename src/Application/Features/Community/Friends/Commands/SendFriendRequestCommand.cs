@@ -1,3 +1,4 @@
+using Application.Common.DTOs;
 using Application.Common.Models;
 using Domain.Entities.Community.Social;
 using Domain.Entities.Identity;
@@ -10,13 +11,13 @@ using MediatR;
 
 namespace Application.Features.Community.Friends.Commands
 {
-    public class SendFriendRequestCommand : IRequest<Result<bool>>
+    public class SendFriendRequestCommand : IRequest<ApiResponseDto<object>>
     {
         public Guid UserId { get; set; }
         public Guid FriendId { get; set; }
     }
 
-    public class SendFriendRequestCommandHandler : IRequestHandler<SendFriendRequestCommand, Result<bool>>
+    public class SendFriendRequestCommandHandler : IRequestHandler<SendFriendRequestCommand, ApiResponseDto<object>>
     {
         private readonly IRepository<UserFriend> _friendRepository;
         private readonly IRepository<ApplicationUser> _userRepository;
@@ -38,32 +39,32 @@ namespace Application.Features.Community.Friends.Commands
             _notificationService = notificationService;
         }
 
-        public async Task<Result<bool>> Handle(SendFriendRequestCommand command, CancellationToken cancellationToken)
+        public async Task<ApiResponseDto<object>> Handle(SendFriendRequestCommand command, CancellationToken cancellationToken)
         {
             if (command.UserId == command.FriendId)
             {
-                return Result<bool>.Failure(new[] { "You cannot send a friend request to yourself" });
+                return ApiResponseDto<object>.Failure(new[] { "You cannot send a friend request to yourself" });
             }
 
             var friend = await _userRepository.GetByIdAsync(command.FriendId, cancellationToken);
             if (friend == null)
             {
-                return Result<bool>.Failure(new[] { "Target user not found" });
+                return ApiResponseDto<object>.Failure(new[] { "Target user not found" });
             }
 
             var specification = new FriendshipExistenceSpecification(command.UserId, command.FriendId);
-            var existing = await _friendRepository.FirstOrDefaultAsync(specification, cancellationToken);
+            var existing = await _friendRepository.FirstOrDefaultAsync(specification.Criteria!, cancellationToken);
 
             if (existing != null)
             {
                 if (existing.Status == FriendshipStatus.Accepted)
-                    return Result<bool>.Failure(new[] { "You are already friends" });
+                    return ApiResponseDto<object>.Failure(new[] { "You are already friends" });
 
                 if (existing.Status == FriendshipStatus.Pending)
-                    return Result<bool>.Failure(new[] { "A friend request is already pending" });
+                    return ApiResponseDto<object>.Failure(new[] { "A friend request is already pending" });
 
                 if (existing.Status == FriendshipStatus.Blocked)
-                    return Result<bool>.Failure(new[] { "Unable to send request" });
+                    return ApiResponseDto<object>.Failure(new[] { "Unable to send request" });
             }
 
             var friendship = new UserFriend
@@ -89,7 +90,7 @@ namespace Application.Features.Community.Friends.Commands
 
             await _cacheService.RemoveByTagAsync($"Requests_{command.FriendId}", cancellationToken);
 
-            return Result<bool>.Success(true);
+            return ApiResponseDto<object>.Success(true);
         }
     }
 }

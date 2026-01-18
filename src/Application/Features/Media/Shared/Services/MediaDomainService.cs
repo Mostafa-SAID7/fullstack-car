@@ -83,7 +83,7 @@ public class MediaDomainService : IMediaDomainService
         try
         {
             var analytics = await _analyticsRepository.FirstOrDefaultAsync(
-                new MediaAnalyticsSpecification(Guid.Parse(mediaId)), 
+                new MediaAnalyticsSpecification(Guid.Parse(mediaId)).Criteria!, 
                 cancellationToken);
 
             if (analytics == null)
@@ -141,7 +141,7 @@ public class MediaDomainService : IMediaDomainService
         try
         {
             var spec = new TrendingVideosSpecification(count);
-            return await _videoRepository.ListAsync(spec, cancellationToken);
+            return await _videoRepository.ListAsync(spec.Criteria!, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -155,7 +155,7 @@ public class MediaDomainService : IMediaDomainService
         try
         {
             var spec = new TrendingPodcastsSpecification(count);
-            return await _podcastRepository.ListAsync(spec, cancellationToken);
+            return await _podcastRepository.ListAsync(spec.Criteria!, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -171,7 +171,7 @@ public class MediaDomainService : IMediaDomainService
             // For now, return recent public videos
             // TODO: Implement recommendation algorithm based on user preferences and viewing history
             var spec = new RecentPublicVideosSpecification(count);
-            return await _videoRepository.ListAsync(spec, cancellationToken);
+            return await _videoRepository.ListAsync(spec.Criteria!, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -187,7 +187,7 @@ public class MediaDomainService : IMediaDomainService
             // For now, return recent public podcasts
             // TODO: Implement recommendation algorithm based on user preferences and listening history
             var spec = new RecentPublicPodcastsSpecification(count);
-            return await _podcastRepository.ListAsync(spec, cancellationToken);
+            return await _podcastRepository.ListAsync(spec.Criteria!, cancellationToken);
         }
         catch (Exception ex)
         {

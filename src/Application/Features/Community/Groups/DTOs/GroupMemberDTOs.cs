@@ -145,6 +145,17 @@ namespace Application.Features.Community.Groups.DTOs
         public MembershipStatsDto Stats { get; set; } = new();
     }
 
+    public class GroupMemberStatsDto
+    {
+        public int TotalMembers { get; set; }
+        public int ActiveMembers { get; set; }
+        public int OnlineMembers { get; set; }
+        public int AdminCount { get; set; }
+        public int ModeratorCount { get; set; }
+        public int MemberCount { get; set; }
+        public int NewMembersThisWeek { get; set; }
+    }
+
     public class GroupInvitationsPagedResponse : PaginatedResponseDto<GroupInvitationDto>
     {
         public Dictionary<string, int> StatusCounts { get; set; } = new();

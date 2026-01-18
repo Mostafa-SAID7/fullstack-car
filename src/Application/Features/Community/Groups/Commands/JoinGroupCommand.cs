@@ -1,5 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Community.Groups.DTOs;
+using Application.Features.Community.Groups.Interfaces;
 using Application.Common.Interfaces;
 using Domain.Entities.Community.Groups;
 using MediatR;
@@ -10,6 +11,7 @@ namespace Application.Features.Community.Groups.Commands
     {
         public Guid GroupId { get; set; }
         public Guid UserId { get; set; }
+        public string? Message { get; set; }
         public string? JoinMessage { get; set; }
     }
 

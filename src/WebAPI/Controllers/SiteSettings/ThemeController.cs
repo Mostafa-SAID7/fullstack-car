@@ -87,7 +87,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetTheme), new { themeId = result.Data.Id });
+                var createdTheme = result.Data as dynamic;
+                var location = Url.Action(nameof(GetTheme), new { themeId = createdTheme?.Id });
                 return Created(result.Data, location!, "Theme created successfully");
             }
 
@@ -206,7 +207,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetTheme), new { themeId = result.Data.Id });
+                var duplicatedTheme = result.Data as dynamic;
+                var location = Url.Action(nameof(GetTheme), new { themeId = duplicatedTheme?.Id });
                 return Created(result.Data, location!, "Theme duplicated successfully");
             }
 
@@ -226,7 +228,10 @@ namespace WebAPI.Controllers.SiteSettings
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
-                return File(result.Data.FileContent, "application/json", result.Data.FileName);
+            {
+                var exportData = result.Data as dynamic;
+                return File(System.Text.Encoding.UTF8.GetBytes(exportData?.FileContent ?? ""), "application/json", exportData?.FileName ?? "theme-export.json");
+            }
 
             if (result.Errors.Any(e => e.Contains("not found")))
                 return NotFound("Theme not found");
@@ -257,7 +262,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetTheme), new { themeId = result.Data.Id });
+                var importedTheme = result.Data as dynamic;
+                var location = Url.Action(nameof(GetTheme), new { themeId = importedTheme?.Id });
                 return Created(result.Data, location!, "Theme imported successfully");
             }
 
