@@ -1,60 +1,76 @@
 using Application.Common.Models;
 using Application.Features.Community.Groups.DTOs;
-using Domain.Entities.Community.Groups;
-using Domain.Interfaces;
-using Application.Common.Specifications.Community.Groups;
-using Application.Features.Shared.Caching.Interfaces.Services;
+using Application.Common.Interfaces;
 using MediatR;
 
 namespace Application.Features.Community.Groups.Queries
 {
-    public class GetGroupsQuery : IRequest<Result<PaginatedList<GroupDto>>>, ICacheableRequest
+    public class GetGroupsQuery : IRequest<Result<GroupsPagedResponse>>
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
-
-        public string CacheKey => $"GetGroups_{PageNumber}_{PageSize}";
-        public TimeSpan? CacheExpiration => TimeSpan.FromMinutes(10);
-        public string[]? CacheTags => new[] { "Groups" };
+        public string? Category { get; set; }
+        public string? SearchTerm { get; set; }
+        public string? SortBy { get; set; } = "CreatedAt";
+        public bool SortDescending { get; set; } = true;
+        public bool? IsPublic { get; set; }
+        public bool? IsActive { get; set; } = true;
     }
 
-    public class GetGroupsQueryHandler : IRequestHandler<GetGroupsQuery, Result<PaginatedList<GroupDto>>>
+    public class GetGroupsQueryHandler : IRequestHandler<GetGroupsQuery, Result<GroupsPagedResponse>>
     {
-        private readonly IRepository<Group> _groupRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public GetGroupsQueryHandler(IRepository<Group> groupRepository)
+        public GetGroupsQueryHandler(IGroupRepository groupRepository)
         {
             _groupRepository = groupRepository;
         }
 
-        public async Task<Result<PaginatedList<GroupDto>>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<GroupsPagedResponse>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
         {
-            var skip = (request.PageNumber - 1) * request.PageSize;
-            var specification = new AllGroupsSpecification(skip, request.PageSize);
-            
-            var groups = await _groupRepository.ListAsync(specification, cancellationToken);
-            var totalCount = await _groupRepository.CountAsync(specification, cancellationToken);
+            var result = await _groupRepository.GetGroupsPagedAsync(
+                request.PageNumber,
+                request.PageSize,
+                request.Category,
+                request.SearchTerm,
+                request.SortBy,
+                request.SortDescending,
+                request.IsPublic,
+                request.IsActive,
+                cancellationToken);
 
-            var groupDtos = groups.Select(g => new GroupDto
+            var groupSummaries = result.Items.Select(g => new GroupSummaryDto
             {
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
                 ImageUrl = g.ImageUrl,
-                Type = g.Type,
-                Privacy = g.Privacy,
-                MembersCount = g.MembersCount,
-                PostsCount = g.PostsCount,
+                Category = g.Category,
+                IsPublic = g.IsPublic,
+                MemberCount = g.MemberCount,
                 CreatedAt = g.CreatedAt,
-                UpdatedAt = g.UpdatedAt,
-                OwnerId = g.OwnerId,
-                OwnerFirstName = g.Owner.FirstName,
-                OwnerLastName = g.Owner.LastName,
-                OwnerProfileImageUrl = g.Owner.ProfileImageUrl
+                IsFeatured = g.IsFeatured
             }).ToList();
 
-            var paginatedList = new PaginatedList<GroupDto>(groupDtos, totalCount, request.PageNumber, request.PageSize);
-            return Result<PaginatedList<GroupDto>>.Success(paginatedList);
+            var response = new GroupsPagedResponse
+            {
+                Items = groupSummaries,
+                TotalCount = result.TotalCount,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages,
+                CategoryCounts = await _groupRepository.GetGroupCountsByCategoryAsync(cancellationToken),
+                Stats = new GroupsStatsDto
+                {
+                    TotalGroups = await _groupRepository.GetGroupCountAsync(cancellationToken),
+                    PublicGroups = await _groupRepository.GetPublicGroupCountAsync(cancellationToken),
+                    PrivateGroups = await _groupRepository.GetPrivateGroupCountAsync(cancellationToken),
+                    ActiveGroups = await _groupRepository.GetActiveGroupCountAsync(cancellationToken),
+                    FeaturedGroups = await _groupRepository.GetFeaturedGroupCountAsync(cancellationToken)
+                }
+            };
+
+            return Result<GroupsPagedResponse>.Success(response);
         }
     }
 }

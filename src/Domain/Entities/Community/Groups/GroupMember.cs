@@ -1,5 +1,4 @@
 using Domain.Base;
-using Domain.Enums.Community.Groups;
 using Domain.Entities.Identity;
 
 namespace Domain.Entities.Community.Groups
@@ -8,11 +7,12 @@ namespace Domain.Entities.Community.Groups
     {
         public Guid UserId { get; set; }
         public Guid GroupId { get; set; }
-        public GroupMemberRole Role { get; set; } = GroupMemberRole.Member;
+        public string Role { get; set; } = "Member";
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
-
-        // Additional properties expected by Infrastructure
-        public bool IsActive { get; set; } = true;
+        public DateTime? LastActivity { get; set; }
+        public bool IsOnline { get; set; } = false;
+        public int PostCount { get; set; } = 0;
+        public int ReputationScore { get; set; } = 0;
 
         // Navigation Properties
         public virtual ApplicationUser User { get; set; } = null!;

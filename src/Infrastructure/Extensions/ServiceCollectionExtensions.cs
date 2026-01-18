@@ -36,6 +36,7 @@ using Infrastructure.Data.Seeds.Management;
 using Infrastructure.Data.Seeds.Management.Users;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Media;
+using Infrastructure.Repositories.Community;
 using Infrastructure.Common;
 using Infrastructure.Services.FileStorage;
 using Infrastructure.Services;
@@ -78,6 +79,12 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ITranslationRepository, TranslationRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IGroupMemberRepository, GroupMemberRepository>();
+            services.AddScoped<IGroupEventRepository, GroupEventRepository>();
+            services.AddScoped<IGroupInvitationRepository, GroupInvitationRepository>();
+            services.AddScoped<IGroupBanRepository, GroupBanRepository>();
+            services.AddScoped<IGroupDiscussionRepository, GroupDiscussionRepository>();
             services.AddSingleton<ITranslationCacheMetricsService, TranslationCacheMetricsService>();
             
             // Configure translation cache warmup options
@@ -347,6 +354,47 @@ namespace Infrastructure.Extensions
             services.AddHostedService<AnalyticsAggregationService>();
             services.AddHostedService<AnalyticsValidationService>();
             services.AddHostedService<TranslationValidationBackgroundService>();
+
+            // Add SignalR
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+            });
+
+            // Add Localization
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("ar-SA"),
+                    new CultureInfo("es-ES"),
+                    new CultureInfo("fr-FR"),
+                    new CultureInfo("de-DE"),
+                    new CultureInfo("it-IT"),
+                    new CultureInfo("pt-BR"),
+                    new CultureInfo("ru-RU"),
+                    new CultureInfo("zh-CN"),
+                    new CultureInfo("ja-JP"),
+                    new CultureInfo("ko-KR"),
+                    new CultureInfo("tr-TR"),
+                    new CultureInfo("nl-NL"),
+                    new CultureInfo("sv-SE"),
+                    new CultureInfo("da-DK"),
+                    new CultureInfo("no-NO"),
+                    new CultureInfo("fi-FI"),
+                    new CultureInfo("pl-PL"),
+                    new CultureInfo("cs-CZ"),
+                    new CultureInfo("hu-HU")
+                };
+
+                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             return services;
         }

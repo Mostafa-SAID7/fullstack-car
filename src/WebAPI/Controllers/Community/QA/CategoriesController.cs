@@ -28,8 +28,9 @@ namespace WebAPI.Controllers.Community.QA
 
             return result.IsSuccess 
                 ? Success(result.Data, "Categories retrieved successfully")
-                : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve categories");
+                : BadRequest("Failed to retrieve categories", result.Errors);
         }
+
         [HttpGet("{id}")]
         [OutputCache(Duration = 300, Tags = new[] { "Categories" })]
         public async Task<IActionResult> GetCategory(Guid id)
@@ -39,8 +40,9 @@ namespace WebAPI.Controllers.Community.QA
 
             return result.IsSuccess 
                 ? Success(result.Data, "Category retrieved successfully")
-                : this.ApiBadRequest<CategoryDto>(result.Errors, "Failed to retrieve category");
+                : BadRequest("Failed to retrieve category", result.Errors);
         }
+
         [HttpGet("{id}/experts")]
         [OutputCache(Duration = 180, Tags = new[] { "Categories", "Experts" })] // 3 minutes cache
         public async Task<IActionResult> GetCategoryExperts(Guid id, [FromQuery] GetCategoryExpertsQuery query)
@@ -50,8 +52,9 @@ namespace WebAPI.Controllers.Community.QA
 
             return result.IsSuccess 
                 ? Success(result.Data, "Category experts retrieved successfully")
-                : this.ApiBadRequest<List<ExpertDto>>(result.Errors, "Failed to retrieve category experts");
+                : BadRequest("Failed to retrieve category experts", result.Errors);
         }
+
         [HttpGet("popular")]
         [OutputCache(Duration = 600, Tags = new[] { "Categories" })] // 10 minutes cache
         public async Task<IActionResult> GetPopularCategories([FromQuery] GetPopularCategoriesQuery query)
@@ -60,8 +63,9 @@ namespace WebAPI.Controllers.Community.QA
 
             return result.IsSuccess 
                 ? Success(result.Data, "Popular categories retrieved successfully")
-                : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve popular categories");
+                : BadRequest("Failed to retrieve popular categories", result.Errors);
         }
+
         [HttpPost("{categoryId}/notify-experts")]
         [Authorize(Roles = "User,Expert,Moderator,Admin")]
         public async Task<IActionResult> NotifyExperts(Guid categoryId, [FromBody] NotifyExpertsRequest request)
@@ -76,14 +80,11 @@ namespace WebAPI.Controllers.Community.QA
 
             if (!expertsResult.IsSuccess)
             {
-                return this.ApiBadRequest<object>(expertsResult.Errors, "Failed to retrieve category experts");
+                return BadRequest("Failed to retrieve category experts", expertsResult.Errors);
             }
 
-            // TODO: Implement expert notification service
-            // This would typically involve:
-            // 1. Filtering experts based on their notification preferences
-            // 2. Sending notifications via email, push notifications, or in-app notifications
-            // 3. Logging notification attempts for analytics
+            // TODO: Implement expert notification service integration
+            // In a real implementation this would delegate to a notification service
             
             var notifiedExperts = expertsResult.Data
                 .Where(e => e.ResponseRate > 50) // Only notify active experts

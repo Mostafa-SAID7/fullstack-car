@@ -31,5 +31,47 @@ namespace Application.Features.Shared.Notifications.Interfaces
         Task DeleteNotificationAsync(string notificationId, CancellationToken cancellationToken);
         Task<int> GetUnreadCountAsync(string userId);
         Task<int> GetUnreadCountAsync(string userId, CancellationToken cancellationToken);
+
+        // Group Notifications
+        Task NotifyGroupMemberJoinedAsync(Guid groupId, Guid userId, string userName);
+        Task NotifyGroupMemberLeftAsync(Guid groupId, Guid userId, string userName);
+        Task NotifyGroupMemberBannedAsync(Guid groupId, Guid userId, string userName, string reason);
+        Task NotifyGroupMemberUnbannedAsync(Guid groupId, Guid userId, string userName);
+        Task NotifyGroupMemberRoleChangedAsync(Guid groupId, Guid userId, string userName, string newRole);
+        Task NotifyGroupJoinRequestAsync(Guid groupId, Guid requesterId, string requesterName);
+        Task NotifyGroupJoinRequestApprovedAsync(Guid groupId, Guid userId, string groupName);
+        Task NotifyGroupJoinRequestRejectedAsync(Guid groupId, Guid userId, string groupName, string reason);
+        Task NotifyGroupInvitationAsync(Guid groupId, string email, string groupName, string inviterName);
+        Task NotifyGroupOwnershipTransferredAsync(Guid groupId, Guid newOwnerId, Guid previousOwnerId, string groupName);
+
+        // Event Notifications
+        Task NotifyEventCreatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime startDate);
+        Task NotifyEventUpdatedAsync(Guid groupId, Guid eventId, string eventTitle, DateTime startDate);
+        Task NotifyEventCancelledAsync(Guid groupId, Guid eventId, string eventTitle);
+        Task NotifyEventReminderAsync(Guid eventId, List<Guid> attendeeIds, string eventTitle, DateTime startDate);
+        Task NotifyEventAttendanceChangedAsync(Guid eventId, Guid userId, string userName, string attendanceType);
+
+        // Discussion Notifications
+        Task NotifyDiscussionCreatedAsync(Guid groupId, Guid discussionId, string title, Guid createdBy, string createdByName);
+        Task NotifyDiscussionReplyAsync(Guid discussionId, Guid replyId, string content, Guid createdBy, string createdByName);
+        Task NotifyDiscussionPinnedAsync(Guid groupId, Guid discussionId, string title);
+        Task NotifyDiscussionLockedAsync(Guid groupId, Guid discussionId, string title, string reason);
+        Task NotifyDiscussionUnlockedAsync(Guid groupId, Guid discussionId, string title);
+
+        // Real-time Updates
+        Task SendGroupUpdateAsync(Guid groupId, object data);
+        Task SendEventUpdateAsync(Guid eventId, object data);
+        Task SendDiscussionUpdateAsync(Guid discussionId, object data);
+        Task SendUserNotificationAsync(Guid userId, object notification);
+        Task SendGroupMembersUpdateAsync(Guid groupId, object memberData);
+
+        // Bulk Notifications
+        Task NotifyGroupMembersAsync(Guid groupId, string message, object? data = null);
+        Task NotifyEventAttendeesAsync(Guid eventId, string message, object? data = null);
+        Task NotifyDiscussionParticipantsAsync(Guid discussionId, string message, object? data = null);
+
+        // System Notifications
+        Task NotifySystemMaintenanceAsync(DateTime scheduledTime, string message);
+        Task NotifySystemUpdateAsync(string version, string releaseNotes);
     }
 }

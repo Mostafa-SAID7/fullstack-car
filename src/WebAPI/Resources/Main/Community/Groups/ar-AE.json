@@ -1,86 +1,227 @@
 {
   "groups": {
     "title": "المجموعات",
-    "create": "إنشاء مجموعة",
-    "edit": "تعديل المجموعة",
-    "delete": "حذف المجموعة",
-    "join": "انضمام للمجموعة",
-    "leave": "مغادرة المجموعة",
-    "invite": "دعوة أعضاء",
-    "groupName": "اسم المجموعة",
-    "groupDescription": "وصف المجموعة",
-    "groupRules": "قوانين المجموعة",
-    "privacy": "إعدادات الخصوصية",
-    "public": "مجموعة عامة",
-    "private": "مجموعة خاصة",
-    "secret": "مجموعة سرية",
-    "searchPlaceholder": "البحث في المجموعات...",
-    "filters": "المرشحات",
-    "sortBy": "ترتيب حسب",
-    "newestFirst": "الأحدث أولاً",
-    "mostMembers": "الأكثر أعضاءً",
-    "createGroup": "إنشاء مجموعة",
-    "noGroupsFound": "لم يتم العثور على مجموعات",
-    "noGroupsDescription": "كن أول من ينشئ مجموعة مجتمعية!",
-    "loading": "جاري تحميل المجموعات..."
-  },
-  "privacy": {
-    "public": "عامة",
-    "private": "خاصة",
-    "secret": "سرية"
-  },
-  "publicLabel": "عامة",
-  "privateLabel": "خاصة",
-  "membersLabel": "الأعضاء",
-  "joinLabel": "انضمام",
-  "suggested": "مقترحة",
-  "noGroups": "لم يتم العثور على مجموعات",
-  "members": {
-    "title": "الأعضاء",
-    "admins": "المديرون",
-    "moderators": "المشرفون",
-    "members": "الأعضاء",
-    "pending": "الطلبات المعلقة",
-    "invite": "دعوة",
-    "remove": "إزالة",
-    "promote": "ترقية إلى مدير",
-    "demote": "إزالة الإدارة",
-    "ban": "حظر العضو",
-    "unban": "إلغاء حظر العضو",
-    "memberCount": "عدد الأعضاء"
-  },
-  "roles": {
-    "owner": "المالك",
-    "ownerDescription": "تحكم كامل في المجموعة",
-    "adminDescription": "يمكنه إدارة الأعضاء ومراقبة المحتوى",
-    "moderatorDescription": "يمكنه مراقبة المحتوى والمناقشات",
-    "memberDescription": "يمكنه المشاركة وإنشاء المنشورات",
-    "permissions": "الصلاحيات"
-  },
-  "permissions": {
-    "manageGroup": "إدارة المجموعة",
-    "manageMembers": "إدارة الأعضاء",
-    "deleteGroup": "حذف المجموعة",
-    "moderateContent": "مراقبة المحتوى",
-    "manageEvents": "إدارة الأحداث",
-    "manageDiscussions": "إدارة المناقشات",
-    "createPosts": "إنشاء المنشورات",
-    "participate": "المشاركة"
-  },
-  "activities": {
-    "recentPosts": "المنشورات الأخيرة",
-    "events": "الأحداث",
-    "discussions": "المناقشات",
-    "announcements": "الإعلانات",
-    "files": "الملفات المشتركة",
-    "photos": "الصور"
-  },
-  "invitations": {
-    "title": "دعوة للمجموعة",
-    "message": "تم دعوتك للانضمام إلى {{groupName}}",
-    "accept": "قبول الدعوة",
-    "decline": "رفض الدعوة",
-    "expired": "انتهت صلاحية هذه الدعوة",
-    "alreadyMember": "أنت عضو في هذه المجموعة بالفعل"
+    "subtitle": "تواصل مع المجتمعات اللي تشارك اهتماماتك",
+    "actions": {
+      "create": "أنشئ مجموعة",
+      "join": "انضم للمجموعة",
+      "leave": "اترك المجموعة",
+      "edit": "عدّل المجموعة",
+      "delete": "احذف المجموعة",
+      "invite": "ادع أعضاء",
+      "search": "ابحث في المجموعات",
+      "filter": "فلتر المجموعات",
+      "sort": "رتب المجموعات"
+    },
+    "labels": {
+      "name": "اسم المجموعة",
+      "description": "الوصف",
+      "category": "الفئة",
+      "privacy": "الخصوصية",
+      "public": "عامة",
+      "private": "خاصة",
+      "members": "الأعضاء",
+      "posts": "المنشورات",
+      "events": "الفعاليات",
+      "discussions": "النقاشات",
+      "owner": "المالك",
+      "moderators": "المشرفون",
+      "created": "تم الإنشاء",
+      "lastActivity": "آخر نشاط",
+      "featured": "مميزة",
+      "trending": "رائجة",
+      "popular": "شائعة",
+      "recommended": "موصى بها"
+    },
+    "messages": {
+      "success": {
+        "retrieved": "تم استرداد المجموعات بنجاح",
+        "created": "تم إنشاء المجموعة بنجاح",
+        "updated": "تم تحديث المجموعة بنجاح",
+        "deleted": "تم حذف المجموعة بنجاح",
+        "joined": "تم الانضمام للمجموعة بنجاح",
+        "left": "تم ترك المجموعة بنجاح",
+        "featured": "تم إبراز المجموعة بنجاح",
+        "unfeatured": "تم إلغاء إبراز المجموعة بنجاح",
+        "moderated": "تم الإشراف على المجموعة بنجاح"
+      },
+      "errors": {
+        "notFound": "المجموعة غير موجودة",
+        "alreadyMember": "أنت عضو في هذه المجموعة مسبقاً",
+        "notMember": "أنت لست عضواً في هذه المجموعة",
+        "privateGroup": "هذه مجموعة خاصة. تحتاج دعوة للانضمام",
+        "banned": "أنت محظور من هذه المجموعة",
+        "ownerCannotLeave": "مالك المجموعة لا يستطيع تركها. انقل الملكية أولاً",
+        "duplicateName": "يوجد مجموعة بهذا الاسم مسبقاً",
+        "limitExceeded": "وصلت للحد الأقصى من المجموعات التي يمكنك إنشاؤها",
+        "joinRequestSubmitted": "تم إرسال طلب الانضمام بنجاح",
+        "alreadyRequested": "طلبت الانضمام لهذه المجموعة مسبقاً"
+      }
+    },
+    "members": {
+      "title": "الأعضاء",
+      "roles": {
+        "owner": "المالك",
+        "admin": "مدير",
+        "moderator": "مشرف",
+        "member": "عضو"
+      },
+      "actions": {
+        "invite": "ادع عضو",
+        "promote": "رقّي",
+        "demote": "خفّض رتبة",
+        "remove": "أزل",
+        "ban": "احظر",
+        "unban": "ألغِ الحظر",
+        "transferOwnership": "انقل الملكية"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "تم استرداد أعضاء المجموعة بنجاح",
+          "invited": "تم دعوة العضو بنجاح",
+          "bulkInviteCompleted": "تم إكمال الدعوة الجماعية بنجاح",
+          "roleUpdated": "تم تحديث دور العضو بنجاح",
+          "promoted": "تم ترقية العضو بنجاح",
+          "demoted": "تم تخفيض رتبة العضو بنجاح",
+          "removed": "تم إزالة العضو بنجاح",
+          "banned": "تم حظر العضو بنجاح",
+          "unbanned": "تم إلغاء حظر العضو بنجاح",
+          "joinRequestApproved": "تم الموافقة على طلب الانضمام بنجاح",
+          "joinRequestRejected": "تم رفض طلب الانضمام بنجاح",
+          "ownershipTransferred": "تم نقل ملكية المجموعة بنجاح"
+        },
+        "errors": {
+          "alreadyInvited": "تم دعوة المستخدم لهذه المجموعة مسبقاً",
+          "cannotChangeOwner": "لا يمكن تغيير دور مالك المجموعة",
+          "cannotRemoveOwner": "لا يمكن إزالة مالك المجموعة",
+          "cannotBanOwner": "لا يمكن حظر مالك المجموعة",
+          "notOwner": "فقط مالك المجموعة يستطيع نقل الملكية"
+        }
+      }
+    },
+    "events": {
+      "title": "الفعاليات",
+      "actions": {
+        "create": "أنشئ فعالية",
+        "edit": "عدّل الفعالية",
+        "delete": "احذف الفعالية",
+        "attend": "احضر",
+        "maybe": "ربما",
+        "notGoing": "لن أحضر",
+        "cancelAttendance": "ألغِ الحضور"
+      },
+      "labels": {
+        "title": "عنوان الفعالية",
+        "description": "الوصف",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "location": "الموقع",
+        "eventType": "نوع الفعالية",
+        "online": "فعالية عبر الإنترنت",
+        "onlineLink": "رابط الإنترنت",
+        "maxAttendees": "الحد الأقصى للحضور",
+        "requireApproval": "يتطلب موافقة",
+        "attendees": "الحضور",
+        "going": "سأحضر",
+        "interested": "مهتم",
+        "notGoing": "لن أحضر"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "تم استرداد فعاليات المجموعة بنجاح",
+          "created": "تم إنشاء فعالية المجموعة بنجاح",
+          "updated": "تم تحديث فعالية المجموعة بنجاح",
+          "deleted": "تم حذف فعالية المجموعة بنجاح",
+          "attendanceUpdated": "تم تحديث حضور الفعالية بنجاح",
+          "attendanceCancelled": "تم إلغاء حضور الفعالية بنجاح",
+          "attendeesRetrieved": "تم استرداد حضور الفعالية بنجاح",
+          "calendarRetrieved": "تم استرداد تقويم الفعاليات بنجاح"
+        },
+        "errors": {
+          "notFound": "الفعالية غير موجودة",
+          "attendanceNotFound": "حضور الفعالية غير موجود"
+        }
+      }
+    },
+    "discussions": {
+      "title": "النقاشات",
+      "actions": {
+        "create": "أنشئ نقاش",
+        "reply": "رد",
+        "edit": "عدّل",
+        "delete": "احذف",
+        "pin": "ثبّت",
+        "unpin": "ألغِ التثبيت",
+        "lock": "اقفل",
+        "unlock": "ألغِ القفل",
+        "like": "أعجب",
+        "unlike": "ألغِ الإعجاب"
+      },
+      "labels": {
+        "title": "عنوان النقاش",
+        "content": "المحتوى",
+        "category": "الفئة",
+        "tags": "العلامات",
+        "pinned": "مثبت",
+        "locked": "مقفل",
+        "poll": "استطلاع",
+        "replies": "الردود",
+        "views": "المشاهدات",
+        "likes": "الإعجابات",
+        "participants": "المشاركون",
+        "lastReply": "آخر رد"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "تم استرداد نقاشات المجموعة بنجاح",
+          "created": "تم إنشاء نقاش المجموعة بنجاح",
+          "updated": "تم تحديث نقاش المجموعة بنجاح",
+          "deleted": "تم حذف نقاش المجموعة بنجاح",
+          "pinned": "تم تثبيت النقاش بنجاح",
+          "unpinned": "تم إلغاء تثبيت النقاش بنجاح",
+          "locked": "تم قفل النقاش بنجاح",
+          "unlocked": "تم إلغاء قفل النقاش بنجاح",
+          "replyCreated": "تم إنشاء الرد بنجاح",
+          "repliesRetrieved": "تم استرداد ردود النقاش بنجاح",
+          "categoriesRetrieved": "تم استرداد فئات النقاش بنجاح",
+          "searchCompleted": "تم إكمال البحث في النقاشات بنجاح"
+        },
+        "errors": {
+          "notFound": "النقاش غير موجود",
+          "alreadyPinned": "النقاش مثبت مسبقاً",
+          "cannotReplyLocked": "لا يمكن الرد على نقاش مقفل"
+        }
+      }
+    },
+    "permissions": {
+      "required": "ليس لديك صلاحية لتنفيذ هذا الإجراء",
+      "createEvents": "ليس لديك صلاحية لإنشاء فعاليات في هذه المجموعة",
+      "updateEvent": "ليس لديك صلاحية لتحديث هذه الفعالية",
+      "deleteEvent": "ليس لديك صلاحية لحذف هذه الفعالية",
+      "updateDiscussion": "ليس لديك صلاحية لتحديث هذا النقاش",
+      "deleteDiscussion": "ليس لديك صلاحية لحذف هذا النقاش",
+      "inviteMembers": "ليس لديك صلاحية لدعوة أعضاء لهذه المجموعة",
+      "updateMemberRoles": "ليس لديك صلاحية لتحديث أدوار الأعضاء",
+      "promoteMembers": "ليس لديك صلاحية لترقية الأعضاء",
+      "demoteMembers": "ليس لديك صلاحية لتخفيض رتبة الأعضاء",
+      "removeMembers": "ليس لديك صلاحية لإزالة الأعضاء",
+      "banMembers": "ليس لديك صلاحية لحظر الأعضاء",
+      "unbanMembers": "ليس لديك صلاحية لإلغاء حظر الأعضاء"
+    },
+    "validation": {
+      "nameRequired": "اسم المجموعة مطلوب",
+      "nameMinLength": "يجب أن يكون اسم المجموعة 3 أحرف على الأقل",
+      "nameMaxLength": "لا يمكن أن يتجاوز اسم المجموعة 100 حرف",
+      "descriptionRequired": "الوصف مطلوب",
+      "descriptionMinLength": "يجب أن يكون الوصف 10 أحرف على الأقل",
+      "descriptionMaxLength": "لا يمكن أن يتجاوز الوصف 1000 حرف",
+      "categoryRequired": "الفئة مطلوبة",
+      "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+      "eventTitleRequired": "عنوان الفعالية مطلوب",
+      "eventDateRequired": "تاريخ الفعالية مطلوب",
+      "eventDateFuture": "يجب أن يكون تاريخ الفعالية في المستقبل",
+      "discussionTitleRequired": "عنوان النقاش مطلوب",
+      "discussionContentRequired": "محتوى النقاش مطلوب"
+    }
   }
 }

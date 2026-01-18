@@ -86,5 +86,48 @@
     "uptime": "Uptime",
     "responseTime": "Response Time",
     "lastCheck": "Last Check"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "notFound": "Item not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "validationError": "Validation error occurred",
+    "serverError": "Internal server error",
+    "networkError": "Network connection error",
+    "timeout": "Request timeout",
+    "cancelled": "Operation cancelled"
+  },
+  "actions": {
+    "create": "Create",
+    "read": "Read",
+    "update": "Update",
+    "delete": "Delete",
+    "list": "List",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "share": "Share",
+    "copy": "Copy",
+    "move": "Move",
+    "archive": "Archive",
+    "restore": "Restore"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "draft": "Draft",
+    "published": "Published"
   }
 }

@@ -1,6 +1,5 @@
 using Domain.Base;
-using Domain.Enums.Community.Groups;
-using System.Collections.Generic;
+using Domain.Enums.Community;
 using Domain.Entities.Identity;
 using Domain.Entities.Community.Posts;
 
@@ -11,10 +10,14 @@ namespace Domain.Entities.Community.Groups
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
-        public GroupType Type { get; set; }
-        public GroupPrivacy Privacy { get; set; } = GroupPrivacy.Public;
-        public int MembersCount { get; set; } = 0;
-        public int PostsCount { get; set; } = 0;
+        public string Category { get; set; } = string.Empty;
+        public bool IsPublic { get; set; } = true;
+        public bool IsActive { get; set; } = true;
+        public bool IsFeatured { get; set; } = false;
+        public int MemberCount { get; set; } = 0;
+        public int PostCount { get; set; } = 0;
+        public int EventCount { get; set; } = 0;
+        public DateTime? LastActivity { get; set; }
 
         // Foreign Keys
         public Guid OwnerId { get; set; }
@@ -23,5 +26,10 @@ namespace Domain.Entities.Community.Groups
         public virtual ApplicationUser Owner { get; set; } = null!;
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<GroupMember> Members { get; set; } = new List<GroupMember>();
+        public virtual ICollection<GroupEvent> Events { get; set; } = new List<GroupEvent>();
+        public virtual ICollection<GroupDiscussion> Discussions { get; set; } = new List<GroupDiscussion>();
+        public virtual ICollection<GroupBan> Bans { get; set; } = new List<GroupBan>();
+        public virtual ICollection<GroupJoinRequest> JoinRequests { get; set; } = new List<GroupJoinRequest>();
+        public virtual ICollection<GroupInvitation> Invitations { get; set; } = new List<GroupInvitation>();
     }
 }

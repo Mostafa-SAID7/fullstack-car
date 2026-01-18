@@ -1,86 +1,227 @@
 {
   "groups": {
     "title": "Groups",
-    "create": "Create Group",
-    "edit": "Edit Group",
-    "delete": "Delete Group",
-    "join": "Join Group",
-    "leave": "Leave Group",
-    "invite": "Invite Members",
-    "groupName": "Group Name",
-    "groupDescription": "Group Description",
-    "groupRules": "Group Rules",
-    "privacy": "Privacy Settings",
-    "public": "Public Group",
-    "private": "Private Group",
-    "secret": "Secret Group",
-    "searchPlaceholder": "Search groups...",
-    "filters": "Filters",
-    "sortBy": "Sort By",
-    "newestFirst": "Newest First",
-    "mostMembers": "Most Members",
-    "createGroup": "Create Group",
-    "noGroupsFound": "No groups found",
-    "noGroupsDescription": "Be the first to create a community group!",
-    "loading": "Loading groups..."
-  },
-  "privacy": {
-    "public": "Public",
-    "private": "Private",
-    "secret": "Secret"
-  },
-  "publicLabel": "Public",
-  "privateLabel": "Private",
-  "membersLabel": "Members",
-  "joinLabel": "Join",
-  "suggested": "Suggested",
-  "noGroups": "No groups found",
-  "members": {
-    "title": "Members",
-    "admins": "Administrators",
-    "moderators": "Moderators",
-    "members": "Members",
-    "pending": "Pending Requests",
-    "invite": "Invite",
-    "remove": "Remove",
-    "promote": "Promote to Admin",
-    "demote": "Remove Admin",
-    "ban": "Ban Member",
-    "unban": "Unban Member",
-    "memberCount": "Member Count"
-  },
-  "roles": {
-    "owner": "Owner",
-    "ownerDescription": "Full control over the group",
-    "adminDescription": "Can manage members and moderate content",
-    "moderatorDescription": "Can moderate content and discussions",
-    "memberDescription": "Can participate and create posts",
-    "permissions": "Permissions"
-  },
-  "permissions": {
-    "manageGroup": "Manage Group",
-    "manageMembers": "Manage Members",
-    "deleteGroup": "Delete Group",
-    "moderateContent": "Moderate Content",
-    "manageEvents": "Manage Events",
-    "manageDiscussions": "Manage Discussions",
-    "createPosts": "Create Posts",
-    "participate": "Participate"
-  },
-  "activities": {
-    "recentPosts": "Recent Posts",
-    "events": "Events",
-    "discussions": "Discussions",
-    "announcements": "Announcements",
-    "files": "Shared Files",
-    "photos": "Photos"
-  },
-  "invitations": {
-    "title": "Group Invitation",
-    "message": "You have been invited to join {{groupName}}",
-    "accept": "Accept Invitation",
-    "decline": "Decline Invitation",
-    "expired": "This invitation has expired",
-    "alreadyMember": "You are already a member of this group"
+    "subtitle": "Connect with communities that share your interests",
+    "actions": {
+      "create": "Create Group",
+      "join": "Join Group",
+      "leave": "Leave Group",
+      "edit": "Edit Group",
+      "delete": "Delete Group",
+      "invite": "Invite Members",
+      "search": "Search Groups",
+      "filter": "Filter Groups",
+      "sort": "Sort Groups"
+    },
+    "labels": {
+      "name": "Group Name",
+      "description": "Description",
+      "category": "Category",
+      "privacy": "Privacy",
+      "public": "Public",
+      "private": "Private",
+      "members": "Members",
+      "posts": "Posts",
+      "events": "Events",
+      "discussions": "Discussions",
+      "owner": "Owner",
+      "moderators": "Moderators",
+      "created": "Created",
+      "lastActivity": "Last Activity",
+      "featured": "Featured",
+      "trending": "Trending",
+      "popular": "Popular",
+      "recommended": "Recommended"
+    },
+    "messages": {
+      "success": {
+        "retrieved": "Groups retrieved successfully",
+        "created": "Group created successfully",
+        "updated": "Group updated successfully",
+        "deleted": "Group deleted successfully",
+        "joined": "Successfully joined group",
+        "left": "Successfully left group",
+        "featured": "Group featured successfully",
+        "unfeatured": "Group unfeatured successfully",
+        "moderated": "Group moderated successfully"
+      },
+      "errors": {
+        "notFound": "Group not found",
+        "alreadyMember": "You are already a member of this group",
+        "notMember": "You are not a member of this group",
+        "privateGroup": "This is a private group. You need an invitation to join",
+        "banned": "You are banned from this group",
+        "ownerCannotLeave": "Group owner cannot leave the group. Transfer ownership first",
+        "duplicateName": "A group with this name already exists",
+        "limitExceeded": "You have reached the maximum number of groups you can create",
+        "joinRequestSubmitted": "Join request submitted successfully",
+        "alreadyRequested": "You have already requested to join this group"
+      }
+    },
+    "members": {
+      "title": "Members",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "moderator": "Moderator",
+        "member": "Member"
+      },
+      "actions": {
+        "invite": "Invite Member",
+        "promote": "Promote",
+        "demote": "Demote",
+        "remove": "Remove",
+        "ban": "Ban",
+        "unban": "Unban",
+        "transferOwnership": "Transfer Ownership"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "Group members retrieved successfully",
+          "invited": "Member invited successfully",
+          "bulkInviteCompleted": "Bulk invitation completed successfully",
+          "roleUpdated": "Member role updated successfully",
+          "promoted": "Member promoted successfully",
+          "demoted": "Member demoted successfully",
+          "removed": "Member removed successfully",
+          "banned": "Member banned successfully",
+          "unbanned": "Member unbanned successfully",
+          "joinRequestApproved": "Join request approved successfully",
+          "joinRequestRejected": "Join request rejected successfully",
+          "ownershipTransferred": "Group ownership transferred successfully"
+        },
+        "errors": {
+          "alreadyInvited": "User has already been invited to this group",
+          "cannotChangeOwner": "Cannot change the role of the group owner",
+          "cannotRemoveOwner": "Cannot remove the group owner",
+          "cannotBanOwner": "Cannot ban the group owner",
+          "notOwner": "Only the group owner can transfer ownership"
+        }
+      }
+    },
+    "events": {
+      "title": "Events",
+      "actions": {
+        "create": "Create Event",
+        "edit": "Edit Event",
+        "delete": "Delete Event",
+        "attend": "Attend",
+        "maybe": "Maybe",
+        "notGoing": "Not Going",
+        "cancelAttendance": "Cancel Attendance"
+      },
+      "labels": {
+        "title": "Event Title",
+        "description": "Description",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "location": "Location",
+        "eventType": "Event Type",
+        "online": "Online Event",
+        "onlineLink": "Online Link",
+        "maxAttendees": "Max Attendees",
+        "requireApproval": "Require Approval",
+        "attendees": "Attendees",
+        "going": "Going",
+        "interested": "Interested",
+        "notGoing": "Not Going"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "Group events retrieved successfully",
+          "created": "Group event created successfully",
+          "updated": "Group event updated successfully",
+          "deleted": "Group event deleted successfully",
+          "attendanceUpdated": "Event attendance updated successfully",
+          "attendanceCancelled": "Event attendance cancelled successfully",
+          "attendeesRetrieved": "Event attendees retrieved successfully",
+          "calendarRetrieved": "Event calendar retrieved successfully"
+        },
+        "errors": {
+          "notFound": "Event not found",
+          "attendanceNotFound": "Event attendance not found"
+        }
+      }
+    },
+    "discussions": {
+      "title": "Discussions",
+      "actions": {
+        "create": "Create Discussion",
+        "reply": "Reply",
+        "edit": "Edit",
+        "delete": "Delete",
+        "pin": "Pin",
+        "unpin": "Unpin",
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "like": "Like",
+        "unlike": "Unlike"
+      },
+      "labels": {
+        "title": "Discussion Title",
+        "content": "Content",
+        "category": "Category",
+        "tags": "Tags",
+        "pinned": "Pinned",
+        "locked": "Locked",
+        "poll": "Poll",
+        "replies": "Replies",
+        "views": "Views",
+        "likes": "Likes",
+        "participants": "Participants",
+        "lastReply": "Last Reply"
+      },
+      "messages": {
+        "success": {
+          "retrieved": "Group discussions retrieved successfully",
+          "created": "Group discussion created successfully",
+          "updated": "Group discussion updated successfully",
+          "deleted": "Group discussion deleted successfully",
+          "pinned": "Discussion pinned successfully",
+          "unpinned": "Discussion unpinned successfully",
+          "locked": "Discussion locked successfully",
+          "unlocked": "Discussion unlocked successfully",
+          "replyCreated": "Reply created successfully",
+          "repliesRetrieved": "Discussion replies retrieved successfully",
+          "categoriesRetrieved": "Discussion categories retrieved successfully",
+          "searchCompleted": "Discussion search completed successfully"
+        },
+        "errors": {
+          "notFound": "Discussion not found",
+          "alreadyPinned": "Discussion is already pinned",
+          "cannotReplyLocked": "Cannot reply to a locked discussion"
+        }
+      }
+    },
+    "permissions": {
+      "required": "You don't have permission to perform this action",
+      "createEvents": "You don't have permission to create events in this group",
+      "updateEvent": "You don't have permission to update this event",
+      "deleteEvent": "You don't have permission to delete this event",
+      "updateDiscussion": "You don't have permission to update this discussion",
+      "deleteDiscussion": "You don't have permission to delete this discussion",
+      "inviteMembers": "You don't have permission to invite members to this group",
+      "updateMemberRoles": "You don't have permission to update member roles",
+      "promoteMembers": "You don't have permission to promote members",
+      "demoteMembers": "You don't have permission to demote members",
+      "removeMembers": "You don't have permission to remove members",
+      "banMembers": "You don't have permission to ban members",
+      "unbanMembers": "You don't have permission to unban members"
+    },
+    "validation": {
+      "nameRequired": "Group name is required",
+      "nameMinLength": "Group name must be at least 3 characters",
+      "nameMaxLength": "Group name cannot exceed 100 characters",
+      "descriptionRequired": "Description is required",
+      "descriptionMinLength": "Description must be at least 10 characters",
+      "descriptionMaxLength": "Description cannot exceed 1000 characters",
+      "categoryRequired": "Category is required",
+      "invalidEmail": "Invalid email address",
+      "eventTitleRequired": "Event title is required",
+      "eventDateRequired": "Event date is required",
+      "eventDateFuture": "Event date must be in the future",
+      "discussionTitleRequired": "Discussion title is required",
+      "discussionContentRequired": "Discussion content is required"
+    }
   }
 }

@@ -115,6 +115,7 @@ try
     app.MapHub<NotificationHub>("/hubs/notificationHub");
     app.MapHub<ChatHub>("/hubs/chat");
     app.MapHub<QAHub>("/hubs/qa");
+    app.MapHub<GroupHub>("/hubs/groups");
 
     // Initialize and seed database (skip for Testing environment)
     if (!app.Environment.IsEnvironment("Testing"))
