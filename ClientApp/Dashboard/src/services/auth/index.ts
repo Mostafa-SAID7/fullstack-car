@@ -6,6 +6,8 @@ import { AuthSecurityService } from './security';
 // import { AuthAccountService } from './account';
 import type { UserInfo } from '../../types/auth';
 import { apiClient } from '../api';
+import type { Result } from '../../types/api';
+import { UserStatus } from '../../types/auth';
 
 export class AuthService {
   private static instance: AuthService;
@@ -99,20 +101,21 @@ export class AuthService {
   // Authentication Methods
   async login(credentials: any): Promise<any> {
     console.log('[AuthService] Login attempt with credentials:', { email: credentials.email, rememberMe: credentials.rememberMe });
-    
+
     const response = await this.coreService.login(credentials);
     console.log('[AuthService] Login response raw:', response);
 
-    // HttpClient wraps backend response: { succeeded: true, data: backendResponse }
-    // Backend returns: { succeeded: true, data: AuthResponse, errors: [] }
-    if (response.succeeded && response.data && response.data.succeeded) {
-      const authData = response.data.data; // The actual AuthResponse object
-      
+    const authResponse = response.data;
+    // HttpClient wraps backend response: { succeeded: true, data: Result<LoginResponse> }
+    // Backend returns: { succeeded: true, data: LoginResponse, errors: [] }
+    if (response.succeeded && authResponse && authResponse.succeeded && authResponse.data) {
+      const authData = authResponse.data; // The actual LoginResponse object
+
       let token = null;
       let userInfo = null;
 
       // 1. Handle Token (lowercase property name from backend)
-      if (authData.token) {
+      if (authData?.token) {
         token = authData.token;
         console.log('[AuthService] Token received:', token.substring(0, 50) + '...');
         localStorage.setItem('auth_token', token);
@@ -120,9 +123,9 @@ export class AuthService {
       }
 
       // 2. Handle User (lowercase property name from backend)
-      if (authData.user) {
+      if (authData?.user) {
         console.log('[AuthService] User data received:', authData.user);
-        
+
         // Map backend UserDto to frontend UserInfo (handle lowercase property names)
         userInfo = {
           id: authData.user.id,
@@ -130,35 +133,38 @@ export class AuthService {
           lastName: authData.user.lastName,
           email: authData.user.email,
           name: `${authData.user.firstName} ${authData.user.lastName}`,
-          roles: authData.user.roles || ['User'],
+          roles: (authData.user.roles as any) || ['User'],
           isActive: authData.user.isActive,
           isEmailConfirmed: authData.user.isEmailConfirmed,
           createdAt: authData.user.createdAt,
-          status: 'active' as const // Default status
+          status: this.mapUserStatus(authData.user.status)
         };
-        
+
         console.log('[AuthService] Mapped user info:', userInfo);
       } else if (token) {
         // Fallback: If we have a token but no user, try to fetch the profile
         console.warn('[AuthService] Token received but user missing. Attempting to fetch profile...');
         try {
           const profileResult = await this.profileService.getProfile();
-          if (profileResult.succeeded && profileResult.data) {
-            console.log('[AuthService] Profile fetched successfully:', profileResult.data);
+          if (profileResult.succeeded && profileResult.data && profileResult.data.succeeded) {
+            const profileData = profileResult.data.data;
+            if (profileData) {
+              console.log('[AuthService] Profile fetched successfully:', profileData);
 
-            // Map ProfileResponse to UserInfo
-            userInfo = {
-              id: profileResult.data.id,
-              firstName: profileResult.data.firstName,
-              lastName: profileResult.data.lastName,
-              email: profileResult.data.email,
-              name: `${profileResult.data.firstName} ${profileResult.data.lastName}`,
-              roles: profileResult.data.roles || ['User'], // fallback roles
-              isActive: profileResult.data.isActive || true,
-              isEmailConfirmed: profileResult.data.isEmailConfirmed || true,
-              createdAt: profileResult.data.createdAt || new Date().toISOString(),
-              status: profileResult.data.status || 'active'
-            };
+              // Map ProfileResponse to UserInfo
+              userInfo = {
+                id: profileData.id,
+                firstName: profileData.firstName,
+                lastName: profileData.lastName,
+                email: profileData.email,
+                name: `${profileData.firstName} ${profileData.lastName}`,
+                roles: profileData.roles as any || ['User'], // fallback roles
+                isActive: profileData.isActive || true,
+                isEmailConfirmed: profileData.isEmailConfirmed || true,
+                createdAt: profileData.createdAt || new Date().toISOString(),
+                status: this.mapUserStatus(profileData.status)
+              };
+            }
           } else {
             console.error('[AuthService] Failed to fetch profile after login.');
           }
@@ -169,28 +175,28 @@ export class AuthService {
 
       // 3. Only save auth state if we have both token and user
       if (token && userInfo) {
-        console.log('[AuthService] Saving complete auth state:', { 
-          hasToken: !!token, 
+        console.log('[AuthService] Saving complete auth state:', {
+          hasToken: !!token,
           hasUser: !!userInfo,
-          userName: userInfo.name 
+          userName: userInfo.name
         });
-        
+
         // Save auth state
         this._saveAuth(userInfo);
-        
+
         // Small delay to ensure localStorage is written
         await new Promise(resolve => setTimeout(resolve, 50));
-        
+
         // Verify the state was saved correctly
         const isAuthAfterSave = this.isAuthenticated();
         const currentUserAfterSave = this.getCurrentUser();
-        
+
         console.log('[AuthService] Authentication state after save:', {
           isAuthenticated: isAuthAfterSave,
           hasCurrentUser: !!currentUserAfterSave,
           currentUserName: currentUserAfterSave?.name
         });
-        
+
         if (!isAuthAfterSave || !currentUserAfterSave) {
           console.error('[AuthService] Authentication state verification failed!');
           console.error('[AuthService] Debug info:', {
@@ -198,7 +204,7 @@ export class AuthService {
             tokenInStorage: !!localStorage.getItem('auth_token'),
             userInStorage: !!localStorage.getItem('auth_user')
           });
-          
+
           // Clear potentially corrupted state
           this._clearAuth();
           return {
@@ -211,7 +217,7 @@ export class AuthService {
         // Return success response in expected format
         return {
           succeeded: true,
-          message: authData.message || 'Login successful',
+          message: authResponse.message || 'Login successful',
           data: {
             token: token,
             user: userInfo
@@ -225,12 +231,11 @@ export class AuthService {
           errors: ['Missing token or user data']
         };
       }
-    } else {
       console.error('[AuthService] Login failed:', response);
       return {
         succeeded: false,
-        message: response.message || response.data?.message || 'Login failed',
-        errors: response.errors || response.data?.errors || ['Login failed']
+        message: response.message || 'Login failed',
+        errors: response.errors || ['Login failed']
       };
     }
   }
@@ -266,8 +271,8 @@ export class AuthService {
     return this.profileService.getProfile();
   }
 
-  async confirmEmail(request: any): Promise<any> {
-    return this.profileService.confirmEmail(request);
+  async confirmEmail(request: { userId: string; token: string }): Promise<any> {
+    return this.coreService.confirmEmail(request.userId, request.token);
   }
 
   async forgotPassword(request: any): Promise<any> {
@@ -288,7 +293,7 @@ export class AuthService {
   }
 
   async revokeSession(sessionId: string): Promise<any> {
-    return this.securityService.revokeSession(sessionId);
+    return this.securityService.terminateSession(sessionId);
   }
 
   async getTwoFactorStatus(): Promise<any> {
@@ -309,14 +314,14 @@ export class AuthService {
     const hasUser = !!this.currentUser;
     const hasToken = !!localStorage.getItem('auth_token');
     const result = hasUser && hasToken;
-    
+
     console.log('[AuthService] isAuthenticated check:', {
       hasUser,
       hasToken,
       result,
       currentUser: this.currentUser?.name
     });
-    
+
     return result;
   }
 
@@ -341,6 +346,22 @@ export class AuthService {
 
   hasAnyRole(roles: string[]): boolean {
     return roles.some(role => this.hasRole(role));
+  }
+
+  // Helper to map UserStatus number to UserInfo status string
+  private mapUserStatus(status: UserStatus | number): 'active' | 'inactive' | 'suspended' | 'pending' {
+    switch (status) {
+      case UserStatus.Active:
+        return 'active';
+      case UserStatus.Inactive:
+        return 'inactive';
+      case UserStatus.Suspended:
+        return 'suspended';
+      case UserStatus.PendingVerification:
+        return 'pending';
+      default:
+        return 'active';
+    }
   }
 }
 

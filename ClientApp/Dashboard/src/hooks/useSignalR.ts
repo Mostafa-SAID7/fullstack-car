@@ -1,5 +1,62 @@
 import { useEffect, useState, useCallback } from 'react';
-import { getSignalRService, ConnectionStatus, CommunityEvents } from '@/services/signalr/SignalRService';
+import { getSignalRService, ConnectionStatus, CommunityEvents } from '../services/signalr/SignalRService';
+
+/**
+ * Main SignalR hook that combines all SignalR functionality
+ */
+export function useSignalR() {
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>(ConnectionStatus.Disconnected);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    try {
+      const signalRService = getSignalRService();
+      
+      // Set initial status
+      setConnectionStatus(signalRService.getConnectionStatus());
+      setIsConnected(signalRService.isConnected());
+
+      // Subscribe to status changes
+      signalRService.setOnConnectionStateChange((status) => {
+        setConnectionStatus(status);
+        setIsConnected(status === ConnectionStatus.Connected);
+      });
+
+    } catch (error) {
+      console.warn('SignalR service not initialized:', error);
+    }
+  }, []);
+
+  const invoke = useCallback(async (methodName: string, ...args: any[]) => {
+    try {
+      const signalRService = getSignalRService();
+      return await signalRService.invoke(methodName, ...args);
+    } catch (error) {
+      console.error('Error invoking SignalR method:', error);
+      throw error;
+    }
+  }, []);
+
+  const on = useCallback(<K extends keyof CommunityEvents>(
+    eventName: K,
+    callback: (data: CommunityEvents[K]) => void
+  ) => {
+    try {
+      const signalRService = getSignalRService();
+      return signalRService.on(eventName, callback);
+    } catch (error) {
+      console.warn('SignalR service not initialized:', error);
+      return () => {}; // Return empty cleanup function
+    }
+  }, []);
+
+  return {
+    connectionStatus,
+    isConnected,
+    invoke,
+    on
+  };
+}
 
 /**
  * React hook for using SignalR in components

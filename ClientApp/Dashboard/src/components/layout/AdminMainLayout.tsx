@@ -389,39 +389,73 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
   }
 ];
 
-// Breadcrumb component
-const AdminBreadcrumb: React.FC<{ currentPath: string }> = ({ currentPath }) => {
+// Enhanced breadcrumb component with contextual page titles
+const AdminBreadcrumb: React.FC<{ currentPath: string; navigationItems: NavigationItem[] }> = ({ 
+  currentPath, 
+  navigationItems 
+}) => {
   const pathSegments = currentPath.split('/').filter(Boolean);
   
-  // Generate breadcrumb items from path
-  const breadcrumbItems = pathSegments.map((segment, index) => {
-    const path = '/' + pathSegments.slice(0, index + 1).join('/');
-    const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace('-', ' ');
+  // Generate breadcrumb items from path with navigation context
+  const breadcrumbItems = useMemo(() => {
+    const items: Array<{ label: string; path: string; isLast: boolean; description?: string }> = [];
     
-    return {
-      label,
-      path,
-      isLast: index === pathSegments.length - 1
+    // Find matching navigation items for better breadcrumb labels
+    const findNavigationItem = (path: string): NavigationItem | undefined => {
+      for (const item of navigationItems) {
+        if (item.path === path) return item;
+        if (item.children) {
+          const childItem = item.children.find(child => child.path === path);
+          if (childItem) return childItem;
+        }
+      }
+      return undefined;
     };
-  });
+
+    pathSegments.forEach((segment, index) => {
+      const path = '/' + pathSegments.slice(0, index + 1).join('/');
+      const navItem = findNavigationItem(path);
+      
+      const label = navItem?.label || segment.charAt(0).toUpperCase() + segment.slice(1).replace('-', ' ');
+      const description = navItem?.description;
+      
+      items.push({
+        label,
+        path,
+        isLast: index === pathSegments.length - 1,
+        description
+      });
+    });
+
+    return items;
+  }, [currentPath, pathSegments, navigationItems]);
 
   if (breadcrumbItems.length <= 1) return null;
 
   return (
-    <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+    <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6" aria-label="Breadcrumb">
+      <Home className="h-4 w-4" />
       {breadcrumbItems.map((item, index) => (
         <React.Fragment key={item.path}>
-          {index > 0 && <ChevronRight className="h-4 w-4" />}
-          <span
-            className={`
-              ${item.isLast 
-                ? 'text-gray-900 dark:text-white font-medium' 
-                : 'hover:text-gray-900 dark:hover:text-white cursor-pointer'
-              }
-            `}
-          >
-            {item.label}
-          </span>
+          <ChevronRight className="h-4 w-4" />
+          <div className="flex flex-col">
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                item.isLast 
+                  ? 'text-gray-900 dark:text-white font-medium' 
+                  : 'hover:text-gray-900 dark:hover:text-white cursor-pointer'
+              )}
+              title={item.description}
+            >
+              {item.label}
+            </span>
+            {item.description && item.isLast && (
+              <span className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+                {item.description}
+              </span>
+            )}
+          </div>
         </React.Fragment>
       ))}
     </nav>
@@ -437,119 +471,227 @@ interface AdminMainLayoutProps {
  * AdminMainLayout Component
  * 
  * Provides the main administrative layout with responsive sidebar navigation,
- * role-based menu items, and adaptive design for different screen sizes.
+ * role-based menu items, adaptive design for different screen sizes, and
+ * enhanced breadcrumb navigation with contextual page titles.
+ * 
+ * Features:
+ * - Role-based navigation filtering
+ * - Responsive sidebar with collapse/expand functionality
+ * - Enhanced search functionality with results highlighting
+ * - Contextual breadcrumb navigation
+ * - Mobile-optimized design
+ * - Keyboard navigation support
+ * - Real-time navigation updates
  */
 export const AdminMainLayout: React.FC<AdminMainLayoutProps> = ({ children }) => {
   const { adminUser, hasRole } = useAdminAuth();
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Layout state
+  // Layout state with improved state management
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Initialize based on screen size and user preference
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('admin-sidebar-collapsed');
+      if (savedState !== null) {
+        return JSON.parse(savedState);
+      }
+      return window.innerWidth < 1024; // Default to collapsed on smaller screens
+    }
+    return false;
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<NavigationItem[]>([]);
+  const [searchFocused, setSearchFocused] = useState(false);
 
-  // Filter navigation items based on user roles
-  const filteredNavigation = ADMIN_NAVIGATION.filter(item => 
-    item.roles.some(role => hasRole(role))
-  ).map(item => ({
-    ...item,
-    children: item.children?.filter(child => 
-      child.roles.some(role => hasRole(role))
-    )
-  }));
+  // Memoized navigation filtering for performance
+  const filteredNavigation = useMemo(() => {
+    return ADMIN_NAVIGATION.filter(item => 
+      item.roles.some(role => hasRole(role))
+    ).map(item => ({
+      ...item,
+      children: item.children?.filter(child => 
+        child.roles.some(role => hasRole(role))
+      )
+    }));
+  }, [hasRole]);
 
-  // Handle responsive sidebar behavior
+  // Enhanced search functionality with debouncing
+  useEffect(() => {
+    const searchTimeout = setTimeout(() => {
+      if (searchQuery.trim()) {
+        const results: NavigationItem[] = [];
+        
+        filteredNavigation.forEach(item => {
+          // Check main item
+          if (item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              item.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
+            results.push(item);
+          }
+          
+          // Check children
+          item.children?.forEach(child => {
+            if (child.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                child.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
+              results.push(child);
+            }
+          });
+        });
+        
+        setSearchResults(results);
+      } else {
+        setSearchResults([]);
+      }
+    }, 150); // Debounce search for better performance
+
+    return () => clearTimeout(searchTimeout);
+  }, [searchQuery, filteredNavigation]);
+
+  // Persist sidebar state
+  useEffect(() => {
+    localStorage.setItem('admin-sidebar-collapsed', JSON.stringify(sidebarCollapsed));
+  }, [sidebarCollapsed]);
+
+  // Enhanced responsive behavior
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setSidebarOpen(false); // Close mobile sidebar on desktop
+      const isLargeScreen = window.innerWidth >= 1024;
+      
+      // Auto-close mobile sidebar on large screens
+      if (isLargeScreen && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+      
+      // Auto-expand sidebar on very large screens if user hasn't manually collapsed it
+      if (window.innerWidth >= 1440 && !localStorage.getItem('admin-sidebar-manually-collapsed')) {
+        setSidebarCollapsed(false);
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const debouncedResize = debounce(handleResize, 100);
+    window.addEventListener('resize', debouncedResize);
+    return () => window.removeEventListener('resize', debouncedResize);
+  }, [sidebarOpen]);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+    setSearchQuery(''); // Clear search on navigation
+  }, [location.pathname]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Cmd/Ctrl + K for search
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
+        setSearchFocused(true);
+      }
+      
+      // Escape to close search or mobile sidebar
+      if (event.key === 'Escape') {
+        if (searchQuery) {
+          setSearchQuery('');
+          setSearchFocused(false);
+        } else if (sidebarOpen) {
+          setSidebarOpen(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [searchQuery, sidebarOpen]);
+
+  // Enhanced navigation handler with analytics
+  const handleNavigation = useCallback((path: string) => {
+    navigate(path);
+    setSidebarOpen(false);
+    
+    // Optional: Track navigation for analytics
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'admin_navigation', {
+        page_path: path,
+        user_role: adminUser?.roles?.[0] || 'unknown'
+      });
+    }
+  }, [navigate, adminUser?.roles]);
+
+  // Enhanced active route checking
+  const isActiveRoute = useCallback((path: string) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  }, [location.pathname]);
+
+  // Toggle sidebar with manual collapse tracking
+  const handleToggleCollapse = useCallback(() => {
+    setSidebarCollapsed(prev => {
+      const newState = !prev;
+      localStorage.setItem('admin-sidebar-manually-collapsed', JSON.stringify(newState));
+      return newState;
+    });
   }, []);
 
-  // Handle navigation search
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const results: NavigationItem[] = [];
-      
-      filteredNavigation.forEach(item => {
-        // Check main item
-        if (item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
-          results.push(item);
-        }
-        
-        // Check children
-        item.children?.forEach(child => {
-          if (child.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              child.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
-            results.push(child);
-          }
-        });
-      });
-      
-      setSearchResults(results);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery, filteredNavigation]);
-
-  // Handle navigation
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    setSidebarOpen(false); // Close mobile sidebar after navigation
-  };
-
-  // Check if current path matches navigation item
-  const isActiveRoute = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
-  };
+  // Debounce utility function
+  function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
+    let timeout: NodeJS.Timeout;
+    return ((...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    }) as T;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Mobile sidebar overlay */}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      {/* Mobile sidebar overlay with improved accessibility */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
+          onKeyDown={(e) => e.key === 'Enter' && setSidebarOpen(false)}
+          role="button"
+          tabIndex={0}
+          aria-label="Close sidebar"
         />
       )}
 
-      {/* Sidebar */}
+      {/* Enhanced Sidebar */}
       <AdminSidebar
         navigation={filteredNavigation}
         isOpen={sidebarOpen}
         isCollapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        onToggleCollapse={handleToggleCollapse}
         onNavigate={handleNavigation}
         currentPath={location.pathname}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchResults={searchResults}
+        searchFocused={searchFocused}
+        onSearchFocusChange={setSearchFocused}
       />
 
-      {/* Main content area */}
-      <div className={`
-        transition-all duration-300 ease-in-out
-        ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}
-      `}>
-        {/* Header */}
+      {/* Main content area with smooth transitions */}
+      <div className={cn(
+        "transition-all duration-300 ease-in-out",
+        sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
+      )}>
+        {/* Enhanced Header */}
         <AdminHeader
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           sidebarCollapsed={sidebarCollapsed}
+          currentPath={location.pathname}
+          navigationItems={filteredNavigation}
         />
 
-        {/* Page content */}
-        <main className="p-4 lg:p-6">
-          {/* Breadcrumb navigation */}
-          <AdminBreadcrumb currentPath={location.pathname} />
+        {/* Page content with improved spacing and accessibility */}
+        <main className="p-4 lg:p-6 min-h-[calc(100vh-4rem)]" role="main">
+          {/* Enhanced Breadcrumb navigation */}
+          <AdminBreadcrumb 
+            currentPath={location.pathname} 
+            navigationItems={filteredNavigation}
+          />
           
-          {/* Page content */}
+          {/* Page content container with max width and centering */}
           <div className="max-w-7xl mx-auto">
             {children || <Outlet />}
           </div>

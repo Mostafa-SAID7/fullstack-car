@@ -1,0 +1,530 @@
+﻿src/components/layout/AdminHeader.tsx(219,36): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<AdminRole, { label: string; color: string; icon: ComponentType<any>; }>'.
+src/components/layout/AdminMainLayout.tsx(628,25): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+src/components/layout/AdminMainLayout.tsx(640,45): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+src/components/marketplace/PrefetchExample.tsx(26,15): error TS2339: Property 'currentPage' does not exist on type 'PagedResult<ProductDto>'.
+src/components/marketplace/PrefetchExample.tsx(137,26): error TS2339: Property 'currentPage' does not exist on type 'PagedResult<ProductDto>'.
+src/components/marketplace/ProductImageUpload.tsx(243,34): error TS2339: Property 'setPrimaryProductImage' does not exist on type 'ImageUploadService'.
+src/components/marketplace/ServiceForm.tsx(16,26): error TS2307: Cannot find module '../forms/inputs/Textarea' or its corresponding type declarations.
+src/components/marketplace/ServiceForm.tsx(17,24): error TS2307: Cannot find module '../forms/inputs/Select' or its corresponding type declarations.
+src/components/marketplace/ServiceForm.tsx(18,23): error TS2307: Cannot find module '../forms/inputs/Label' or its corresponding type declarations.
+src/config/permissions.ts(92,54): error TS2552: Cannot find name 'Permission'. Did you mean 'Permissions'?
+src/contexts/auth/index.tsx(157,5): error TS2322: Type 'UserDto | null' is not assignable to type 'UserInfo | null'.
+  Property 'name' is missing in type 'UserDto' but required in type 'UserInfo'.
+src/contexts/auth/index.tsx(164,5): error TS1117: An object literal cannot have multiple properties with the same name.
+src/contexts/auth/index.tsx(165,5): error TS2322: Type '(updatedUser: Partial<UserDto>) => void' is not assignable to type '(user: Partial<UserInfo>) => void'.
+  Types of parameters 'updatedUser' and 'user' are incompatible.
+    Type 'Partial<UserInfo>' is not assignable to type 'Partial<UserDto>'.
+      Types of property 'roles' are incompatible.
+        Type 'string[] | undefined' is not assignable to type 'UserRole[] | undefined'.
+          Type 'string[]' is not assignable to type 'UserRole[]'.
+            Type 'string' is not assignable to type 'UserRole'.
+src/examples/QAIntegrationExample.tsx(106,25): error TS2339: Property 'name' does not exist on type 'AuthUser'.
+  Property 'name' does not exist on type 'AdminUserInfo'.
+src/hooks/ai-agent/useConversationMonitor.ts(22,69): error TS2345: Argument of type '{ limit: number; }' is not assignable to parameter of type 'string'.
+src/hooks/auth/useAdminPermissions.ts(132,5): error TS2322: Type 'string[]' is not assignable to type 'AdminRole[]'.
+  Type 'string' is not assignable to type 'AdminRole'.
+src/hooks/marketplace/index.ts(3,31): error TS2307: Cannot find module '../../services/marketplace/customers' or its corresponding type declarations.
+src/hooks/marketplace/index.ts(4,30): error TS2307: Cannot find module '../../services/marketplace/products' or its corresponding type declarations.
+src/hooks/marketplace/index.ts(5,41): error TS2307: Cannot find module '../../services/marketplace/services' or its corresponding type declarations.
+src/hooks/marketplace/index.ts(95,18): error TS2339: Property 'succeeded' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(95,38): error TS2339: Property 'data' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(96,29): error TS2339: Property 'data' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(97,30): error TS2339: Property 'data' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(98,23): error TS2339: Property 'data' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(100,32): error TS2339: Property 'errors' does not exist on type 'PagedResult<CustomerDto>'.
+src/hooks/marketplace/index.ts(116,18): error TS2339: Property 'succeeded' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(116,38): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(117,38): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(119,23): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(121,32): error TS2339: Property 'errors' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(137,18): error TS2339: Property 'succeeded' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(137,38): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(138,65): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(139,23): error TS2339: Property 'data' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(141,32): error TS2339: Property 'errors' does not exist on type 'CustomerDto'.
+src/hooks/marketplace/index.ts(157,18): error TS2339: Property 'succeeded' does not exist on type 'void'.
+src/hooks/marketplace/index.ts(162,32): error TS2339: Property 'errors' does not exist on type 'void'.
+src/hooks/marketplace/index.ts(199,18): error TS2339: Property 'succeeded' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(199,38): error TS2339: Property 'data' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(200,28): error TS2339: Property 'data' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(201,30): error TS2339: Property 'data' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(202,23): error TS2339: Property 'data' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(204,32): error TS2339: Property 'errors' does not exist on type 'PagedResult<ProductDto>'.
+src/hooks/marketplace/index.ts(220,18): error TS2339: Property 'succeeded' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(220,38): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(221,37): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(223,23): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(225,32): error TS2339: Property 'errors' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(241,18): error TS2339: Property 'succeeded' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(241,38): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(242,64): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(243,23): error TS2339: Property 'data' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(245,32): error TS2339: Property 'errors' does not exist on type 'ProductDto'.
+src/hooks/marketplace/index.ts(261,18): error TS2339: Property 'succeeded' does not exist on type 'void'.
+src/hooks/marketplace/index.ts(266,32): error TS2339: Property 'errors' does not exist on type 'void'.
+src/hooks/marketplace/index.ts(303,18): error TS2339: Property 'succeeded' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(303,38): error TS2339: Property 'data' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(304,28): error TS2339: Property 'data' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(305,30): error TS2339: Property 'data' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(306,23): error TS2339: Property 'data' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(308,32): error TS2339: Property 'errors' does not exist on type 'PagedResult<ServiceDto>'.
+src/hooks/marketplace/index.ts(324,18): error TS2339: Property 'succeeded' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(324,38): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(325,37): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(327,23): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(329,32): error TS2339: Property 'errors' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(345,18): error TS2339: Property 'succeeded' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(345,38): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(346,64): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(347,23): error TS2339: Property 'data' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(349,32): error TS2339: Property 'errors' does not exist on type 'ServiceDto'.
+src/hooks/marketplace/index.ts(365,18): error TS2339: Property 'succeeded' does not exist on type 'void'.
+src/hooks/marketplace/index.ts(370,32): error TS2339: Property 'errors' does not exist on type 'void'.
+src/hooks/validation/index.ts(7,1): error TS2308: Module './useProductValidation' has already exported a member named 'ValidationError'. Consider explicitly re-exporting to resolve the ambiguity.
+src/hooks/validation/index.ts(7,1): error TS2308: Module './useProductValidation' has already exported a member named 'ValidationResult'. Consider explicitly re-exporting to resolve the ambiguity.
+src/hooks/validation/useProductValidation.ts(57,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useProductValidation.ts(57,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useProductValidation.ts(106,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useProductValidation.ts(106,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useProductValidation.ts(162,38): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useProductValidation.ts(195,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useProductValidation.ts(195,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useProductValidation.ts(238,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useProductValidation.ts(238,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useServiceValidation.ts(59,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(59,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useServiceValidation.ts(108,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(108,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useServiceValidation.ts(164,38): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(197,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(197,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useServiceValidation.ts(240,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(240,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/hooks/validation/useServiceValidation.ts(283,17): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/hooks/validation/useServiceValidation.ts(283,33): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/lib/validation/marketplace.validation.ts(54,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(220,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(224,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(335,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: readonly ["delete", "updateStatus", "updateCategory", "updateFeatured"], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+  Overload 2 of 2, '(entries: Readonly<Record<string, EnumValue>>, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Argument of type 'string[]' is not assignable to parameter of type 'Readonly<Record<string, EnumValue>>'.
+      Index signature for type 'string' is missing in type 'string[]'.
+src/lib/validation/marketplace.validation.ts(437,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(609,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(628,5): error TS2353: Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+src/lib/validation/marketplace.validation.ts(739,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: readonly ["delete", "updateStatus", "updateActive", "updatePopular"], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+  Overload 2 of 2, '(entries: Readonly<Record<string, EnumValue>>, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Argument of type 'string[]' is not assignable to parameter of type 'Readonly<Record<string, EnumValue>>'.
+      Index signature for type 'string' is missing in type 'string[]'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(160,33): error TS2339: Property 'llmProvider' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(161,53): error TS2353: Object literal may only specify known properties, and 'llmProvider' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(175,33): error TS2339: Property 'model' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(176,53): error TS2353: Object literal may only specify known properties, and 'model' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(223,33): error TS2339: Property 'fallbackProvider' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(224,53): error TS2353: Object literal may only specify known properties, and 'fallbackProvider' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(320,33): error TS2339: Property 'maxRetries' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(321,53): error TS2353: Object literal may only specify known properties, and 'maxRetries' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(350,48): error TS2345: Argument of type '"enableCaching"' is not assignable to parameter of type 'keyof AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(352,28): error TS2339: Property 'enableCaching' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(357,30): error TS2339: Property 'enableCaching' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(369,33): error TS2339: Property 'cacheTTL' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(370,53): error TS2353: Object literal may only specify known properties, and 'cacheTTL' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(387,33): error TS2339: Property 'cacheStrategy' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(388,53): error TS2353: Object literal may only specify known properties, and 'cacheStrategy' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(404,33): error TS2339: Property 'maxCacheSize' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(405,53): error TS2353: Object literal may only specify known properties, and 'maxCacheSize' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(431,48): error TS2345: Argument of type '"enableCostLimits"' is not assignable to parameter of type 'keyof AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(433,28): error TS2339: Property 'enableCostLimits' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(438,30): error TS2339: Property 'enableCostLimits' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(451,33): error TS2339: Property 'dailyCostLimit' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(452,53): error TS2353: Object literal may only specify known properties, and 'dailyCostLimit' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(466,33): error TS2339: Property 'monthlyCostLimit' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(467,53): error TS2353: Object literal may only specify known properties, and 'monthlyCostLimit' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(481,33): error TS2339: Property 'costAlertThreshold' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(482,53): error TS2353: Object literal may only specify known properties, and 'costAlertThreshold' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(511,48): error TS2345: Argument of type '"notifyOnError"' is not assignable to parameter of type 'keyof AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(513,28): error TS2339: Property 'notifyOnError' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(518,30): error TS2339: Property 'notifyOnError' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(533,48): error TS2345: Argument of type '"notifyOnCostLimit"' is not assignable to parameter of type 'keyof AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(535,28): error TS2339: Property 'notifyOnCostLimit' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(540,30): error TS2339: Property 'notifyOnCostLimit' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(555,48): error TS2345: Argument of type '"notifyOnTrainingComplete"' is not assignable to parameter of type 'keyof AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(557,28): error TS2339: Property 'notifyOnTrainingComplete' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(562,30): error TS2339: Property 'notifyOnTrainingComplete' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(575,33): error TS2339: Property 'notificationEmail' does not exist on type 'AIAgentConfig'.
+src/pages/ai-agent/components/AIAgentSettings.tsx(576,53): error TS2353: Object literal may only specify known properties, and 'notificationEmail' does not exist in type 'Partial<AIAgentConfig>'.
+src/pages/ai-agent/components/TrainingSessionList.tsx(14,46): error TS2503: Cannot find namespace 'JSX'.
+src/pages/ai-agent/model-training/ModelTraining.tsx(125,5): error TS2322: Type 'Timeout' is not assignable to type 'number'.
+src/pages/community/qa/components/LocalizationTestComponent.tsx(2,40): error TS2307: Cannot find module '../../hooks/useTranslation' or its corresponding type declarations.
+src/pages/community/qa/components/LocalizationTestComponent.tsx(3,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/LocalizationTestComponent.tsx(4,24): error TS2307: Cannot find module '../forms/buttons/Button' or its corresponding type declarations.
+src/pages/community/qa/components/LocalizationTestComponent.tsx(5,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/LocalizationTestComponent.tsx(29,38): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(16,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(17,24): error TS2307: Cannot find module '../forms/buttons/Button' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(18,23): error TS2307: Cannot find module '../forms/inputs/Input' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(19,27): error TS2307: Cannot find module '../shared/DataTable' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(20,28): error TS2307: Cannot find module '../shared' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(21,23): error TS2307: Cannot find module '../data-display/badges/Badge' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(22,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(23,40): error TS2307: Cannot find module '../../hooks/useTranslation' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(26,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/components/ModerationDashboardComponent.tsx(318,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(24,47): error TS2307: Cannot find module '../charts' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(25,79): error TS2307: Cannot find module '../data-display/tables/Table' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(26,24): error TS2307: Cannot find module '../forms' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(27,28): error TS2307: Cannot find module '../shared' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(28,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(29,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(30,40): error TS2307: Cannot find module '../../hooks/useTranslation' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(31,36): error TS2307: Cannot find module '../../services/qa/QAAnalyticsService' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(38,8): error TS2307: Cannot find module '../../types/qa/analytics-types' or its corresponding type declarations.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(203,41): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(203,46): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(489,119): error TS7006: Parameter 'question' implicitly has an 'any' type.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(489,129): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/community/qa/components/QAAnalyticsComponent.tsx(655,107): error TS7006: Parameter 'question' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(18,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(19,24): error TS2307: Cannot find module '../forms/buttons/Button' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(20,23): error TS2307: Cannot find module '../forms/inputs/Input' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(21,24): error TS2307: Cannot find module '../forms/switches/Switch' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(22,31): error TS2307: Cannot find module '../shared/TabNavigation' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(23,23): error TS2307: Cannot find module '../feedback/alerts/Alert' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(24,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(295,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(306,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(317,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(333,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(344,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(366,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(378,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(390,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(405,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(417,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(432,43): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(443,43): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(469,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(480,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(491,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(507,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(519,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(545,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(556,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(566,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(577,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(587,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(605,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(616,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(643,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(654,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(669,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(680,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(691,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(716,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(727,41): error TS7006: Parameter 'checked' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(740,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAConfigurationComponent.tsx(752,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(18,58): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(19,28): error TS2307: Cannot find module '../layout/cards/MetricCard' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(20,28): error TS2307: Cannot find module '../shared/StatsCards' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(21,35): error TS2307: Cannot find module '../feedback/alerts/Alert' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(22,27): error TS2307: Cannot find module '../charts/line/LineChart' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(23,27): error TS2307: Cannot find module '../charts/area/AreaChart' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(24,24): error TS2307: Cannot find module '../forms/buttons/Button' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(25,28): error TS2307: Cannot find module '../shared/SkeletonLoader' or its corresponding type declarations.
+src/pages/community/qa/components/QAHealthMonitoringComponent.tsx(26,31): error TS2307: Cannot find module '../shared/TabNavigation' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(16,24): error TS2307: Cannot find module '../forms' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(17,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(18,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(19,36): error TS2307: Cannot find module '../../services/qa/QAAnalyticsService' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(20,47): error TS2307: Cannot find module '../../types/qa/analytics-types' or its corresponding type declarations.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(546,61): error TS7006: Parameter 'insight' implicitly has an 'any' type.
+src/pages/community/qa/components/QAReportGeneratorComponent.tsx(546,70): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(17,22): error TS2307: Cannot find module '../layout/cards/Card' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(18,24): error TS2307: Cannot find module '../forms/buttons/Button' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(19,23): error TS2307: Cannot find module '../forms/inputs/Input' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(20,27): error TS2307: Cannot find module '../shared/DataTable' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(21,28): error TS2307: Cannot find module '../shared' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(22,23): error TS2307: Cannot find module '../data-display/badges/Badge' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(23,24): error TS2307: Cannot find module '../data-display/avatars/Avatar' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(24,23): error TS2307: Cannot find module '../layout/modals/Modal' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(25,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(28,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(137,32): error TS7006: Parameter 'area' implicitly has an 'any' type.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(365,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/components/UserReputationManagementComponent.tsx(465,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/community/qa/hooks/index.ts(4,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/index.ts(20,8): error TS2307: Cannot find module '../useQASignalRConnection' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAAnswers.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAAnswers.ts(5,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAModeration.ts(2,27): error TS2307: Cannot find module '../../services/qa/QAService' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAModeration.ts(3,25): error TS2307: Cannot find module '../auth/useAuth' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAQuestions.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAQuestions.ts(6,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAReputation.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAReputation.ts(3,35): error TS2307: Cannot find module '../../services/qa/ReputationService' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAReputation.ts(6,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQASearch.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQASearch.ts(3,27): error TS2307: Cannot find module '../../services/qa/QAService' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQASearch.ts(7,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQASignalR.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQASignalR.ts(3,25): error TS2307: Cannot find module '../auth/useAuth' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAVoting.ts(2,23): error TS2307: Cannot find module '../../contexts/qa' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAVoting.ts(3,27): error TS2307: Cannot find module '../../services/qa/QAService' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAVoting.ts(7,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/hooks/useQAVoting.ts(29,37): error TS7006: Parameter 'vote' implicitly has an 'any' type.
+src/pages/community/qa/services/BulkOperationsService.ts(1,28): error TS2307: Cannot find module '../api/ApiService' or its corresponding type declarations.
+src/pages/community/qa/services/BulkOperationsService.ts(2,32): error TS2307: Cannot find module '../../types/api' or its corresponding type declarations.
+src/pages/community/qa/services/BulkOperationsService.ts(7,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/BulkOperationsService.ts(55,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(70,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(85,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(104,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(115,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(126,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(141,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(161,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(173,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(188,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(200,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(210,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(224,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(239,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(272,30): error TS2339: Property 'buildQueryString' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(275,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(304,30): error TS2339: Property 'buildQueryString' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(307,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(332,30): error TS2339: Property 'buildQueryString' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(335,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(359,30): error TS2339: Property 'buildQueryString' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(362,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(389,31): error TS2339: Property 'postWithProgress' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(407,31): error TS2339: Property 'postWithProgress' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(432,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(444,30): error TS2339: Property 'buildQueryString' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(447,31): error TS2339: Property 'get' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(455,31): error TS2339: Property 'post' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/BulkOperationsService.ts(596,12): error TS2339: Property 'handleApiError' does not exist on type 'BulkOperationsService'.
+src/pages/community/qa/services/index.ts(25,8): error TS2307: Cannot find module '../../types/qa/analytics-types' or its corresponding type declarations.
+src/pages/community/qa/services/index.ts(35,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAAnalyticsService.ts(1,28): error TS2307: Cannot find module '../api/ApiService' or its corresponding type declarations.
+src/pages/community/qa/services/QAAnalyticsService.ts(2,32): error TS2307: Cannot find module '../../types/api' or its corresponding type declarations.
+src/pages/community/qa/services/QAAnalyticsService.ts(13,8): error TS2307: Cannot find module '../../types/qa/analytics-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAAnalyticsService.ts(41,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(44,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(55,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(58,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(72,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(77,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(95,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(100,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(111,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(116,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(135,32): error TS2339: Property 'buildQueryString' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(136,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(139,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(162,32): error TS2339: Property 'buildQueryString' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(163,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(166,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(186,32): error TS2339: Property 'buildQueryString' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(187,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(190,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(209,32): error TS2339: Property 'buildQueryString' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(210,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(213,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(228,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(231,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(245,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(248,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(263,33): error TS2339: Property 'post' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(266,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(277,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(280,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(291,33): error TS2339: Property 'post' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(294,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(328,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(343,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(346,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(357,33): error TS2339: Property 'get' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAAnalyticsService.ts(360,12): error TS2339: Property 'handleApiError' does not exist on type 'QAAnalyticsService'.
+src/pages/community/qa/services/QAQuestionService.ts(1,28): error TS2307: Cannot find module '../api/ApiService' or its corresponding type declarations.
+src/pages/community/qa/services/QAQuestionService.ts(2,32): error TS2307: Cannot find module '../../types/api' or its corresponding type declarations.
+src/pages/community/qa/services/QAQuestionService.ts(15,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAQuestionService.ts(16,34): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAQuestionService.ts(17,62): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/services/QAQuestionService.ts(66,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(69,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(74,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(79,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(84,31): error TS2339: Property 'post' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(89,31): error TS2339: Property 'put' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(94,31): error TS2339: Property 'delete' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(99,31): error TS2339: Property 'post' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(122,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(125,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(130,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(151,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(154,31): error TS2339: Property 'get' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(159,31): error TS2339: Property 'post' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(172,12): error TS2339: Property 'handleApiError' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(185,12): error TS2339: Property 'handleApiError' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAQuestionService.ts(198,12): error TS2339: Property 'handleApiError' does not exist on type 'QAQuestionService'.
+src/pages/community/qa/services/QAService.ts(1,28): error TS2307: Cannot find module '../api/ApiService' or its corresponding type declarations.
+src/pages/community/qa/services/QAService.ts(2,32): error TS2307: Cannot find module '../../types/api' or its corresponding type declarations.
+src/pages/community/qa/services/QAService.ts(33,8): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAService.ts(34,34): error TS2307: Cannot find module '../../types/qa/api-types' or its corresponding type declarations.
+src/pages/community/qa/services/QAService.ts(44,8): error TS2307: Cannot find module '../../types/qa/api' or its corresponding type declarations.
+src/pages/community/qa/services/QAService.ts(109,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(112,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(117,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(122,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(127,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(132,31): error TS2339: Property 'put' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(137,31): error TS2339: Property 'delete' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(142,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(165,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(168,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(173,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(194,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(197,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(202,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(225,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(228,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(233,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(238,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(243,31): error TS2339: Property 'put' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(248,31): error TS2339: Property 'delete' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(253,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(271,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(274,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(279,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(288,31): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(293,31): error TS2339: Property 'delete' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(299,31): error TS2339: Property 'put' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(317,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(320,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(325,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(335,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(343,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(346,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(355,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(359,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(364,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(372,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(375,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(380,31): error TS2339: Property 'put' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(389,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(394,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(399,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(404,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(416,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(419,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(427,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(430,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(435,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(440,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(467,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(470,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(475,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(480,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(495,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(505,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(515,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(519,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(527,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(534,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(542,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(549,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(557,16): error TS2339: Property 'post' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(567,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(572,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(581,30): error TS2339: Property 'buildQueryString' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(584,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(589,31): error TS2339: Property 'get' does not exist on type 'QAService'.
+src/pages/community/qa/services/QAService.ts(606,12): error TS2339: Property 'handleApiError' does not exist on type 'QAService'.
+src/pages/community/qa/services/QASignalRService.ts(1,44): error TS2307: Cannot find module '../qa-signalr-connection.service' or its corresponding type declarations.
+src/pages/community/qa/services/QASignalRService.ts(8,8): error TS2307: Cannot find module '../qa-signalr-connection.service' or its corresponding type declarations.
+src/pages/community/qa/services/QASignalRService.ts(360,44): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(371,37): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(382,50): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(386,51): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(390,55): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(394,55): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(398,57): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(402,55): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(406,59): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/community/qa/services/QASignalRService.ts(410,56): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/pages/dashboard/components/AIAssistant.tsx(6,31): error TS2305: Module '"../../../services/ai-agent"' has no exported member 'ChatMessage'.
+src/pages/dashboard/components/AIAssistant.tsx(54,51): error TS2349: This expression is not callable.
+  Type 'AIConversationsService' has no call signatures.
+src/pages/dashboard/components/AIAssistant.tsx(75,49): error TS2349: This expression is not callable.
+  Type 'AIConversationsService' has no call signatures.
+src/pages/dashboard/components/AIAssistant.tsx(78,49): error TS2349: This expression is not callable.
+  Type 'AIConversationsService' has no call signatures.
+src/pages/dashboard/components/AIAssistant.tsx(80,49): error TS2349: This expression is not callable.
+  Type 'AIConversationsService' has no call signatures.
+src/pages/dashboard/components/AIAssistant.tsx(82,49): error TS2349: This expression is not callable.
+  Type 'AIConversationsService' has no call signatures.
+src/pages/dashboard/components/ModelTraining.tsx(30,60): error TS2339: Property 'getTrainingStatus' does not exist on type 'AIAgentService'.
+src/pages/dashboard/components/ModelTraining.tsx(52,34): error TS2339: Property 'startTraining' does not exist on type 'AIAgentService'.
+src/pages/marketplace/products/components/ProductList.tsx(390,9): error TS2322: Type '({ key: string; header: Element; render: (product: ProductDto) => Element; className: string; hideOnMobile?: undefined; mobileRender?: undefined; } | { key: string; ... 4 more ...; mobileRender?: undefined; } | { ...; } | { ...; })[]' is not assignable to type 'Column<ProductDto>[]'.
+  Type '{ key: string; header: Element; render: (product: ProductDto) => Element; className: string; hideOnMobile?: undefined; mobileRender?: undefined; } | { key: string; ... 4 more ...; mobileRender?: undefined; } | { ...; } | { ...; }' is not assignable to type 'Column<ProductDto>'.
+    Type '{ key: string; header: JSX.Element; render: (product: ProductDto) => JSX.Element; className: string; hideOnMobile?: undefined; mobileRender?: undefined; }' is not assignable to type 'Column<ProductDto>'.
+      Types of property 'header' are incompatible.
+        Type 'Element' is not assignable to type 'string'.
+src/pages/marketplace/products/ProductsManagement.tsx(13,10): error TS2305: Module '"../../../hooks/useSignalR"' has no exported member 'useSignalR'.
+src/pages/marketplace/services/components/ServiceAnalytics.tsx(245,43): error TS2339: Property 'totalProviders' does not exist on type 'ServiceStatistics'.
+src/pages/marketplace/services/components/ServiceAnalytics.tsx(257,43): error TS2339: Property 'emergencyServices' does not exist on type 'ServiceStatistics'.
+src/pages/marketplace/services/components/ServiceList.tsx(394,9): error TS2322: Type '({ key: string; header: Element; render: (service: ServiceDto) => Element; className: string; mobileRender?: undefined; hideOnMobile?: undefined; } | { key: string; ... 4 more ...; hideOnMobile?: undefined; } | { ...; } | { ...; } | { ...; })[]' is not assignable to type 'Column<ServiceDto>[]'.
+  Type '{ key: string; header: Element; render: (service: ServiceDto) => Element; className: string; mobileRender?: undefined; hideOnMobile?: undefined; } | { key: string; ... 4 more ...; hideOnMobile?: undefined; } | { ...; } | { ...; } | { ...; }' is not assignable to type 'Column<ServiceDto>'.
+    Type '{ key: string; header: JSX.Element; render: (service: ServiceDto) => JSX.Element; className: string; mobileRender?: undefined; hideOnMobile?: undefined; }' is not assignable to type 'Column<ServiceDto>'.
+      Types of property 'header' are incompatible.
+        Type 'Element' is not assignable to type 'string'.
+src/pages/marketplace/services/index.ts(5,1): error TS2308: Module './types' has already exported a member named 'ServiceAnalytics'. Consider explicitly re-exporting to resolve the ambiguity.
+src/pages/marketplace/services/ServicesManagement.tsx(13,10): error TS2305: Module '"../../../hooks/useSignalR"' has no exported member 'useSignalR'.
+src/services/admin/index.ts(22,3): error TS2305: Module '"../../types/admin"' has no exported member 'AdvancedAnalytics'.
+src/services/admin/index.ts(23,3): error TS2305: Module '"../../types/admin"' has no exported member 'UserAnalytics'.
+src/services/admin/index.ts(24,3): error TS2305: Module '"../../types/admin"' has no exported member 'UserActivityData'.
+src/services/admin/index.ts(25,3): error TS2305: Module '"../../types/admin"' has no exported member 'UserDemographics'.
+src/services/admin/index.ts(26,3): error TS2305: Module '"../../types/admin"' has no exported member 'ContentAnalytics'.
+src/services/admin/index.ts(27,3): error TS2305: Module '"../../types/admin"' has no exported member 'CategoryData'.
+src/services/admin/index.ts(28,3): error TS2305: Module '"../../types/admin"' has no exported member 'ContentTrendData'.
+src/services/admin/index.ts(29,3): error TS2305: Module '"../../types/admin"' has no exported member 'EngagementAnalytics'.
+src/services/admin/index.ts(30,3): error TS2305: Module '"../../types/admin"' has no exported member 'PageData'.
+src/services/admin/index.ts(31,3): error TS2305: Module '"../../types/admin"' has no exported member 'EngagementTrendData'.
+src/services/admin/index.ts(32,3): error TS2305: Module '"../../types/admin"' has no exported member 'SystemAnalytics'.
+src/services/admin/index.ts(33,3): error TS2305: Module '"../../types/admin"' has no exported member 'ResourceUsageData'.
+src/services/admin/index.ts(34,3): error TS2305: Module '"../../types/admin"' has no exported member 'ErrorLogData'.
+src/services/admin/index.ts(35,3): error TS2305: Module '"../../types/admin"' has no exported member 'SecurityAnalytics'.
+src/services/admin/index.ts(36,3): error TS2305: Module '"../../types/admin"' has no exported member 'ThreatData'.
+src/services/admin/index.ts(37,3): error TS2305: Module '"../../types/admin"' has no exported member 'SecurityEventData'.
+src/services/admin/index.ts(38,3): error TS2305: Module '"../../types/admin"' has no exported member 'PerformanceAnalytics'.
+src/services/admin/index.ts(39,3): error TS2305: Module '"../../types/admin"' has no exported member 'PerformanceTrendData'.
+src/services/admin/index.ts(40,3): error TS2305: Module '"../../types/admin"' has no exported member 'EndpointData'.
+src/services/admin/index.ts(41,3): error TS2305: Module '"../../types/admin"' has no exported member 'AnalyticsMetadata'.
+src/services/admin/index.ts(42,3): error TS2305: Module '"../../types/admin"' has no exported member 'AdminUser'.
+src/services/admin/index.ts(43,3): error TS2305: Module '"../../types/admin"' has no exported member 'UserFilters'.
+src/services/admin/index.ts(44,3): error TS2305: Module '"../../types/admin"' has no exported member 'PaginatedResult'.
+src/services/ai-agent/feedback.ts(40,76): error TS2322: Type 'FeedbackListParams | undefined' is not assignable to type 'Record<string, unknown> | undefined'.
+  Type 'FeedbackListParams' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'FeedbackListParams'.
+src/services/ai-agent/utils/ContextManager.ts(4,32): error TS2307: Cannot find module '../../types/ai-agent' or its corresponding type declarations.
+src/services/auth/index.ts(108,62): error TS2339: Property 'succeeded' does not exist on type 'LoginResponse'.
+src/services/auth/index.ts(109,38): error TS2339: Property 'data' does not exist on type 'LoginResponse'.
+src/services/auth/index.ts(179,24): error TS2345: Argument of type '{ id: any; firstName: any; lastName: any; email: any; name: string; roles: any; isActive: any; isEmailConfirmed: any; createdAt: any; status: "active"; } | { id: string; firstName: string; lastName: string; ... 6 more ...; status: UserStatus; }' is not assignable to parameter of type 'UserInfo'.
+  Type '{ id: string; firstName: string; lastName: string; email: string; name: string; roles: UserRole[]; isActive: true; isEmailConfirmed: true; createdAt: string; status: UserStatus; }' is not assignable to type 'UserInfo'.
+    Types of property 'status' are incompatible.
+      Type 'UserStatus' is not assignable to type '"active" | "inactive" | "suspended" | "pending"'.
+        Type '1' is not assignable to type '"active" | "inactive" | "suspended" | "pending"'.
+src/services/auth/index.ts(232,53): error TS2339: Property 'message' does not exist on type 'LoginResponse'.
+src/services/auth/index.ts(233,51): error TS2339: Property 'errors' does not exist on type 'LoginResponse'.
+src/services/auth/index.ts(270,32): error TS2339: Property 'confirmEmail' does not exist on type 'AuthProfileService'.
+src/services/auth/index.ts(291,33): error TS2339: Property 'revokeSession' does not exist on type 'AuthSecurityService'.
+src/services/marketplace/image-upload.service.ts(296,7): error TS2740: Type '{}' is missing the following properties from type 'ImageUploadResult[]': length, pop, push, concat, and 29 more.
+src/services/marketplace/image-upload.service.ts(446,7): error TS2740: Type '{}' is missing the following properties from type 'ImageUploadResult[]': length, pop, push, concat, and 29 more.
+src/services/notification/SignalRManager.ts(50,11): error TS2353: Object literal may only specify known properties, and 'read' does not exist in type 'NotificationDto'.
+src/types/admin.ts(7,13): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.

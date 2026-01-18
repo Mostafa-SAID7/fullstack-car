@@ -50,7 +50,7 @@ export interface ImageUploadProgress {
 
 export class ImageUploadService {
   private static instance: ImageUploadService;
-  
+
   private readonly defaultOptions: Required<ImageUploadOptions> = {
     maxSize: 5 * 1024 * 1024, // 5MB
     allowedFormats: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'],
@@ -60,7 +60,7 @@ export class ImageUploadService {
     maxHeight: 1080
   };
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): ImageUploadService {
     if (!ImageUploadService.instance) {
@@ -110,12 +110,12 @@ export class ImageUploadService {
       img.onload = () => {
         // Calculate new dimensions
         let { width, height } = img;
-        
+
         if (width > options.maxWidth) {
           height = (height * options.maxWidth) / width;
           width = options.maxWidth;
         }
-        
+
         if (height > options.maxHeight) {
           width = (width * options.maxHeight) / height;
           height = options.maxHeight;
@@ -127,7 +127,7 @@ export class ImageUploadService {
 
         // Draw and compress image
         ctx?.drawImage(img, 0, 0, width, height);
-        
+
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -221,7 +221,7 @@ export class ImageUploadService {
       // Configure request
       xhr.timeout = REQUEST_TIMEOUTS.UPLOAD;
       xhr.open('POST', `${API_ENDPOINTS.PRODUCTS.BASE}/${productId}/images`);
-      
+
       // Add authorization header if available
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -243,10 +243,10 @@ export class ImageUploadService {
     onFileComplete?: (result: ImageUploadResult, index: number) => void
   ): Promise<ImageUploadResult[]> {
     const results: ImageUploadResult[] = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       try {
         const result = await this.uploadProductImage(
           productId,
@@ -261,7 +261,7 @@ export class ImageUploadService {
             }
           }
         );
-        
+
         results.push(result);
         onFileComplete?.(result, i);
       } catch (error) {
@@ -292,7 +292,7 @@ export class ImageUploadService {
    */
   async getProductImages(productId: string): Promise<ImageUploadResult[]> {
     try {
-      const response = await apiClient.get(`${API_ENDPOINTS.PRODUCTS.BASE}/${productId}/images`);
+      const response = await apiClient.get<ImageUploadResult[]>(`${API_ENDPOINTS.PRODUCTS.BASE}/${productId}/images`);
       return response.data || [];
     } catch (error) {
       console.error('Failed to get product images:', error);
@@ -371,7 +371,7 @@ export class ImageUploadService {
       // Configure request
       xhr.timeout = REQUEST_TIMEOUTS.UPLOAD;
       xhr.open('POST', `${API_ENDPOINTS.SERVICES.BASE}/${serviceId}/images`);
-      
+
       // Add authorization header if available
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -393,10 +393,10 @@ export class ImageUploadService {
     onFileComplete?: (result: ImageUploadResult, index: number) => void
   ): Promise<ImageUploadResult[]> {
     const results: ImageUploadResult[] = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       try {
         const result = await this.uploadServiceImage(
           serviceId,
@@ -411,7 +411,7 @@ export class ImageUploadService {
             }
           }
         );
-        
+
         results.push(result);
         onFileComplete?.(result, i);
       } catch (error) {
@@ -442,7 +442,7 @@ export class ImageUploadService {
    */
   async getServiceImages(serviceId: string): Promise<ImageUploadResult[]> {
     try {
-      const response = await apiClient.get(`${API_ENDPOINTS.SERVICES.BASE}/${serviceId}/images`);
+      const response = await apiClient.get<ImageUploadResult[]>(`${API_ENDPOINTS.SERVICES.BASE}/${serviceId}/images`);
       return response.data || [];
     } catch (error) {
       console.error('Failed to get service images:', error);

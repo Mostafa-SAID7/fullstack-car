@@ -5,7 +5,7 @@ import { ENV } from '../../config/environment';
 import type { AnalyticsOverview, AgentPerformanceMetrics, ConversationMetrics } from '../../types/ai-agent';
 
 interface AnalyticsParams {
-  [key: string]: string | undefined;
+  [key: string]: unknown;
   startDate?: string;
   endDate?: string;
   agentType?: string;

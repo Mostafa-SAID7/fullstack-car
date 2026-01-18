@@ -1,4 +1,5 @@
 import { apiClient, type ApiResult } from '../api';
+import type { Result } from '../../types/api';
 import type {
   LoginRequest,
   LoginResponse,
@@ -16,24 +17,24 @@ export class AuthCoreService {
   /**
    * Login with email and password
    */
-  async login(request: LoginRequest): Promise<ApiResult<LoginResponse>> {
-    const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, request);
-    return response as ApiResult<LoginResponse>;
+  async login(request: LoginRequest): Promise<ApiResult<Result<LoginResponse>>> {
+    const response = await apiClient.post<Result<LoginResponse>>(API_ENDPOINTS.AUTH.LOGIN, request);
+    return response;
   }
 
   /**
    * Register new user account
    */
-  async register(request: RegisterRequest): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, request);
+  async register(request: RegisterRequest): Promise<ApiResult<Result<any>>> {
+    const response = await apiClient.post<Result<any>>(API_ENDPOINTS.AUTH.REGISTER, request);
     return response;
   }
 
   /**
    * Logout current user
    */
-  async logout(): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT, {});
+  async logout(): Promise<ApiResult<Result<void>>> {
+    const response = await apiClient.post<Result<void>>(API_ENDPOINTS.AUTH.LOGOUT, {});
     return response;
   }
 
@@ -53,11 +54,11 @@ export class AuthCoreService {
       refreshToken
     };
 
-    const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.AUTH.REFRESH, request);
+    const response = await apiClient.post<Result<LoginResponse>>(API_ENDPOINTS.AUTH.REFRESH, request);
 
     // Update stored tokens if refresh successful
-    const authData = response.data;
-    if (response.succeeded && authData?.token) {
+    const authData = response.data?.data;
+    if (response.succeeded && response.data?.succeeded && authData?.token) {
       localStorage.setItem('auth_token', authData.token);
       if (authData.refreshToken) {
         localStorage.setItem('refresh_token', authData.refreshToken);
@@ -71,8 +72,8 @@ export class AuthCoreService {
   /**
    * Get current authenticated user
    */
-  async getCurrentUser(): Promise<any> {
-    const response = await apiClient.get('/v1/auth/me');
+  async getCurrentUser(): Promise<ApiResult<Result<any>>> {
+    const response = await apiClient.get<Result<any>>('/v1/auth/me');
     return response;
   }
 
@@ -102,8 +103,8 @@ export class AuthCoreService {
   /**
    * Confirm email address
    */
-  async confirmEmail(userId: string, token: string): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.CONFIRM_EMAIL, {
+  async confirmEmail(userId: string, token: string): Promise<ApiResult<Result<any>>> {
+    const response = await apiClient.post<Result<any>>(API_ENDPOINTS.AUTH.CONFIRM_EMAIL, {
       userId,
       token
     });
@@ -113,16 +114,16 @@ export class AuthCoreService {
   /**
    * Resend email confirmation
    */
-  async resendEmailConfirmation(email: string): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.RESEND_CONFIRMATION, email);
+  async resendEmailConfirmation(email: string): Promise<ApiResult<Result<any>>> {
+    const response = await apiClient.post<Result<any>>(API_ENDPOINTS.AUTH.RESEND_CONFIRMATION, email);
     return response;
   }
 
   /**
    * Revoke specific token
    */
-  async revokeToken(token: string): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.REVOKE_TOKEN, token);
+  async revokeToken(token: string): Promise<ApiResult<Result<any>>> {
+    const response = await apiClient.post<Result<any>>(API_ENDPOINTS.AUTH.REVOKE_TOKEN, token);
     return response;
   }
 
