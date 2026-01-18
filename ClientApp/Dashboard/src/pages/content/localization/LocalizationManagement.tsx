@@ -5,7 +5,7 @@ import {
   FileCode,
   History,
 } from 'lucide-react';
-import { localizationService, type TranslationDto, type TranslationStatsDto, type PagedResult, type TranslationCacheMetrics, type ResourceFileDto } from '../../../components/services/localization';
+import { localizationService, type TranslationDto, type TranslationStatsDto, type PagedResult, type TranslationCacheMetrics, type ResourceFileDto } from '../../../services/localization/localization-admin.service';
 import { useToast } from '../../../hooks';
 import { SkeletonTable as TableSkeleton, StatsSkeleton as StatsSkeleton } from '../../../components/feedback/skeletons/Skeleton';
 import { cn } from '../../../lib/utils';

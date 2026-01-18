@@ -1,13 +1,13 @@
-import { ApiService } from '../api/ApiService';
-import type { ApiResult } from '../../types/api';
+import { ApiService } from '../../../../services/api/ApiService';
+import type { ApiResult } from '../../../../types/api';
 import type {
   ApiResponse,
   PaginatedApiResponse,
   UserReputation,
   ReputationHistory,
   Expert
-} from '../../types/qa/api-types';
-import { QA_API_ENDPOINTS } from '../../types/qa/api-types';
+} from '../types/api-types';
+import { QA_API_ENDPOINTS } from '../types/api-types';
 
 /**
  * Reputation Service following existing service patterns

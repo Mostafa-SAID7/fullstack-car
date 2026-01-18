@@ -2,19 +2,23 @@
  * Friend/Social-related models matching backend DTOs
  */
 
-export const enum FriendshipStatus {
-  Pending = 1,
-  Accepted = 2,
-  Rejected = 3,
-  Blocked = 4
-}
+export const FriendshipStatus = {
+  Pending: 1,
+  Accepted: 2,
+  Rejected: 3,
+  Blocked: 4
+} as const;
 
-export const enum ConnectionType {
-  Friend = 1,
-  Following = 2,
-  Follower = 3,
-  Blocked = 4
-}
+export type FriendshipStatus = (typeof FriendshipStatus)[keyof typeof FriendshipStatus];
+
+export const ConnectionType = {
+  Friend: 1,
+  Following: 2,
+  Follower: 3,
+  Blocked: 4
+} as const;
+
+export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType];
 
 export interface FriendDto {
   id: string;
@@ -23,7 +27,7 @@ export interface FriendDto {
   status: FriendshipStatus;
   createdAt: Date;
   acceptedAt?: Date;
-  
+
   friendFirstName: string;
   friendLastName: string;
   friendProfileImageUrl?: string;
@@ -38,7 +42,7 @@ export interface FriendRequestDto {
   message?: string;
   createdAt: Date;
   respondedAt?: Date;
-  
+
   senderFirstName: string;
   senderLastName: string;
   senderProfileImageUrl?: string;
@@ -61,7 +65,7 @@ export interface UserConnectionDto {
   connectedUserId: string;
   connectionType: ConnectionType;
   createdAt: Date;
-  
+
   connectedUserFirstName: string;
   connectedUserLastName: string;
   connectedUserProfileImageUrl?: string;

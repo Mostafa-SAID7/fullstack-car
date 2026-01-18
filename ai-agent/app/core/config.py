@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     # OpenAI (optional, for fallback)
     OPENAI_API_KEY: str = ""
     
+    # Gemini Configuration
+    GEMINI_API_KEY: str = "AIzaSyA6vzDfH6R7Vi3xmXabqjb2gd23rwPIS5M"
+    DEFAULT_LLM_PROVIDER: str = "gemini"  # Options: local, openai, gemini
+    
     # Backend Integration
     BACKEND_API_URL: str = "http://localhost:5100"
     BACKEND_API_KEY: str = ""

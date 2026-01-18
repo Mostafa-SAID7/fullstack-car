@@ -12,7 +12,7 @@ export interface PagedResult<T> {
   hasNextPage: boolean;
 }
 
-export interface UserProfileDto {
+export interface CompactUserProfileDto {
   id: string;
   firstName: string;
   lastName: string;

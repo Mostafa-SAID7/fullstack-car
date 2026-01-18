@@ -8,6 +8,7 @@ from typing import Optional, Dict, Any, List
 from app.core.config import settings
 from app.core.cache import cache_service
 from app.core.exceptions import LLMException, LLMTimeoutException, LLMRateLimitException
+from app.services.gemini_client import gemini_client
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,9 +30,12 @@ class LLMClient:
         
         # Token costs (example rates, adjust based on actual pricing)
         self.token_costs = {
-            'local': 0.0,  # Local models are free
-            'gpt-3.5-turbo': 0.002 / 1000,  # $0.002 per 1K tokens
-            'gpt-4': 0.03 / 1000  # $0.03 per 1K tokens
+            'local': 0.0,
+            'gpt-3.5-turbo': 0.002 / 1000,
+            'gpt-4': 0.03 / 1000,
+            'gemini-1.5-flash': 0.075 / 1_000_000,
+            'gemini-1.5-pro': 3.5 / 1_000_000,
+            'gemini-1.5-flash-8b': 0.0375 / 1_000_000
         }
     
     @classmethod
@@ -53,7 +57,12 @@ class LLMClient:
         max_tokens: int = 200,
         temperature: float = 0.7,
         user_id: Optional[str] = None,
-        use_cache: bool = True
+        use_cache: bool = True,
+        model_id: Optional[str] = None,
+        system_instruction: Optional[str] = None,
+        safety_settings: Optional[List[Dict[str, str]]] = None,
+        images: Optional[List[str]] = None,
+        tools: Optional[List[Any]] = None
     ) -> Dict[str, Any]:
         """
         Generate response with retry, fallback, and caching.
@@ -64,6 +73,11 @@ class LLMClient:
             temperature: Sampling temperature
             user_id: User ID for rate limiting
             use_cache: Whether to use cached responses
+            model_id: Specific model to use (e.g. 'gemini-1.5-pro')
+            system_instruction: System prompt/persona
+            safety_settings: Gemini safety thresholds
+            images: List of base64 encoded images
+            tools: List of Gemini tool definitions
             
         Returns:
             Dictionary with response text, tokens used, cost, and model used
@@ -84,7 +98,7 @@ class LLMClient:
         
         # Try primary model with retries
         response = await self._generate_with_retry(
-            prompt, max_tokens, temperature
+            prompt, max_tokens, temperature, model_id, system_instruction, safety_settings, images, tools
         )
         
         # Cache the response
@@ -101,7 +115,12 @@ class LLMClient:
         self,
         prompt: str,
         max_tokens: int,
-        temperature: float
+        temperature: float,
+        model_id: Optional[str] = None,
+        system_instruction: Optional[str] = None,
+        safety_settings: Optional[List[Dict[str, str]]] = None,
+        images: Optional[List[str]] = None,
+        tools: Optional[List[Any]] = None
     ) -> Dict[str, Any]:
         """Generate with exponential backoff retry"""
         last_exception = None
@@ -109,17 +128,28 @@ class LLMClient:
         for attempt in range(self.max_retries):
             try:
                 # Try primary model first
-                if self.primary_pipeline:
+                if self.primary_pipeline and settings.DEFAULT_LLM_PROVIDER == "local":
                     return await self._generate_primary(prompt, max_tokens, temperature)
                 
-                # Fallback to OpenAI if primary not available
+                # Check for Gemini (Primary or Fallback)
+                if gemini_client.is_configured:
+                    return await self._generate_gemini(
+                        prompt, max_tokens, temperature, 
+                        model_id or "gemini-1.5-flash",
+                        system_instruction, 
+                        safety_settings,
+                        images,
+                        tools
+                    )
+                
+                # Fallback to OpenAI if primary/gemini not available
                 if self.openai_client:
                     return await self._generate_openai(prompt, max_tokens, temperature)
                 
                 # No models available
                 raise LLMException(
                     "No LLM models available",
-                    {"primary_available": False, "openai_available": False}
+                    {"primary_available": False, "openai_available": False, "gemini_available": False}
                 )
                 
             except LLMRateLimitException:
@@ -193,6 +223,53 @@ class LLMClient:
         except Exception as e:
             logger.error(f"Primary model generation failed: {e}")
             raise LLMException(f"Primary model error: {str(e)}")
+
+    async def _generate_gemini(
+        self,
+        prompt: str,
+        max_tokens: int,
+        temperature: float,
+        model_id: str,
+        system_instruction: Optional[str] = None,
+        safety_settings: Optional[List[Dict[str, str]]] = None,
+        images: Optional[List[str]] = None,
+        tools: Optional[List[Any]] = None
+    ) -> Dict[str, Any]:
+        """Generate using Google Gemini AI"""
+        try:
+            start_time = time.time()
+            
+            response_text = await gemini_client.generate_response(
+                prompt, 
+                max_tokens=max_tokens, 
+                temperature=temperature,
+                model_id=model_id,
+                system_instruction=system_instruction,
+                safety_settings=safety_settings,
+                images=images,
+                tools=tools
+            )
+            
+            if not response_text:
+                raise LLMException("Gemini returned empty response")
+            
+            # Count tokens (approximate for Gemini)
+            tokens_used = self.count_tokens(response_text) + self.count_tokens(prompt)
+            cost = tokens_used * self.token_costs.get(model_id, self.token_costs['gemini-1.5-flash'])
+            
+            elapsed_time = time.time() - start_time
+            
+            return {
+                'text': response_text,
+                'tokens_used': tokens_used,
+                'cost': cost,
+                'model': model_id,
+                'response_time': elapsed_time
+            }
+            
+        except Exception as e:
+            logger.error(f"Gemini generation failed: {e}")
+            raise LLMException(f"Gemini error: {str(e)}")
     
     async def _generate_openai(
         self,

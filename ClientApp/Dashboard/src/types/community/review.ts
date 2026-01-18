@@ -2,13 +2,15 @@
  * Review-related models matching backend DTOs
  */
 
-export const enum ReviewType {
-  CarReview = 1,
-  DealerReview = 2,
-  ServiceReview = 3,
-  ProductReview = 4,
-  ExperienceReview = 5
-}
+export const ReviewType = {
+  CarReview: 1,
+  DealerReview: 2,
+  ServiceReview: 3,
+  ProductReview: 4,
+  ExperienceReview: 5
+} as const;
+
+export type ReviewType = (typeof ReviewType)[keyof typeof ReviewType];
 
 export interface ReviewDto {
   id: string;
@@ -21,12 +23,12 @@ export interface ReviewDto {
   helpfulCount: number;
   createdAt: Date;
   updatedAt?: Date;
-  
+
   userId: string;
   userFirstName: string;
   userLastName: string;
   userProfileImageUrl?: string;
-  
+
   carBrand?: string;
   carModel?: string;
   carYear?: number;
@@ -56,7 +58,7 @@ export interface ReviewCommentDto {
   content: string;
   likesCount: number;
   createdAt: Date;
-  
+
   userId: string;
   userFirstName: string;
   userLastName: string;

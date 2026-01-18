@@ -14,49 +14,49 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
 }) => {
   const models: AIModel[] = [
     {
-      id: '1',
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
-      name: 'DialoGPT-medium',
-      provider: 'microsoft',
-      size: '345M',
-      accuracy: 89.2,
-      active: true,
-      description: 'Conversational AI model optimized for dialogue',
-      version: '1.0',
-      parameters: { temperature: 0.7, maxTokens: 1024, topP: 0.9, topK: 40 },
-      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: false, translation: false, summarization: false, questionAnswering: true },
-      performance: { averageResponseTime: 120, throughput: 50, memoryUsage: 1024, cpuUsage: 30, accuracy: 89.2, errorRate: 0.05 }
-    },
-    {
-      id: '2',
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
-      name: 'GPT-3.5-turbo',
-      provider: 'openai',
-      size: '175B',
-      accuracy: 94.1,
-      active: false,
-      description: 'Advanced language model with high accuracy',
-      version: '1.0',
-      parameters: { temperature: 0.7, maxTokens: 2048, topP: 1, topK: 50 },
-      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: true, translation: true, summarization: true, questionAnswering: true },
-      performance: { averageResponseTime: 800, throughput: 10, memoryUsage: 4096, cpuUsage: 80, accuracy: 94.1, errorRate: 0.01 }
-    },
-    {
-      id: '3',
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
-      name: 'BERT-base',
+      id: 'gemini-1.5-flash',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: 'Gemini 1.5 Flash',
       provider: 'google',
-      size: '110M',
-      accuracy: 87.5,
+      size: 'Multimodal',
+      accuracy: 92.5,
+      active: true,
+      description: 'Fast and versatile performance across a diverse variety of tasks.',
+      version: '1.5',
+      parameters: { temperature: 0.7, maxTokens: 4096, topP: 0.95, topK: 40 },
+      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: true, translation: true, summarization: true, questionAnswering: true },
+      performance: { averageResponseTime: 150, throughput: 100, memoryUsage: 0, cpuUsage: 0, accuracy: 92.5, errorRate: 0.02 }
+    },
+    {
+      id: 'gemini-1.5-pro',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: 'Gemini 1.5 Pro',
+      provider: 'google',
+      size: 'Multimodal',
+      accuracy: 96.2,
       active: false,
-      description: 'Bidirectional encoder for understanding context',
-      version: '1.0',
-      parameters: { temperature: 0.5, maxTokens: 512, topP: 0.9, topK: 30 },
-      capabilities: { textGeneration: false, textCompletion: true, conversation: false, codeGeneration: false, translation: false, summarization: true, questionAnswering: true },
-      performance: { averageResponseTime: 60, throughput: 100, memoryUsage: 512, cpuUsage: 20, accuracy: 87.5, errorRate: 0.08 }
+      description: 'Mid-size multimodal model, optimized for complex reasoning tasks.',
+      version: '1.5',
+      parameters: { temperature: 0.7, maxTokens: 8192, topP: 0.95, topK: 40 },
+      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: true, translation: true, summarization: true, questionAnswering: true },
+      performance: { averageResponseTime: 450, throughput: 40, memoryUsage: 0, cpuUsage: 0, accuracy: 96.2, errorRate: 0.01 }
+    },
+    {
+      id: 'gemini-1.5-flash-8b',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: 'Gemini 1.5 Flash-8B',
+      provider: 'google',
+      size: '8B Parameters',
+      accuracy: 88.0,
+      active: false,
+      description: 'High-speed, high-efficiency model for smaller, faster tasks.',
+      version: '1.5',
+      parameters: { temperature: 0.7, maxTokens: 2048, topP: 0.95, topK: 40 },
+      capabilities: { textGeneration: true, textCompletion: true, conversation: true, codeGeneration: true, translation: true, summarization: true, questionAnswering: true },
+      performance: { averageResponseTime: 80, throughput: 200, memoryUsage: 0, cpuUsage: 0, accuracy: 88.0, errorRate: 0.03 }
     }
   ];
 
@@ -75,8 +75,8 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
             <div
               key={i}
               className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${model.active
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-primary/50'
+                ? 'border-primary bg-primary/5'
+                : 'border-border hover:border-primary/50'
                 }`}
               onClick={() => {/* Handle model selection */ }}
             >
@@ -109,8 +109,8 @@ export const AIAgentModels: React.FC<AIAgentModelsProps> = ({
 
               <button
                 className={`w-full mt-4 py-2 rounded-lg font-medium transition-colors ${model.active
-                    ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
-                    : 'bg-primary/10 text-primary hover:bg-primary/20'
+                  ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
+                  : 'bg-primary/10 text-primary hover:bg-primary/20'
                   }`}
               >
                 {model.active ? 'Deactivate' : 'Activate'}

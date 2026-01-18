@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FileCode, Calendar, Database, HardDrive, ExternalLink } from 'lucide-react';
-import type { ResourceFileDto } from '../../../../components/services/localization';
+import type { ResourceFileDto } from '../../../../services/localization/localization-admin.service';
 
 export const ResourceFilesTable: React.FC<{
     files: ResourceFileDto[];

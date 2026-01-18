@@ -12,6 +12,7 @@ export interface AIMessage {
     confidence?: number;
     processingTime?: number;
     cost?: number;
+    [key: string]: any;
   };
 }
 
@@ -21,24 +22,27 @@ export interface AIConversation {
   messages: AIMessage[];
   createdAt: string;
   updatedAt: string;
-  userId: string;
-  isActive: boolean;
+  userId?: string;
+  isActive?: boolean;
   metadata?: {
     model: string;
     totalTokens: number;
     totalMessages: number;
     agentType?: AgentType;
+    [key: string]: any;
   };
 }
 
 export interface ChatResponse {
   message: string;
-  messageId: string;
-  conversationId: string;
-  agent: string;
+  messageId?: string;
+  conversationId?: string;
+  agent?: string;
   metadata?: Record<string, any>;
   quickActions?: QuickAction[];
   timestamp: string;
+  success?: boolean;
+  error?: string;
 }
 
 export interface ChatRequest {
@@ -47,6 +51,7 @@ export interface ChatRequest {
   userId?: string;
   mode?: AgentType;
   context?: Record<string, any>;
+  images?: string[]; // Base64 encoded images
 }
 
 // Multi-Agent System Types

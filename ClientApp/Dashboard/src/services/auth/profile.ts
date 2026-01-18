@@ -1,8 +1,8 @@
 import { apiClient, type ApiResult } from '../api';
-import type { 
-  UpdateProfileRequest, 
+import type {
+  UpdateProfileRequest,
   ProfileDto,
-  UploadProfileImageResponse 
+  UploadProfileImageResponse
 } from '../../types/auth';
 import { API_ENDPOINTS } from '../../config/api';
 
@@ -35,7 +35,7 @@ export class ProfileService {
     formData.append('file', file);
 
     const response = await apiClient.post<UploadProfileImageResponse>(
-      API_ENDPOINTS.PROFILE.AVATAR, 
+      API_ENDPOINTS.PROFILE.AVATAR,
       formData,
       {
         headers: {
@@ -58,7 +58,7 @@ export class ProfileService {
    * Get privacy settings
    */
   async getPrivacySettings(): Promise<ApiResult<any>> {
-    const response = await apiClient.get(API_ENDPOINTS.PROFILE.PRIVACY);
+    const response = await apiClient.get<any>(API_ENDPOINTS.PROFILE.PRIVACY);
     return response;
   }
 
@@ -66,7 +66,7 @@ export class ProfileService {
    * Update privacy settings
    */
   async updatePrivacySettings(request: any): Promise<ApiResult<void>> {
-    const response = await apiClient.put(API_ENDPOINTS.PROFILE.PRIVACY, request);
+    const response = await apiClient.put<void>(API_ENDPOINTS.PROFILE.PRIVACY, request);
     return response;
   }
 
@@ -74,7 +74,7 @@ export class ProfileService {
    * Deactivate account
    */
   async deactivateAccount(request: { password: string; reason?: string }): Promise<ApiResult<void>> {
-    const response = await apiClient.post(API_ENDPOINTS.PROFILE.DEACTIVATE, request);
+    const response = await apiClient.post<void>(API_ENDPOINTS.PROFILE.DEACTIVATE, request);
     return response;
   }
 
@@ -82,7 +82,31 @@ export class ProfileService {
    * Delete account permanently
    */
   async deleteAccount(request: { password: string; confirmation: string }): Promise<ApiResult<void>> {
-    const response = await apiClient.delete(API_ENDPOINTS.PROFILE.DELETE, { data: request });
+    const response = await apiClient.delete<void>(API_ENDPOINTS.PROFILE.DELETE, { data: request });
+    return response;
+  }
+
+  /**
+   * Change user password
+   */
+  async changePassword(request: any): Promise<ApiResult<void>> {
+    const response = await apiClient.post<void>(API_ENDPOINTS.PASSWORD.CHANGE, request);
+    return response;
+  }
+
+  /**
+   * Forgot password request
+   */
+  async forgotPassword(request: any): Promise<ApiResult<void>> {
+    const response = await apiClient.post<void>(API_ENDPOINTS.PASSWORD.FORGOT, request);
+    return response;
+  }
+
+  /**
+   * Reset password request
+   */
+  async resetPassword(request: any): Promise<ApiResult<void>> {
+    const response = await apiClient.post<void>(API_ENDPOINTS.PASSWORD.RESET, request);
     return response;
   }
 }
@@ -90,6 +114,6 @@ export class ProfileService {
 /**
  * @deprecated Use ProfileService instead
  */
-export class AuthProfileService extends ProfileService {}
+export class AuthProfileService extends ProfileService { }
 
 export const profileService = new ProfileService();

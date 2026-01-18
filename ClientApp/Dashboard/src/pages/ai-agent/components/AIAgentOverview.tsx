@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import { 
-  Bot, 
-  Target, 
-  Zap, 
+import {
+  Bot,
+  Target,
+  Zap,
   MessageSquare,
   Cpu,
   HardDrive,
@@ -17,9 +17,9 @@ interface AIAgentOverviewProps {
   metrics: ModelMetrics;
 }
 
-export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({ 
-  isAIEnabled, 
-  metrics 
+export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
+  isAIEnabled,
+  metrics
 }) => {
   const chartData = generateMockChartData('accuracy', 24);
 
@@ -40,11 +40,10 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           </div>
           <div className="flex items-center gap-3 mb-2">
             <h3 className="text-2xl font-bold">{isAIEnabled ? 'Active' : 'Offline'}</h3>
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-              isAIEnabled
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${isAIEnabled
                 ? 'bg-emerald-100 text-emerald-700'
                 : 'bg-red-100 text-red-700'
-            }`}>
+              }`}>
               <div className={`w-2 h-2 rounded-full ${isAIEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
               {isAIEnabled ? 'Online' : 'Offline'}
             </div>
@@ -113,7 +112,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
             <button className="px-3 py-1 text-xs bg-muted rounded-lg">30d</button>
           </div>
         </div>
-        
+
         <div className="h-64 flex items-end gap-2">
           {chartData.datasets[0].data.map((height: number, i: number) => (
             <div
@@ -124,7 +123,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
             />
           ))}
         </div>
-        
+
         <div className="flex justify-between items-center text-xs mt-4 text-muted-foreground">
           <span>00:00</span>
           <span>12:00</span>
@@ -141,7 +140,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <h3 className="font-bold text-lg mb-6">System Resources</h3>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -151,7 +150,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
               <span className="text-sm font-bold">{metrics.cpuUsage}%</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
-              <div 
+              <div
                 className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${metrics.cpuUsage}%` }}
               />
@@ -165,7 +164,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
               <span className="text-sm font-bold">{metrics.memoryUsage}%</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
-              <div 
+              <div
                 className="bg-green-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${metrics.memoryUsage}%` }}
               />
@@ -191,7 +190,7 @@ export const AIAgentOverview: React.FC<AIAgentOverviewProps> = ({
           className="bg-card border border-border/50 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-border transition-all duration-300 rounded-3xl p-6"
         >
           <h3 className="font-bold text-lg mb-6">Recent Activity</h3>
-          
+
           <div className="space-y-4">
             {[
               { user: 'User #1247', query: 'Toyota Camry maintenance schedule', time: '2m ago', status: 'success' },

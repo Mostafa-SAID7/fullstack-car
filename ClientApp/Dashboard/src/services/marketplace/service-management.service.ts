@@ -4,11 +4,11 @@
  */
 
 import { serviceApiService } from './service-api.service';
-import type {
-  ServiceDto,
-  ServiceFilters,
+import {
+  type ServiceDto,
+  type ServiceFilters,
   ServiceStatus,
-  UpdateServiceRequest
+  type UpdateServiceRequest
 } from '../../types/marketplace';
 
 /**
@@ -51,7 +51,7 @@ export class ServiceManagementService {
 
     try {
       await Promise.all(
-        serviceIds.map(id => 
+        serviceIds.map(id =>
           serviceApiService.updateService(id, { id, status } as UpdateServiceRequest)
         )
       );
@@ -78,7 +78,7 @@ export class ServiceManagementService {
 
     try {
       await Promise.all(
-        serviceIds.map(id => 
+        serviceIds.map(id =>
           serviceApiService.updateService(id, { id, ...updates } as UpdateServiceRequest)
         )
       );
@@ -111,7 +111,7 @@ export class ServiceManagementService {
   async downloadServicesExport(filters?: ServiceFilters, filename: string = 'services-export.csv'): Promise<void> {
     try {
       const blob = await this.exportServices(filters);
-      
+
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -119,7 +119,7 @@ export class ServiceManagementService {
       link.download = filename;
       document.body.appendChild(link);
       link.click();
-      
+
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -139,8 +139,8 @@ export class ServiceManagementService {
     inactive: ServiceDto[];
   }> {
     try {
-      const allServices = await serviceApiService.getServices({ 
-        pageSize: 100 
+      const allServices = await serviceApiService.getServices({
+        pageSize: 100
       });
 
       const suspended = allServices.items.filter(s => s.status === ServiceStatus.Suspended);
@@ -167,7 +167,7 @@ export class ServiceManagementService {
   async duplicateService(serviceId: string, newName?: string): Promise<ServiceDto> {
     try {
       const original = await serviceApiService.getService(serviceId);
-      
+
       const duplicateData = {
         serviceProviderId: original.serviceProviderId,
         name: newName || `${original.name} (Copy)`,
@@ -232,10 +232,10 @@ export class ServiceManagementService {
    * Update prices for multiple services
    * @param updates - Array of {serviceId, basePrice, maxPrice?} objects
    */
-  async bulkUpdatePrices(updates: Array<{ 
-    serviceId: string; 
-    basePrice: number; 
-    maxPrice?: number 
+  async bulkUpdatePrices(updates: Array<{
+    serviceId: string;
+    basePrice: number;
+    maxPrice?: number
   }>): Promise<void> {
     if (!updates || updates.length === 0) {
       throw new Error('No price updates provided');
@@ -243,9 +243,9 @@ export class ServiceManagementService {
 
     try {
       await Promise.all(
-        updates.map(({ serviceId, basePrice, maxPrice }) => 
-          serviceApiService.updateService(serviceId, { 
-            id: serviceId, 
+        updates.map(({ serviceId, basePrice, maxPrice }) =>
+          serviceApiService.updateService(serviceId, {
+            id: serviceId,
             basePrice,
             maxPrice
           } as UpdateServiceRequest)
@@ -261,10 +261,10 @@ export class ServiceManagementService {
    * Update duration for multiple services
    * @param updates - Array of {serviceId, estimatedDuration, maxDuration?} objects
    */
-  async bulkUpdateDuration(updates: Array<{ 
-    serviceId: string; 
-    estimatedDuration: number; 
-    maxDuration?: number 
+  async bulkUpdateDuration(updates: Array<{
+    serviceId: string;
+    estimatedDuration: number;
+    maxDuration?: number
   }>): Promise<void> {
     if (!updates || updates.length === 0) {
       throw new Error('No duration updates provided');
@@ -272,9 +272,9 @@ export class ServiceManagementService {
 
     try {
       await Promise.all(
-        updates.map(({ serviceId, estimatedDuration, maxDuration }) => 
-          serviceApiService.updateService(serviceId, { 
-            id: serviceId, 
+        updates.map(({ serviceId, estimatedDuration, maxDuration }) =>
+          serviceApiService.updateService(serviceId, {
+            id: serviceId,
             estimatedDuration,
             maxDuration
           } as UpdateServiceRequest)
@@ -298,10 +298,10 @@ export class ServiceManagementService {
 
     try {
       await Promise.all(
-        serviceIds.map(id => 
-          serviceApiService.updateService(id, { 
-            id, 
-            isPopular 
+        serviceIds.map(id =>
+          serviceApiService.updateService(id, {
+            id,
+            isPopular
           } as UpdateServiceRequest)
         )
       );

@@ -37,14 +37,18 @@ export type {
   NotificationType,
   NotificationPriority,
   NotificationCategory,
-  Notification,
-  NotificationResponse,
-  NotificationPreferences,
+  NotificationDto,
+  NotificationDto as Notification,
+  NotificationPreferenceDto,
+  NotificationPreferenceDto as NotificationPreferences,
   CreateNotificationRequest,
   NotificationFilters,
-  NotificationStats,
+  NotificationListResponse,
+  NotificationListResponse as NotificationResponse,
+  NotificationStatsResponse,
+  NotificationStatsResponse as NotificationStats,
   NotificationEvent,
-  NotificationTemplate
+  NotificationType as NotificationTemplate
 } from './notification';
 
 // Dashboard types (core) - with explicit re-export to avoid DateRange conflict
@@ -66,19 +70,19 @@ export type {
 
 // Admin types (with aliasing for conflicts)
 export type { AdminUser } from './admin/user';
-export type { 
+export type {
   UserFilters as AdminUserFilters,
   PaginatedResult as AdminPaginatedResult
 } from './admin/user';
 export type {
-    UserAnalytics as AdminUserAnalytics,
-    UserActivityData as AdminUserActivityData,
-    UserDemographics as AdminUserDemographics
+  UserAnalytics as AdminUserAnalytics,
+  UserActivityData as AdminUserActivityData,
+  UserDemographics as AdminUserDemographics
 } from './admin/user-analytics';
 export type {
-    ContentAnalytics as AdminContentAnalytics,
-    CategoryData as AdminCategoryData,
-    ContentTrendData as AdminContentTrendData
+  ContentAnalytics as AdminContentAnalytics,
+  CategoryData as AdminCategoryData,
+  ContentTrendData as AdminContentTrendData
 } from './admin/content-analytics';
 export type { SystemAnalytics as AdminSystemAnalytics } from './admin/system-analytics';
 export * from './admin/engagement-analytics';

@@ -2,20 +2,24 @@
  * Page-related models matching backend DTOs
  */
 
-export const enum PageStatus {
-  Draft = 1,
-  Published = 2,
-  Archived = 3
-}
+export const PageStatus = {
+  Draft: 1,
+  Published: 2,
+  Archived: 3
+} as const;
 
-export const enum PageType {
-  Article = 1,
-  Guide = 2,
-  FAQ = 3,
-  Policy = 4,
-  About = 5,
-  Help = 6
-}
+export type PageStatus = (typeof PageStatus)[keyof typeof PageStatus];
+
+export const PageType = {
+  Article: 1,
+  Guide: 2,
+  FAQ: 3,
+  Policy: 4,
+  About: 5,
+  Help: 6
+} as const;
+
+export type PageType = (typeof PageType)[keyof typeof PageType];
 
 export interface PageDto {
   id: string;
@@ -28,7 +32,7 @@ export interface PageDto {
   createdAt: Date;
   updatedAt?: Date;
   publishedAt?: Date;
-  
+
   authorId: string;
   authorFirstName: string;
   authorLastName: string;
@@ -40,7 +44,7 @@ export interface PageContentDto {
   content: string; // HTML or Markdown
   version: number;
   createdAt: Date;
-  
+
   authorId: string;
   authorFirstName: string;
   authorLastName: string;
@@ -69,7 +73,7 @@ export interface PageRevisionDto {
   content: string;
   changeDescription?: string;
   createdAt: Date;
-  
+
   authorId: string;
   authorFirstName: string;
   authorLastName: string;

@@ -160,7 +160,7 @@
 /* Enhanced RTL-aware utility classes */
 @layer utilities {
   /* === LAYOUT MIRRORING === */
-  
+
   /* RTL Layout Container */
   .rtl-layout {
     direction: rtl;
@@ -182,7 +182,7 @@
   }
 
   /* === TEXT ALIGNMENT === */
-  
+
   /* Auto text alignment based on direction */
   .rtl .text-left {
     text-align: right;
@@ -201,7 +201,7 @@
   }
 
   /* === MARGIN UTILITIES === */
-  
+
   /* Auto margins */
   .rtl .ml-auto {
     margin-left: 0;
@@ -214,39 +214,131 @@
   }
 
   /* Start/End margins */
-  .rtl .ms-1 { margin-right: 0.25rem; margin-left: 0; }
-  .rtl .ms-2 { margin-right: 0.5rem; margin-left: 0; }
-  .rtl .ms-3 { margin-right: 0.75rem; margin-left: 0; }
-  .rtl .ms-4 { margin-right: 1rem; margin-left: 0; }
-  .rtl .ms-6 { margin-right: 1.5rem; margin-left: 0; }
-  .rtl .ms-8 { margin-right: 2rem; margin-left: 0; }
+  .rtl .ms-1 {
+    margin-right: 0.25rem;
+    margin-left: 0;
+  }
 
-  .rtl .me-1 { margin-left: 0.25rem; margin-right: 0; }
-  .rtl .me-2 { margin-left: 0.5rem; margin-right: 0; }
-  .rtl .me-3 { margin-left: 0.75rem; margin-right: 0; }
-  .rtl .me-4 { margin-left: 1rem; margin-right: 0; }
-  .rtl .me-6 { margin-left: 1.5rem; margin-right: 0; }
-  .rtl .me-8 { margin-left: 2rem; margin-right: 0; }
+  .rtl .ms-2 {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+
+  .rtl .ms-3 {
+    margin-right: 0.75rem;
+    margin-left: 0;
+  }
+
+  .rtl .ms-4 {
+    margin-right: 1rem;
+    margin-left: 0;
+  }
+
+  .rtl .ms-6 {
+    margin-right: 1.5rem;
+    margin-left: 0;
+  }
+
+  .rtl .ms-8 {
+    margin-right: 2rem;
+    margin-left: 0;
+  }
+
+  .rtl .me-1 {
+    margin-left: 0.25rem;
+    margin-right: 0;
+  }
+
+  .rtl .me-2 {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+
+  .rtl .me-3 {
+    margin-left: 0.75rem;
+    margin-right: 0;
+  }
+
+  .rtl .me-4 {
+    margin-left: 1rem;
+    margin-right: 0;
+  }
+
+  .rtl .me-6 {
+    margin-left: 1.5rem;
+    margin-right: 0;
+  }
+
+  .rtl .me-8 {
+    margin-left: 2rem;
+    margin-right: 0;
+  }
 
   /* === PADDING UTILITIES === */
-  
-  /* Start/End padding */
-  .rtl .ps-1 { padding-right: 0.25rem; padding-left: 0; }
-  .rtl .ps-2 { padding-right: 0.5rem; padding-left: 0; }
-  .rtl .ps-3 { padding-right: 0.75rem; padding-left: 0; }
-  .rtl .ps-4 { padding-right: 1rem; padding-left: 0; }
-  .rtl .ps-6 { padding-right: 1.5rem; padding-left: 0; }
-  .rtl .ps-8 { padding-right: 2rem; padding-left: 0; }
 
-  .rtl .pe-1 { padding-left: 0.25rem; padding-right: 0; }
-  .rtl .pe-2 { padding-left: 0.5rem; padding-right: 0; }
-  .rtl .pe-3 { padding-left: 0.75rem; padding-right: 0; }
-  .rtl .pe-4 { padding-left: 1rem; padding-right: 0; }
-  .rtl .pe-6 { padding-left: 1.5rem; padding-right: 0; }
-  .rtl .pe-8 { padding-left: 2rem; padding-right: 0; }
+  /* Start/End padding */
+  .rtl .ps-1 {
+    padding-right: 0.25rem;
+    padding-left: 0;
+  }
+
+  .rtl .ps-2 {
+    padding-right: 0.5rem;
+    padding-left: 0;
+  }
+
+  .rtl .ps-3 {
+    padding-right: 0.75rem;
+    padding-left: 0;
+  }
+
+  .rtl .ps-4 {
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+
+  .rtl .ps-6 {
+    padding-right: 1.5rem;
+    padding-left: 0;
+  }
+
+  .rtl .ps-8 {
+    padding-right: 2rem;
+    padding-left: 0;
+  }
+
+  .rtl .pe-1 {
+    padding-left: 0.25rem;
+    padding-right: 0;
+  }
+
+  .rtl .pe-2 {
+    padding-left: 0.5rem;
+    padding-right: 0;
+  }
+
+  .rtl .pe-3 {
+    padding-left: 0.75rem;
+    padding-right: 0;
+  }
+
+  .rtl .pe-4 {
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+
+  .rtl .pe-6 {
+    padding-left: 1.5rem;
+    padding-right: 0;
+  }
+
+  .rtl .pe-8 {
+    padding-left: 2rem;
+    padding-right: 0;
+  }
 
   /* === BORDER UTILITIES === */
-  
+
   /* Start/End borders */
   .rtl .border-s {
     border-right: 1px solid hsl(var(--border));
@@ -269,7 +361,7 @@
   }
 
   /* === FLEXBOX UTILITIES === */
-  
+
   /* Flex direction mirroring */
   .rtl .flex-row {
     flex-direction: row-reverse;
@@ -280,7 +372,7 @@
   }
 
   /* === POSITIONING UTILITIES === */
-  
+
   /* Left/Right positioning */
   .rtl .left-0 {
     left: auto;
@@ -303,7 +395,7 @@
   }
 
   /* === TRANSFORM UTILITIES === */
-  
+
   /* Icon and element mirroring */
   .rtl .mirror-x {
     transform: scaleX(-1);
@@ -314,35 +406,56 @@
   }
 
   /* === SPACING UTILITIES === */
-  
+
   /* Space between elements */
-  .rtl .space-x-1 > * + * {
+  .rtl .space-x-1>*+* {
     margin-left: 0;
     margin-right: 0.25rem;
   }
 
-  .rtl .space-x-2 > * + * {
+  .rtl .space-x-2>*+* {
     margin-left: 0;
     margin-right: 0.5rem;
   }
 
-  .rtl .space-x-3 > * + * {
+  .rtl .space-x-3>*+* {
     margin-left: 0;
     margin-right: 0.75rem;
   }
 
-  .rtl .space-x-4 > * + * {
+  .rtl .space-x-4>*+* {
     margin-left: 0;
     margin-right: 1rem;
   }
 
-  .rtl .space-x-6 > * + * {
+  .rtl .space-x-6>*+* {
     margin-left: 0;
     margin-right: 1.5rem;
   }
 
+  /* === BORDER RADIUS MIRRORING === */
+  .rtl .rounded-tr-none {
+    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0;
+  }
+
+  .rtl .rounded-tl-none {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0;
+  }
+
+  .rtl .rounded-br-none {
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0;
+  }
+
+  .rtl .rounded-bl-none {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0;
+  }
+
   /* === COMPONENT-SPECIFIC RTL STYLES === */
-  
+
   /* Sidebar positioning */
   .rtl .sidebar {
     left: auto;
@@ -415,18 +528,19 @@
   }
 
   /* === GRID UTILITIES === */
-  
+
   /* RTL-aware grid */
   .rtl-grid {
     direction: rtl;
   }
 
-  .rtl-grid > * {
-    direction: ltr; /* Reset direction for grid items if needed */
+  .rtl-grid>* {
+    direction: ltr;
+    /* Reset direction for grid items if needed */
   }
 
   /* === ANIMATION UTILITIES === */
-  
+
   /* RTL-aware slide animations */
   .rtl .slide-in-left {
     animation: slide-in-right 0.3s ease-out;
@@ -445,7 +559,7 @@
   }
 
   /* === UTILITY CLASSES FOR SPECIFIC COMPONENTS === */
-  
+
   /* Button with icon */
   .rtl .btn-icon-left {
     order: 2;
@@ -474,7 +588,7 @@
   }
 
   /* === RESPONSIVE RTL UTILITIES === */
-  
+
   /* Mobile-specific RTL adjustments */
   @media (max-width: 768px) {
     .rtl .mobile-stack {
@@ -487,14 +601,14 @@
   }
 
   /* === ACCESSIBILITY ENHANCEMENTS === */
-  
+
   /* Focus indicators for RTL */
   .rtl .focus-ring {
     box-shadow: -2px 0 0 2px hsl(var(--ring));
   }
 
   /* === PRINT STYLES === */
-  
+
   @media print {
     .rtl {
       direction: rtl;
@@ -521,6 +635,7 @@
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -532,6 +647,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -543,6 +659,7 @@
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(-20px);
@@ -554,6 +671,7 @@
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(20px);
@@ -565,6 +683,7 @@
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -574,6 +693,7 @@
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -583,6 +703,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-100%);
   }
@@ -592,6 +713,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(100%);
   }
@@ -603,6 +725,7 @@
     opacity: 0;
     transform: translateX(-10px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -614,6 +737,7 @@
     opacity: 0;
     transform: translateX(10px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -776,6 +900,7 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
   .rtl-sidebar,
   .rtl-nav,
   .rtl-card,

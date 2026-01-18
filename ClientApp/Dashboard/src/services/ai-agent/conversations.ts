@@ -1,9 +1,10 @@
 // Conversations Service - For managing AI conversations
 
 import { apiClient } from '../api';
-import type { AIConversation, AIMessage } from '../../types/ai-agent';
+import type { AIConversation, AIMessage, ChatResponse, ChatRequest } from '../../types/ai-agent';
 
 const BASE_URL = '/api/conversations';
+const AGENT_URL = '/api/agents';
 
 export interface ConversationListResponse {
   conversations: AIConversation[];
@@ -24,7 +25,7 @@ export class AIConversationsService {
     const response = await apiClient.get(BASE_URL, {
       params: { user_id: userId, page, page_size: pageSize }
     });
-    return response.data;
+    return response.data as any;
   }
 
   /**
@@ -32,7 +33,7 @@ export class AIConversationsService {
    */
   async getConversation(conversationId: string): Promise<AIConversation> {
     const response = await apiClient.get(`${BASE_URL}/${conversationId}`);
-    return response.data;
+    return response.data as any;
   }
 
   /**
@@ -43,7 +44,7 @@ export class AIConversationsService {
       user_id: userId,
       title: title || 'New Conversation'
     });
-    return response.data;
+    return response.data as any;
   }
 
   /**
@@ -73,7 +74,15 @@ export class AIConversationsService {
     const response = await apiClient.get(`${BASE_URL}/${conversationId}/messages`, {
       params: { limit, offset }
     });
-    return response.data;
+    return response.data as any;
+  }
+
+  /**
+   * Send a message to an agent
+   */
+  async sendMessage(request: ChatRequest): Promise<ChatResponse> {
+    const response = await apiClient.post(`${AGENT_URL}/chat`, request);
+    return response.data as any;
   }
 }
 

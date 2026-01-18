@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, Clock, Globe, ArrowRight, CalendarDays, History } from 'lucide-react';
-import { localizationService, type TranslationUpdateDto } from '../../../../components/services/localization';
+import { localizationService, type TranslationUpdateDto } from '../../../../services/localization/localization-admin.service';
 import { useToast } from '../../../../hooks';
 import { format } from 'date-fns';
 

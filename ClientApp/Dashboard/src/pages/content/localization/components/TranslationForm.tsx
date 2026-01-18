@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
-import type { TranslationDto } from '../../../../components/services/localization';
+import type { TranslationDto } from '../../../../services/localization/localization-admin.service';
 
 export const TranslationForm: React.FC<{
     translation?: TranslationDto;

@@ -62,12 +62,14 @@ export class AIAgentTestingService {
   async testAgent(
     agentType: AgentType,
     message: string,
-    context?: Record<string, any>
+    context?: Record<string, any>,
+    images?: string[]
   ): Promise<TestResult> {
     const response = await apiClient.post(`${ENV.AI_AGENT_URL}/agents/test`, {
       agent_type: agentType,
       message,
-      context
+      context,
+      images
     });
     return response.data as any as TestResult;
   }

@@ -11,7 +11,7 @@ export function measureRenderTime(componentName: string, callback: () => void): 
   callback();
   const end = performance.now();
   const duration = end - start;
-  
+
   if (duration > 16) { // More than one frame (60fps)
     console.warn(`[Performance] ${componentName} took ${duration.toFixed(2)}ms to render`);
   }
@@ -24,7 +24,7 @@ export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: any | null = null;
 
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
@@ -68,7 +68,7 @@ export function memoize<T extends (...args: any[]) => any>(
 
   return ((...args: Parameters<T>) => {
     const key = resolver ? resolver(...args) : JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key)!;
     }
@@ -206,7 +206,7 @@ export function monitorFPS(callback: (fps: number) => void): () => void {
   const measureFPS = () => {
     frames++;
     const currentTime = performance.now();
-    
+
     if (currentTime >= lastTime + 1000) {
       const fps = Math.round((frames * 1000) / (currentTime - lastTime));
       callback(fps);

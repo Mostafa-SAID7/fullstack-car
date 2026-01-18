@@ -4,3 +4,6 @@ export * from './RegisterForm';
 export * from './ForgotPasswordForm';
 export * from './ResetPasswordForm';
 export * from './AuthDebug';
+export * from './ProtectedAdminRoute';
+export * from './AdminLoginForm';
+export * from './AdminRegistrationForm';

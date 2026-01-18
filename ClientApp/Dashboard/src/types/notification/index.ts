@@ -7,36 +7,43 @@
  * Notification Type Enum
  * Matches backend notification types
  */
-export enum NotificationType {
-  Info = 'info',
-  Success = 'success',
-  Warning = 'warning',
-  Error = 'error',
-  System = 'system'
-}
+export const NotificationType = {
+  Info: 'info',
+  Success: 'success',
+  Warning: 'warning',
+  Error: 'error',
+  System: 'system'
+} as const;
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
 
 /**
  * Notification Priority Enum
  */
-export enum NotificationPriority {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high',
-  Urgent = 'urgent'
-}
+export const NotificationPriority = {
+  Low: 'low',
+  Medium: 'medium',
+  High: 'high',
+  Urgent: 'urgent'
+} as const;
+
+export type NotificationPriority = (typeof NotificationPriority)[keyof typeof NotificationPriority];
 
 /**
  * Notification Category Enum
  */
-export enum NotificationCategory {
-  System = 'system',
-  Marketplace = 'marketplace',
-  User = 'user',
-  Security = 'security',
-  Maintenance = 'maintenance',
-  Promotion = 'promotion',
-  Community = 'community'
-}
+export const NotificationCategory = {
+  System: 'system',
+  Marketplace: 'marketplace',
+  User: 'user',
+  Security: 'security',
+  Maintenance: 'maintenance',
+  Promotion: 'promotion',
+  Community: 'community'
+} as const;
+
+export type NotificationCategory = (typeof NotificationCategory)[keyof typeof NotificationCategory];
+
 
 /**
  * Notification DTO

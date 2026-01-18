@@ -1,6 +1,6 @@
 import { apiClient } from '../api';
 import type { ApiResult } from '../api';
-import type { 
+import type {
   SessionDto,
   SessionListResponse,
   SecurityLogDto,
@@ -20,6 +20,13 @@ export class SecurityService {
   async getSessions(): Promise<ApiResult<SessionListResponse>> {
     const response = await apiClient.get<SessionListResponse>('/v1/security/sessions');
     return response;
+  }
+
+  /**
+   * Get sessions (alias for backward compatibility)
+   */
+  async getUserSessions(): Promise<ApiResult<SessionListResponse>> {
+    return this.getSessions();
   }
 
   /**
@@ -141,6 +148,6 @@ export class SecurityService {
 /**
  * @deprecated Use SecurityService instead
  */
-export class AuthSecurityService extends SecurityService {}
+export class AuthSecurityService extends SecurityService { }
 
 export const securityService = new SecurityService();

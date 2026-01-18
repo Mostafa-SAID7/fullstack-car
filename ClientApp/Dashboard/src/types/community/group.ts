@@ -2,29 +2,35 @@
  * Group-related models matching backend DTOs
  */
 
-export const enum GroupType {
-  General = 1,
-  CarBrand = 2,
-  CarModel = 3,
-  LocalCommunity = 4,
-  Maintenance = 5,
-  Racing = 6,
-  Modification = 7,
-  BuyingSelling = 8
-}
+export const GroupType = {
+  General: 1,
+  CarBrand: 2,
+  CarModel: 3,
+  LocalCommunity: 4,
+  Maintenance: 5,
+  Racing: 6,
+  Modification: 7,
+  BuyingSelling: 8
+} as const;
 
-export const enum GroupPrivacy {
-  Public = 1,
-  Private = 2,
-  Secret = 3
-}
+export type GroupType = (typeof GroupType)[keyof typeof GroupType];
 
-export const enum GroupMemberRole {
-  Owner = 1,
-  Admin = 2,
-  Moderator = 3,
-  Member = 4
-}
+export const GroupPrivacy = {
+  Public: 1,
+  Private: 2,
+  Secret: 3
+} as const;
+
+export type GroupPrivacy = (typeof GroupPrivacy)[keyof typeof GroupPrivacy];
+
+export const GroupMemberRole = {
+  Owner: 1,
+  Admin: 2,
+  Moderator: 3,
+  Member: 4
+} as const;
+
+export type GroupMemberRole = (typeof GroupMemberRole)[keyof typeof GroupMemberRole];
 
 export interface GroupDto {
   id: string;
@@ -37,7 +43,7 @@ export interface GroupDto {
   postsCount: number;
   createdAt: Date;
   updatedAt?: Date;
-  
+
   ownerId: string;
   ownerFirstName: string;
   ownerLastName: string;
@@ -66,7 +72,7 @@ export interface GroupMemberDto {
   userId: string;
   role: GroupMemberRole;
   joinedAt: Date;
-  
+
   userFirstName: string;
   userLastName: string;
   userProfileImageUrl?: string;

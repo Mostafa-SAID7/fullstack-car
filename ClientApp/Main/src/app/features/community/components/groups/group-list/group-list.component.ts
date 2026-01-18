@@ -20,9 +20,9 @@ import { PaginationComponent } from '@shared/components/ui/pagination/pagination
         <form [formGroup]="searchForm" class="flex flex-col md:flex-row gap-4 mb-0">
           <!-- Search Input -->
           <div class="relative flex-grow group">
-            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300"></i>
+            <i class="fas fa-search absolute start-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors duration-300"></i>
             <input formControlName="searchTerm" type="text" [placeholder]="'groups.searchPlaceholder' | translate"
-              class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-full pl-12 pr-6 py-4 outline-none transition-all text-foreground font-bold">
+              class="w-full bg-secondary/30 dark:bg-white/5 border-2 border-transparent focus:border-primary/20 rounded-full ps-12 pe-6 py-4 outline-none transition-all text-foreground font-bold">
           </div>
 
           <!-- Filter Actions -->
@@ -46,15 +46,15 @@ import { PaginationComponent } from '@shared/components/ui/pagination/pagination
         <div *ngIf="showFilters" class="pt-6 animate-fade-in">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex flex-col">
-              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ml-4 opacity-70">{{ 'groups.sortBy' | translate }}</label>
+              <label class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 ms-4 opacity-70">{{ 'groups.sortBy' | translate }}</label>
               <div class="relative">
-                <i class="fas fa-sort absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                <i class="fas fa-sort absolute start-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 <select formControlName="sortBy"
-                  class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl pl-12 pr-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
+                  class="w-full bg-secondary/30 dark:bg-white/5 border-none rounded-2xl ps-12 pe-6 py-4 outline-none transition-all text-sm font-bold cursor-pointer appearance-none">
                   <option value="createdAt">{{ 'groups.newestFirst' | translate }}</option>
                   <option value="memberCount">{{ 'groups.mostMembers' | translate }}</option>
                 </select>
-                <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                <i class="fas fa-chevron-down absolute end-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
               </div>
             </div>
           </div>

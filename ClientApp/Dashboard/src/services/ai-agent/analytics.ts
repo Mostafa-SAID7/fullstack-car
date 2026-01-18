@@ -36,10 +36,14 @@ interface CostBreakdownResponse {
     agentType: string;
     totalCost: number;
     tokensUsed: number;
+    promptTokens: number;
+    candidatesTokens: number;
     conversationCount: number;
   }>;
   totalCost: number;
   totalTokens: number;
+  totalPromptTokens: number;
+  totalCandidatesTokens: number;
 }
 
 interface UserEngagementResponse {

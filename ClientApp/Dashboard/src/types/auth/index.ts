@@ -2,26 +2,30 @@
  * User Status Enum
  * Matches backend Domain.Enums.Identity.UserStatus
  */
-export enum UserStatus {
-  Active = 1,
-  Inactive = 2,
-  Suspended = 3,
-  Banned = 4,
-  PendingVerification = 5
-}
+export const UserStatus = {
+  Active: 1,
+  Inactive: 2,
+  Suspended: 3,
+  Banned: 4,
+  PendingVerification: 5
+} as const;
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 
 /**
  * User Role Enum
  * Matches backend predefined roles from IdentitySeeder
  */
-export enum UserRole {
-  Admin = 'Admin',
-  Moderator = 'Moderator',
-  User = 'User',
-  Premium = 'Premium',
-  ServiceProvider = 'ServiceProvider',
-  SuperAdmin = 'SuperAdmin'
-}
+export const UserRole = {
+  Admin: 'Admin',
+  Moderator: 'Moderator',
+  User: 'User',
+  Premium: 'Premium',
+  ServiceProvider: 'ServiceProvider',
+  SuperAdmin: 'SuperAdmin'
+} as const;
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 /**
  * User DTO
@@ -456,3 +460,4 @@ export interface SecurityLogResponse {
 // Re-export from other files for convenience
 export * from './requests';
 export * from './oauth';
+export * from './responses';

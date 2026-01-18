@@ -1,32 +1,25 @@
 // Marketplace Service - Main Export (composed from sub-services)
 
 import { MarketplaceDashboardService } from './dashboard';
-import { MarketplaceCustomersService } from './customers';
-import { MarketplaceProductsService } from './products';
-import { MarketplaceServicesService } from './services';
 import { MarketplaceAnalyticsService } from './analytics';
-import { MarketplaceOrdersService } from './orders';
 import { MarketplaceIntegrationService } from './integration';
+import { productApiService } from './product-api.service';
+import { serviceApiService } from './service-api.service';
+import { customerApiService } from './customer-api.service';
+import { orderApiService } from './order-api.service';
+import { imageUploadService } from './image-upload.service';
 
 export class MarketplaceService {
   private static instance: MarketplaceService;
 
   // Sub-service instances
   private dashboardService: MarketplaceDashboardService;
-  private customersService: MarketplaceCustomersService;
-  private productsService: MarketplaceProductsService;
-  private servicesService: MarketplaceServicesService;
   private analyticsService: MarketplaceAnalyticsService;
-  private ordersService: MarketplaceOrdersService;
   private integrationService: MarketplaceIntegrationService;
 
   private constructor() {
     this.dashboardService = new MarketplaceDashboardService();
-    this.customersService = new MarketplaceCustomersService();
-    this.productsService = new MarketplaceProductsService();
-    this.servicesService = new MarketplaceServicesService();
     this.analyticsService = new MarketplaceAnalyticsService();
-    this.ordersService = new MarketplaceOrdersService();
     this.integrationService = new MarketplaceIntegrationService();
   }
 
@@ -46,75 +39,75 @@ export class MarketplaceService {
     return this.dashboardService.getMetrics(period);
   }
 
-  // Customer Methods
+  // Customer Methods (Delegated to CustomerApiService)
   async getCustomers(filters?: any) {
-    return this.customersService.getCustomers(filters);
+    return customerApiService.getCustomers(filters);
   }
 
   async getCustomer(id: string) {
-    return this.customersService.getCustomer(id);
+    return customerApiService.getCustomer(id);
   }
 
   async createCustomer(customerData: any) {
-    return this.customersService.createCustomer(customerData);
+    return customerApiService.createCustomer(customerData);
   }
 
   async updateCustomer(id: string, customerData: any) {
-    return this.customersService.updateCustomer(id, customerData);
+    return customerApiService.updateCustomer(id, customerData);
   }
 
   async deleteCustomer(id: string) {
-    return this.customersService.deleteCustomer(id);
+    return customerApiService.deleteCustomer(id);
   }
 
   async getCustomerAnalytics(customerId: string) {
-    return this.customersService.getAnalytics(customerId);
+    return customerApiService.getAnalytics(customerId);
   }
 
-  // Product Methods
+  // Product Methods (Delegated to ProductApiService)
   async getProducts(filters?: any) {
-    return this.productsService.getProducts(filters);
+    return productApiService.getProducts(filters);
   }
 
   async getProduct(id: string) {
-    return this.productsService.getProduct(id);
+    return productApiService.getProduct(id);
   }
 
   async createProduct(productData: any) {
-    return this.productsService.createProduct(productData);
+    return productApiService.createProduct(productData);
   }
 
   async updateProduct(id: string, productData: any) {
-    return this.productsService.updateProduct(id, productData);
+    return productApiService.updateProduct(id, productData);
   }
 
   async deleteProduct(id: string) {
-    return this.productsService.deleteProduct(id);
+    return productApiService.deleteProduct(id);
   }
 
-  // Service Methods
+  // Service Methods (Delegated to ServiceApiService)
   async getServices(filters?: any) {
-    return this.servicesService.getServices(filters);
+    return serviceApiService.getServices(filters);
   }
 
   async getService(id: string) {
-    return this.servicesService.getService(id);
+    return serviceApiService.getService(id);
   }
 
   async createService(serviceData: any) {
-    return this.servicesService.createService(serviceData, serviceData.serviceProviderId || '');
+    return serviceApiService.createService(serviceData);
   }
 
   async updateService(id: string, serviceData: any) {
-    return this.servicesService.updateService(id, serviceData);
+    return serviceApiService.updateService(id, serviceData);
   }
 
   async deleteService(id: string) {
-    return this.servicesService.deleteService(id);
+    return serviceApiService.deleteService(id);
   }
 
   async searchServicesByLocation(latitude: number, longitude: number, radius: number = 10) {
-    return this.servicesService.searchByLocation(latitude, longitude, radius);
+    return serviceApiService.searchByLocation(latitude, longitude, radius);
   }
 
   // Analytics Methods
@@ -126,21 +119,21 @@ export class MarketplaceService {
     return this.analyticsService.getRevenueAnalytics(period);
   }
 
-  // Order Methods
+  // Order Methods (Delegated to OrderApiService)
   async getOrders(filters?: any) {
-    return this.ordersService.getOrders(filters);
+    return orderApiService.getOrders(filters);
   }
 
   async getOrder(id: string) {
-    return this.ordersService.getOrder(id);
+    return orderApiService.getOrder(id);
   }
 
   async updateOrderStatus(id: string, status: string) {
-    return this.ordersService.updateStatus(id, status);
+    return orderApiService.updateStatus(id, status);
   }
 
   async getTransactions(filters?: any) {
-    return this.ordersService.getTransactions(filters);
+    return orderApiService.getTransactions(filters);
   }
 
   // Integration Methods
@@ -170,26 +163,22 @@ export class MarketplaceService {
 export const marketplaceService = MarketplaceService.getInstance();
 
 // Export individual services for direct access
-export {
-  MarketplaceDashboardService,
-  MarketplaceCustomersService,
-  MarketplaceProductsService,
-  MarketplaceServicesService,
-  MarketplaceAnalyticsService,
-  MarketplaceOrdersService,
-  MarketplaceIntegrationService
-};
+export { MarketplaceDashboardService } from './dashboard';
+export { MarketplaceAnalyticsService } from './analytics';
+export { MarketplaceIntegrationService } from './integration';
 
 // Export new enhanced API services
 export { ProductApiService, productApiService, productCacheInvalidation } from './product-api.service';
 export { ServiceApiService, serviceApiService, serviceCacheInvalidation } from './service-api.service';
+export { CustomerApiService, customerApiService, customerCacheInvalidation } from './customer-api.service';
+export { OrderApiService, orderApiService, orderCacheInvalidation } from './order-api.service';
 export { ProductManagementService, productManagementService } from './product-management.service';
 export { ServiceManagementService, serviceManagementService } from './service-management.service';
 export { ImageUploadService, imageUploadService } from './image-upload.service';
-export { 
-  ProductPrefetchService, 
-  ServicePrefetchService, 
-  productPrefetchService, 
+export {
+  ProductPrefetchService,
+  ServicePrefetchService,
+  productPrefetchService,
   servicePrefetchService,
-  createPrefetchHandlers 
+  createPrefetchHandlers
 } from './prefetch.service';

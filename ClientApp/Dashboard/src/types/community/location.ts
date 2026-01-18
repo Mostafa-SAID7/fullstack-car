@@ -2,18 +2,20 @@
  * Location/Maps-related models matching backend DTOs
  */
 
-export const enum LocationCategory {
-  Dealership = 1,
-  ServiceCenter = 2,
-  BodyShop = 3,
-  PartsStore = 4,
-  GasStation = 5,
-  CarWash = 6,
-  ParkingLot = 7,
-  ChargingStation = 8,
-  RacingTrack = 9,
-  Museum = 10
-}
+export const LocationCategory = {
+  Dealership: 1,
+  ServiceCenter: 2,
+  BodyShop: 3,
+  PartsStore: 4,
+  GasStation: 5,
+  CarWash: 6,
+  ParkingLot: 7,
+  ChargingStation: 8,
+  RacingTrack: 9,
+  Museum: 10
+} as const;
+
+export type LocationCategory = (typeof LocationCategory)[keyof typeof LocationCategory];
 
 export interface LocationDto {
   id: string;
@@ -67,11 +69,11 @@ export interface CheckInDto {
   likesCount: number;
   commentsCount: number;
   createdAt: Date;
-  
+
   userFirstName: string;
   userLastName: string;
   userProfileImageUrl?: string;
-  
+
   locationName: string;
   locationCategory: LocationCategory;
 }
@@ -92,7 +94,7 @@ export interface PlaceReviewDto {
   imageUrls?: string[];
   helpfulCount: number;
   createdAt: Date;
-  
+
   userFirstName: string;
   userLastName: string;
   userProfileImageUrl?: string;

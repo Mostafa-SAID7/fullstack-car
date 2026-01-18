@@ -90,15 +90,16 @@ describe('Marketplace Integration Tests', () => {
   let createdServiceId: string | null = null;
 
   beforeAll(async () => {
-    // Skip tests if backend is not available
+    // Skip all tests in this block if backend is not available
     try {
-      const healthCheck = await fetch(`${TEST_CONFIG.apiUrl}/health`);
-      if (!healthCheck.ok) {
-        console.warn('Backend API not available. Skipping integration tests.');
-        return;
+      const response = await fetch(`${TEST_CONFIG.apiUrl}/health`);
+      if (!response.ok) {
+        throw new Error('Backend not available');
       }
     } catch (error) {
       console.warn('Backend API not available. Skipping integration tests.');
+      // We can't easily skip the whole describe block from beforeAll in all Jest versions
+      // but we can ensure authToken is not set which will trigger skips in individual tests
       return;
     }
 
@@ -387,7 +388,7 @@ describe('Marketplace Integration Tests', () => {
 
       const data = await response.json();
       expect(data).toHaveProperty('items');
-      
+
       // All returned items should be in CarParts category
       data.items.forEach((item: any) => {
         expect(item.category).toBe('CarParts');
@@ -407,7 +408,7 @@ describe('Marketplace Integration Tests', () => {
 
       const data = await response.json();
       expect(data).toHaveProperty('items');
-      
+
       // All returned items should be within price range
       data.items.forEach((item: any) => {
         expect(item.price).toBeGreaterThanOrEqual(minPrice);
@@ -433,7 +434,7 @@ describe('Marketplace Integration Tests', () => {
       expect(data).toHaveProperty('totalCount');
       expect(data).toHaveProperty('page');
       expect(data).toHaveProperty('pageSize');
-      
+
       expect(data.page).toBe(page);
       expect(data.pageSize).toBe(pageSize);
       expect(data.items.length).toBeLessThanOrEqual(pageSize);

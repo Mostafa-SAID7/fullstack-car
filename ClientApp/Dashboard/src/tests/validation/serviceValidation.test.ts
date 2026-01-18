@@ -64,7 +64,7 @@ describe('Service Validation', () => {
       const result = createServiceSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.errors[0].message).toContain('at least 2 characters');
+        expect(result.error.issues[0].message).toContain('at least 2 characters');
       }
     });
 
@@ -102,7 +102,7 @@ describe('Service Validation', () => {
       const result = createServiceSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.errors[0].message).toContain('Maximum price must be greater than base price');
+        expect(result.error.issues[0].message).toContain('Maximum price must be greater than base price');
       }
     });
 
@@ -123,7 +123,7 @@ describe('Service Validation', () => {
       const result = createServiceSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.errors[0].message).toContain('Maximum duration must be greater than estimated duration');
+        expect(result.error.issues[0].message).toContain('Maximum duration must be greater than estimated duration');
       }
     });
 
@@ -212,7 +212,7 @@ describe('Service Validation', () => {
       const result = serviceFiltersSchema.safeParse(invalidFilters);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.errors[0].message).toContain('Maximum price must be greater than minimum price');
+        expect(result.error.issues[0].message).toContain('Maximum price must be greater than minimum price');
       }
     });
 

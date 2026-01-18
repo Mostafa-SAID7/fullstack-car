@@ -139,17 +139,15 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className={`flex gap-3 ${
-              message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-            }`}
+            className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+              }`}
           >
             {/* Avatar */}
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                message.role === 'user'
+              className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.role === 'user'
                   ? 'bg-primary/10'
                   : 'bg-muted'
-              }`}
+                }`}
             >
               {message.role === 'user' ? (
                 <User className="w-4 h-4 text-primary" />
@@ -160,16 +158,14 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({
 
             {/* Message Content */}
             <div
-              className={`flex-1 max-w-[80%] ${
-                message.role === 'user' ? 'text-right' : 'text-left'
-              }`}
+              className={`flex-1 max-w-[80%] ${message.role === 'user' ? 'text-right' : 'text-left'
+                }`}
             >
               <div
-                className={`inline-block p-3 rounded-2xl ${
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
-                }`}
+                className={`inline-block p-3 rounded-2xl ${message.role === 'user'
+                    ? 'bg-primary text-primary-foreground rounded-tr-none'
+                    : 'bg-muted rounded-tl-none'
+                  }`}
               >
                 <p className="text-sm whitespace-pre-wrap break-words">
                   {message.content}
@@ -177,9 +173,8 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({
               </div>
 
               {/* Message Metadata */}
-              <div className={`flex items-center gap-2 mt-1 text-xs text-muted-foreground ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}>
+              <div className={`flex items-center gap-2 mt-1 text-xs text-muted-foreground ${message.role === 'user' ? 'justify-end' : 'justify-start'
+                }`}>
                 <span>{formatTime(message.timestamp)}</span>
                 {message.metadata?.confidence && (
                   <>

@@ -7,3 +7,5 @@ export * from './guide-api.service';
 export * from './location-api.service';
 export * from './page-api.service';
 export * from './article-api.service';
+export { httpClient as apiClient, HttpClient } from './HttpClient';
+export type { ApiResult, RequestConfig, RequestInterceptor } from '../../types/api';

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Download, FileJson, RefreshCw } from 'lucide-react';
-import { localizationService } from '../../../../components/services/localization';
+import { localizationService } from '../../../../services/localization/localization-admin.service';
 import { useToast } from '../../../../hooks';
 import { cn } from '../../../../lib/utils';
 

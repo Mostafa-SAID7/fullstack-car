@@ -2,22 +2,26 @@
  * Guide-related models matching backend DTOs
  */
 
-export const enum GuideDifficulty {
-  Beginner = 1,
-  Intermediate = 2,
-  Advanced = 3,
-  Expert = 4
-}
+export const GuideDifficulty = {
+  Beginner: 1,
+  Intermediate: 2,
+  Advanced: 3,
+  Expert: 4
+} as const;
 
-export const enum GuideCategory {
-  Maintenance = 1,
-  Repair = 2,
-  Modification = 3,
-  Cleaning = 4,
-  Inspection = 5,
-  Installation = 6,
-  Troubleshooting = 7
-}
+export type GuideDifficulty = (typeof GuideDifficulty)[keyof typeof GuideDifficulty];
+
+export const GuideCategory = {
+  Maintenance: 1,
+  Repair: 2,
+  Modification: 3,
+  Cleaning: 4,
+  Inspection: 5,
+  Installation: 6,
+  Troubleshooting: 7
+} as const;
+
+export type GuideCategory = (typeof GuideCategory)[keyof typeof GuideCategory];
 
 export interface GuideDto {
   id: string;
@@ -33,7 +37,7 @@ export interface GuideDto {
   bookmarksCount: number;
   createdAt: Date;
   updatedAt?: Date;
-  
+
   userId: string;
   userFirstName: string;
   userLastName: string;
@@ -87,7 +91,7 @@ export interface GuideRatingDto {
   rating: number;
   comment?: string;
   createdAt: Date;
-  
+
   userId: string;
   userFirstName: string;
   userLastName: string;

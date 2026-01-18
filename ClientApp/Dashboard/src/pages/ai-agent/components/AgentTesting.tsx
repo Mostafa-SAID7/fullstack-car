@@ -18,6 +18,7 @@ export const AgentTesting: React.FC = () => {
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [scenarios, setScenarios] = useState<TestScenario[]>([]);
   const [abTestResults, setABTestResults] = useState<ABTestResult[]>([]);
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     loadScenarios();
@@ -47,8 +48,9 @@ export const AgentTesting: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const result = await testingService.testAgent(selectedAgent, testMessage, context);
+      const result = await testingService.testAgent(selectedAgent, testMessage, context, images);
       setTestResult(result);
+      setImages([]); // Clear images after test
     } catch (error) {
       console.error('Test failed:', error);
     } finally {
@@ -114,8 +116,8 @@ export const AgentTesting: React.FC = () => {
           <button
             onClick={() => setActiveTab('quick-test')}
             className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'quick-test'
-                ? 'border-primary text-primary font-medium'
-                : 'border-transparent text-muted-foreground hover:text-card-foreground'
+              ? 'border-primary text-primary font-medium'
+              : 'border-transparent text-muted-foreground hover:text-card-foreground'
               }`}
           >
             Quick Test
@@ -123,8 +125,8 @@ export const AgentTesting: React.FC = () => {
           <button
             onClick={() => setActiveTab('scenarios')}
             className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'scenarios'
-                ? 'border-primary text-primary font-medium'
-                : 'border-transparent text-muted-foreground hover:text-card-foreground'
+              ? 'border-primary text-primary font-medium'
+              : 'border-transparent text-muted-foreground hover:text-card-foreground'
               }`}
           >
             Test Scenarios ({(scenarios || []).length})
@@ -132,8 +134,8 @@ export const AgentTesting: React.FC = () => {
           <button
             onClick={() => setActiveTab('ab-test')}
             className={`pb-3 px-1 border-b-2 transition-colors ${activeTab === 'ab-test'
-                ? 'border-primary text-primary font-medium'
-                : 'border-transparent text-muted-foreground hover:text-card-foreground'
+              ? 'border-primary text-primary font-medium'
+              : 'border-transparent text-muted-foreground hover:text-card-foreground'
               }`}
           >
             A/B Testing
@@ -150,9 +152,11 @@ export const AgentTesting: React.FC = () => {
               selectedAgent={selectedAgent}
               testMessage={testMessage}
               context={context}
+              images={images}
               onAgentChange={setSelectedAgent}
               onMessageChange={setTestMessage}
               onContextChange={setContext}
+              onImagesChange={setImages}
             />
 
             {/* Action Buttons */}

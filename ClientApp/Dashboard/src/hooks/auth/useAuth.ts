@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { authService } from '../../services/auth';
 import type { UserInfo } from '../../types/auth';
+import type { AdminUserInfo } from '../../types/admin';
 import type { LoginRequest, RegisterRequest } from '../../types/auth/requests';
 
+// Union type for user info to support both regular and admin users
+type AuthUser = UserInfo | AdminUserInfo;
+
 export const useAuth = () => {
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,7 +43,7 @@ export const useAuth = () => {
         const isAuth = authService.isAuthenticated();
         
         console.log('[useAuth] Login successful, updating state:', { 
-          currentUser: currentUser?.name, 
+          currentUser: currentUser?.name || currentUser?.firstName, 
           isAuth,
           hasToken: !!localStorage.getItem('auth_token'),
           hasUser: !!localStorage.getItem('auth_user')
@@ -152,21 +156,23 @@ export const useAuth = () => {
     setError(null);
   };
 
-  // Permission helpers
+  // Permission helpers - support both regular and admin roles
   const hasRole = (role: string): boolean => {
-    return authService.hasRole(role);
+    if (!user?.roles) return false;
+    return user.roles.includes(role as any);
   };
 
   const hasAnyRole = (roles: string[]): boolean => {
-    return authService.hasAnyRole(roles);
+    if (!user?.roles) return false;
+    return roles.some(role => user.roles.includes(role as any));
   };
 
   const isAdmin = (): boolean => {
-    return hasRole('Admin');
+    return hasRole('Admin') || hasRole('SuperAdmin');
   };
 
   const isContentCreator = (): boolean => {
-    return hasAnyRole(['ContentCreator', 'Admin', 'Moderator']);
+    return hasAnyRole(['ContentCreator', 'Admin', 'Moderator', 'ContentAdmin']);
   };
 
   const canUploadMedia = (): boolean => {
@@ -174,7 +180,7 @@ export const useAuth = () => {
   };
 
   const canModerateContent = (): boolean => {
-    return hasAnyRole(['Admin', 'Moderator']);
+    return hasAnyRole(['Admin', 'Moderator', 'ContentAdmin']);
   };
 
   const canAccessAnalytics = (): boolean => {
@@ -182,7 +188,7 @@ export const useAuth = () => {
   };
 
   const canManageUsers = (): boolean => {
-    return isAdmin();
+    return isAdmin() || hasRole('AdministrationAdmin');
   };
 
   const canEditContent = (creatorId: string): boolean => {

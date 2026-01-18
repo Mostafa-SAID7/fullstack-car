@@ -18,6 +18,13 @@ export interface AIAgentConfig {
   rateLimit: number;
   timeout: number;
 
+  // Gemini Specific Features
+  systemInstructions?: string;
+  safetySettings?: Array<{
+    category: 'HATE_SPEECH' | 'SEXUALLY_EXPLICIT' | 'HARASSMENT' | 'DANGEROUS_CONTENT';
+    threshold: 'BLOCK_NONE' | 'BLOCK_ONLY_HIGH' | 'BLOCK_MEDIUM_AND_ABOVE' | 'BLOCK_LOW_AND_ABOVE';
+  }>;
+
   // Advanced Settings
   advanced: AdvancedConfig;
 }

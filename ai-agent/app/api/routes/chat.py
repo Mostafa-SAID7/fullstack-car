@@ -56,7 +56,11 @@ async def chat(chat_request: ChatRequest, request: Request, db: Session = Depend
         agent_response = await agent_router.route_message(
             message=chat_request.message,
             context=context,
-            explicit_mode=chat_request.mode
+            explicit_mode=chat_request.mode,
+            model_id=chat_request.model_id,
+            system_instruction=chat_request.system_instructions,
+            safety_settings=chat_request.safety_settings,
+            images=chat_request.images
         )
         
         # Add assistant message to conversation

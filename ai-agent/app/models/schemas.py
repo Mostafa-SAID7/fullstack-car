@@ -258,6 +258,10 @@ class ChatRequest(BaseModel):
     user_id: Optional[str] = None
     mode: Optional[AgentType] = None
     context: Optional[Dict[str, Any]] = None
+    model_id: Optional[str] = None
+    system_instructions: Optional[str] = None
+    safety_settings: Optional[List[Dict[str, str]]] = None
+    images: Optional[List[str]] = None  # Base64 encoded images
     
     class Config:
         use_enum_values = True

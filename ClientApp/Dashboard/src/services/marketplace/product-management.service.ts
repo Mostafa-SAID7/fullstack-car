@@ -4,11 +4,11 @@
  */
 
 import { productApiService } from './product-api.service';
-import type {
-  ProductDto,
-  ProductFilters,
+import {
+  type ProductDto,
+  type ProductFilters,
   ProductStatus,
-  UpdateProductRequest
+  type UpdateProductRequest
 } from '../../types/marketplace';
 
 /**
@@ -51,7 +51,7 @@ export class ProductManagementService {
 
     try {
       await Promise.all(
-        productIds.map(id => 
+        productIds.map(id =>
           productApiService.updateProduct(id, { id, status } as UpdateProductRequest)
         )
       );
@@ -78,7 +78,7 @@ export class ProductManagementService {
 
     try {
       await Promise.all(
-        productIds.map(id => 
+        productIds.map(id =>
           productApiService.updateProduct(id, { id, ...updates } as UpdateProductRequest)
         )
       );
@@ -111,7 +111,7 @@ export class ProductManagementService {
   async downloadProductsExport(filters?: ProductFilters, filename: string = 'products-export.csv'): Promise<void> {
     try {
       const blob = await this.exportProducts(filters);
-      
+
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -119,7 +119,7 @@ export class ProductManagementService {
       link.download = filename;
       document.body.appendChild(link);
       link.click();
-      
+
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -141,9 +141,9 @@ export class ProductManagementService {
     try {
       const [lowStock, allProducts] = await Promise.all([
         productApiService.getLowStockProducts(),
-        productApiService.getProducts({ 
+        productApiService.getProducts({
           status: ProductStatus.OutOfStock,
-          pageSize: 100 
+          pageSize: 100
         })
       ]);
 
@@ -170,7 +170,7 @@ export class ProductManagementService {
   async duplicateProduct(productId: string, newName?: string): Promise<ProductDto> {
     try {
       const original = await productApiService.getProduct(productId);
-      
+
       const duplicateData = {
         ...original,
         name: newName || `${original.name} (Copy)`,
@@ -224,10 +224,10 @@ export class ProductManagementService {
 
     try {
       await Promise.all(
-        updates.map(({ productId, stockQuantity }) => 
-          productApiService.updateProduct(productId, { 
-            id: productId, 
-            stockQuantity 
+        updates.map(({ productId, stockQuantity }) =>
+          productApiService.updateProduct(productId, {
+            id: productId,
+            stockQuantity
           } as UpdateProductRequest)
         )
       );
@@ -241,10 +241,10 @@ export class ProductManagementService {
    * Update prices for multiple products
    * @param updates - Array of {productId, price, discountPrice?} objects
    */
-  async bulkUpdatePrices(updates: Array<{ 
-    productId: string; 
-    price: number; 
-    discountPrice?: number 
+  async bulkUpdatePrices(updates: Array<{
+    productId: string;
+    price: number;
+    discountPrice?: number
   }>): Promise<void> {
     if (!updates || updates.length === 0) {
       throw new Error('No price updates provided');
@@ -252,9 +252,9 @@ export class ProductManagementService {
 
     try {
       await Promise.all(
-        updates.map(({ productId, price, discountPrice }) => 
-          productApiService.updateProduct(productId, { 
-            id: productId, 
+        updates.map(({ productId, price, discountPrice }) =>
+          productApiService.updateProduct(productId, {
+            id: productId,
             price,
             discountPrice
           } as UpdateProductRequest)

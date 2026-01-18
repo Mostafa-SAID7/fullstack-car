@@ -10,3 +10,9 @@ export { default as Progress } from '../feedback/progress/Progress';
 export { Badge } from '../data-display/badges/Badge';
 export { Input } from '../forms/inputs/Input';
 export { Textarea } from '../forms/textareas/Textarea';
+
+// Administrative UI Components
+export * from './AdminMetricCard';
+export * from './AdminInput';
+export * from './LoadingSpinner';
+export * from './ErrorBoundary';

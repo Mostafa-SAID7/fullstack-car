@@ -226,9 +226,10 @@ class IntentClassifier:
             response = await self.llm_client.generate(
                 prompt=prompt,
                 max_tokens=50,
-                temperature=0.3,  # Lower temperature for more consistent classification
+                temperature=0.1,  # Lower temperature for deterministic classification
                 user_id=context.user_id,
-                use_cache=True
+                use_cache=True,
+                model_id="gemini-1.5-flash"
             )
             
             # Parse response

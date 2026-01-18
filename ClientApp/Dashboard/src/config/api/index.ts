@@ -144,7 +144,8 @@ export const API_ENDPOINTS = {
     CACHE_METRICS: '/v7/localization/cache/metrics',
     CACHE_WARM: '/v7/localization/cache/warm',
     UPDATES: '/v7/localization/updates/{culture}',
-    RESOURCE_FILES: '/v7/localization/resources/files'
+    RESOURCE_FILES: '/v7/localization/resources/files',
+    CACHE_INVALIDATION: '/v7/localization/cache/invalidate'
   },
 
   // AI Agent

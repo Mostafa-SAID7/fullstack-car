@@ -108,7 +108,7 @@ def get_services():
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    logger.info("Server Starting version 1.1 (Fix Applied)")
+    logger.info("Server Starting version 1.2 (Gemini Integrated)")
     logger.info("=" * 70)
     logger.info("AI Agent Application Starting...")
     logger.info("Server: http://localhost:8003")
@@ -132,32 +132,33 @@ async def startup_event():
     except Exception as e:
         logger.error(f"Failed to connect cache service: {e}")
 
-    # Initialize LLM with GPT-2
-    try:
-        from app.services.llm_client import LLMClient
-        from transformers import pipeline, AutoTokenizer
-        
-        logger.info("Initializing GPT-2 model...")
-        model_name = "gpt2"  # Lightweight model for testing
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        # Add pad token if missing
-        if tokenizer.pad_token is None:
-            tokenizer.pad_token = tokenizer.eos_token
+    # Initialize LLM with GPT-2 (Conditional)
+    if settings.DEFAULT_LLM_PROVIDER == "local":
+        try:
+            from app.services.llm_client import LLMClient
+            from transformers import pipeline, AutoTokenizer
             
-        llm_pipeline = pipeline(
-            "text-generation", 
-            model=model_name, 
-            tokenizer=tokenizer,
-            max_new_tokens=100
-        )
-        
-        # Set as primary pipeline (shared globally)
-        LLMClient.set_primary_pipeline(llm_pipeline, tokenizer)
-        logger.info("GPT-2 model initialized successfully")
-        
-    except Exception as e:
-        logger.error(f"Failed to initialize LLM: {e}")
-        logger.warning("Agent will run in fallback mode (generic responses only)")
+            logger.info("Initializing GPT-2 model (requested by 'local' provider)...")
+            model_name = "gpt2"
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+            if tokenizer.pad_token is None:
+                tokenizer.pad_token = tokenizer.eos_token
+                
+            llm_pipeline = pipeline(
+                "text-generation", 
+                model=model_name, 
+                tokenizer=tokenizer,
+                max_new_tokens=100
+            )
+            
+            LLMClient.set_primary_pipeline(llm_pipeline, tokenizer)
+            logger.info("GPT-2 model initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize local LLM: {e}")
+            logger.warning("Agent will run in fallback mode")
+    else:
+        logger.info(f"Skipping GPT-2 initialization (Provider: {settings.DEFAULT_LLM_PROVIDER})")
     
     # Initialize advanced cache service and warm cache
     try:

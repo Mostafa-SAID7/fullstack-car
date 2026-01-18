@@ -255,6 +255,8 @@ export interface ServiceProviderDto {
   isActive: boolean;
 }
 
+import { PagedResult } from '../api';
+
 /**
  * Location-based search parameters
  */
@@ -267,24 +269,4 @@ export interface LocationSearchParams {
   radiusKm?: number;
   /** Additional filters */
   filters?: Partial<ServiceFilters>;
-}
-
-/**
- * Paged result wrapper for service lists
- */
-export interface PagedResult<T> {
-  /** Items in current page */
-  items: T[];
-  /** Total number of items */
-  totalCount: number;
-  /** Current page number */
-  page: number;
-  /** Page size */
-  pageSize: number;
-  /** Total number of pages */
-  totalPages: number;
-  /** Whether there is a next page */
-  hasNextPage: boolean;
-  /** Whether there is a previous page */
-  hasPreviousPage: boolean;
 }

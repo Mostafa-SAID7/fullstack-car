@@ -1,10 +1,10 @@
-import { apiClient } from '../api';
-import type { 
-  LoginRequest, 
+import { apiClient, type ApiResult } from '../api';
+import type {
+  LoginRequest,
   LoginResponse,
-  RegisterRequest, 
+  RegisterRequest,
   RefreshTokenRequest,
-  UserDto 
+  UserDto
 } from '../../types/auth';
 import { API_ENDPOINTS } from '../../config/api';
 
@@ -16,9 +16,9 @@ export class AuthCoreService {
   /**
    * Login with email and password
    */
-  async login(request: LoginRequest): Promise<any> {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, request);
-    return response;
+  async login(request: LoginRequest): Promise<ApiResult<LoginResponse>> {
+    const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, request);
+    return response as ApiResult<LoginResponse>;
   }
 
   /**
@@ -43,7 +43,7 @@ export class AuthCoreService {
   async refreshToken(): Promise<any> {
     const refreshToken = localStorage.getItem('refresh_token');
     const token = localStorage.getItem('auth_token');
-    
+
     if (!refreshToken || !token) {
       throw new Error('No refresh token available');
     }
@@ -53,17 +53,18 @@ export class AuthCoreService {
       refreshToken
     };
 
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH, request);
-    
+    const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.AUTH.REFRESH, request);
+
     // Update stored tokens if refresh successful
-    if (response.succeeded && response.data?.token) {
-      localStorage.setItem('auth_token', response.data.token);
-      if (response.data.refreshToken) {
-        localStorage.setItem('refresh_token', response.data.refreshToken);
+    const authData = response.data;
+    if (response.succeeded && authData?.token) {
+      localStorage.setItem('auth_token', authData.token);
+      if (authData.refreshToken) {
+        localStorage.setItem('refresh_token', authData.refreshToken);
       }
-      apiClient.setAuthToken(response.data.token);
+      apiClient.setAuthToken(authData.token);
     }
-    
+
     return response;
   }
 
@@ -83,15 +84,15 @@ export class AuthCoreService {
       // Set the token temporarily
       const originalToken = apiClient.getAuthToken();
       apiClient.setAuthToken(token);
-      
+
       // Try to get current user
       const response = await this.getCurrentUser();
-      
+
       // Restore original token
       if (originalToken) {
         apiClient.setAuthToken(originalToken);
       }
-      
+
       return response.succeeded;
     } catch (error) {
       return false;

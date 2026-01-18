@@ -176,6 +176,8 @@ export interface ProductFilters {
   sortDirection?: 'asc' | 'desc';
 }
 
+import { PagedResult } from '../api';
+
 /**
  * Product statistics DTO
  */
@@ -200,24 +202,4 @@ export interface ProductStatistics {
   topSellingProducts?: ProductDto[];
   /** Low stock products */
   lowStockAlerts?: ProductDto[];
-}
-
-/**
- * Paged result wrapper for product lists
- */
-export interface PagedResult<T> {
-  /** Items in current page */
-  items: T[];
-  /** Total number of items */
-  totalCount: number;
-  /** Current page number */
-  page: number;
-  /** Page size */
-  pageSize: number;
-  /** Total number of pages */
-  totalPages: number;
-  /** Whether there is a next page */
-  hasNextPage: boolean;
-  /** Whether there is a previous page */
-  hasPreviousPage: boolean;
 }

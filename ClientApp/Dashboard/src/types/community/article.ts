@@ -2,23 +2,27 @@
  * News/Article-related models matching backend DTOs
  */
 
-export const enum ArticleStatus {
-  Draft = 1,
-  Published = 2,
-  Archived = 3,
-  Featured = 4
-}
+export const ArticleStatus = {
+  Draft: 1,
+  Published: 2,
+  Archived: 3,
+  Featured: 4
+} as const;
 
-export const enum ArticleCategory {
-  Industry = 1,
-  Technology = 2,
-  Reviews = 3,
-  Events = 4,
-  Tips = 5,
-  Maintenance = 6,
-  Lifestyle = 7,
-  Racing = 8
-}
+export type ArticleStatus = (typeof ArticleStatus)[keyof typeof ArticleStatus];
+
+export const ArticleCategory = {
+  Industry: 1,
+  Technology: 2,
+  Reviews: 3,
+  Events: 4,
+  Tips: 5,
+  Maintenance: 6,
+  Lifestyle: 7,
+  Racing: 8
+} as const;
+
+export type ArticleCategory = (typeof ArticleCategory)[keyof typeof ArticleCategory];
 
 export interface ArticleDto {
   id: string;
@@ -37,7 +41,7 @@ export interface ArticleDto {
   createdAt: Date;
   updatedAt?: Date;
   publishedAt?: Date;
-  
+
   authorId: string;
   authorFirstName: string;
   authorLastName: string;
@@ -71,7 +75,7 @@ export interface NewsCommentDto {
   likesCount: number;
   createdAt: Date;
   updatedAt?: Date;
-  
+
   userId: string;
   userFirstName: string;
   userLastName: string;

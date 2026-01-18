@@ -59,7 +59,11 @@ class AgentRouter:
         self,
         message: str,
         context: ConversationContext,
-        explicit_mode: Optional[str] = None
+        explicit_mode: Optional[str] = None,
+        model_id: Optional[str] = None,
+        system_instruction: Optional[str] = None,
+        safety_settings: Optional[List[Dict[str, str]]] = None,
+        **kwargs
     ) -> AgentResponse:
         """
         Route message to appropriate agent and get response.
@@ -72,9 +76,18 @@ class AgentRouter:
         Returns:
             AgentResponse from the selected agent
         """
+        # Step 1: Analyze user sentiment
+        try:
+            from app.services.sentiment_analyzer import sentiment_analyzer
+            sentiment = await sentiment_analyzer.analyze(message, context)
+            logger.info(f"Detected sentiment: {sentiment}")
+        except Exception as e:
+            logger.error(f"Sentiment analysis failed: {e}")
+            sentiment = {"sentiment": "neutral"}
+            
         start_time = datetime.utcnow()
         
-        # Step 1: Determine which agent to use
+        # Step 2: Determine which agent to use
         if explicit_mode:
             agent_key = self._validate_explicit_mode(explicit_mode)
             intent = Intent(explicit_mode, 1.0, {'method': 'explicit'})
@@ -85,14 +98,22 @@ class AgentRouter:
             agent_key = self._map_intent_to_agent(intent)
             logger.info(f"Intent classified as '{intent.category}' (confidence: {intent.confidence:.2f}), routing to {agent_key}")
         
-        # Step 2: Get the agent
+        # Step 3: Get the agent
         agent = self.agents.get(agent_key, self.agents['general'])
         
-        # Step 3: Process message with agent
+        # Step 4: Process message with agent
         try:
-            response = await agent.process(message, context)
+            response = await agent.process(
+                message, 
+                context,
+                model_id=model_id,
+                system_instruction=system_instruction,
+                safety_settings=safety_settings,
+                sentiment=sentiment,
+                images=kwargs.get('images')
+            )
             
-            # Step 4: Track routing decision
+            # Step 5: Track routing decision
             self._track_routing(
                 conversation_id=context.conversation_id,
                 message=message,

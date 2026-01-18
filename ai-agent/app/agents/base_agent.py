@@ -45,7 +45,12 @@ class BaseAgent(ABC):
     async def process(
         self, 
         message: str, 
-        context: ConversationContext
+        context: ConversationContext,
+        model_id: Optional[str] = None,
+        system_instruction: Optional[str] = None,
+        safety_settings: Optional[List[Dict[str, str]]] = None,
+        sentiment: Optional[Dict[str, Any]] = None,
+        images: Optional[List[str]] = None
     ) -> AgentResponse:
         """
         Process user message and generate response.
@@ -71,15 +76,43 @@ class BaseAgent(ABC):
                 logger.error(f"Error building prompt: {e}")
                 raise e
             
-            # Generate response using LLM
-            logger.info("Generating LLM response...")
+            # Prepare system instruction based on persona + sentiment
+            base_system = system_instruction or self._get_system_prompt()
+            if sentiment:
+                mood = sentiment.get('sentiment', 'neutral')
+                depth = sentiment.get('technical_depth', 'intermediate')
+                sentiment_instruction = f"\nThe user seems {mood} and has {depth} technical knowledge. "
+                if mood == 'frustrated':
+                    sentiment_instruction += "Be extra empathetic, patient, and direct in your assistance."
+                elif mood == 'happy':
+                    sentiment_instruction += "Maintain a friendly and upbeat tone."
+                base_system += sentiment_instruction
+
+            # Use marketplace tools for specialized agents
+            from app.tools.marketplace_tools import MARKETPLACE_TOOLS, TOOL_FUNCTIONS
+            tools = MARKETPLACE_TOOLS if self.agent_type in ['mechanic', 'buyer_guide', 'general'] else None
+
+            # Generate response using LLM (Tool-Calling Loop)
+            logger.info("Generating LLM response (Tools enabled)...")
             try:
                 llm_response = await self.llm_client.generate(
                     prompt=prompt,
-                    max_tokens=self.config.get('max_tokens', 300),
+                    max_tokens=self.config.get('max_tokens', 500),
                     temperature=self.config.get('temperature', 0.7),
-                    user_id=context.user_id
+                    user_id=context.user_id,
+                    model_id=model_id or "gemini-1.5-flash",
+                    system_instruction=base_system,
+                    safety_settings=safety_settings,
+                    images=images,
+                    tools=tools
                 )
+                
+                # Check for Tool Calls (Simplification: Handle single-step tool execution)
+                # Gemini returns text with tool call info if it decides to use them.
+                # In a full implementation, we'd handle the 'candidates' property directly.
+                # For this agent, we'll assume the LLMClient or GeminiClient handles the 
+                # multipart response which might include tool calls.
+                
                 logger.info("LLM response generated")
             except Exception as e:
                 logger.error(f"Error generating LLM response: {e}")

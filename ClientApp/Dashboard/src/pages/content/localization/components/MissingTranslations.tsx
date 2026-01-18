@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, AlertTriangle, RefreshCw, Type, List } from 'lucide-react';
-import { localizationService, type TranslationValidationResult } from '../../../../components/services/localization';
+import { localizationService, type TranslationValidationResult } from '../../../../services/localization/localization-admin.service';
 import { useToast } from '../../../../hooks';
 import { cn } from '../../../../lib/utils';
 

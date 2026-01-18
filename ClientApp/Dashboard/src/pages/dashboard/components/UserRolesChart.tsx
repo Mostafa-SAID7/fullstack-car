@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChartCard } from './ChartCard';
 import { PieChart } from '../../../components/charts/pie/PieChart';
-import { CHART_COLORS } from '../../../components/services/chart-theme';
+import { CHART_COLORS } from '../../../services/theme/chart-theme';
 
 interface UserRolesChartProps {
     data: any[];
