@@ -48,7 +48,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "User reputation retrieved successfully")
+                ? Success(result.Data, "User reputation retrieved successfully")
                 : this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to retrieve user reputation");
         }
         [HttpGet("leaderboard")]
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Reputation leaderboard retrieved successfully")
+                ? Success(result.Data, "Reputation leaderboard retrieved successfully")
                 : this.ApiBadRequest<List<UserReputationDto>>(result.Errors, "Failed to retrieve reputation leaderboard");
         }
         [HttpGet("history")]
@@ -124,7 +124,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(command);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Expertise areas updated successfully")
+                ? Success(result.Data, "Expertise areas updated successfully")
                 : this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to update expertise areas");
         }
         [HttpPost("users/{userId}/badges")]
@@ -163,7 +163,7 @@ namespace WebAPI.Controllers.Community.QA
                     // TODO: Add proper logging here
                 }
 
-                return this.ApiSuccess(result.Data, "Badge awarded successfully");
+                return Success(result.Data, "Badge awarded successfully");
             }
 
             return this.ApiBadRequest<UserReputationDto>(result.Errors, "Failed to award badge");
@@ -183,7 +183,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Experts retrieved successfully")
+                ? Success(result.Data, "Experts retrieved successfully")
                 : this.ApiBadRequest<List<ExpertDto>>(result.Errors, "Failed to retrieve experts");
         }
         [HttpGet("me/summary")]
@@ -211,7 +211,7 @@ namespace WebAPI.Controllers.Community.QA
                 RecentBadges = result.Data.BadgesEarned.TakeLast(3).ToList()
             };
 
-            return this.ApiSuccess(summary, "Reputation summary retrieved successfully");
+            return Success(summary, "Reputation summary retrieved successfully");
         }
         [HttpGet("statistics")]
         [Authorize(Roles = "Admin,Moderator")]
@@ -237,7 +237,9 @@ namespace WebAPI.Controllers.Community.QA
                 }
             };
 
-            return this.ApiSuccess(statistics, "Reputation statistics retrieved successfully");
+            return Success(statistics, "Reputation statistics retrieved successfully");
         }
     }
 }
+
+

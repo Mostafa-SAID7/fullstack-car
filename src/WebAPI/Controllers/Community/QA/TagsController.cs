@@ -27,7 +27,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Tags retrieved successfully")
+                ? Success(result.Data, "Tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve tags");
         }
         [HttpGet("{id}")]
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Tag retrieved successfully")
+                ? Success(result.Data, "Tag retrieved successfully")
                 : this.ApiBadRequest<TagDto>(result.Errors, "Failed to retrieve tag");
         }
         [HttpGet("popular")]
@@ -48,7 +48,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Popular tags retrieved successfully")
+                ? Success(result.Data, "Popular tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve popular tags");
         }
         [HttpGet("search")]
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Tag search completed successfully")
+                ? Success(result.Data, "Tag search completed successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to search tags");
         }
         [HttpGet("category/{categoryId}")]
@@ -76,7 +76,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Category tags retrieved successfully")
+                ? Success(result.Data, "Category tags retrieved successfully")
                 : this.ApiBadRequest<List<TagDto>>(result.Errors, "Failed to retrieve category tags");
         }
         [HttpPost("suggest")]
@@ -117,7 +117,7 @@ namespace WebAPI.Controllers.Community.QA
                 .Take(10)
                 .ToList();
 
-            return this.ApiSuccess(uniqueTags, "Tag suggestions generated successfully");
+            return Success(uniqueTags, "Tag suggestions generated successfully");
         }
         private List<string> ExtractKeywords(string content)
         {
@@ -151,3 +151,5 @@ namespace WebAPI.Controllers.Community.QA
         public Guid? CategoryId { get; set; }
     }
 }
+
+

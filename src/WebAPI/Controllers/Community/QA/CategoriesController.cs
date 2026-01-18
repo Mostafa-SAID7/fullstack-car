@@ -27,7 +27,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Categories retrieved successfully")
+                ? Success(result.Data, "Categories retrieved successfully")
                 : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve categories");
         }
         [HttpGet("{id}")]
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Category retrieved successfully")
+                ? Success(result.Data, "Category retrieved successfully")
                 : this.ApiBadRequest<CategoryDto>(result.Errors, "Failed to retrieve category");
         }
         [HttpGet("{id}/experts")]
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Category experts retrieved successfully")
+                ? Success(result.Data, "Category experts retrieved successfully")
                 : this.ApiBadRequest<List<ExpertDto>>(result.Errors, "Failed to retrieve category experts");
         }
         [HttpGet("popular")]
@@ -59,7 +59,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             return result.IsSuccess 
-                ? this.ApiSuccess(result.Data, "Popular categories retrieved successfully")
+                ? Success(result.Data, "Popular categories retrieved successfully")
                 : this.ApiBadRequest<List<CategoryDto>>(result.Errors, "Failed to retrieve popular categories");
         }
         [HttpPost("{categoryId}/notify-experts")]
@@ -90,7 +90,7 @@ namespace WebAPI.Controllers.Community.QA
                 .Take(10) // Limit to top 10 most responsive experts
                 .ToList();
 
-            return this.ApiSuccess(new { 
+            return Success(new { 
                 NotifiedExpertsCount = notifiedExperts.Count,
                 CategoryName = notifiedExperts.FirstOrDefault()?.Category ?? "Unknown"
             }, "Expert notifications sent successfully");
@@ -103,3 +103,5 @@ namespace WebAPI.Controllers.Community.QA
         public string QuestionPreview { get; set; } = string.Empty;
     }
 }
+
+

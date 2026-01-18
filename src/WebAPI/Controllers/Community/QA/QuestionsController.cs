@@ -58,7 +58,7 @@ namespace WebAPI.Controllers.Community.QA
             var result = await Mediator.Send(query);
 
             if (result.IsSuccess)
-                return this.ApiSuccess(result.Data, "Question retrieved successfully");
+                return Success(result.Data, "Question retrieved successfully");
 
             if (result.Errors.Any(e => e.Contains("not found")))
                 return this.ApiNotFound("Question", id.ToString());
@@ -380,3 +380,5 @@ namespace WebAPI.Controllers.Community.QA
         }
     }
 }
+
+

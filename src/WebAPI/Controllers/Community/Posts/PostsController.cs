@@ -190,7 +190,7 @@ namespace WebAPI.Controllers.Community.Posts
         }
 
         [HttpPost("{id}/comments")]
-        public async Task<IActionResult> AddComment(Guid id, [FromBody] AddCommentRequest request)
+        public async Task<IActionResult> AddComment(Guid id, [FromBody] Application.Features.Community.Posts.DTOs.AddCommentRequest request)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
@@ -242,3 +242,5 @@ namespace WebAPI.Controllers.Community.Posts
         }
     }
 }
+
+

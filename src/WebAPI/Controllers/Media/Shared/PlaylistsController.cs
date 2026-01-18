@@ -54,3 +54,5 @@ public class CreatePlaylistRequest
     public string? Description { get; set; }
     public bool IsPublic { get; set; } = true;
 }
+
+

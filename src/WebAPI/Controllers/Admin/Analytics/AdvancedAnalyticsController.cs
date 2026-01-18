@@ -26,3 +26,5 @@ public class AdvancedAnalyticsController : ControllerBase
         return Ok(result);
     }
 }
+
+
