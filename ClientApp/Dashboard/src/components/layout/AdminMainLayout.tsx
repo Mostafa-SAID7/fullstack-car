@@ -158,7 +158,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Settings,
         path: '/admin/administration/settings',
         roles: [AdminRole.ADMINISTRATION_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Platform configuration'
+        description: 'Platform configuration and settings'
       },
       {
         id: 'notifications',
@@ -166,7 +166,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Bell,
         path: '/admin/administration/notifications',
         roles: [AdminRole.ADMINISTRATION_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'System notifications'
+        description: 'System notifications and alerts'
       }
     ]
   },
@@ -176,15 +176,40 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
     icon: FileText,
     path: '/admin/content',
     roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
-    description: 'Content creation and moderation',
+    description: 'Enhanced content management and moderation',
     children: [
       {
-        id: 'content-editor',
-        label: 'Content Editor',
+        id: 'content-overview',
+        label: 'Content Overview',
         icon: FileText,
-        path: '/admin/content/editor',
+        path: '/admin/content/overview',
         roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Create and edit content'
+        description: 'Administrative content dashboard'
+      },
+      {
+        id: 'content-moderation',
+        label: 'Content Moderation',
+        icon: Shield,
+        path: '/admin/content/moderation',
+        roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'Review and moderate platform content',
+        badge: 'New'
+      },
+      {
+        id: 'media-review',
+        label: 'Media Review',
+        icon: Video,
+        path: '/admin/content/media-review',
+        roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'Review videos, podcasts, and images'
+      },
+      {
+        id: 'folder-management',
+        label: 'Folder Management',
+        icon: FolderTree,
+        path: '/admin/content/folders',
+        roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'Hierarchical content organization'
       },
       {
         id: 'media-library',
@@ -192,16 +217,15 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Database,
         path: '/admin/content/media',
         roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Manage media assets'
+        description: 'Manage media assets and files'
       },
       {
-        id: 'moderation',
-        label: 'Content Moderation',
-        icon: Shield,
-        path: '/admin/content/moderation',
+        id: 'community-reports',
+        label: 'Community Reports',
+        icon: Flag,
+        path: '/admin/content/reports',
         roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Review and moderate content',
-        badge: 'New'
+        description: 'Handle community content reports'
       },
       {
         id: 'seo-tools',
@@ -209,7 +233,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Globe,
         path: '/admin/content/seo',
         roles: [AdminRole.CONTENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'SEO optimization tools'
+        description: 'SEO optimization and analytics'
       }
     ]
   },
@@ -222,9 +246,17 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
     description: 'Marketplace and vendor management',
     children: [
       {
+        id: 'marketplace-overview',
+        label: 'Overview',
+        icon: BarChart3,
+        path: '/admin/marketplace/overview',
+        roles: [AdminRole.MARKETPLACE_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'Marketplace performance dashboard'
+      },
+      {
         id: 'vendors',
         label: 'Vendor Management',
-        icon: Users,
+        icon: Store,
         path: '/admin/marketplace/vendors',
         roles: [AdminRole.MARKETPLACE_ADMIN, AdminRole.SUPER_ADMIN],
         description: 'Manage marketplace vendors'
@@ -232,7 +264,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
       {
         id: 'products',
         label: 'Product Management',
-        icon: ShoppingCart,
+        icon: Package,
         path: '/admin/marketplace/products',
         roles: [AdminRole.MARKETPLACE_ADMIN, AdminRole.SUPER_ADMIN],
         description: 'Manage products and listings'
@@ -240,18 +272,18 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
       {
         id: 'transactions',
         label: 'Transactions',
-        icon: BarChart3,
+        icon: DollarSign,
         path: '/admin/marketplace/transactions',
         roles: [AdminRole.MARKETPLACE_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Transaction monitoring'
+        description: 'Transaction monitoring and management'
       },
       {
         id: 'disputes',
         label: 'Dispute Resolution',
-        icon: MessageSquare,
+        icon: AlertCircle,
         path: '/admin/marketplace/disputes',
         roles: [AdminRole.MARKETPLACE_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Handle customer disputes'
+        description: 'Handle customer disputes and issues'
       }
     ]
   },
@@ -263,6 +295,14 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
     roles: [AdminRole.AI_AGENT_ADMIN, AdminRole.SUPER_ADMIN],
     description: 'AI agent configuration and training',
     children: [
+      {
+        id: 'ai-overview',
+        label: 'AI Overview',
+        icon: BarChart3,
+        path: '/admin/ai-agent/overview',
+        roles: [AdminRole.AI_AGENT_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'AI agent performance dashboard'
+      },
       {
         id: 'model-training',
         label: 'Model Training',
@@ -285,7 +325,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: MessageSquare,
         path: '/admin/ai-agent/conversations',
         roles: [AdminRole.AI_AGENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Monitor AI conversations'
+        description: 'Monitor AI conversations and interactions'
       },
       {
         id: 'performance',
@@ -293,7 +333,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: BarChart3,
         path: '/admin/ai-agent/performance',
         roles: [AdminRole.AI_AGENT_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'AI performance metrics'
+        description: 'AI performance metrics and analysis'
       }
     ]
   },
@@ -306,12 +346,20 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
     description: 'Marketing campaigns and analytics',
     children: [
       {
+        id: 'marketing-overview',
+        label: 'Marketing Overview',
+        icon: BarChart3,
+        path: '/admin/marketing/overview',
+        roles: [AdminRole.MARKETING_ADMIN, AdminRole.SUPER_ADMIN],
+        description: 'Marketing performance dashboard'
+      },
+      {
         id: 'campaigns',
         label: 'Campaign Management',
         icon: TrendingUp,
         path: '/admin/marketing/campaigns',
         roles: [AdminRole.MARKETING_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Create and manage campaigns'
+        description: 'Create and manage marketing campaigns'
       },
       {
         id: 'audience',
@@ -319,7 +367,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Users,
         path: '/admin/marketing/audience',
         roles: [AdminRole.MARKETING_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Audience segmentation'
+        description: 'Audience segmentation and targeting'
       },
       {
         id: 'analytics',
@@ -327,7 +375,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: BarChart3,
         path: '/admin/marketing/analytics',
         roles: [AdminRole.MARKETING_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Campaign performance analytics'
+        description: 'Campaign performance and ROI analytics'
       },
       {
         id: 'social-media',
@@ -335,7 +383,7 @@ const ADMIN_NAVIGATION: NavigationItem[] = [
         icon: Globe,
         path: '/admin/marketing/social',
         roles: [AdminRole.MARKETING_ADMIN, AdminRole.SUPER_ADMIN],
-        description: 'Social media management'
+        description: 'Social media management and scheduling'
       }
     ]
   }
