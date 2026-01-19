@@ -28,7 +28,6 @@ global using FluentValidation;
 global using Application.Common.Models;
 global using Application.Common.DTOs;
 global using Application.Common.Interfaces;
-global using Application.Common.Interfaces.Data;
 global using Application.Features.Shared.Logging.Interfaces;
 global using Application.Features.Admin.Analytics.Interfaces;
 global using Application.Features.Identity.Core.Interfaces;

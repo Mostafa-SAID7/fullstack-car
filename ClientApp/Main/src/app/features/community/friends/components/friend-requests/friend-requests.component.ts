@@ -142,9 +142,6 @@ export class FriendRequestsComponent implements OnInit, OnDestroy {
                         
                         const userName = `${request.requesterFirstName} ${request.requesterLastName}`;
                         
-                        // Add localized notification for accepted friend request
-                        this.notificationService.addFriendRequestAcceptedNotification(userName);
-                        
                         // Show localized success notification with user's name
                         const successMessage = this.translate.instant('friends.requestAccepted');
                         const notificationMessage = this.translate.instant('notifications.friendRequestAccepted', { 0: userName });

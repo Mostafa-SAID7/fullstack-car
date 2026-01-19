@@ -22,7 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Infrastructure.Data.Seeds;
 
-using Application.Common.Interfaces.Data;
+using Application.Common.Interfaces;
 
 namespace Infrastructure.Data
 {
@@ -40,14 +40,14 @@ namespace Infrastructure.Data
 
         // Community Tables
         public DbSet<Post> Posts { get; set; }
-        public DbSet<View> Views { get; set; }
+        public DbSet<Domain.Entities.Common.View> Views { get; set; }
         public DbSet<Domain.Entities.Common.Comment> Comments { get; set; }
-        public DbSet<Like> Likes { get; set; }
-        public DbSet<Reaction> Reactions { get; set; }
-        public DbSet<Bookmark> Bookmarks { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
-        public DbSet<Rating> Ratings { get; set; }
-        public DbSet<Image> Images { get; set; }
+        public DbSet<Domain.Entities.Common.Like> Likes { get; set; }
+        public DbSet<Domain.Entities.Common.Reaction> Reactions { get; set; }
+        public DbSet<Domain.Entities.Common.Bookmark> Bookmarks { get; set; }
+        public DbSet<Domain.Entities.Common.Feedback> Feedbacks { get; set; }
+        public DbSet<Domain.Entities.Common.Rating> Ratings { get; set; }
+        public DbSet<Domain.Entities.Common.Image> Images { get; set; }
         public DbSet<Domain.Entities.Common.File> Files { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
@@ -71,8 +71,8 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Community.Expert> Experts { get; set; }
         public DbSet<Domain.Entities.Community.Analytics> Analytics { get; set; }
         public DbSet<Domain.Entities.Common.UserActivity> CommunityUserActivities { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Domain.Entities.Common.Category> Categories { get; set; }
+        public DbSet<Domain.Entities.Common.Tag> Tags { get; set; }
         public DbSet<Domain.Entities.Community.QuestionTag> QuestionTags { get; set; }
 
         // Community Maps Tables

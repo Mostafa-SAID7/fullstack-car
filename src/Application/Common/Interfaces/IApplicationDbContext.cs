@@ -36,14 +36,14 @@ namespace Application.Common.Interfaces
 
         // Community Tables
         DbSet<Post> Posts { get; }
-        DbSet<View> Views { get; }
+        DbSet<Domain.Entities.Common.View> Views { get; }
         DbSet<Domain.Entities.Common.Comment> Comments { get; }
-        DbSet<Like> Likes { get; }
-        DbSet<Reaction> Reactions { get; }
-        DbSet<Bookmark> Bookmarks { get; }
-        DbSet<Feedback> Feedbacks { get; }
-        DbSet<Rating> Ratings { get; }
-        DbSet<Image> Images { get; }
+        DbSet<Domain.Entities.Common.Like> Likes { get; }
+        DbSet<Domain.Entities.Common.Reaction> Reactions { get; }
+        DbSet<Domain.Entities.Common.Bookmark> Bookmarks { get; }
+        DbSet<Domain.Entities.Common.Feedback> Feedbacks { get; }
+        DbSet<Domain.Entities.Common.Rating> Ratings { get; }
+        DbSet<Domain.Entities.Common.Image> Images { get; }
         DbSet<Domain.Entities.Common.File> Files { get; }
         DbSet<Group> Groups { get; }
         DbSet<GroupMember> GroupMembers { get; }
@@ -65,9 +65,9 @@ namespace Application.Common.Interfaces
         DbSet<UserReputation> UserReputations { get; }
         DbSet<Domain.Entities.Common.UserActivity> CommunityUserActivities { get; }
         DbSet<Domain.Entities.Community.Expert> Experts { get; }
-        DbSet<Category> Categories { get; }
-        DbSet<Tag> Tags { get; }
-        DbSet<Analytics> Analytics { get; }
+        DbSet<Domain.Entities.Common.Category> Categories { get; }
+        DbSet<Domain.Entities.Common.Tag> Tags { get; }
+        DbSet<Domain.Entities.Community.Analytics> Analytics { get; }
 
         // Shared Tables
         DbSet<Notification> Notifications { get; }

@@ -442,7 +442,7 @@ export class GroupCreatePageComponent implements OnInit {
     }
   }
 
-  addTag(event: KeyboardEvent, input: HTMLInputElement): void {
+  addTag(event: Event, input: HTMLInputElement): void {
     event.preventDefault();
     const value = input.value.trim();
     

@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Data;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces;
 using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Admin.Dashboard.Queries;

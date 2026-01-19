@@ -70,7 +70,7 @@ export class PageService {
   getPage(id: string): Observable<PageDto> {
     this.loadingService.show('page-detail', 'Loading page...');
 
-    return this.pageApi.getPage(id).pipe(
+    return this.http.get<PageDto>(`${environment.apiUrl}/v1/pages/${id}`).pipe(
       tap(page => {
         this.currentPageSubject.next(page);
       }),
@@ -88,7 +88,7 @@ export class PageService {
   getPageBySlug(slug: string): Observable<PageDto> {
     this.loadingService.show('page-detail', 'Loading page...');
 
-    return this.pageApi.getPageBySlug(slug).pipe(
+    return this.http.get<PageDto>(`${environment.apiUrl}/v1/pages/slug/${slug}`).pipe(
       tap(page => {
         this.currentPageSubject.next(page);
       }),
@@ -104,7 +104,7 @@ export class PageService {
    * Get page content
    */
   getPageContent(pageId: string): Observable<PageContentDto> {
-    return this.pageApi.getContent(pageId).pipe(
+    return this.http.get<PageContentDto>(`${environment.apiUrl}/v1/pages/${pageId}/content`).pipe(
       catchError(error => {
         this.toastService.error('Failed to load page content', error.message);
         return throwError(() => error);
@@ -116,7 +116,9 @@ export class PageService {
    * Get page revisions
    */
   getPageRevisions(pageId: string, pageNumber: number = 1): Observable<PagedResult<PageRevisionDto>> {
-    return this.pageApi.getRevisions(pageId, pageNumber).pipe(
+    return this.http.get<PagedResult<PageRevisionDto>>(`${environment.apiUrl}/v1/pages/${pageId}/revisions`, {
+      params: { pageNumber: pageNumber.toString() }
+    }).pipe(
       catchError(error => {
         this.toastService.error('Failed to load page revisions', error.message);
         return throwError(() => error);
@@ -130,7 +132,7 @@ export class PageService {
   createPage(request: CreatePageRequest): Observable<PageDto> {
     this.loadingService.show('create-page', 'Creating page...');
 
-    return this.pageApi.createPage(request).pipe(
+    return this.http.post<PageDto>(`${environment.apiUrl}/v1/pages`, request).pipe(
       tap(page => {
         // Add new page to the beginning of the list
         const currentPages = this.pagesSubject.value;
@@ -151,7 +153,7 @@ export class PageService {
   updatePage(id: string, request: UpdatePageRequest): Observable<PageDto> {
     this.loadingService.show('update-page', 'Updating page...');
 
-    return this.pageApi.updatePage(id, request).pipe(
+    return this.http.put<PageDto>(`${environment.apiUrl}/v1/pages/${id}`, request).pipe(
       tap(page => {
         // Update page in the list
         const pages = this.pagesSubject.value.map(p =>
@@ -180,7 +182,7 @@ export class PageService {
   deletePage(id: string): Observable<void> {
     this.loadingService.show('delete-page', 'Deleting page...');
 
-    return this.pageApi.deletePage(id).pipe(
+    return this.http.delete<void>(`${environment.apiUrl}/v1/pages/${id}`).pipe(
       tap(() => {
         // Remove page from the list
         const pages = this.pagesSubject.value.filter(page => page.id !== id);
@@ -207,7 +209,7 @@ export class PageService {
   publishPage(id: string): Observable<void> {
     this.loadingService.show('publish-page', 'Publishing page...');
 
-    return this.pageApi.publishPage(id).pipe(
+    return this.http.post<void>(`${environment.apiUrl}/v1/pages/${id}/publish`, {}).pipe(
       tap(() => {
         // Update page status in the list
         const pages = this.pagesSubject.value.map(page =>
@@ -240,7 +242,7 @@ export class PageService {
   unpublishPage(id: string): Observable<void> {
     this.loadingService.show('unpublish-page', 'Unpublishing page...');
 
-    return this.pageApi.unpublishPage(id).pipe(
+    return this.http.post<void>(`${environment.apiUrl}/v1/pages/${id}/unpublish`, {}).pipe(
       tap(() => {
         // Update page status in the list
         const pages = this.pagesSubject.value.map(page =>

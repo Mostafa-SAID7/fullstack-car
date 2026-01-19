@@ -51,6 +51,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
+  // Make Math available in template
+  Math = Math;
+
   // Form and filters
   searchForm!: FormGroup;
   showFilters = false;

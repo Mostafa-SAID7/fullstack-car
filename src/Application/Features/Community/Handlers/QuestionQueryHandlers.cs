@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Data;
+using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Queries;

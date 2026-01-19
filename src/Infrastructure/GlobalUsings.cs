@@ -34,7 +34,7 @@ global using Application.Features.Shared.System.Interfaces;
 global using Application.Features.Shared.System.Models;
 global using Application.Features.Shared.Logging.Interfaces;
 global using Application.Features.Admin.Analytics.Interfaces;
-global using Application.Common.Interfaces.Data;
+global using Application.Common.Interfaces;
 global using Application.Features.Identity.Core.Interfaces;
 global using Application.Features.Identity.Auth.Interfaces;
 global using Application.Features.Identity.OAuth.Interfaces;
