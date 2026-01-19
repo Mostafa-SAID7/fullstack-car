@@ -18,6 +18,6 @@ namespace Domain.Entities.Community
 
         // Navigation Properties
         public virtual ApplicationUser User { get; set; } = null!;
-        public virtual QuestionCategory Category { get; set; } = null!;
+        public virtual Domain.Entities.Common.Category Category { get; set; } = null!;
     }
 }

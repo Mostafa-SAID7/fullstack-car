@@ -14,7 +14,7 @@ namespace Domain.Entities.Common
         public long Size { get; set; }
         
         // Generic Content Reference (optional, if this image belongs to a specific entity)
-        public ContentType? ContentType { get; set; }
+        public Domain.Enums.Common.ContentType? ContentType { get; set; }
         public Guid? ContentId { get; set; }
 
         public Guid? UserId { get; set; }

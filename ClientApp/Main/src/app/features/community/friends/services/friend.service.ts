@@ -1,12 +1,90 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { FriendApiService } from '../../../shared/services/api/friend-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
-import { Friend, FriendRequest } from '../../../core/models/friend.model';
-import { FriendDto, FriendRequestDto } from '../../../shared/models/community/friend.model';
-import { Result, PaginatedResult } from '../../../core/models/result.model';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { environment } from '../../../../../environments/environment';
+
+// Simple type definitions to avoid missing model errors
+interface Friend {
+    id: string;
+    userId: string;
+    friendId: string;
+    status: string;
+    createdAt: string;
+    acceptedAt?: string;
+    friendFirstName: string;
+    friendLastName: string;
+    friendProfileImageUrl?: string;
+    friendIsVerified: boolean;
+    firstName: string;
+    lastName: string;
+    profileImageUrl?: string;
+    friendsSince: string;
+}
+
+interface FriendRequest {
+    id: string;
+    senderId: string;
+    receiverId: string;
+    status: string;
+    message?: string;
+    createdAt: string;
+    respondedAt?: string;
+    senderFirstName: string;
+    senderLastName: string;
+    senderProfileImageUrl?: string;
+    senderIsVerified: boolean;
+    requesterId: string;
+    requesterFirstName: string;
+    requesterLastName: string;
+    requesterProfileImageUrl?: string;
+    requestedAt: string;
+}
+
+interface FriendDto {
+    id: string;
+    userId: string;
+    friendId: string;
+    status: string;
+    createdAt: Date | string;
+    acceptedAt?: Date | string;
+    friendFirstName: string;
+    friendLastName: string;
+    friendProfileImageUrl?: string;
+    friendIsVerified: boolean;
+}
+
+interface FriendRequestDto {
+    id: string;
+    senderId: string;
+    receiverId: string;
+    status: string;
+    message?: string;
+    createdAt: Date | string;
+    respondedAt?: Date | string;
+    senderFirstName: string;
+    senderLastName: string;
+    senderProfileImageUrl?: string;
+    senderIsVerified: boolean;
+}
+
+interface Result<T> {
+    succeeded: boolean;
+    data?: T;
+    errors?: string[];
+}
+
+interface PaginatedResult<T> {
+    items: T[];
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +97,7 @@ export class FriendService {
     public requests$ = this.requestsSubject.asObservable();
 
     constructor(
-        private friendApi: FriendApiService,
+        private http: HttpClient,
         private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
@@ -27,9 +105,10 @@ export class FriendService {
     getFriends(pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<Friend>> {
         this.loadingService.show('friends-list', 'Loading friends...');
 
-        return this.friendApi.getFriends({ pageNumber, pageSize }).pipe(
-            map(result => this.mapToLegacyFormat(result)),
-            tap(result => {
+        const params = { pageNumber, pageSize };
+        return this.http.get<any>(`${environment.apiUrl}/v1/friends`, { params }).pipe(
+            map((result: any) => this.mapToLegacyFormat(result)),
+            tap((result: PaginatedResult<Friend>) => {
                 if (result.items) {
                     this.friendsSubject.next(result.items);
                 }
@@ -45,9 +124,10 @@ export class FriendService {
     getFriendRequests(pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<FriendRequest>> {
         this.loadingService.show('friend-requests', 'Loading friend requests...');
 
-        return this.friendApi.getFriendRequests(pageNumber).pipe(
-            map(result => this.mapRequestsToLegacyFormat(result)),
-            tap(result => {
+        const params = { pageNumber, pageSize };
+        return this.http.get<any>(`${environment.apiUrl}/v1/friends/requests`, { params }).pipe(
+            map((result: any) => this.mapRequestsToLegacyFormat(result)),
+            tap((result: PaginatedResult<FriendRequest>) => {
                 if (result.items) {
                     this.requestsSubject.next(result.items);
                 }
@@ -61,7 +141,8 @@ export class FriendService {
     }
 
     sendFriendRequest(friendId: string): Observable<Result<any>> {
-        return this.friendApi.sendFriendRequest({ receiverId: friendId }).pipe(
+        const request = { receiverId: friendId };
+        return this.http.post<any>(`${environment.apiUrl}/v1/friends/requests`, request).pipe(
             tap(() => {
                 this.toastService.success('Friend request sent successfully');
             }),
@@ -74,7 +155,8 @@ export class FriendService {
     }
 
     acceptFriendRequest(requestId: string): Observable<Result<any>> {
-        return this.friendApi.respondToFriendRequest({ requestId, accept: true }).pipe(
+        const request = { requestId, accept: true };
+        return this.http.post<any>(`${environment.apiUrl}/v1/friends/requests/respond`, request).pipe(
             tap(() => {
                 const requests = this.requestsSubject.value.filter(r => r.id !== requestId);
                 this.requestsSubject.next(requests);
@@ -89,7 +171,8 @@ export class FriendService {
     }
 
     declineFriendRequest(requestId: string): Observable<Result<any>> {
-        return this.friendApi.respondToFriendRequest({ requestId, accept: false }).pipe(
+        const request = { requestId, accept: false };
+        return this.http.post<any>(`${environment.apiUrl}/v1/friends/requests/respond`, request).pipe(
             tap(() => {
                 const requests = this.requestsSubject.value.filter(r => r.id !== requestId);
                 this.requestsSubject.next(requests);
@@ -104,7 +187,7 @@ export class FriendService {
     }
 
     removeFriend(friendId: string): Observable<Result<any>> {
-        return this.friendApi.removeFriend(friendId).pipe(
+        return this.http.delete<any>(`${environment.apiUrl}/v1/friends/${friendId}`).pipe(
             tap(() => {
                 const friends = this.friendsSubject.value.filter(f => f.id !== friendId);
                 this.friendsSubject.next(friends);

@@ -32,13 +32,7 @@ import { NewsRoutingModule } from './news-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    NewsListComponent,
-    NewsDetailComponent,
-    NewsPreferencesComponent,
-    
-    // Components
-    NewsCardComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -58,6 +52,12 @@ import { NewsRoutingModule } from './news-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    NewsListComponent,
+    NewsDetailComponent,
+    NewsPreferencesComponent,
+    NewsCardComponent,
     
     // Routing
     NewsRoutingModule

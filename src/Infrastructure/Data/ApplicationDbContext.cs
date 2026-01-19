@@ -41,14 +41,14 @@ namespace Infrastructure.Data
         // Community Tables
         public DbSet<Post> Posts { get; set; }
         public DbSet<View> Views { get; set; }
-        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Domain.Entities.Common.Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
         public DbSet<Bookmark> Bookmarks { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<File> Files { get; set; }
+        public DbSet<Domain.Entities.Common.File> Files { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -65,17 +65,15 @@ namespace Infrastructure.Data
         // Community Q&A Tables
         public DbSet<Domain.Entities.Community.Question> Questions { get; set; }
         public DbSet<Domain.Entities.Community.Answer> Answers { get; set; }
-        public DbSet<Domain.Entities.Community.AnswerHistory> AnswerHistories { get; set; }
+        public DbSet<Domain.Entities.Common.ContentHistory> ContentHistories { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Domain.Entities.Community.UserReputation> UserReputations { get; set; }
         public DbSet<Domain.Entities.Community.Expert> Experts { get; set; }
         public DbSet<Domain.Entities.Community.Analytics> Analytics { get; set; }
-        public DbSet<Domain.Entities.Community.CommunityUserActivity> CommunityUserActivities { get; set; }
+        public DbSet<Domain.Entities.Common.UserActivity> CommunityUserActivities { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<Domain.Entities.Community.QuestionCategory> QuestionCategories { get; set; }
         public DbSet<Domain.Entities.Community.QuestionTag> QuestionTags { get; set; }
-        public DbSet<Domain.Entities.Community.AnswerComment> AnswerComments { get; set; }
 
         // Community Maps Tables
         public DbSet<Domain.Entities.Community.Maps.Location> Locations { get; set; }
@@ -91,7 +89,6 @@ namespace Infrastructure.Data
 
         // Community News Tables
         public DbSet<Domain.Entities.Community.News.Article> Articles { get; set; }
-        public DbSet<Domain.Entities.Community.News.NewsCategory> NewsCategories { get; set; }
         public DbSet<Domain.Entities.Community.News.NewsCategory> NewsCategories { get; set; }
         public DbSet<Domain.Entities.Community.News.ArticleShare> ArticleShares { get; set; }
         public DbSet<Domain.Entities.Community.News.ArticleImage> ArticleImages { get; set; }

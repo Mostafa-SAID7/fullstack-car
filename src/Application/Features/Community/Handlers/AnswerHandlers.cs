@@ -13,18 +13,18 @@ namespace Application.Features.Community.Handlers;
 public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, Result<AnswerDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
+    // private readonly IQAService _qaService; // TODO: Implement IQAService when QA module is ready
     private readonly IContentQualityService _contentQualityService;
     private readonly IReputationService _reputationService;
 
     public CreateAnswerHandler(
         IApplicationDbContext context,
-        IQAService qaService,
+        // IQAService qaService, // TODO: Implement IQAService when QA module is ready
         IContentQualityService contentQualityService,
         IReputationService reputationService)
     {
         _context = context;
-        _qaService = qaService;
+        // _qaService = qaService;
         _contentQualityService = contentQualityService;
         _reputationService = reputationService;
     }
@@ -138,16 +138,16 @@ public class CreateAnswerHandler : IRequestHandler<CreateAnswerCommand, Result<A
 public class UpdateAnswerHandler : IRequestHandler<UpdateAnswerCommand, Result<AnswerDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
+    // private readonly IQAService _qaService;
     private readonly IContentQualityService _contentQualityService;
 
     public UpdateAnswerHandler(
         IApplicationDbContext context,
-        IQAService qaService,
+        // IQAService qaService,
         IContentQualityService contentQualityService)
     {
         _context = context;
-        _qaService = qaService;
+        // _qaService = qaService;
         _contentQualityService = contentQualityService;
     }
 

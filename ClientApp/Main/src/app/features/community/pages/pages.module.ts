@@ -23,8 +23,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    PageListComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -43,6 +42,9 @@ import { PagesRoutingModule } from './pages-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    PageListComponent,
     
     // Routing
     PagesRoutingModule

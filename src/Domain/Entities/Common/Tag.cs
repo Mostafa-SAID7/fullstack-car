@@ -9,9 +9,9 @@ namespace Domain.Entities.Common
         public string Description { get; set; } = string.Empty;
         public int UsageCount { get; set; } = 0;
         public Guid? CategoryId { get; set; }
+        public Domain.Enums.Common.ContentType ContentType { get; set; }
 
         // Navigation Properties
         public virtual Category? Category { get; set; }
-        public virtual ICollection<QuestionTag> QuestionTags { get; set; } = new List<QuestionTag>();
     }
 }

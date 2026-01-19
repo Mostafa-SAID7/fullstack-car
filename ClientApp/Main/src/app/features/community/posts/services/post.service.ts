@@ -44,7 +44,7 @@ export class PostService {
     }
 
     getPost(id: string): Observable<Result<Post>> {
-        return this.postApi.getPost(id).pipe(
+        return this.http.get<any>(`${environment.apiUrl}/v1/posts/${id}`).pipe(
             map(dto => ({ succeeded: true, data: this.mapDtoToPost(dto) } as Result<Post>)),
             catchError(error => {
                 this.toastService.error('Failed to load post', error.message);
@@ -56,7 +56,7 @@ export class PostService {
     createPost(request: CreatePostRequest): Observable<Result<Post>> {
         this.loadingService.show('create-post', 'Creating post...');
 
-        return this.postApi.createPost(request).pipe(
+        return this.http.post<any>(`${environment.apiUrl}/v1/posts`, request).pipe(
             map(dto => {
                 const post = this.mapDtoToPost(dto);
                 // Add new post to the beginning of the list
@@ -74,7 +74,7 @@ export class PostService {
     }
 
     likePost(id: string): Observable<Result<any>> {
-        return this.postApi.likePost(id).pipe(
+        return this.http.post<any>(`${environment.apiUrl}/v1/posts/${id}/like`, {}).pipe(
             tap(() => {
                 // Update post in the list
                 const posts = this.postsSubject.value.map(post =>
@@ -91,7 +91,7 @@ export class PostService {
     }
 
     unlikePost(id: string): Observable<Result<any>> {
-        return this.postApi.unlikePost(id).pipe(
+        return this.http.delete<any>(`${environment.apiUrl}/v1/posts/${id}/like`).pipe(
             tap(() => {
                 // Update post in the list
                 const posts = this.postsSubject.value.map(post =>
@@ -108,7 +108,7 @@ export class PostService {
     }
 
     addComment(id: string, content: string): Observable<Result<any>> {
-        return this.postApi.addComment(id, content).pipe(
+        return this.http.post<any>(`${environment.apiUrl}/v1/posts/${id}/comments`, { content }).pipe(
             tap(() => {
                 // Update post in the list
                 const posts = this.postsSubject.value.map(post =>
@@ -128,7 +128,7 @@ export class PostService {
     deletePost(id: string): Observable<Result<any>> {
         this.loadingService.show('delete-post', 'Deleting post...');
 
-        return this.postApi.deletePost(id).pipe(
+        return this.http.delete<any>(`${environment.apiUrl}/v1/posts/${id}`).pipe(
             tap(() => {
                 // Remove post from the list
                 const posts = this.postsSubject.value.filter(post => post.id !== id);
@@ -147,7 +147,7 @@ export class PostService {
     updatePost(id: string, request: any): Observable<Result<Post>> {
         this.loadingService.show('update-post', 'Updating post...');
 
-        return this.postApi.updatePost(id, request).pipe(
+        return this.http.put<any>(`${environment.apiUrl}/v1/posts/${id}`, request).pipe(
             map(dto => {
                 const post = this.mapDtoToPost(dto);
                 // Update post in the list
@@ -176,7 +176,9 @@ export class PostService {
     }
 
     getPostComments(id: string, pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<any>> {
-        return this.postApi.getComments(id, pageNumber).pipe(
+        return this.http.get<any>(`${environment.apiUrl}/v1/posts/${id}/comments`, { 
+            params: { pageNumber: pageNumber.toString(), pageSize: pageSize.toString() } 
+        }).pipe(
             map(result => this.mapToLegacyFormat(result)),
             catchError(error => {
                 this.toastService.error('Failed to load comments', error.message);

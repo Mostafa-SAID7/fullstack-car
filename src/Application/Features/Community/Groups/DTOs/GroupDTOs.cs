@@ -16,9 +16,7 @@ namespace Application.Features.Community.Groups.DTOs
         public bool IsActive { get; set; }
         public bool IsFeatured { get; set; }
         public int MemberCount { get; set; }
-        public int MembersCount { get; set; }
         public int PostCount { get; set; }
-        public int PostsCount { get; set; }
         public int EventCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

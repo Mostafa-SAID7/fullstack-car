@@ -14,7 +14,7 @@ namespace Domain.Entities.Common
         public string Extension { get; set; } = string.Empty;
         
         // Generic Content Reference
-        public ContentType? RelatedContentType { get; set; }
+        public Domain.Enums.Common.ContentType? RelatedContentType { get; set; }
         public Guid? RelatedContentId { get; set; }
 
         public Guid? UserId { get; set; }

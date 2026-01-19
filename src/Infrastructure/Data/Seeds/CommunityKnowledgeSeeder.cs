@@ -31,20 +31,20 @@ namespace Infrastructure.Data.Seeds
             var users = await _context.Users.ToListAsync();
             if (!users.Any()) return;
 
-            if (!await _context.QuestionCategories.AnyAsync())
+            if (!await _context.Categories.AnyAsync(c => c.ContentType == Domain.Enums.Common.ContentType.Question))
             {
                 var categories = new[]
                 {
-                    new QuestionCategory { Name = "Engine & Transmission", Description = "Engine and gearbox issues", CreatedBy = "System" },
-                    new QuestionCategory { Name = "Electrical & Electronics", Description = "Sensors, lights, and infotainment", CreatedBy = "System" },
-                    new QuestionCategory { Name = "Brakes & Suspension", Description = "Handling and stopping", CreatedBy = "System" },
-                    new QuestionCategory { Name = "General Maintenance", Description = "Oil changes, tires, etc.", CreatedBy = "System" }
+                    new Domain.Entities.Common.Category { Name = "Engine & Transmission", Description = "Engine and gearbox issues", ContentType = Domain.Enums.Common.ContentType.Question, CreatedBy = "System" },
+                    new Domain.Entities.Common.Category { Name = "Electrical & Electronics", Description = "Sensors, lights, and infotainment", ContentType = Domain.Enums.Common.ContentType.Question, CreatedBy = "System" },
+                    new Domain.Entities.Common.Category { Name = "Brakes & Suspension", Description = "Handling and stopping", ContentType = Domain.Enums.Common.ContentType.Question, CreatedBy = "System" },
+                    new Domain.Entities.Common.Category { Name = "General Maintenance", Description = "Oil changes, tires, etc.", ContentType = Domain.Enums.Common.ContentType.Question, CreatedBy = "System" }
                 };
-                _context.QuestionCategories.AddRange(categories);
+                _context.Categories.AddRange(categories);
                 await _context.SaveChangesAsync();
             }
 
-            var categoryIds = await _context.QuestionCategories.Select(c => c.Id).ToListAsync();
+            var categoryIds = await _context.Categories.Where(c => c.ContentType == Domain.Enums.Common.ContentType.Question).Select(c => c.Id).ToListAsync();
 
             for (int i = 0; i < 15; i++)
             {
@@ -71,11 +71,12 @@ namespace Infrastructure.Data.Seeds
                 var voters = users.OrderBy(x => Random.Shared.Next()).Take(voteCount);
                 foreach (var voter in voters)
                 {
-                    _context.QuestionVotes.Add(new QuestionVote
+                    _context.Votes.Add(new Domain.Entities.Common.Vote
                     {
-                        QuestionId = question.Id,
+                        ContentId = question.Id,
+                        ContentType = Domain.Enums.Common.ContentType.Question,
                         UserId = voter.Id,
-                        VoteType = Random.Shared.Next(10) > 2 ? Domain.Enums.Community.QA.VoteType.Upvote : Domain.Enums.Community.QA.VoteType.Downvote,
+                        VoteType = Random.Shared.Next(10) > 2 ? Domain.Enums.Common.VoteType.Up : Domain.Enums.Common.VoteType.Down,
                         CreatedAt = DateTime.UtcNow.AddDays(-Random.Shared.Next(1, 10))
                     });
                 }
@@ -99,9 +100,10 @@ namespace Infrastructure.Data.Seeds
                 for (int c = 0; c < commentCount; c++)
                 {
                     var commenter = users[Random.Shared.Next(users.Count)];
-                    _context.AnswerComments.Add(new AnswerComment
+                    _context.Comments.Add(new Domain.Entities.Common.Comment
                     {
-                        AnswerId = answer.Id,
+                        ContentId = answer.Id,
+                        ContentType = Domain.Enums.Common.ContentType.Answer,
                         UserId = commenter.Id,
                         Content = "Thanks for the advice! I will check it out.",
                         CreatedBy = commenter.Id.ToString()

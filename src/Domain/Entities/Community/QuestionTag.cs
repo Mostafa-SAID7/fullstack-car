@@ -1,4 +1,5 @@
 using Domain.Base;
+using Domain.Entities.Common;
 
 namespace Domain.Entities.Community
 {
@@ -10,6 +11,6 @@ namespace Domain.Entities.Community
 
         // Navigation Properties
         public virtual Question Question { get; set; } = null!;
-        public virtual QATag Tag { get; set; } = null!;
+        public virtual Tag Tag { get; set; } = null!;
     }
 }

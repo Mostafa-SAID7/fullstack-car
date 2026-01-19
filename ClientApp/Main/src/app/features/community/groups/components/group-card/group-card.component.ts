@@ -14,10 +14,10 @@ import { Group } from '../../../../../core/models/group.model';
   template: `
     <div class="group-card bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
       <!-- Cover Image -->
-      @if (group().coverImage) {
+      @if (group().imageUrl) {
         <div class="relative h-32 bg-gray-200 dark:bg-gray-700">
           <img 
-            [src]="group().coverImage" 
+            [src]="group().imageUrl" 
             [alt]="group().name"
             class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -34,9 +34,9 @@ import { Group } from '../../../../../core/models/group.model';
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center space-x-3 flex-1 min-w-0">
             <!-- Avatar -->
-            @if (group().avatar) {
+            @if (group().imageUrl) {
               <img 
-                [src]="group().avatar" 
+                [src]="group().imageUrl" 
                 [alt]="group().name"
                 class="w-12 h-12 rounded-full border-2 border-white dark:border-gray-800 -mt-6 relative z-10">
             } @else {
@@ -163,6 +163,8 @@ export class GroupCardComponent {
   group = input.required<Group>();
   showJoinButton = input<boolean>(true);
   showManageButton = input<boolean>(false);
+  isUserMember = input<boolean>(false);
+  showLeaveButton = input<boolean>(false);
 
   // Output events
   joinClick = output<Group>();

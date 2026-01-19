@@ -28,9 +28,7 @@ import { FriendsRoutingModule } from './friends-routing.module';
 
 @NgModule({
   declarations: [
-    FriendListComponent,
-    FriendCardComponent,
-    FriendRequestsComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -49,6 +47,11 @@ import { FriendsRoutingModule } from './friends-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    FriendListComponent,
+    FriendCardComponent,
+    FriendRequestsComponent,
     
     // Routing
     FriendsRoutingModule

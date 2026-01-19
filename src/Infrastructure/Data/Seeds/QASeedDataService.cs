@@ -49,7 +49,7 @@ namespace Infrastructure.Data.Seeds
         {
             _logger.LogInformation("Seeding QA categories...");
 
-            if (await _context.QuestionCategories.AnyAsync())
+            if (await _context.Categories.AnyAsync(c => c.ContentType == Domain.Enums.Common.ContentType.Question))
             {
                 _logger.LogInformation("Question categories already exist, skipping...");
                 return;
@@ -57,87 +57,75 @@ namespace Infrastructure.Data.Seeds
 
             var categories = new[]
             {
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "Web Development",
                     Description = "Frontend and backend web development questions",
                     IconUrl = "/icons/web-dev.svg",
                     Color = "#3B82F6",
-                    QuestionsCount = 0,
-                    SortOrder = 1,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-365),
                     CreatedBy = "System"
                 },
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "Mobile Development",
                     Description = "iOS, Android, and cross-platform mobile development",
                     IconUrl = "/icons/mobile-dev.svg",
                     Color = "#10B981",
-                    QuestionsCount = 0,
-                    SortOrder = 2,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-350),
                     CreatedBy = "System"
                 },
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "Database Design",
                     Description = "SQL, NoSQL, database architecture and optimization",
                     IconUrl = "/icons/database.svg",
                     Color = "#8B5CF6",
-                    QuestionsCount = 0,
-                    SortOrder = 3,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-340),
                     CreatedBy = "System"
                 },
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "DevOps & Cloud",
                     Description = "CI/CD, containerization, cloud platforms",
                     IconUrl = "/icons/devops.svg",
                     Color = "#F59E0B",
-                    QuestionsCount = 0,
-                    SortOrder = 4,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-330),
                     CreatedBy = "System"
                 },
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "Data Science",
                     Description = "Machine learning, analytics, data processing",
                     IconUrl = "/icons/data-science.svg",
                     Color = "#EF4444",
-                    QuestionsCount = 0,
-                    SortOrder = 5,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-320),
                     CreatedBy = "System"
                 },
-                new QuestionCategory
+                new Domain.Entities.Common.Category
                 {
-                    Id = Guid.NewGuid(),
                     Name = "Cybersecurity",
                     Description = "Security best practices, vulnerability assessment",
                     IconUrl = "/icons/security.svg",
                     Color = "#6B7280",
-                    QuestionsCount = 0,
-                    SortOrder = 6,
+                    ContentType = Domain.Enums.Common.ContentType.Question,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow.AddDays(-310),
                     CreatedBy = "System"
                 }
             };
 
-            _context.QuestionCategories.AddRange(categories);
+            _context.Categories.AddRange(categories);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Created {Count} question categories", categories.Length);
         }
@@ -151,7 +139,7 @@ namespace Infrastructure.Data.Seeds
                 return;
             }
 
-            var categories = await _context.QuestionCategories.ToListAsync();
+            var categories = await _context.Categories.Where(c => c.ContentType == Domain.Enums.Common.ContentType.Question).ToListAsync();
             var webDevCategory = categories.FirstOrDefault(c => c.Name == "Web Development");
             var mobileDevCategory = categories.FirstOrDefault(c => c.Name == "Mobile Development");
             var databaseCategory = categories.FirstOrDefault(c => c.Name == "Database Design");
@@ -161,32 +149,32 @@ namespace Infrastructure.Data.Seeds
             var tags = new[]
             {
                 // Web Development Tags
-                new Tag { Id = Guid.NewGuid(), Name = "javascript", Description = "JavaScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-300), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "react", Description = "React.js frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-295), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "nodejs", Description = "Node.js backend runtime", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-290), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "typescript", Description = "TypeScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-285), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "angular", Description = "Angular frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-280), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "aspnet-core", Description = "ASP.NET Core framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-275), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "javascript", Description = "JavaScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-300), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "react", Description = "React.js frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-295), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "nodejs", Description = "Node.js backend runtime", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-290), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "typescript", Description = "TypeScript programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-285), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "angular", Description = "Angular frontend framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-280), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "aspnet-core", Description = "ASP.NET Core framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-275), CreatedBy = "System" },
                 
                 // Database Tags
-                new Tag { Id = Guid.NewGuid(), Name = "sql-server", Description = "Microsoft SQL Server database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-270), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "entity-framework", Description = "Entity Framework ORM", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-265), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "mongodb", Description = "MongoDB NoSQL database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-260), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "sql-server", Description = "Microsoft SQL Server database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-270), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "entity-framework", Description = "Entity Framework ORM", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-265), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "mongodb", Description = "MongoDB NoSQL database", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-260), CreatedBy = "System" },
                 
                 // DevOps Tags
-                new Tag { Id = Guid.NewGuid(), Name = "docker", Description = "Docker containerization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-255), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "azure", Description = "Microsoft Azure cloud platform", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-250), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "kubernetes", Description = "Kubernetes container orchestration", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-245), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "docker", Description = "Docker containerization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-255), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "azure", Description = "Microsoft Azure cloud platform", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-250), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "kubernetes", Description = "Kubernetes container orchestration", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-245), CreatedBy = "System" },
                 
                 // Data Science Tags
-                new Tag { Id = Guid.NewGuid(), Name = "python", Description = "Python programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-240), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "machine-learning", Description = "Machine learning algorithms and techniques", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-235), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "data-analysis", Description = "Data analysis and visualization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-230), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "python", Description = "Python programming language", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-240), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "machine-learning", Description = "Machine learning algorithms and techniques", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-235), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "data-analysis", Description = "Data analysis and visualization", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-230), CreatedBy = "System" },
                 
                 // Mobile Development Tags
-                new Tag { Id = Guid.NewGuid(), Name = "ios", Description = "iOS mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-225), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "android", Description = "Android mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-220), CreatedBy = "System" },
-                new Tag { Id = Guid.NewGuid(), Name = "flutter", Description = "Flutter cross-platform framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-215), CreatedBy = "System" }
+                new Domain.Entities.Common.Tag { Name = "ios", Description = "iOS mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-225), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "android", Description = "Android mobile development", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-220), CreatedBy = "System" },
+                new Domain.Entities.Common.Tag { Name = "flutter", Description = "Flutter cross-platform framework", UsageCount = 0, CategoryId = null, CreatedAt = DateTime.UtcNow.AddDays(-215), CreatedBy = "System" }
             };
 
             _context.Tags.AddRange(tags);
@@ -204,7 +192,7 @@ namespace Infrastructure.Data.Seeds
             }
 
             var users = await _context.Users.ToListAsync();
-            var categories = await _context.QuestionCategories.ToListAsync();
+            var categories = await _context.Categories.Where(c => c.ContentType == Domain.Enums.Common.ContentType.Question).ToListAsync();
             var tags = await _context.Tags.ToListAsync();
 
             if (!users.Any() || !categories.Any())
@@ -649,14 +637,13 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                     // Prevent self-voting
                     if (voter.Id == question.UserId) continue;
 
-                    var voteType = _random.Next(10) > 1 ? VoteType.Upvote : VoteType.Downvote; // 90% upvotes
+                    var voteType = _random.Next(10) > 1 ? Domain.Enums.Common.VoteType.Up : Domain.Enums.Common.VoteType.Down; // 90% upvotes
                     
-                    votes.Add(new Vote
+                    votes.Add(new Domain.Entities.Common.Vote
                     {
-                        Id = Guid.NewGuid(),
                         UserId = voter.Id,
                         ContentId = question.Id,
-                        ContentType = "Question",
+                        ContentType = Domain.Enums.Common.ContentType.Question,
                         VoteType = voteType,
                         CreatedAt = question.CreatedAt.AddHours(_random.Next(1, 48)),
                         CreatedBy = voter.Id.ToString()
@@ -675,14 +662,13 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                     // Prevent self-voting
                     if (voter.Id == answer.UserId) continue;
 
-                    var voteType = _random.Next(10) > 2 ? VoteType.Upvote : VoteType.Downvote; // 80% upvotes
+                    var voteType = _random.Next(10) > 2 ? Domain.Enums.Common.VoteType.Up : Domain.Enums.Common.VoteType.Down; // 80% upvotes
                     
-                    votes.Add(new Vote
+                    votes.Add(new Domain.Entities.Common.Vote
                     {
-                        Id = Guid.NewGuid(),
                         UserId = voter.Id,
                         ContentId = answer.Id,
-                        ContentType = "Answer",
+                        ContentType = Domain.Enums.Common.ContentType.Answer,
                         VoteType = voteType,
                         CreatedAt = answer.CreatedAt.AddHours(_random.Next(1, 24)),
                         CreatedBy = voter.Id.ToString()
@@ -696,16 +682,16 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             // Update vote counts on questions and answers
             foreach (var question in questions)
             {
-                var questionVotes = votes.Where(v => v.ContentId == question.Id && v.ContentType == "Question").ToList();
-                question.UpvotesCount = questionVotes.Count(v => v.VoteType == VoteType.Upvote);
-                question.DownvotesCount = questionVotes.Count(v => v.VoteType == VoteType.Downvote);
+                var questionVotes = votes.Where(v => v.ContentId == question.Id && v.ContentType == Domain.Enums.Common.ContentType.Question).ToList();
+                question.UpvotesCount = questionVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Up);
+                question.DownvotesCount = questionVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Down);
             }
 
             foreach (var answer in answers)
             {
-                var answerVotes = votes.Where(v => v.ContentId == answer.Id && v.ContentType == "Answer").ToList();
-                answer.UpvotesCount = answerVotes.Count(v => v.VoteType == VoteType.Upvote);
-                answer.DownvotesCount = answerVotes.Count(v => v.VoteType == VoteType.Downvote);
+                var answerVotes = votes.Where(v => v.ContentId == answer.Id && v.ContentType == Domain.Enums.Common.ContentType.Answer).ToList();
+                answer.UpvotesCount = answerVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Up);
+                answer.DownvotesCount = answerVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Down);
             }
 
             await _context.SaveChangesAsync();
@@ -749,17 +735,17 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                 // Count votes on user's questions
                 foreach (var question in userQuestions)
                 {
-                    var questionVotes = votes.Where(v => v.ContentId == question.Id && v.ContentType == "Question").ToList();
-                    upvotesReceived += questionVotes.Count(v => v.VoteType == VoteType.Upvote);
-                    downvotesReceived += questionVotes.Count(v => v.VoteType == VoteType.Downvote);
+                    var questionVotes = votes.Where(v => v.ContentId == question.Id && v.ContentType == Domain.Enums.Common.ContentType.Question).ToList();
+                    upvotesReceived += questionVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Up);
+                    downvotesReceived += questionVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Down);
                 }
 
                 // Count votes on user's answers
                 foreach (var answer in userAnswers)
                 {
-                    var answerVotes = votes.Where(v => v.ContentId == answer.Id && v.ContentType == "Answer").ToList();
-                    upvotesReceived += answerVotes.Count(v => v.VoteType == VoteType.Upvote);
-                    downvotesReceived += answerVotes.Count(v => v.VoteType == VoteType.Downvote);
+                    var answerVotes = votes.Where(v => v.ContentId == answer.Id && v.ContentType == Domain.Enums.Common.ContentType.Answer).ToList();
+                    upvotesReceived += answerVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Up);
+                    downvotesReceived += answerVotes.Count(v => v.VoteType == Domain.Enums.Common.VoteType.Down);
                 }
 
                 // Calculate reputation score
@@ -786,7 +772,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                     .Distinct()
                     .ToList();
 
-                var categories = await _context.QuestionCategories.Where(c => userCategories.Contains(c.Id)).ToListAsync();
+                var categories = await _context.Categories.Where(c => userCategories.Contains(c.Id)).ToListAsync();
                 userExpertise.AddRange(categories.Select(c => c.Name));
 
                 // Add some random expertise for variety

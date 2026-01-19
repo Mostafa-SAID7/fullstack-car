@@ -33,17 +33,7 @@ namespace Infrastructure.Repositories
             return await _dbSet.ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> ListAllAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbSet.ToListAsync(cancellationToken);
-        }
-
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
-        }
-
-        public async Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
         }

@@ -7,7 +7,7 @@ namespace Domain.Entities.Common
     public class Vote : BaseAuditableEntity
     {
         public VoteType VoteType { get; set; }
-        public ContentType ContentType { get; set; }
+        public Domain.Enums.Common.ContentType ContentType { get; set; }
         public Guid ContentId { get; set; }
 
         // Foreign Keys

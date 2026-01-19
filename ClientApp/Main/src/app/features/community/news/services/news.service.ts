@@ -80,7 +80,7 @@ export class NewsService {
     getArticle(id: string): Observable<Result<Article>> {
         this.loadingService.show('article-detail', 'Loading article...');
 
-        return this.articleApi.getArticle(id).pipe(
+        return this.http.get<ArticleDto>(`${environment.apiUrl}/v1/articles/${id}`).pipe(
             map(dto => {
                 const article = this.mapDtoToArticle(dto);
                 this.currentArticleSubject.next(article);
@@ -98,7 +98,7 @@ export class NewsService {
      * Like an article
      */
     likeArticle(id: string): Observable<Result<any>> {
-        return this.articleApi.likeArticle(id).pipe(
+        return this.http.post<any>(`${environment.apiUrl}/v1/articles/${id}/like`, {}).pipe(
             tap(() => {
                 // Update article in the list
                 const articles = this.articlesSubject.value.map(article =>
@@ -153,7 +153,7 @@ export class NewsService {
             content
         };
 
-        return this.articleApi.addComment(request).pipe(
+        return this.http.post<NewsCommentDto>(`${environment.apiUrl}/v1/articles/${id}/comments`, request).pipe(
             map(dto => {
                 // Update article comment count in the list
                 const articles = this.articlesSubject.value.map(article =>
@@ -184,14 +184,15 @@ export class NewsService {
      * Get featured articles
      */
     getFeaturedArticles(): Observable<Result<Article[]>> {
-        return this.articleApi.getArticles({
+        const params = {
             pageNumber: 1,
             pageSize: 5,
             status: ArticleStatus.Featured
-        }).pipe(
-            map(result => ({
+        };
+        return this.http.get<any>(`${environment.apiUrl}/v1/articles`, { params }).pipe(
+            map((result: any) => ({
                 succeeded: true,
-                data: result.items.map(dto => this.mapDtoToArticle(dto)),
+                data: result.items.map((dto: ArticleDto) => this.mapDtoToArticle(dto)),
                 errors: []
             } as Result<Article[]>)),
             catchError(error => {
@@ -205,12 +206,13 @@ export class NewsService {
      * Get articles by category
      */
     getArticlesByCategory(category: string, pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<Article>> {
-        return this.articleApi.getArticles({
+        const params = {
             pageNumber,
             pageSize,
             category: parseInt(category)
-        }).pipe(
-            map(result => this.mapToLegacyPaginatedFormat(result)),
+        };
+        return this.http.get<any>(`${environment.apiUrl}/v1/articles`, { params }).pipe(
+            map((result: any) => this.mapToLegacyPaginatedFormat(result)),
             catchError(error => {
                 this.toastService.error('Failed to load articles', error.message);
                 return throwError(() => error);
@@ -288,7 +290,7 @@ export class NewsService {
      * Share an article
      */
     shareArticle(id: string): Observable<void> {
-        return this.articleApi.shareArticle(id).pipe(
+        return this.http.post<void>(`${environment.apiUrl}/v1/articles/${id}/share`, {}).pipe(
             tap(() => {
                 // Update article share count in the list
                 const articles = this.articlesSubject.value.map(article =>

@@ -27,8 +27,7 @@ import { GuidesRoutingModule } from './guides-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    GuidesListComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -48,6 +47,9 @@ import { GuidesRoutingModule } from './guides-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    GuidesListComponent,
     
     // Routing
     GuidesRoutingModule

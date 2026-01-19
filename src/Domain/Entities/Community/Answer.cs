@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 using Domain.Entities.Identity;
 
 namespace Domain.Entities.Community
@@ -26,8 +26,6 @@ namespace Domain.Entities.Community
         public virtual ApplicationUser User { get; set; } = null!;
         public virtual Answer? ParentAnswer { get; set; }
         public virtual ICollection<Answer> ChildAnswers { get; set; } = new List<Answer>();
-        public virtual ICollection<AnswerVote> Votes { get; set; } = new List<AnswerVote>();
-        public virtual ICollection<AnswerComment> Comments { get; set; } = new List<AnswerComment>();
-        public virtual ICollection<AnswerHistory> VersionHistory { get; set; } = new List<AnswerHistory>();
+
     }
 }

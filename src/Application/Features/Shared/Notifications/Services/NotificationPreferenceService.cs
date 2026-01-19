@@ -28,7 +28,7 @@ namespace Application.Features.Shared.Notifications.Services
                 return Enumerable.Empty<NotificationPreference>();
             }
 
-            var allPreferences = await _preferenceRepository.ListAllAsync(cancellationToken);
+            var allPreferences = await _preferenceRepository.GetAllAsync(cancellationToken);
             return allPreferences.Where(p => p.UserId == userGuid && !p.IsDeleted).ToList();
         }
 
@@ -44,7 +44,7 @@ namespace Application.Features.Shared.Notifications.Services
                 return null;
             }
 
-            var allPreferences = await _preferenceRepository.ListAllAsync(cancellationToken);
+            var allPreferences = await _preferenceRepository.GetAllAsync(cancellationToken);
             return allPreferences.FirstOrDefault(p => 
                 p.UserId == userGuid && 
                 p.NotificationType == notificationType && 
@@ -145,7 +145,7 @@ namespace Application.Features.Shared.Notifications.Services
             }
 
             // Check if token already exists
-            var allTokens = await _deviceTokenRepository.ListAllAsync(cancellationToken);
+            var allTokens = await _deviceTokenRepository.GetAllAsync(cancellationToken);
             var existing = allTokens.FirstOrDefault(t => t.Token == deviceToken && !t.IsDeleted);
 
             if (existing != null)
@@ -180,7 +180,7 @@ namespace Application.Features.Shared.Notifications.Services
 
         public async Task UnregisterDeviceTokenAsync(string deviceToken, CancellationToken cancellationToken = default)
         {
-            var allTokens = await _deviceTokenRepository.ListAllAsync(cancellationToken);
+            var allTokens = await _deviceTokenRepository.GetAllAsync(cancellationToken);
             var token = allTokens.FirstOrDefault(t => t.Token == deviceToken && !t.IsDeleted);
 
             if (token != null)
@@ -197,7 +197,7 @@ namespace Application.Features.Shared.Notifications.Services
                 return Enumerable.Empty<string>();
             }
 
-            var allTokens = await _deviceTokenRepository.ListAllAsync(cancellationToken);
+            var allTokens = await _deviceTokenRepository.GetAllAsync(cancellationToken);
             return allTokens
                 .Where(t => t.UserId == userGuid && t.IsActive && !t.IsDeleted)
                 .Select(t => t.Token)

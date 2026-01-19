@@ -1,7 +1,7 @@
 using Application.Common.Behaviors;
 using Application.Features.Media.Shared.Interfaces;
 using Application.Features.Media.Shared.Services;
-using Application.Features.Community.QA.Services;
+// using Application.Features.Community.QA.Services; // QA services are registered in Infrastructure layer
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;

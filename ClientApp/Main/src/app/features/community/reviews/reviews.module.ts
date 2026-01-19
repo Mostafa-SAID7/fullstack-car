@@ -26,8 +26,7 @@ import { ReviewsRoutingModule } from './reviews-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    ReviewListComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -46,6 +45,9 @@ import { ReviewsRoutingModule } from './reviews-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    ReviewListComponent,
     
     // Routing
     ReviewsRoutingModule

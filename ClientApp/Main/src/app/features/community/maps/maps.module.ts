@@ -26,11 +26,7 @@ import { MapsRoutingModule } from './maps-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    MapsExplorerComponent,
-    
-    // Components
-    LocationCardComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -49,6 +45,10 @@ import { MapsRoutingModule } from './maps-routing.module';
     
     // Shared
     SharedModule,
+    
+    // Standalone components
+    MapsExplorerComponent,
+    LocationCardComponent,
     
     // Routing
     MapsRoutingModule

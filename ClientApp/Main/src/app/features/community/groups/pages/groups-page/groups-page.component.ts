@@ -1,16 +1,38 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { GroupService } from '../../../../../core/services/group.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { Group, GroupSearchFilters } from '../../../../../core/models/group.model';
 import { CreateGroupModalComponent } from '../../components/create-group-modal/create-group-modal.component';
+import { GroupCardComponent } from '../../components/group-card/group-card.component';
 
 @Component({
   selector: 'app-groups-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatTabsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    GroupCardComponent
+  ],
   templateUrl: './groups-page.component.html',
   styleUrls: ['./groups-page.component.scss']
 })
@@ -44,7 +66,7 @@ export class GroupsPageComponent implements OnInit {
   readonly selectedTab = this._selectedTab.asReadonly();
 
   // Computed values
-  readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
+  readonly isAuthenticated = computed(() => this.authService.isAuthenticated);
   readonly userGroups = computed(() => this.groupService.userGroups());
   readonly joinedGroups = computed(() => this.groupService.joinedGroups());
   readonly managedGroups = computed(() => this.groupService.managedGroups());

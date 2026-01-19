@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 
 namespace Domain.ValueObjects.Community
 {

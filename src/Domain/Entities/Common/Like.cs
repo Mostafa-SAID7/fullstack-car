@@ -9,7 +9,7 @@ namespace Domain.Entities.Common
         public Guid UserId { get; set; }
         
         // Generic Content Reference
-        public ContentType ContentType { get; set; }
+        public Domain.Enums.Common.ContentType ContentType { get; set; }
         public Guid ContentId { get; set; }
 
         // Navigation Properties

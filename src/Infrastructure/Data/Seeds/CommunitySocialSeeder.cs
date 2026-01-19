@@ -55,7 +55,7 @@ namespace Infrastructure.Data.Seeds
                     Type = ((int)groupData.Type).ToString(),
                     Privacy = ((int)GroupPrivacy.Public).ToString(),
                     OwnerId = owner.Id,
-                    MembersCount = Random.Shared.Next(15, 250),
+                    MemberCount = Random.Shared.Next(15, 250),
                     PostsCount = 0,
                     CreatedAt = DateTime.UtcNow.AddDays(-Random.Shared.Next(1, 120)),
                     CreatedBy = owner.Id.ToString()

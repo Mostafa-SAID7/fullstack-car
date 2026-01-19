@@ -1,6 +1,7 @@
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Interfaces;
 using Domain.Events.Community;
+using Domain.Events.Community.QA;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

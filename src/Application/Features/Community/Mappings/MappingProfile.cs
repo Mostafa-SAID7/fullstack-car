@@ -27,8 +27,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UserName, opt => opt.Ignore())
             .ForMember(dest => dest.UserReputation, opt => opt.Ignore())
             .ForMember(dest => dest.UserVote, opt => opt.Ignore())
-            .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(src => src.UpdatedAt.HasValue))
-            .ForMember(dest => dest.VersionHistory, opt => opt.Ignore());
+            .ForMember(dest => dest.IsEdited, opt => opt.MapFrom(src => src.UpdatedAt.HasValue));
 
         // Reputation mappings
         CreateMap<UserReputation, UserReputationDto>()
@@ -39,10 +38,10 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Rank, opt => opt.Ignore());
 
         // Category mappings
-        CreateMap<QuestionCategory, CategoryDto>();
+        CreateMap<Domain.Entities.Common.Category, CategoryDto>();
 
         // Tag mappings
-        CreateMap<Tag, TagDto>()
+        CreateMap<Domain.Entities.Common.Tag, TagDto>()
             .ForMember(dest => dest.Category, opt => opt.Ignore());
 
         // Expert mappings

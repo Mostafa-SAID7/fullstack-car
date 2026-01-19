@@ -22,10 +22,12 @@ import { PostListComponent } from './pages/post-list/post-list.component';
 // Services
 import { PostService } from './services/post.service';
 
+// Routing
+import { PostsRoutingModule } from './posts-routing.module';
+
 @NgModule({
   declarations: [
-    // Pages
-    PostListComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -46,6 +48,9 @@ import { PostService } from './services/post.service';
     // Shared
     SharedModule,
     
+    // Standalone components
+    PostListComponent,
+    
     // Routing
     PostsRoutingModule
   ],
@@ -57,6 +62,3 @@ import { PostService } from './services/post.service';
   ]
 })
 export class PostsModule { }
-
-// Import routing module
-import { PostsRoutingModule } from './posts-routing.module';

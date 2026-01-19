@@ -38,7 +38,7 @@ namespace Application.Features.Shared.Chat.Commands
             if (!request.Request.IsGroup && request.Request.ParticipantIds.Count == 1)
             {
                 var otherUserId = request.Request.ParticipantIds[0];
-                var existing = (await _conversationRepository.ListAllAsync(cancellationToken))
+                var existing = (await _conversationRepository.GetAllAsync(cancellationToken))
                     .FirstOrDefault(c => !c.IsGroup &&
                                         c.Members.Any(m => m.UserId == request.UserId) &&
                                         c.Members.Any(m => m.UserId == otherUserId));

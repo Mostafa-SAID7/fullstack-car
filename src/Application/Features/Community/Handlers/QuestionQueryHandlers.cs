@@ -12,17 +12,17 @@ namespace Application.Features.Community.Handlers;
 public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, Result<QuestionDetailDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
-    private readonly IQASearchService _searchService;
+    // private readonly IQAService _qaService;
+    // private readonly IQASearchService _searchService;
 
     public GetQuestionDetailHandler(
-        IApplicationDbContext context,
-        IQAService qaService,
-        IQASearchService searchService)
+        IApplicationDbContext context)
+        // IQAService qaService,
+        // IQASearchService searchService)
     {
         _context = context;
-        _qaService = qaService;
-        _searchService = searchService;
+        // _qaService = qaService;
+        // _searchService = searchService;
     }
 
     public async Task<Result<QuestionDetailDto>> Handle(GetQuestionDetailQuery request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
         }
 
         // Update view count
-        await _qaService.UpdateQuestionViewCountAsync(question.Id);
+        // await _qaService.UpdateQuestionViewCountAsync(question.Id);
 
         // Get user reputation
         var userReputation = await _context.UserReputations
@@ -90,9 +90,10 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
             .ToListAsync(cancellationToken);
 
         // Get similar questions using the search service
-        var similarQuestionsResult = await _searchService.FindSimilarQuestionsAsync(
-            question.Title, question.Content, question.Id, 3, 0.7, cancellationToken);
-        var similarQuestions = similarQuestionsResult.IsSuccess ? similarQuestionsResult.Data : new List<QuestionSimilarityDto>();
+        // var similarQuestionsResult = await _searchService.FindSimilarQuestionsAsync(
+        //     question.Title, question.Content, question.Id, 3, 0.7, cancellationToken);
+        // var similarQuestions = similarQuestionsResult.IsSuccess ? similarQuestionsResult.Data : new List<QuestionSimilarityDto>();
+        var similarQuestions = new List<QuestionSimilarityDto>();
 
         var questionDetailDto = new QuestionDetailDto
         {
@@ -127,11 +128,11 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
 
 public class SearchQuestionsHandler : IRequestHandler<SearchQuestionsQuery, Result<PaginatedList<QuestionListDto>>>
 {
-    private readonly IQASearchService _searchService;
+    // private readonly IQASearchService _searchService;
 
-    public SearchQuestionsHandler(IQASearchService searchService)
+    public SearchQuestionsHandler() // IQASearchService searchService)
     {
-        _searchService = searchService;
+        // _searchService = searchService;
     }
 
     public async Task<Result<PaginatedList<QuestionListDto>>> Handle(SearchQuestionsQuery request, CancellationToken cancellationToken)
@@ -142,6 +143,7 @@ public class SearchQuestionsHandler : IRequestHandler<SearchQuestionsQuery, Resu
             : null;
 
         // Use the unified search service
+        /*
         var result = await _searchService.SearchQuestionsAsync(
             request.SearchTerm,
             request.Category,
@@ -159,20 +161,22 @@ public class SearchQuestionsHandler : IRequestHandler<SearchQuestionsQuery, Resu
             cancellationToken);
 
         return result;
+        */
+        return Result<PaginatedList<QuestionListDto>>.Failure("Search service not implemented");
     }
 }
 
 public class GetSimilarQuestionsHandler : IRequestHandler<GetSimilarQuestionsQuery, Result<List<QuestionSimilarityDto>>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQASearchService _searchService;
+    // private readonly IQASearchService _searchService;
 
     public GetSimilarQuestionsHandler(
-        IApplicationDbContext context,
-        IQASearchService searchService)
+        IApplicationDbContext context)
+        // IQASearchService searchService)
     {
         _context = context;
-        _searchService = searchService;
+        // _searchService = searchService;
     }
 
     public async Task<Result<List<QuestionSimilarityDto>>> Handle(GetSimilarQuestionsQuery request, CancellationToken cancellationToken)
@@ -201,10 +205,9 @@ public class GetSimilarQuestionsHandler : IRequestHandler<GetSimilarQuestionsQue
         }
 
         // Use the unified search service
-        var result = await _searchService.FindSimilarQuestionsAsync(
-            title, content, request.QuestionId, request.MaxResults, request.MinSimilarityScore, cancellationToken);
-
-        return result;
+        // var result = await _searchService.FindSimilarQuestionsAsync(
+        //    title, content, request.QuestionId, request.MaxResults, request.MinSimilarityScore, cancellationToken);
+        return Result<List<QuestionSimilarityDto>>.Failure("Search service not implemented");
     }
 }
 

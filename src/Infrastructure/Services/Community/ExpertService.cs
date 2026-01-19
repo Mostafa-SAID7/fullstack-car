@@ -16,7 +16,7 @@ public class ExpertService : IExpertService
     private readonly IRepository<UserReputation> _reputationRepository;
     private readonly IRepository<Answer> _answerRepository;
     private readonly IRepository<Question> _questionRepository;
-    private readonly IRepository<QuestionCategory> _categoryRepository;
+    private readonly IRepository<Domain.Entities.Common.Category> _categoryRepository;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly IExpertIdentificationService _expertIdentificationService;
     private readonly Application.Features.Community.Services.IReputationService _reputationService;
@@ -28,7 +28,7 @@ public class ExpertService : IExpertService
         IRepository<UserReputation> reputationRepository,
         IRepository<Answer> answerRepository,
         IRepository<Question> questionRepository,
-        IRepository<QuestionCategory> categoryRepository,
+        IRepository<Domain.Entities.Common.Category> categoryRepository,
         IRepository<ApplicationUser> userRepository,
         IExpertIdentificationService expertIdentificationService,
         Application.Features.Community.Services.IReputationService reputationService,

@@ -14,20 +14,20 @@ namespace Application.Features.Community.Handlers;
 public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Result<QuestionDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
+    // private readonly IQAService _qaService;
     private readonly IContentQualityService _contentQualityService;
     private readonly IReputationService _reputationService;
     private readonly IDuplicatePreventionService _duplicatePreventionService;
 
     public CreateQuestionHandler(
         IApplicationDbContext context,
-        IQAService qaService,
+        // IQAService qaService, // TODO: Implement IQAService when QA module is ready
         IContentQualityService contentQualityService,
         IReputationService reputationService,
         IDuplicatePreventionService duplicatePreventionService)
     {
         _context = context;
-        _qaService = qaService;
+        // _qaService = qaService;
         _contentQualityService = contentQualityService;
         _reputationService = reputationService;
         _duplicatePreventionService = duplicatePreventionService;
@@ -238,18 +238,18 @@ public class GetQuestionsHandler : IRequestHandler<GetQuestionsQuery, Result<Pag
 public class UpdateQuestionHandler : IRequestHandler<UpdateQuestionCommand, Result<QuestionDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IQAService _qaService;
+    // private readonly IQAService _qaService; // TODO: Implement IQAService when QA module is ready
     private readonly IContentQualityService _contentQualityService;
     private readonly IDuplicatePreventionService _duplicatePreventionService;
 
     public UpdateQuestionHandler(
         IApplicationDbContext context,
-        IQAService qaService,
+        // IQAService qaService, // TODO: Implement IQAService when QA module is ready
         IContentQualityService contentQualityService,
         IDuplicatePreventionService duplicatePreventionService)
     {
         _context = context;
-        _qaService = qaService;
+        // _qaService = qaService;
         _contentQualityService = contentQualityService;
         _duplicatePreventionService = duplicatePreventionService;
     }

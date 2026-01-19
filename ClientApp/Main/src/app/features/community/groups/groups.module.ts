@@ -30,31 +30,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 // Shared modules
 import { SharedModule } from '../../../shared/shared.module';
 
-// Components
+// Components (only import existing ones)
 import { GroupsPageComponent } from './pages/groups-page/groups-page.component';
-import { GroupDetailPageComponent } from './pages/group-detail-page/group-detail-page.component';
 import { GroupCreatePageComponent } from './pages/group-create-page/group-create-page.component';
-import { GroupEditPageComponent } from './pages/group-edit-page/group-edit-page.component';
-import { GroupMembersPageComponent } from './pages/group-members-page/group-members-page.component';
-import { GroupEventsPageComponent } from './pages/group-events-page/group-events-page.component';
-import { GroupDiscussionsPageComponent } from './pages/group-discussions-page/group-discussions-page.component';
-
 import { GroupCardComponent } from './components/group-card/group-card.component';
-import { GroupListComponent } from './components/group-list/group-list.component';
 import { CreateGroupModalComponent } from './components/create-group-modal/create-group-modal.component';
-import { GroupHeaderComponent } from './components/group-header/group-header.component';
-import { GroupSidebarComponent } from './components/group-sidebar/group-sidebar.component';
-import { GroupPostsComponent } from './components/group-posts/group-posts.component';
-import { GroupMembersComponent } from './components/group-members/group-members.component';
-import { GroupEventsComponent } from './components/group-events/group-events.component';
-import { GroupDiscussionsComponent } from './components/group-discussions/group-discussions.component';
-import { GroupSettingsComponent } from './components/group-settings/group-settings.component';
-import { GroupInvitationComponent } from './components/group-invitation/group-invitation.component';
-import { GroupRolesComponent } from './components/group-roles/group-roles.component';
-import { GroupSearchComponent } from './components/group-search/group-search.component';
-import { GroupStatsComponent } from './components/group-stats/group-stats.component';
-import { GroupJoinRequestsComponent } from './components/group-join-requests/group-join-requests.component';
-import { GroupReportsComponent } from './components/group-reports/group-reports.component';
 
 // Services
 import { GroupService } from '../../../core/services/group.service';
@@ -64,32 +44,7 @@ import { GroupsRoutingModule } from './groups-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    GroupsPageComponent,
-    GroupDetailPageComponent,
-    GroupCreatePageComponent,
-    GroupEditPageComponent,
-    GroupMembersPageComponent,
-    GroupEventsPageComponent,
-    GroupDiscussionsPageComponent,
-    
-    // Components
-    GroupCardComponent,
-    GroupListComponent,
-    CreateGroupModalComponent,
-    GroupHeaderComponent,
-    GroupSidebarComponent,
-    GroupPostsComponent,
-    GroupMembersComponent,
-    GroupEventsComponent,
-    GroupDiscussionsComponent,
-    GroupSettingsComponent,
-    GroupInvitationComponent,
-    GroupRolesComponent,
-    GroupSearchComponent,
-    GroupStatsComponent,
-    GroupJoinRequestsComponent,
-    GroupReportsComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -124,6 +79,12 @@ import { GroupsRoutingModule } from './groups-routing.module';
     // Shared
     SharedModule,
     
+    // Standalone components
+    GroupsPageComponent,
+    GroupCreatePageComponent,
+    GroupCardComponent,
+    CreateGroupModalComponent,
+    
     // Routing
     GroupsRoutingModule
   ],
@@ -132,8 +93,7 @@ import { GroupsRoutingModule } from './groups-routing.module';
   ],
   exports: [
     GroupCardComponent,
-    GroupListComponent,
-    GroupSearchComponent
+    CreateGroupModalComponent
   ]
 })
 export class GroupsModule { }

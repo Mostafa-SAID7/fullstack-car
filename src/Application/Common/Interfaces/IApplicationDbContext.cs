@@ -4,7 +4,7 @@ using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
 using Domain.Entities.Community.Social;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Domain.Entities.Marketplace;
 using Domain.Entities.Marketplace.Services;
 using Domain.Entities.Marketplace.Providers;
@@ -23,7 +23,7 @@ using Domain.Entities.Marketplace.Products;
 using Domain.Entities.Marketplace.Customers;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Common.Interfaces.Data
+namespace Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
@@ -37,14 +37,14 @@ namespace Application.Common.Interfaces.Data
         // Community Tables
         DbSet<Post> Posts { get; }
         DbSet<View> Views { get; }
-        DbSet<Comment> Comments { get; }
+        DbSet<Domain.Entities.Common.Comment> Comments { get; }
         DbSet<Like> Likes { get; }
         DbSet<Reaction> Reactions { get; }
         DbSet<Bookmark> Bookmarks { get; }
         DbSet<Feedback> Feedbacks { get; }
         DbSet<Rating> Ratings { get; }
         DbSet<Image> Images { get; }
-        DbSet<File> Files { get; }
+        DbSet<Domain.Entities.Common.File> Files { get; }
         DbSet<Group> Groups { get; }
         DbSet<GroupMember> GroupMembers { get; }
         DbSet<PostLike> PostLikes { get; }
@@ -57,15 +57,14 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Community.Guides.GuideStep> GuideSteps { get; }
 
         // Community QA Tables
-        DbSet<Question> Questions { get; }
-        DbSet<Answer> Answers { get; }
-        DbSet<AnswerHistory> AnswerHistories { get; }
-        DbSet<QuestionCategory> QuestionCategories { get; }
-        DbSet<QuestionTag> QuestionTags { get; }
-        DbSet<Vote> Votes { get; }
+        DbSet<Domain.Entities.Community.Question> Questions { get; }
+        DbSet<Domain.Entities.Community.Answer> Answers { get; }
+        DbSet<Domain.Entities.Common.ContentHistory> ContentHistories { get; }
+        DbSet<Domain.Entities.Community.QuestionTag> QuestionTags { get; }
+        DbSet<Domain.Entities.Common.Vote> Votes { get; }
         DbSet<UserReputation> UserReputations { get; }
-        DbSet<CommunityUserActivity> CommunityUserActivities { get; }
-        DbSet<Expert> Experts { get; }
+        DbSet<Domain.Entities.Common.UserActivity> CommunityUserActivities { get; }
+        DbSet<Domain.Entities.Community.Expert> Experts { get; }
         DbSet<Category> Categories { get; }
         DbSet<Tag> Tags { get; }
         DbSet<Analytics> Analytics { get; }

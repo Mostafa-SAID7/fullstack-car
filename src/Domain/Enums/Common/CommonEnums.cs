@@ -3,6 +3,8 @@ namespace Domain.Enums.Common
     public enum ContentType
     {
         None = 0,
+        
+        // Community Content
         Post = 1,
         Question = 2,
         Answer = 3,
@@ -11,16 +13,22 @@ namespace Domain.Enums.Common
         Guide = 6,
         Event = 7,
         Group = 8,
+        Page = 18,
+        
+        // Marketplace
         Product = 9,
         Service = 10,
-        Location = 11,
+        
+        // Media
         Video = 12,
         Podcast = 13,
+        
+        // Others
+        Location = 11,
         User = 14,
         Review = 15,
         Badge = 16,
-        CheckIn = 17,
-        Page = 18
+        CheckIn = 17
     }
 
     public enum VoteType

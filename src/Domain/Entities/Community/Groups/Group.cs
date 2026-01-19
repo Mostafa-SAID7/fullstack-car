@@ -17,9 +17,7 @@ namespace Domain.Entities.Community.Groups
         public bool IsActive { get; set; } = true;
         public bool IsFeatured { get; set; } = false;
         public int MemberCount { get; set; } = 0;
-        public int MembersCount { get; set; } = 0; // Alias for compatibility
         public int PostCount { get; set; } = 0;
-        public int PostsCount { get; set; } = 0; // Alias for compatibility
         public int EventCount { get; set; } = 0;
         public DateTime? LastActivity { get; set; }
 

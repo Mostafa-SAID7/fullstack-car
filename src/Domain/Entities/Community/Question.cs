@@ -1,7 +1,8 @@
 using Domain.Base;
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 using Domain.Entities.Identity;
 using Domain.Entities.Community.Groups;
+using Domain.Entities.Common;
 
 namespace Domain.Entities.Community
 {
@@ -29,12 +30,9 @@ namespace Domain.Entities.Community
         // Navigation Properties
         public virtual ApplicationUser User { get; set; } = null!;
         public virtual Group? Group { get; set; }
-        public virtual QuestionCategory? Category { get; set; }
+        public virtual Category? Category { get; set; }
         public virtual Answer? AcceptedAnswer { get; set; }
         public virtual ICollection<Answer> Answers { get; set; } = new List<Answer>();
-        public virtual ICollection<QuestionVote> Votes { get; set; } = new List<QuestionVote>();
-        public virtual ICollection<QuestionView> Views { get; set; } = new List<QuestionView>();
-        public virtual ICollection<QuestionBookmark> Bookmarks { get; set; } = new List<QuestionBookmark>();
         public virtual ICollection<QuestionTag> QuestionTags { get; set; } = new List<QuestionTag>();
     }
 }

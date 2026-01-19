@@ -11,7 +11,7 @@ namespace Domain.Entities.Common
         public string? UserAgent { get; set; }
         
         // Generic Content Reference
-        public ContentType ContentType { get; set; }
+        public Domain.Enums.Common.ContentType ContentType { get; set; }
         public Guid ContentId { get; set; }
         
         // Foreign Keys

@@ -30,7 +30,7 @@ namespace Application.Features.Shared.Chat.Commands
 
         public async Task<Result<bool>> Handle(MarkConversationAsReadCommand request, CancellationToken cancellationToken)
         {
-            var member = (await _memberRepository.ListAllAsync(cancellationToken))
+            var member = (await _memberRepository.GetAllAsync(cancellationToken))
                 .FirstOrDefault(m => m.ConversationId == request.ConversationId && m.UserId == request.UserId);
 
             if (member == null)
