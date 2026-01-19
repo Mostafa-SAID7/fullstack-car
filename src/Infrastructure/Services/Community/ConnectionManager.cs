@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 /// <summary>
 /// Unified connection management service for QA SignalR Hub

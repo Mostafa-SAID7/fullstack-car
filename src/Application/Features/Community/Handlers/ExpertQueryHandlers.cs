@@ -1,10 +1,10 @@
 using Application.Common.Patterns;
-using Application.Features.Community.QA.Queries;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Queries;
+using Application.Features.Community.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 /// <summary>
 /// Handler for getting experts by category

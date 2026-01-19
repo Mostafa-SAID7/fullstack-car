@@ -1,6 +1,6 @@
 using Application.Common.DTOs;
 
-namespace Application.Features.Community.QA.DTOs;
+namespace Application.Features.Community.DTOs;
 
 public class NotifyExpertsRequest
 {

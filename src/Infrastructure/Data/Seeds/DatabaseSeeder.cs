@@ -189,12 +189,11 @@ namespace Infrastructure.Data.Seeds
             
             // Now we can safely remove answers and questions
             _context.Answers.RemoveRange(_context.Answers);
-            _context.QuestionVotes.RemoveRange(_context.QuestionVotes);
             _context.Questions.RemoveRange(_context.Questions);
             _context.QuestionCategories.RemoveRange(_context.QuestionCategories);
 
             // Clear comprehensive QA system data
-            _context.UserActivities.RemoveRange(_context.UserActivities);
+            _context.CommunityUserActivities.RemoveRange(_context.CommunityUserActivities);
             _context.Analytics.RemoveRange(_context.Analytics);
             _context.Experts.RemoveRange(_context.Experts);
             _context.UserReputations.RemoveRange(_context.UserReputations);
@@ -271,6 +270,7 @@ namespace Infrastructure.Data.Seeds
             var categoryCount = await _context.Categories.CountAsync();
             var tagCount = await _context.Tags.CountAsync();
             var analyticsCount = await _context.Analytics.CountAsync();
+            var communityUserActivityCount = await _context.CommunityUserActivities.CountAsync();
             var userActivityCount = await _context.UserActivities.CountAsync();
             var locationCount = await _context.Locations.CountAsync();
             var articleCount = await _context.Articles.CountAsync();
@@ -304,7 +304,8 @@ namespace Infrastructure.Data.Seeds
             _logger.LogInformation("  Categories: {CategoryCount:N0}", categoryCount);
             _logger.LogInformation("  Tags: {TagCount:N0}", tagCount);
             _logger.LogInformation("  Analytics: {AnalyticsCount:N0}", analyticsCount);
-            _logger.LogInformation("  User Activities: {UserActivityCount:N0}", userActivityCount);
+            _logger.LogInformation("  Community User Activities: {CommunityUserActivityCount:N0}", communityUserActivityCount);
+            _logger.LogInformation("  Admin User Activities: {UserActivityCount:N0}", userActivityCount);
             _logger.LogInformation("  Locations: {LocationCount:N0}", locationCount);
             _logger.LogInformation("  News Articles: {ArticleCount:N0}", articleCount);
             _logger.LogInformation("  Guides: {GuideCount:N0}", guideCount);

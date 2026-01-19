@@ -4,7 +4,7 @@ using Infrastructure.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public class HubService : IHubService
 {
     private readonly IHubContext<CommunityHub, ICommunityHub> _hubContext;

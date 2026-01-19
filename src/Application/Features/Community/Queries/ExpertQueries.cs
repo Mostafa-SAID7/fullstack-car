@@ -1,8 +1,8 @@
 using Application.Common.Patterns;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 using MediatR;
 
-namespace Application.Features.Community.QA.Queries;
+namespace Application.Features.Community.Queries;
 
 /// <summary>
 /// Query to get experts by category

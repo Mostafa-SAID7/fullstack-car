@@ -1,8 +1,8 @@
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Community.DTOs.Responses;
 using MediatR;
 
-namespace Application.Features.Community.QA.Commands;
+namespace Application.Features.Community.Commands;
 
 public class UpdateExpertiseAreasCommand : IRequest<Result<UserReputationDto>>
 {

@@ -1,6 +1,6 @@
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 
-namespace Application.Features.Community.QA.Services;
+namespace Application.Features.Community.Services;
 public interface IExpertService
 {
     #region Expert Detection and Ranking

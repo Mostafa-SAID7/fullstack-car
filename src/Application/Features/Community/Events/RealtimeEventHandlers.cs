@@ -1,10 +1,10 @@
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Interfaces;
-using Domain.Events.Community.QA;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Interfaces;
+using Domain.Events.Community;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Events;
+namespace Application.Features.Community.Events;
 
 /// <summary>
 /// Event handlers for real-time notifications through SignalR

@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Domain.Entities.Common;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Events;
@@ -39,44 +40,42 @@ namespace Infrastructure.Data
 
         // Community Tables
         public DbSet<Post> Posts { get; set; }
-        public DbSet<PostView> PostViews { get; set; }
+        public DbSet<View> Views { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
+        public DbSet<Bookmark> Bookmarks { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<File> Files { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
         public DbSet<UserConnection> UserConnections { get; set; }
-        public DbSet<PostLike> PostLikes { get; set; }
-        public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
 
         // Community Events Tables
         public DbSet<Event> Events { get; set; }
         public DbSet<EventAttendance> EventAttendances { get; set; }
-        public DbSet<EventComment> EventComments { get; set; }
-        public DbSet<EventCommentLike> EventCommentLikes { get; set; }
         public DbSet<EventInvitation> EventInvitations { get; set; }
         public DbSet<EventUpdate> EventUpdates { get; set; }
 
         // Community Q&A Tables
-        public DbSet<Domain.Entities.Community.QA.Question> Questions { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Answer> Answers { get; set; }
-        public DbSet<Domain.Entities.Community.QA.AnswerHistory> AnswerHistories { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QuestionVote> QuestionVotes { get; set; }
-        public DbSet<Domain.Entities.Community.QA.AnswerVote> AnswerVotes { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Vote> Votes { get; set; }
-        public DbSet<Domain.Entities.Community.QA.UserReputation> UserReputations { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Expert> Experts { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Analytics> Analytics { get; set; }
-        public DbSet<Domain.Entities.Community.QA.UserActivity> UserActivities { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Category> Categories { get; set; }
-        public DbSet<Domain.Entities.Community.QA.Tag> Tags { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QuestionCategory> QuestionCategories { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QuestionTag> QuestionTags { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QuestionView> QuestionViews { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QuestionBookmark> QuestionBookmarks { get; set; }
-        public DbSet<Domain.Entities.Community.QA.AnswerComment> AnswerComments { get; set; }
-        public DbSet<Domain.Entities.Community.QA.UserFeedback> UserFeedback { get; set; }
+        public DbSet<Domain.Entities.Community.Question> Questions { get; set; }
+        public DbSet<Domain.Entities.Community.Answer> Answers { get; set; }
+        public DbSet<Domain.Entities.Community.AnswerHistory> AnswerHistories { get; set; }
+        public DbSet<Vote> Votes { get; set; }
+        public DbSet<Domain.Entities.Community.UserReputation> UserReputations { get; set; }
+        public DbSet<Domain.Entities.Community.Expert> Experts { get; set; }
+        public DbSet<Domain.Entities.Community.Analytics> Analytics { get; set; }
+        public DbSet<Domain.Entities.Community.CommunityUserActivity> CommunityUserActivities { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Domain.Entities.Community.QuestionCategory> QuestionCategories { get; set; }
+        public DbSet<Domain.Entities.Community.QuestionTag> QuestionTags { get; set; }
+        public DbSet<Domain.Entities.Community.AnswerComment> AnswerComments { get; set; }
 
         // Community Maps Tables
         public DbSet<Domain.Entities.Community.Maps.Location> Locations { get; set; }
@@ -93,36 +92,25 @@ namespace Infrastructure.Data
         // Community News Tables
         public DbSet<Domain.Entities.Community.News.Article> Articles { get; set; }
         public DbSet<Domain.Entities.Community.News.NewsCategory> NewsCategories { get; set; }
-        public DbSet<Domain.Entities.Community.News.NewsComment> NewsComments { get; set; }
-        public DbSet<Domain.Entities.Community.News.ArticleLike> ArticleLikes { get; set; }
-        public DbSet<Domain.Entities.Community.News.ArticleView> ArticleViews { get; set; }
+        public DbSet<Domain.Entities.Community.News.NewsCategory> NewsCategories { get; set; }
         public DbSet<Domain.Entities.Community.News.ArticleShare> ArticleShares { get; set; }
         public DbSet<Domain.Entities.Community.News.ArticleImage> ArticleImages { get; set; }
         public DbSet<Domain.Entities.Community.News.ArticleTag> ArticleTags { get; set; }
-        public DbSet<Domain.Entities.Community.News.CommentLike> NewsCommentLikes { get; set; }
 
         // Community Pages Tables
         public DbSet<Domain.Entities.Community.Pages.Page> Pages { get; set; }
         public DbSet<Domain.Entities.Community.Pages.PageContent> PageContents { get; set; }
         public DbSet<Domain.Entities.Community.Pages.PageRevision> PageRevisions { get; set; }
-        public DbSet<Domain.Entities.Community.Pages.PageView> PageViews { get; set; }
-        public DbSet<Domain.Entities.Community.Pages.PageComment> PageComments { get; set; }
-        public DbSet<Domain.Entities.Community.Pages.PageCommentLike> PageCommentLikes { get; set; }
 
         // Community Reviews Tables (Enhanced)
         public DbSet<Domain.Entities.Community.Reviews.CommunityReview> CommunityReviews { get; set; }
         public DbSet<Domain.Entities.Community.Reviews.ReviewCategory> ReviewCategories { get; set; }
         public DbSet<Domain.Entities.Community.Reviews.ReviewHelpfulness> ReviewHelpfulness { get; set; }
-        public DbSet<Domain.Entities.Community.Reviews.ReviewComment> ReviewComments { get; set; }
         public DbSet<Domain.Entities.Community.Reviews.ReviewImage> CommunityReviewImages { get; set; }
-        public DbSet<Domain.Entities.Community.Reviews.ReviewCommentLike> ReviewCommentLikes { get; set; }
 
         // Community Guides Tables
         public DbSet<Domain.Entities.Community.Guides.Guide> Guides { get; set; }
         public DbSet<Domain.Entities.Community.Guides.GuideStep> GuideSteps { get; set; }
-        public DbSet<Domain.Entities.Community.Guides.GuideRating> GuideRatings { get; set; }
-        public DbSet<Domain.Entities.Community.Guides.GuideBookmark> GuideBookmarks { get; set; }
-        public DbSet<Domain.Entities.Community.Guides.GuideView> GuideViews { get; set; }
 
         // Shared Tables
         public DbSet<Notification> Notifications { get; set; }
@@ -176,14 +164,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Media.Podcast> Podcasts { get; set; }
         public DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; set; }
         public DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; set; }
-        public DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; set; }
-        public DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; set; }
-        public DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; set; }
-        public DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; set; }
         public DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; set; }
-        public DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; set; }
-        public DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; set; }
-        public DbSet<Domain.Entities.Media.VideoView> VideoViews { get; set; }
         public DbSet<Domain.Entities.Media.PodcastPlay> PodcastPlays { get; set; }
         public DbSet<Domain.Entities.Media.VideoPlaylist> VideoPlaylists { get; set; }
         public DbSet<Domain.Entities.Media.VideoPlaylistItem> VideoPlaylistItems { get; set; }
@@ -390,12 +371,9 @@ namespace Infrastructure.Data
             builder.Entity<RoleClaim>().ToTable("AspNetRoleClaims");
             builder.Entity<SecurityLog>().ToTable("SecurityLogs");
 
-            // Configure UserFeedback Metadata property as JSON
-            builder.Entity<Domain.Entities.Community.QA.UserFeedback>()
+            // Configure Feedback Metadata property as JSON
+            builder.Entity<Feedback>()
                 .Property(e => e.Metadata)
-                .HasConversion(
-                    v => v == null ? null : System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),
-                    v => v == null ? null : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(v, (System.Text.Json.JsonSerializerOptions?)null))
                 .HasColumnType("nvarchar(max)");
 
             // Apply all configurations first

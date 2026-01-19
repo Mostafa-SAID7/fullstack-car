@@ -1,8 +1,8 @@
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations.Community.QA
+namespace Infrastructure.Configurations.Community
 {
     public class QuestionVoteConfiguration : IEntityTypeConfiguration<QuestionVote>
     {

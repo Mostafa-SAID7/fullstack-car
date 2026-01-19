@@ -1,16 +1,16 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Extensions;
+using Application.Features.Community.Commands;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Extensions;
 using Domain.Entities.Community;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class UpdateExpertiseAreasHandler : IRequestHandler<UpdateExpertiseAreasCommand, Result<UserReputationDto>>
 {
@@ -181,7 +181,7 @@ public class AwardBadgeHandler : IRequestHandler<AwardBadgeCommand, Result<UserR
                 ReputationChange = 0,
                 CreatedAt = DateTime.UtcNow
             };
-            _context.UserActivities.Add(activity);
+            _context.CommunityUserActivities.Add(activity);
 
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -285,7 +285,7 @@ public class UpdateReputationHandler : IRequestHandler<UpdateReputationCommand, 
                 ReputationChange = request.ReputationChange,
                 CreatedAt = DateTime.UtcNow
             };
-            _context.UserActivities.Add(activity);
+            _context.CommunityUserActivities.Add(activity);
 
             // Check for new badges based on reputation milestones
             await CheckAndAwardReputationBadges(userReputation, cancellationToken);
@@ -373,7 +373,7 @@ public class UpdateReputationHandler : IRequestHandler<UpdateReputationCommand, 
                     ReputationChange = 0,
                     CreatedAt = DateTime.UtcNow
                 };
-                _context.UserActivities.Add(badgeActivity);
+                _context.CommunityUserActivities.Add(badgeActivity);
             }
         }
     }

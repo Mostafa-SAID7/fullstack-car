@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public class ContentQualityService : IContentQualityService
 {
     private readonly ILogger<ContentQualityService> _logger;

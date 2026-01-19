@@ -30,7 +30,7 @@ import { MessagingRoutingModule } from './messaging-routing.module';
 
 @NgModule({
   declarations: [
-    MessageInterfaceComponent
+    // All components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -53,6 +53,7 @@ import { MessagingRoutingModule } from './messaging-routing.module';
     
     // Standalone components
     MessagingPageComponent,
+    MessageInterfaceComponent,
     
     // Routing
     MessagingRoutingModule

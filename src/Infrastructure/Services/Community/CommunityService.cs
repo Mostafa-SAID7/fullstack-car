@@ -1,7 +1,7 @@
 using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public class CommunityService : ICommunityService
 {

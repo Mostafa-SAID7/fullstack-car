@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using Infrastructure.Hubs;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public interface IConnectionOptimizationService
 {

@@ -1,6 +1,7 @@
 using Domain.Base;
+using Domain.Enums.Common;
 
-namespace Domain.Entities.Community
+namespace Domain.Entities.Common
 {
     public class Tag : BaseAuditableEntity
     {

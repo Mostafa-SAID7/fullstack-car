@@ -1,6 +1,6 @@
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Community.DTOs.Responses;
 
-namespace Application.Features.Community.QA.Interfaces;
+namespace Application.Features.Community.Interfaces;
 
 /// <summary>
 /// SignalR hub interface for real-time QA system communication

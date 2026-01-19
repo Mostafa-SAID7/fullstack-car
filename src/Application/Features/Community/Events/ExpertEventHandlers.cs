@@ -1,9 +1,9 @@
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 using Domain.Events.Community;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Events;
+namespace Application.Features.Community.Events;
 
 /// <summary>
 /// Handler for expert promotion events

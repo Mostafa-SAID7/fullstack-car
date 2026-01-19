@@ -1,4 +1,4 @@
-namespace Application.Features.Community.QA.Services;
+namespace Application.Features.Community.Services;
 public interface IReputationService
 {
     Task<int> CalculateReputationChangeAsync(string activityType, Guid userId, Guid contentId);

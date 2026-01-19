@@ -1,6 +1,6 @@
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 
-namespace Application.Features.Community.QA.DTOs.Responses;
+namespace Application.Features.Community.DTOs.Responses;
 
 public class VoteDto
 {

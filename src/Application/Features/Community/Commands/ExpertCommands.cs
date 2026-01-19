@@ -1,8 +1,8 @@
 using Application.Common.Patterns;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 using MediatR;
 
-namespace Application.Features.Community.QA.Commands;
+namespace Application.Features.Community.Commands;
 
 /// <summary>
 /// Command to promote a user to expert status in a category

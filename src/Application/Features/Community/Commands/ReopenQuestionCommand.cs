@@ -1,7 +1,7 @@
 using Application.Common.DTOs;
 using MediatR;
 
-namespace Application.Features.Community.QA.Commands;
+namespace Application.Features.Community.Commands;
 
 public class ReopenQuestionCommand : IRequest<ApiResponseDto<object>>
 {

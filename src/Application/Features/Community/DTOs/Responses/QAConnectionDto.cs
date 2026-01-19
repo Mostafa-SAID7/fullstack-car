@@ -1,4 +1,4 @@
-namespace Application.Features.Community.QA.DTOs.Responses;
+namespace Application.Features.Community.DTOs.Responses;
 
 /// <summary>
 /// DTO for active connection information

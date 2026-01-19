@@ -1,15 +1,15 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
-using Domain.Enums.Community.QA;
+using Application.Features.Community.Commands;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
+using Domain.Enums.Community;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Result<QuestionDto>>
 {
@@ -128,7 +128,7 @@ public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Resu
             DownvotesCount = question.DownvotesCount,
             AnswerCount = question.AnswersCount,
             AcceptedAnswerId = question.AcceptedAnswerId,
-            IsClosed = question.Status != Domain.Enums.Community.QA.QuestionStatus.Open,
+            IsClosed = question.Status != Domain.Enums.Community.QuestionStatus.Open,
             ClosedReason = null, // TODO: Add closed reason mapping in later tasks
             IsScheduled = false, // TODO: Add scheduling support in later tasks
             ScheduledAt = null,

@@ -1,5 +1,5 @@
 using Domain.Base;
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 using Domain.Entities.Identity;
 
 namespace Domain.Entities.Community

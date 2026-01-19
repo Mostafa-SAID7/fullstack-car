@@ -1,12 +1,12 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
-using Domain.Enums.Community.QA;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
+using Domain.Enums.Community;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<PaginatedList<VoteDto>>>
 {
@@ -22,7 +22,7 @@ public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<Pag
         try
         {
             // Build query for user's votes
-            var query = _context.QAVotes
+            var query = _context.Votes
                 .Where(v => v.UserId == request.UserId);
 
             // Apply content type filter if specified

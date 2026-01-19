@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { ArticleApiService } from '../../../shared/services/api/article-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { environment } from '../../../../../environments/environment';
 import {
     ArticleDto,
     CreateArticleRequest,
@@ -12,10 +13,10 @@ import {
     CreateNewsCommentRequest,
     ArticleCategory,
     ArticleStatus
-} from '../../../shared/models/community/article.model';
-import { PagedResult } from '../../../shared/models/community/common.model';
-import { Article, NewsComment, ArticleStatus as LegacyArticleStatus } from '../../../core/models/news.model';
-import { Result, PaginatedResult } from '../../../core/models/result.model';
+} from '../../../../shared/models/community/article.model';
+import { PagedResult } from '../../../../shared/models/community/common.model';
+import { Article, NewsComment, ArticleStatus as LegacyArticleStatus } from '../../../../core/models/news.model';
+import { Result, PaginatedResult } from '../../../../core/models/result.model';
 
 export interface NewsFilters {
     searchTerm?: string;
@@ -44,7 +45,7 @@ export class NewsService {
     public currentArticle$ = this.currentArticleSubject.asObservable();
 
     constructor(
-        private articleApi: ArticleApiService,
+        private http: HttpClient,
         private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
@@ -55,11 +56,10 @@ export class NewsService {
     getArticles(pageNumber: number = 1, pageSize: number = 10, filters?: NewsFilters): Observable<PaginatedResult<Article>> {
         this.loadingService.show('articles-list', 'Loading articles...');
 
-        return this.articleApi.getArticles({
-            pageNumber,
-            pageSize,
-            category: filters?.category ? parseInt(filters.category) : undefined
-        }).pipe(
+        const params: any = { pageNumber, pageSize };
+        if (filters?.category) params.category = parseInt(filters.category);
+
+        return this.http.get<any>(`${environment.apiUrl}/v1/articles`, { params }).pipe(
             map(result => this.mapToLegacyPaginatedFormat(result)),
             tap(result => {
                 if (result.items) {

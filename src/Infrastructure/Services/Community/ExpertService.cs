@@ -1,6 +1,6 @@
 using Application.Common.Interfaces;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
 using Domain.Entities.Identity;
 using Domain.Events.Community;
 using Domain.Interfaces;
@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public class ExpertService : IExpertService
 {
     private readonly IRepository<Expert> _expertRepository;

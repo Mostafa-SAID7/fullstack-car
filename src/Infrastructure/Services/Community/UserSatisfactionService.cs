@@ -1,10 +1,10 @@
 using Application.Features.QA.DTOs;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public interface IUserSatisfactionService
 {
     Task<UserSatisfactionDto> GetSatisfactionMetricsAsync(DateTime? startDate = null, DateTime? endDate = null);

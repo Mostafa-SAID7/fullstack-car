@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Features.Community.QA.DTOs.Requests;
+namespace Application.Features.Community.DTOs.Requests;
 
 public class UpdateExpertiseAreasRequest
 {

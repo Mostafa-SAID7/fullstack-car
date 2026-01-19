@@ -1,12 +1,12 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, Result<List<CategoryDto>>>
 {

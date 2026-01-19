@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text.Json;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public interface ISearchOptimizationService
 {

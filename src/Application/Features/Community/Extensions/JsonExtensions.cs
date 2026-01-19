@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Application.Features.Community.QA.Extensions;
+namespace Application.Features.Community.Extensions;
 
 public static class JsonExtensions
 {

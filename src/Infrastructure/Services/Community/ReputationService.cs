@@ -1,10 +1,10 @@
 using Application.Common.Interfaces;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public class ReputationService : IReputationService
 {

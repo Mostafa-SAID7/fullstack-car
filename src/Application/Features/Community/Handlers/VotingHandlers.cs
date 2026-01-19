@@ -1,14 +1,14 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
-using Domain.Enums.Community.QA;
+using Application.Features.Community.Commands;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
+using Domain.Enums.Community;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>>
 {
@@ -82,7 +82,7 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
             }
 
             // Check if user has already voted on this content
-            var existingVote = await _context.QAVotes
+            var existingVote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId 
                     && v.ContentId == request.Request.ContentId 
                     && v.ContentType == request.Request.ContentType, cancellationToken);
@@ -93,7 +93,7 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
             }
 
             // Create new vote
-            var vote = new QAVote
+            var vote = new Vote
             {
                 Id = Guid.NewGuid(),
                 UserId = request.UserId,
@@ -104,7 +104,7 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
                 CreatedBy = request.UserId.ToString()
             };
 
-            _context.QAVotes.Add(vote);
+            _context.Votes.Add(vote);
 
             // Update vote counts on the content
             await UpdateVoteCountsAsync(request.Request.ContentId, request.Request.ContentType, voteType, true, cancellationToken);
@@ -195,7 +195,7 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
         try
         {
             // Find existing vote
-            var existingVote = await _context.QAVotes
+            var existingVote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId 
                     && v.ContentId == request.ContentId 
                     && v.ContentType == request.ContentType, cancellationToken);
@@ -242,7 +242,7 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
             }
 
             // Remove vote
-            _context.QAVotes.Remove(existingVote);
+            _context.Votes.Remove(existingVote);
 
             // Update vote counts on the content (subtract the vote)
             await UpdateVoteCountsAsync(request.ContentId, request.ContentType, existingVote.VoteType, false, cancellationToken);
@@ -340,7 +340,7 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
             }
 
             // Find existing vote
-            var existingVote = await _context.QAVotes
+            var existingVote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId 
                     && v.ContentId == request.Request.ContentId 
                     && v.ContentType == request.Request.ContentType, cancellationToken);

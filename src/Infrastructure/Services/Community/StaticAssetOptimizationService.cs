@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public interface IStaticAssetOptimizationService
 {
     Task<string> OptimizeSharedAssetAsync(string assetPath, SharedAssetType assetType, CancellationToken cancellationToken = default);

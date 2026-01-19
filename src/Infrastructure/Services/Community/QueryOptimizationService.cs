@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public interface IQueryOptimizationService
 {

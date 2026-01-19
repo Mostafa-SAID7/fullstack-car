@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { PostApiService } from '../../../shared/services/api/post-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
-import { Post, CreatePostRequest } from '../../../core/models/post.model';
-import { PostDto } from '../../../shared/models/community/post.model';
-import { Result, PaginatedResult } from '../../../core/models/result.model';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { Post, CreatePostRequest } from '../../../../core/models/post.model';
+import { PostDto } from '../../../../shared/models/community/post.model';
+import { Result, PaginatedResult } from '../../../../core/models/result.model';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +17,7 @@ export class PostService {
     public posts$ = this.postsSubject.asObservable();
 
     constructor(
-        private postApi: PostApiService,
+        private http: HttpClient,
         private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
@@ -24,7 +25,10 @@ export class PostService {
     getPosts(pageNumber: number = 1, pageSize: number = 10, groupId?: string): Observable<PaginatedResult<Post>> {
         this.loadingService.show('posts-list', 'Loading posts...');
 
-        return this.postApi.getPosts({ pageNumber, pageSize, groupId }).pipe(
+        const params: any = { pageNumber, pageSize };
+        if (groupId) params.groupId = groupId;
+
+        return this.http.get<any>(`${environment.apiUrl}/v1/posts`, { params }).pipe(
             map((result: any) => this.mapToLegacyFormat(result) as PaginatedResult<Post>),
             tap(result => {
                 if (result.items) {

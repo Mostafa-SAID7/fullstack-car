@@ -1,13 +1,13 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
-using Application.Features.Community.QA.Services;
-using Domain.Enums.Community.QA;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
+using Application.Features.Community.Services;
+using Domain.Enums.Community;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, Result<QuestionDetailDto>>
 {
@@ -47,7 +47,7 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
         string? userVote = null;
         if (request.UserId.HasValue)
         {
-            var vote = await _context.QAVotes
+            var vote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId.Value && 
                                         v.ContentId == question.Id && 
                                         v.ContentType == "Question", cancellationToken);
@@ -80,7 +80,7 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
                 CreatedAt = a.CreatedAt,
                 UpdatedAt = a.UpdatedAt,
                 UserVote = request.UserId.HasValue ? 
-                    _context.QAVotes
+                    _context.Votes
                         .Where(v => v.UserId == request.UserId.Value && 
                                   v.ContentId == a.Id && 
                                   v.ContentType == "Answer")

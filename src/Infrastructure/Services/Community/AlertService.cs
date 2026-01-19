@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Hosting;
 using Infrastructure.Common;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public interface IAlertService
 {
     Task SendHealthAlertAsync(SystemAlertDto alert);

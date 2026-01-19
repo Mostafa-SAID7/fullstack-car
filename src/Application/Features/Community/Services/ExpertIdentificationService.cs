@@ -1,10 +1,10 @@
 using Application.Common.Interfaces;
 using Domain.Enums.Community;
 using Domain.Services;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Services
+namespace Application.Features.Community.Services
 {
     public class ExpertIdentificationService : IExpertIdentificationService
     {

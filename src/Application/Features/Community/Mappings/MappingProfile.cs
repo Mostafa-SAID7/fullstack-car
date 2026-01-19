@@ -1,8 +1,8 @@
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Community.DTOs.Responses;
 using AutoMapper;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 
-namespace Application.Features.Community.QA.Mappings;
+namespace Application.Features.Community.Mappings;
 
 public class MappingProfile : Profile
 {

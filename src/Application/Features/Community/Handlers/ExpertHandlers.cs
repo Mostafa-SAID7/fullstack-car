@@ -1,13 +1,13 @@
 using Application.Common.Patterns;
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
+using Application.Features.Community.Commands;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
 using Domain.Interfaces;
 using Domain.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 /// <summary>
 /// Handler for promoting users to expert status

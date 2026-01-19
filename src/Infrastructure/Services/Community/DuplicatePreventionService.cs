@@ -1,9 +1,9 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
 using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Services;
-using Domain.Entities.Community.QA;
-using Domain.Enums.Community.QA;
+using Application.Features.Community.Services;
+using Domain.Entities.Community;
+using Domain.Enums.Community;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public class DuplicatePreventionOptions
 {
     public const string SectionName = "DuplicatePrevention";

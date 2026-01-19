@@ -1,7 +1,7 @@
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Community.DTOs.Responses;
 
-namespace Application.Features.Community.QA.Services;
+namespace Application.Features.Community.Services;
 public interface IDuplicatePreventionService
 {
     Task<Result<DuplicateDetectionResult>> DetectDuplicateQuestionAsync(

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { LocationApiService } from '../../../shared/services/api/location-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import {
     LocationDto,
     CheckInDto,
@@ -13,10 +14,10 @@ import {
     CreatePlaceReviewRequest,
     LocationCategory,
     LocationHourDto
-} from '../../../shared/models/community/location.model';
-import { PagedResult } from '../../../shared/models/community/common.model';
-import { Location, CheckIn, PlaceReview, LocationType } from '../../../core/models/maps.model';
-import { Result, PaginatedResult } from '../../../core/models/result.model';
+} from '../../../../shared/models/community/location.model';
+import { PagedResult } from '../../../../shared/models/community/common.model';
+import { Location, CheckIn, PlaceReview, LocationType } from '../../../../core/models/maps.model';
+import { Result, PaginatedResult } from '../../../../core/models/result.model';
 
 @Injectable({
     providedIn: 'root'
@@ -29,7 +30,7 @@ export class MapsService {
     public currentLocation$ = this.currentLocationSubject.asObservable();
 
     constructor(
-        private locationApi: LocationApiService,
+        private http: HttpClient,
         private toastService: ToastService,
         private loadingService: LoadingService
     ) { }
@@ -40,11 +41,10 @@ export class MapsService {
     getLocations(type?: number, pageNumber: number = 1, pageSize: number = 10): Observable<PaginatedResult<Location>> {
         this.loadingService.show('locations-list', 'Loading locations...');
 
-        return this.locationApi.getLocations({
-            pageNumber,
-            pageSize,
-            category: type
-        }).pipe(
+        const params: any = { pageNumber, pageSize };
+        if (type !== undefined) params.category = type;
+
+        return this.http.get<any>(`${environment.apiUrl}/v1/locations`, { params }).pipe(
             map(result => this.mapToLegacyPaginatedFormat(result)),
             tap(result => {
                 if (result.items) {
@@ -65,7 +65,7 @@ export class MapsService {
     getLocation(id: string): Observable<Result<Location>> {
         this.loadingService.show('location-detail', 'Loading location...');
 
-        return this.locationApi.getLocation(id).pipe(
+        return this.http.get<LocationDto>(`${environment.apiUrl}/v1/locations/${id}`).pipe(
             map(dto => {
                 const location = this.mapDtoToLocation(dto);
                 this.currentLocationSubject.next(location);
@@ -85,7 +85,8 @@ export class MapsService {
     checkIn(locationId: string, comment?: string): Observable<Result<CheckIn>> {
         this.loadingService.show('check-in', 'Checking in...');
 
-        return this.locationApi.checkIn({ locationId, comment }).pipe(
+        const request = { locationId, comment };
+        return this.http.post<CheckInDto>(`${environment.apiUrl}/v1/locations/${locationId}/checkins`, request).pipe(
             map(dto => {
                 const checkIn = this.mapDtoToCheckIn(dto);
                 this.toastService.success('Checked in successfully');
@@ -105,7 +106,8 @@ export class MapsService {
     addReview(locationId: string, rating: number, title: string, content: string): Observable<Result<PlaceReview>> {
         this.loadingService.show('add-review', 'Adding review...');
 
-        return this.locationApi.createReview({ locationId, rating, title, content }).pipe(
+        const request = { locationId, rating, title, content };
+        return this.http.post<PlaceReviewDto>(`${environment.apiUrl}/v1/locations/${locationId}/reviews`, request).pipe(
             map(dto => {
                 const review = this.mapDtoToPlaceReview(dto);
                 this.toastService.success('Review added successfully');
@@ -135,9 +137,10 @@ export class MapsService {
      * Get check-ins for a location
      */
     getCheckIns(locationId: string, pageNumber: number = 1): Observable<PaginatedResult<CheckIn>> {
-        return this.locationApi.getCheckIns(locationId, pageNumber).pipe(
+        const params = { pageNumber };
+        return this.http.get<any>(`${environment.apiUrl}/v1/locations/${locationId}/checkins`, { params }).pipe(
             map(result => ({
-                items: result.items.map(dto => this.mapDtoToCheckIn(dto)),
+                items: result.items.map((dto: CheckInDto) => this.mapDtoToCheckIn(dto)),
                 pageNumber: result.pageNumber,
                 pageSize: result.pageSize,
                 totalPages: result.totalPages,
@@ -156,9 +159,10 @@ export class MapsService {
      * Get reviews for a location
      */
     getReviews(locationId: string, pageNumber: number = 1): Observable<PaginatedResult<PlaceReview>> {
-        return this.locationApi.getReviews(locationId, pageNumber).pipe(
+        const params = { pageNumber };
+        return this.http.get<any>(`${environment.apiUrl}/v1/locations/${locationId}/reviews`, { params }).pipe(
             map(result => ({
-                items: result.items.map(dto => this.mapDtoToPlaceReview(dto)),
+                items: result.items.map((dto: PlaceReviewDto) => this.mapDtoToPlaceReview(dto)),
                 pageNumber: result.pageNumber,
                 pageSize: result.pageSize,
                 totalPages: result.totalPages,
@@ -177,7 +181,7 @@ export class MapsService {
      * Get location hours
      */
     getLocationHours(locationId: string): Observable<LocationHourDto[]> {
-        return this.locationApi.getHours(locationId).pipe(
+        return this.http.get<LocationHourDto[]>(`${environment.apiUrl}/v1/locations/${locationId}/hours`).pipe(
             catchError(error => {
                 this.toastService.error('Failed to load hours', error.message);
                 return throwError(() => error);

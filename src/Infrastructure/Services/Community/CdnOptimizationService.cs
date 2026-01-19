@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 
 public interface ICdnOptimizationService
 {

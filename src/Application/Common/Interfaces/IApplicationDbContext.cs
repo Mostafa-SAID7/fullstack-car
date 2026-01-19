@@ -1,4 +1,5 @@
 using Domain.Entities.Identity;
+using Domain.Entities.Common;
 using Domain.Entities.Community.Posts;
 using Domain.Entities.Community.Groups;
 using Domain.Entities.Community.Reviews;
@@ -35,9 +36,15 @@ namespace Application.Common.Interfaces.Data
 
         // Community Tables
         DbSet<Post> Posts { get; }
-        DbSet<PostView> PostViews { get; }
+        DbSet<View> Views { get; }
         DbSet<Comment> Comments { get; }
-        DbSet<CommentLike> CommentLikes { get; }
+        DbSet<Like> Likes { get; }
+        DbSet<Reaction> Reactions { get; }
+        DbSet<Bookmark> Bookmarks { get; }
+        DbSet<Feedback> Feedbacks { get; }
+        DbSet<Rating> Ratings { get; }
+        DbSet<Image> Images { get; }
+        DbSet<File> Files { get; }
         DbSet<Group> Groups { get; }
         DbSet<GroupMember> GroupMembers { get; }
         DbSet<PostLike> PostLikes { get; }
@@ -48,9 +55,6 @@ namespace Application.Common.Interfaces.Data
         // Community Guides Tables
         DbSet<Domain.Entities.Community.Guides.Guide> Guides { get; }
         DbSet<Domain.Entities.Community.Guides.GuideStep> GuideSteps { get; }
-        DbSet<Domain.Entities.Community.Guides.GuideRating> GuideRatings { get; }
-        DbSet<Domain.Entities.Community.Guides.GuideBookmark> GuideBookmarks { get; }
-        DbSet<Domain.Entities.Community.Guides.GuideView> GuideViews { get; }
 
         // Community QA Tables
         DbSet<Question> Questions { get; }
@@ -58,13 +62,9 @@ namespace Application.Common.Interfaces.Data
         DbSet<AnswerHistory> AnswerHistories { get; }
         DbSet<QuestionCategory> QuestionCategories { get; }
         DbSet<QuestionTag> QuestionTags { get; }
-        DbSet<QuestionVote> QuestionVotes { get; }
-        DbSet<AnswerVote> AnswerVotes { get; }
         DbSet<Vote> Votes { get; }
-        DbSet<QuestionView> QuestionViews { get; }
-        DbSet<QuestionBookmark> QuestionBookmarks { get; }
         DbSet<UserReputation> UserReputations { get; }
-        DbSet<UserActivity> UserActivities { get; }
+        DbSet<CommunityUserActivity> CommunityUserActivities { get; }
         DbSet<Expert> Experts { get; }
         DbSet<Category> Categories { get; }
         DbSet<Tag> Tags { get; }
@@ -114,14 +114,7 @@ namespace Application.Common.Interfaces.Data
         DbSet<Domain.Entities.Media.Podcast> Podcasts { get; }
         DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; }
         DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; }
-        DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; }
-        DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; }
-        DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; }
-        DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; }
         DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; }
-        DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; }
-        DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; }
-        DbSet<Domain.Entities.Media.VideoView> VideoViews { get; }
         DbSet<Domain.Entities.Media.PodcastPlay> PodcastPlays { get; }
         DbSet<Domain.Entities.Media.VideoPlaylist> VideoPlaylists { get; }
         DbSet<Domain.Entities.Media.VideoPlaylistItem> VideoPlaylistItems { get; }

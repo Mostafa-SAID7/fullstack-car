@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { PageApiService } from '../../../shared/services/api/page-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { environment } from '../../../../../environments/environment';
 import {
   PageDto,
   PageContentDto,
@@ -12,8 +13,8 @@ import {
   PageRevisionDto,
   PageStatus,
   PageType
-} from '../../../shared/models/community/page.model';
-import { PagedResult } from '../../../shared/models/community/common.model';
+} from '../../../../shared/models/community/page.model';
+import { PagedResult } from '../../../../shared/models/community/common.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class PageService {
   public currentPage$ = this.currentPageSubject.asObservable();
 
   constructor(
-    private pageApi: PageApiService,
+    private http: HttpClient,
     private toastService: ToastService,
     private loadingService: LoadingService
   ) { }
@@ -42,12 +43,14 @@ export class PageService {
   } = {}): Observable<PagedResult<PageDto>> {
     this.loadingService.show('pages-list', 'Loading pages...');
 
-    return this.pageApi.getPages({
+    const queryParams: any = {
       pageNumber: params.pageNumber || 1,
-      pageSize: params.pageSize || 20,
-      type: params.type,
-      status: params.status
-    }).pipe(
+      pageSize: params.pageSize || 20
+    };
+    if (params.type !== undefined) queryParams.type = params.type;
+    if (params.status !== undefined) queryParams.status = params.status;
+
+    return this.http.get<PagedResult<PageDto>>(`${environment.apiUrl}/v1/pages`, { params: queryParams }).pipe(
       tap(result => {
         if (result.items) {
           this.pagesSubject.next(result.items);

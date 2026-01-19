@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, combineLatest } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
-import { environment } from '../../../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 // Removed legacy models import
 // import { Question, Answer, CreateQuestionRequest, CreateAnswerRequest, QuestionStatus, QuestionPriority } from '../models/qa.model';
-import { Result, PaginatedResult } from '../../../../../core/models/result.model';
-import { AuthService } from '../../../../../core/services/auth.service';
-import { HttpClientService } from '../../../../../core/services/http-client.service';
-import { ToastService } from '../../../../../core/services/toast.service';
-import { LoadingService } from '../../../../../shared/services/loading/loading.service';
+import { Result, PaginatedResult } from '../../../../core/models/result.model';
+import { AuthService } from '../../../../core/services/auth.service';
+import { HttpClientService } from '../../../../core/services/http-client.service';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
 
 // Import the specialized QA services
 import { QAQuestionService } from './qa-question.service';

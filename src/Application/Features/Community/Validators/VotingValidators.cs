@@ -1,8 +1,8 @@
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.DTOs.Requests;
+using Application.Features.Community.Commands;
+using Application.Features.Community.DTOs.Requests;
 using FluentValidation;
 
-namespace Application.Features.Community.QA.Validators;
+namespace Application.Features.Community.Validators;
 
 public class CreateVoteCommandValidator : AbstractValidator<CreateVoteCommand>
 {

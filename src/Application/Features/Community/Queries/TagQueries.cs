@@ -1,8 +1,8 @@
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Community.DTOs.Responses;
 using MediatR;
 
-namespace Application.Features.Community.QA.Queries;
+namespace Application.Features.Community.Queries;
 
 public class GetTagsQuery : IRequest<Result<List<TagDto>>>
 {

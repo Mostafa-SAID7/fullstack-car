@@ -1,5 +1,5 @@
 using Application.Features.QA.DTOs;
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Infrastructure.Common;
 using System.Diagnostics;
 
-namespace Infrastructure.Services.QA;
+namespace Infrastructure.Services.Community;
 public interface IHealthMonitoringService
 {
     Task<SystemHealthDto> GetSystemHealthAsync();

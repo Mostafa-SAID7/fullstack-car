@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, of } from 'rxjs';
-import { Review, CreateReviewRequest } from '../../../core/models/review.model';
-import { Result, PaginatedResult } from '../../../core/models/result.model';
-import { TranslationService } from '../../../core/services/translation.service';
+import { Review, CreateReviewRequest } from '../../../../core/models/review.model';
+import { Result, PaginatedResult } from '../../../../core/models/result.model';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { ReviewDto } from '../../../shared/models/community/review.model';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { environment } from '../../../../../environments/environment';
+import { ReviewDto } from '../../../../shared/models/community/review.model';
+import { ToastService } from '../../../../core/services/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
 
 @Injectable({
     providedIn: 'root'

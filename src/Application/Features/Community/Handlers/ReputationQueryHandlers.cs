@@ -1,14 +1,14 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Extensions;
-using Application.Features.Community.QA.Queries;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Extensions;
+using Application.Features.Community.Queries;
 using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetUserReputationHandler : IRequestHandler<GetUserReputationQuery, Result<UserReputationDto>>
 {
@@ -172,7 +172,7 @@ public class GetReputationHistoryHandler : IRequestHandler<GetReputationHistoryQ
     {
         try
         {
-            var query = _context.UserActivities
+            var query = _context.CommunityUserActivities
                 .Where(ua => ua.UserId == request.UserId)
                 .AsQueryable();
 

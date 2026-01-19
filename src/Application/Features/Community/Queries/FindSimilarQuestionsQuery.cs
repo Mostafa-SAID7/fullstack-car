@@ -1,8 +1,8 @@
 using Application.Common.Models;
-using Application.Features.Community.QA.Services;
+using Application.Features.Community.Services;
 using MediatR;
 
-namespace Application.Features.Community.QA.Queries;
+namespace Application.Features.Community.Queries;
 
 /// <summary>
 /// Query to find similar questions using semantic analysis

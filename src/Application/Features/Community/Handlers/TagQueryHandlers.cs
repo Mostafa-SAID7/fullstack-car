@@ -1,12 +1,12 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetTagsHandler : IRequestHandler<GetTagsQuery, Result<List<TagDto>>>
 {
@@ -25,7 +25,7 @@ public class GetTagsHandler : IRequestHandler<GetTagsQuery, Result<List<TagDto>>
     {
         try
         {
-            var query = _context.QATags.AsQueryable();
+            var query = _contextTags.AsQueryable();
 
             // Apply filters
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
@@ -97,7 +97,7 @@ public class GetPopularTagsHandler : IRequestHandler<GetPopularTagsQuery, Result
         {
             var cutoffDate = DateTime.UtcNow.AddDays(-request.DaysBack);
 
-            var query = _context.QATags.AsQueryable();
+            var query = _contextTags.AsQueryable();
 
             if (request.CategoryId.HasValue)
             {
@@ -156,7 +156,7 @@ public class GetTagDetailHandler : IRequestHandler<GetTagDetailQuery, Result<Tag
     {
         try
         {
-            var tag = await _context.QATags
+            var tag = await _contextTags
                 .Include(t => t.Category)
                 .Where(t => t.Id == request.TagId)
                 .Select(t => new TagDto
@@ -208,7 +208,7 @@ public class SearchTagsHandler : IRequestHandler<SearchTagsQuery, Result<List<Ta
             }
 
             var searchTerm = request.SearchTerm.ToLower();
-            var query = _context.QATags.AsQueryable();
+            var query = _contextTags.AsQueryable();
 
             if (request.CategoryId.HasValue)
             {

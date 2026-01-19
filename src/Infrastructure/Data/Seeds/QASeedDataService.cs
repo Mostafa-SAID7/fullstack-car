@@ -1,6 +1,6 @@
-using Domain.Entities.Community.QA;
+using Domain.Entities.Community;
 using Domain.Entities.Identity;
-using Domain.Enums.Community.QA;
+using Domain.Enums.Community;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -1121,7 +1121,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
         {
             _logger.LogInformation("Seeding user activity data...");
 
-            if (await _context.UserActivities.AnyAsync())
+            if (await _context.CommunityUserActivities.AnyAsync())
             {
                 _logger.LogInformation("User activity data already exists, skipping...");
                 return;
@@ -1132,14 +1132,14 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
             var votes = await _context.Votes.ToListAsync();
             var categories = await _context.QuestionCategories.ToListAsync();
 
-            var activities = new List<UserActivity>();
+            var activities = new List<CommunityUserActivity>();
 
             // Create activity records for questions
             foreach (var question in questions)
             {
                 var category = categories.FirstOrDefault(c => c.Id == question.CategoryId);
                 
-                activities.Add(new UserActivity
+                activities.Add(new CommunityUserActivity
                 {
                     Id = Guid.NewGuid(),
                     UserId = question.UserId,
@@ -1165,7 +1165,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                 reputationChange += answer.UpvotesCount * 10; // Points for upvotes
                 reputationChange -= answer.DownvotesCount * 2; // Penalty for downvotes
 
-                activities.Add(new UserActivity
+                activities.Add(new CommunityUserActivity
                 {
                     Id = Guid.NewGuid(),
                     UserId = answer.UserId,
@@ -1179,7 +1179,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                 // Add separate activity for answer acceptance
                 if (answer.IsAccepted && answer.AcceptedAt.HasValue)
                 {
-                    activities.Add(new UserActivity
+                    activities.Add(new CommunityUserActivity
                     {
                         Id = Guid.NewGuid(),
                         UserId = answer.UserId,
@@ -1211,7 +1211,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                     category = questionCategory?.Name ?? "";
                 }
 
-                activities.Add(new UserActivity
+                activities.Add(new CommunityUserActivity
                 {
                     Id = Guid.NewGuid(),
                     UserId = vote.UserId,
@@ -1223,7 +1223,7 @@ Start with query analysis, then move to indexing strategy. Happy to dive deeper 
                 });
             }
 
-            _context.UserActivities.AddRange(activities);
+            _context.CommunityUserActivities.AddRange(activities);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Created {Count} user activity records", activities.Count);
         }

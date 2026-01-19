@@ -1,11 +1,11 @@
 using Application.Common.Interfaces.Data;
 using Application.Common.Models;
-using Application.Features.Community.QA.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
+using Application.Features.Community.DTOs.Responses;
+using Application.Features.Community.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Community.QA.Handlers;
+namespace Application.Features.Community.Handlers;
 
 public class GetAnswersByQuestionHandler : IRequestHandler<GetAnswersByQuestionQuery, Result<PaginatedList<AnswerDto>>>
 {
@@ -61,7 +61,7 @@ public class GetAnswersByQuestionHandler : IRequestHandler<GetAnswersByQuestionQ
         if (request.UserId.HasValue)
         {
             var answerIds = await query.Select(a => a.Id).ToListAsync(cancellationToken);
-            var votes = await _context.QAVotes
+            var votes = await _context.Votes
                 .Where(v => v.UserId == request.UserId.Value && 
                            answerIds.Contains(v.ContentId) && 
                            v.ContentType == "Answer")
@@ -135,7 +135,7 @@ public class GetAnswerHandler : IRequestHandler<GetAnswerQuery, Result<AnswerDto
         string? userVote = null;
         if (request.UserId.HasValue)
         {
-            var vote = await _context.QAVotes
+            var vote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId.Value && 
                                         v.ContentId == answer.Id && 
                                         v.ContentType == "Answer", cancellationToken);

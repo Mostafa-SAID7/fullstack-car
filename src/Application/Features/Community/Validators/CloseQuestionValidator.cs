@@ -1,7 +1,7 @@
-using Application.Features.Community.QA.Commands;
+using Application.Features.Community.Commands;
 using FluentValidation;
 
-namespace Application.Features.Community.QA.Validators;
+namespace Application.Features.Community.Validators;
 
 public class CloseQuestionValidator : AbstractValidator<CloseQuestionCommand>
 {
