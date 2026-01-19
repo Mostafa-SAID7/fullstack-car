@@ -5,8 +5,6 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PostService } from '../../services/post.service';
-import { AuthService } from '../../../../core/services/auth.service';
-import { TranslationService } from '../../../../core/services/translation.service';
 import { Post } from '../../../../core/models/post.model';
 
 @Component({
@@ -30,8 +28,6 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private postService: PostService,
-        private authService: AuthService,
-        private translationService: TranslationService,
         private translateService: TranslateService
     ) {
         this.postForm = this.fb.group({
@@ -43,12 +39,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.initializeTranslations();
-        this.authService.currentUser$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(user => {
-                this.currentUser = user;
-            });
+        this.setupValidationMessages();
     }
 
     ngOnDestroy(): void {
@@ -56,28 +47,15 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    private async initializeTranslations(): Promise<void> {
-        try {
-            // Load posts feature translations for the current language
-            const currentLanguage = this.translationService.getCurrentLanguage().code;
-            await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'posts');
-
-            // Set up validation messages
-            this.setupValidationMessages();
-        } catch (error) {
-            console.error('Failed to load posts translations:', error);
-        }
-    }
-
     private setupValidationMessages(): void {
         this.validationMessages = {
-            'title.required': this.translateService.instant('posts.validation.titleRequired'),
-            'title.minlength': this.translateService.instant('posts.validation.titleMinLength'),
-            'title.maxlength': this.translateService.instant('posts.validation.titleMaxLength'),
-            'content.required': this.translateService.instant('posts.validation.contentRequired'),
-            'content.minlength': this.translateService.instant('posts.validation.contentMinLength'),
-            'content.maxlength': this.translateService.instant('posts.validation.contentMaxLength'),
-            'imageUrl.pattern': this.translateService.instant('posts.validation.imageUrlInvalid')
+            'title.required': 'Title is required',
+            'title.minlength': 'Title must be at least 3 characters',
+            'title.maxlength': 'Title cannot exceed 200 characters',
+            'content.required': 'Content is required',
+            'content.minlength': 'Content must be at least 10 characters',
+            'content.maxlength': 'Content cannot exceed 5000 characters',
+            'imageUrl.pattern': 'Please enter a valid image URL'
         };
     }
 

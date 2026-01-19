@@ -4,6 +4,8 @@ using Application.Features.Community.Commands;
 using Application.Features.Community.Services;
 using Domain.Entities.Community;
 using Domain.Enums.Community;
+using Domain.Enums.Common;
+using VoteType = Domain.Enums.Community.VoteType;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -30,15 +32,11 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
     {
         try
         {
-            // Validate vote type
-            if (!Enum.TryParse<VoteType>(request.Request.VoteType + "vote", true, out var voteType))
-            {
-                return Result<bool>.Failure("Invalid vote type. Must be 'Up' or 'Down'.");
-            }
+            var voteType = request.Request.VoteType;
 
             // Check if content exists and get content owner
             Guid contentOwnerId;
-            if (request.Request.ContentType == "Question")
+            if (request.Request.ContentType == ContentType.Question)
             {
                 var question = await _context.Questions
                     .FirstOrDefaultAsync(q => q.Id == request.Request.ContentId && !q.IsDeleted, cancellationToken);
@@ -49,7 +47,7 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
                 }
                 contentOwnerId = question.UserId;
             }
-            else if (request.Request.ContentType == "Answer")
+            else if (request.Request.ContentType == ContentType.Answer)
             {
                 var answer = await _context.Answers
                     .FirstOrDefaultAsync(a => a.Id == request.Request.ContentId && !a.IsDeleted, cancellationToken);
@@ -137,9 +135,9 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
         }
     }
 
-    private async Task UpdateVoteCountsAsync(Guid contentId, string contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
+    private async Task UpdateVoteCountsAsync(Guid contentId, ContentType contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
     {
-        if (contentType == "Question")
+        if (contentType == ContentType.Question)
         {
             var question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == contentId, cancellationToken);
             if (question != null)
@@ -155,7 +153,7 @@ public class CreateVoteHandler : IRequestHandler<CreateVoteCommand, Result<bool>
                 question.UpdatedAt = DateTime.UtcNow;
             }
         }
-        else if (contentType == "Answer")
+        else if (contentType == ContentType.Answer)
         {
             var answer = await _context.Answers.FirstOrDefaultAsync(a => a.Id == contentId, cancellationToken);
             if (answer != null)
@@ -214,7 +212,7 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
 
             // Get content owner for reputation update
             Guid contentOwnerId;
-            if (request.ContentType == "Question")
+            if (request.ContentType == ContentType.Question)
             {
                 var question = await _context.Questions
                     .FirstOrDefaultAsync(q => q.Id == request.ContentId && !q.IsDeleted, cancellationToken);
@@ -225,7 +223,7 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
                 }
                 contentOwnerId = question.UserId;
             }
-            else if (request.ContentType == "Answer")
+            else if (request.ContentType == ContentType.Answer)
             {
                 var answer = await _context.Answers
                     .FirstOrDefaultAsync(a => a.Id == request.ContentId && !a.IsDeleted, cancellationToken);
@@ -276,9 +274,9 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
         }
     }
 
-    private async Task UpdateVoteCountsAsync(Guid contentId, string contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
+    private async Task UpdateVoteCountsAsync(Guid contentId, ContentType contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
     {
-        if (contentType == "Question")
+        if (contentType == ContentType.Question)
         {
             var question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == contentId, cancellationToken);
             if (question != null)
@@ -294,7 +292,7 @@ public class RemoveVoteHandler : IRequestHandler<RemoveVoteCommand, Result<bool>
                 question.UpdatedAt = DateTime.UtcNow;
             }
         }
-        else if (contentType == "Answer")
+        else if (contentType == ContentType.Answer)
         {
             var answer = await _context.Answers.FirstOrDefaultAsync(a => a.Id == contentId, cancellationToken);
             if (answer != null)
@@ -333,11 +331,7 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
     {
         try
         {
-            // Validate new vote type
-            if (!Enum.TryParse<VoteType>(request.Request.NewVoteType + "vote", true, out var newVoteType))
-            {
-                return Result<bool>.Failure("Invalid vote type. Must be 'Up' or 'Down'.");
-            }
+            var newVoteType = request.Request.NewVoteType;
 
             // Find existing vote
             var existingVote = await _context.Votes
@@ -375,7 +369,7 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
 
             // Get content owner for reputation update
             Guid contentOwnerId;
-            if (request.Request.ContentType == "Question")
+            if (request.Request.ContentType == ContentType.Question)
             {
                 var question = await _context.Questions
                     .FirstOrDefaultAsync(q => q.Id == request.Request.ContentId && !q.IsDeleted, cancellationToken);
@@ -386,7 +380,7 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
                 }
                 contentOwnerId = question.UserId;
             }
-            else if (request.Request.ContentType == "Answer")
+            else if (request.Request.ContentType == ContentType.Answer)
             {
                 var answer = await _context.Answers
                     .FirstOrDefaultAsync(a => a.Id == request.Request.ContentId && !a.IsDeleted, cancellationToken);
@@ -448,9 +442,9 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
         }
     }
 
-    private async Task UpdateVoteCountsAsync(Guid contentId, string contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
+    private async Task UpdateVoteCountsAsync(Guid contentId, ContentType contentType, VoteType voteType, bool isAdding, CancellationToken cancellationToken)
     {
-        if (contentType == "Question")
+        if (contentType == ContentType.Question)
         {
             var question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == contentId, cancellationToken);
             if (question != null)
@@ -466,7 +460,7 @@ public class ChangeVoteHandler : IRequestHandler<ChangeVoteCommand, Result<bool>
                 question.UpdatedAt = DateTime.UtcNow;
             }
         }
-        else if (contentType == "Answer")
+        else if (contentType == ContentType.Answer)
         {
             var answer = await _context.Answers.FirstOrDefaultAsync(a => a.Id == contentId, cancellationToken);
             if (answer != null)

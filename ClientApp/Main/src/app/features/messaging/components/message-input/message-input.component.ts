@@ -1,7 +1,7 @@
 import { Component, input, output, signal, computed, inject, ViewChild, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MessageDto, MessageType, SendMessageRequest } from '../../../../core/models/messaging.model';
+import { MessageDto, MessageType, SendMessageRequest } from '../../models/messaging.model';
 import { MessagingService } from '../../../../core/services/messaging.service';
 
 /**

@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MessageDto, MessageType } from '../../../../core/models/messaging.model';
+import { MessageDto, MessageType } from '../../models/messaging.model';
 import { MessageItemComponent } from '../message-item/message-item.component';
 
 /**

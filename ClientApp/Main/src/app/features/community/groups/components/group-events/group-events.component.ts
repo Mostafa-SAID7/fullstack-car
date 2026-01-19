@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Group } from '../../../../../core/models/group.model';
+import { Group } from '../../models/group.model';
 
 @Component({
   selector: 'app-group-events',

@@ -4,7 +4,7 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../../../core/services/toast.service';
 import { LoadingService } from '../../../../shared/services/loading/loading.service';
-import { Post, CreatePostRequest } from '../../../../core/models/post.model';
+import { Post, CreatePostRequest } from '../../pages/models/post.model';
 import { PostDto } from '../../../../shared/models/community/post.model';
 import { Result, PaginatedResult } from '../../../../core/models/result.model';
 import { environment } from '../../../../../environments/environment';

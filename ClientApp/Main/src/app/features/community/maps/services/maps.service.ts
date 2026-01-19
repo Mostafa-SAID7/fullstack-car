@@ -16,7 +16,7 @@ import {
     LocationHourDto
 } from '../../../../shared/models/community/location.model';
 import { PagedResult } from '../../../../shared/models/community/common.model';
-import { Location, CheckIn, PlaceReview, LocationType } from '../../../../core/models/maps.model';
+import { Location, CheckIn, PlaceReview, LocationType } from '../models/maps.model';
 import { Result, PaginatedResult } from '../../../../core/models/result.model';
 
 @Injectable({

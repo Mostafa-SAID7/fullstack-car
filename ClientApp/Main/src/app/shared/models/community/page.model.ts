@@ -1,13 +1,3 @@
-/**
- * Page-related models matching backend DTOs
- */
-
-export enum PageStatus {
-  Draft = 1,
-  Published = 2,
-  Archived = 3
-}
-
 export enum PageType {
   Article = 1,
   Guide = 2,
@@ -17,60 +7,73 @@ export enum PageType {
   Help = 6
 }
 
+export enum PageStatus {
+  Draft = 1,
+  Published = 2,
+  Archived = 3
+}
+
 export interface PageDto {
   id: string;
   title: string;
   slug: string;
-  description: string;
+  content: string;
+  excerpt?: string;
   type: PageType;
   status: PageStatus;
-  viewsCount: number;
-  createdAt: Date;
-  updatedAt?: Date;
+  metaTitle?: string;
+  metaDescription?: string;
+  featuredImageUrl?: string;
   publishedAt?: Date;
-  
+  createdAt: Date;
+  updatedAt: Date;
   authorId: string;
-  authorFirstName: string;
-  authorLastName: string;
+  authorName: string;
+  viewCount: number;
+  tags: string[];
 }
 
 export interface PageContentDto {
   id: string;
   pageId: string;
-  content: string; // HTML or Markdown
+  content: string;
   version: number;
   createdAt: Date;
-  
-  authorId: string;
-  authorFirstName: string;
-  authorLastName: string;
+  createdBy: string;
 }
 
 export interface CreatePageRequest {
   title: string;
-  slug: string;
-  description: string;
-  type: PageType;
+  slug?: string;
   content: string;
+  excerpt?: string;
+  type: PageType;
+  metaTitle?: string;
+  metaDescription?: string;
+  featuredImageUrl?: string;
+  tags?: string[];
 }
 
 export interface UpdatePageRequest {
   title?: string;
   slug?: string;
-  description?: string;
-  type?: PageType;
   content?: string;
+  excerpt?: string;
+  type?: PageType;
+  metaTitle?: string;
+  metaDescription?: string;
+  featuredImageUrl?: string;
+  tags?: string[];
 }
 
 export interface PageRevisionDto {
   id: string;
   pageId: string;
-  version: number;
+  title: string;
   content: string;
-  changeDescription?: string;
+  version: number;
   createdAt: Date;
-  
-  authorId: string;
-  authorFirstName: string;
-  authorLastName: string;
+  createdBy: string;
+  createdByName: string;
+  changeDescription?: string;
 }

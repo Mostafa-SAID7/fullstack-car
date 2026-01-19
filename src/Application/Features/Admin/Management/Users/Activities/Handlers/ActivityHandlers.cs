@@ -68,7 +68,7 @@ namespace Application.Features.Admin.Management.Users.Activities.Handlers
                         Metadata = new Dictionary<string, object>
                         {
                             { "commentId", comment.Id },
-                            { "postId", comment.PostId }
+                            { "postId", comment.ContentId }
                         }
                     });
                 }

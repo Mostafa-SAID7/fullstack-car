@@ -15,7 +15,7 @@ import {
     ArticleStatus
 } from '../../../../shared/models/community/article.model';
 import { PagedResult } from '../../../../shared/models/community/common.model';
-import { Article, NewsComment, ArticleStatus as LegacyArticleStatus } from '../../../../core/models/news.model';
+import { Article, NewsComment, ArticleStatus as LegacyArticleStatus } from '../models/news.model';
 import { Result, PaginatedResult } from '../../../../core/models/result.model';
 
 export interface NewsFilters {

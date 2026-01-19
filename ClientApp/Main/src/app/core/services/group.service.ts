@@ -13,7 +13,7 @@ import {
   CreateGroupRequest,
   UpdateGroupRequest,
   GroupSearchFilters
-} from '../models/group.model';
+} from '../../features/community/groups/models/group.model';
 import { ApiResponse, PaginatedResponse } from '../models/api.model';
 import { AuthService } from './auth.service';
 import { NotificationService } from '../../shared/services/notification/notification.service';

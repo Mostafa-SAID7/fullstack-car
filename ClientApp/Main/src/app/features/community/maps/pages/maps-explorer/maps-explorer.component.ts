@@ -4,8 +4,8 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angul
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MapsService } from '../../services/maps.service';
-import { Location, LocationType } from '../../../../core/models/maps.model';
-import { LocationCardComponent } from '../location-card/location-card.component';
+import { Location, LocationType } from '../../components/location-card/location-card.component';
+import { LocationCardComponent } from '../../components/location-card/location-card.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
 @Component({

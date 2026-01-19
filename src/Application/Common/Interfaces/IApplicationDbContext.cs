@@ -48,6 +48,7 @@ namespace Application.Common.Interfaces
         DbSet<Group> Groups { get; }
         DbSet<GroupMember> GroupMembers { get; }
         DbSet<PostLike> PostLikes { get; }
+        DbSet<PostView> PostViews { get; }
         DbSet<PostReport> PostReports { get; }
         DbSet<Review> Reviews { get; }
         DbSet<UserFriend> UserFriends { get; }
@@ -110,7 +111,14 @@ namespace Application.Common.Interfaces
 
         // Media Tables
         DbSet<Domain.Entities.Media.Video> Videos { get; }
+        DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; }
+        DbSet<Domain.Entities.Media.VideoView> VideoViews { get; }
+        DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; }
+        DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; }
         DbSet<Domain.Entities.Media.Podcast> Podcasts { get; }
+        DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; }
+        DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; }
+        DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; }
         DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; }
         DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; }
         DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; }

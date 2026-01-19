@@ -1,6 +1,6 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MessageDto, MessageType, MessageStatus } from '../../../../core/models/messaging.model';
+import { MessageDto, MessageType, MessageStatus } from '../../models/messaging.model';
 
 /**
  * Message Item Component

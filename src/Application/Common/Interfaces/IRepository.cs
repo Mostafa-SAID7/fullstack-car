@@ -12,6 +12,8 @@ namespace Application.Common.Interfaces
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
         Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null, CancellationToken cancellationToken = default);
+        Task<List<T>> ListAsync(CancellationToken cancellationToken = default);
+        Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
         // Queryable access
         IQueryable<T> GetQueryable();

@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Queries;
+using Domain.Enums.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,7 +65,7 @@ public class GetAnswersByQuestionHandler : IRequestHandler<GetAnswersByQuestionQ
             var votes = await _context.Votes
                 .Where(v => v.UserId == request.UserId.Value && 
                            answerIds.Contains(v.ContentId) && 
-                           v.ContentType == "Answer")
+                           v.ContentType == ContentType.Answer)
                 .ToDictionaryAsync(v => v.ContentId, v => v.VoteType.ToString().Replace("vote", ""), cancellationToken);
             userVotes = votes;
         }
@@ -138,7 +139,7 @@ public class GetAnswerHandler : IRequestHandler<GetAnswerQuery, Result<AnswerDto
             var vote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId.Value && 
                                         v.ContentId == answer.Id && 
-                                        v.ContentType == "Answer", cancellationToken);
+                                        v.ContentType == ContentType.Answer, cancellationToken);
             userVote = vote?.VoteType.ToString().Replace("vote", "");
         }
 

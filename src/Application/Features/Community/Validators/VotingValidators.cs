@@ -1,5 +1,7 @@
 using Application.Features.Community.Commands;
 using Application.Features.Community.DTOs.Requests;
+using Domain.Enums.Common;
+using Domain.Enums.Community;
 using FluentValidation;
 
 namespace Application.Features.Community.Validators;
@@ -30,13 +32,13 @@ public class CreateVoteRequestValidator : AbstractValidator<CreateVoteRequest>
         RuleFor(x => x.ContentType)
             .NotEmpty()
             .WithMessage("Content type is required.")
-            .Must(x => x == "Question" || x == "Answer")
+            .Must(x => x == ContentType.Question || x == ContentType.Answer)
             .WithMessage("Content type must be 'Question' or 'Answer'.");
 
         RuleFor(x => x.VoteType)
             .NotEmpty()
             .WithMessage("Vote type is required.")
-            .Must(x => x == "Up" || x == "Down")
+            .Must(x => x == Domain.Enums.Community.VoteType.Upvote || x == Domain.Enums.Community.VoteType.Downvote)
             .WithMessage("Vote type must be 'Up' or 'Down'.");
     }
 }
@@ -56,7 +58,7 @@ public class RemoveVoteCommandValidator : AbstractValidator<RemoveVoteCommand>
         RuleFor(x => x.ContentType)
             .NotEmpty()
             .WithMessage("Content type is required.")
-            .Must(x => x == "Question" || x == "Answer")
+            .Must(x => x == ContentType.Question || x == ContentType.Answer)
             .WithMessage("Content type must be 'Question' or 'Answer'.");
     }
 }
@@ -87,13 +89,13 @@ public class ChangeVoteRequestValidator : AbstractValidator<ChangeVoteRequest>
         RuleFor(x => x.ContentType)
             .NotEmpty()
             .WithMessage("Content type is required.")
-            .Must(x => x == "Question" || x == "Answer")
+            .Must(x => x == ContentType.Question || x == ContentType.Answer)
             .WithMessage("Content type must be 'Question' or 'Answer'.");
 
         RuleFor(x => x.NewVoteType)
             .NotEmpty()
             .WithMessage("New vote type is required.")
-            .Must(x => x == "Up" || x == "Down")
+            .Must(x => x == Domain.Enums.Community.VoteType.Upvote || x == Domain.Enums.Community.VoteType.Downvote)
             .WithMessage("New vote type must be 'Up' or 'Down'.");
     }
 }

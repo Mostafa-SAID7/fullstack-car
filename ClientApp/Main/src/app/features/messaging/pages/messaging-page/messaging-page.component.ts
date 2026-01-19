@@ -1,6 +1,6 @@
 import { Component, computed, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ConversationDto, MessageDto, TypingIndicator, OnlineStatus } from '../../../../core/models/messaging.model';
+import { ConversationDto, MessageDto, TypingIndicator, OnlineStatus } from '../../models/messaging.model';
 import { MessagingService } from '../../../../core/services/messaging.service';
 import { ConversationListComponent } from '../../components/conversation-list/conversation-list.component';
 import { ChatWindowComponent } from '../../components/chat-window/chat-window.component';

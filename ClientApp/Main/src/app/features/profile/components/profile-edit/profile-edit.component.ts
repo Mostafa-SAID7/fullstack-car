@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserProfile, UpdateProfileRequest } from '../../../../core/models/user-profile.model';
+import { UserProfile, UpdateProfileRequest } from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 
 @Component({

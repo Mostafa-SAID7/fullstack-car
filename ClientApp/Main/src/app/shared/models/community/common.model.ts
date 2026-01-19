@@ -1,7 +1,3 @@
-/**
- * Common types and interfaces used across community features
- */
-
 export interface PagedResult<T> {
   items: T[];
   pageNumber: number;
@@ -12,34 +8,35 @@ export interface PagedResult<T> {
   hasNextPage: boolean;
 }
 
-export interface UserProfileDto {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email?: string;
-  phone?: string;
-  bio?: string;
-  profileImageUrl?: string;
-  coverImageUrl?: string;
-  location?: string;
-  website?: string;
-  isVerified?: boolean;
-  friendsCount?: number;
-  followersCount?: number;
-  followingCount?: number;
-  postsCount?: number;
-  createdAt?: Date | string;
-}
-
 export interface ApiResponse<T> {
+  succeeded: boolean;
   data: T;
-  success: boolean;
   message?: string;
   errors?: string[];
 }
 
-export interface ApiError {
-  message: string;
-  statusCode: number;
-  errors?: Record<string, string[]>;
+export interface SortOptions {
+  sortBy: string;
+  sortDirection: 'asc' | 'desc';
+}
+
+export interface PaginationOptions {
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface SearchOptions {
+  query?: string;
+  filters?: { [key: string]: any };
+}
+
+export interface BaseEntity {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AuditableEntity extends BaseEntity {
+  createdBy: string;
+  updatedBy?: string;
 }

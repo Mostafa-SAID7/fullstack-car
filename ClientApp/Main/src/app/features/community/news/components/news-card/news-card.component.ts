@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Article } from '../../../../../core/models/news.model';
+import { Article } from '../../models/news.model';
 
 @Component({
   selector: 'app-news-card',

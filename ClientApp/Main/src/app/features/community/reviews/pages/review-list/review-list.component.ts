@@ -8,7 +8,6 @@ import { Review } from '../../../../core/models/review.model';
 import { ReviewService } from '../../services/review.service';
 import { ReviewItemComponent } from '../review-item/review-item.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
-import { TranslationService } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-review-list',
@@ -127,7 +126,6 @@ export class ReviewListComponent implements OnInit, OnDestroy {
   constructor(
     private reviewService: ReviewService,
     private fb: FormBuilder,
-    private translationService: TranslationService,
     private translateService: TranslateService
   ) {
     this.searchForm = this.fb.group({
@@ -137,21 +135,7 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     });
   }
 
-  async ngOnInit(): Promise<void> {
-    // Initialize review translations from backend API
-    await this.reviewService.initializeReviewTranslations();
-
-    // Subscribe to language changes and reload translations
-    this.translationService.currentLanguage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (language) => {
-        console.log(`Language changed to ${language}, reloading review translations`);
-        await this.reviewService.initializeReviewTranslations();
-
-        // Reload reviews to ensure proper localization
-        this.loadReviews();
-      });
-
+  ngOnInit(): void {
     // Load initial reviews
     this.loadReviews();
     this.setupSearch();

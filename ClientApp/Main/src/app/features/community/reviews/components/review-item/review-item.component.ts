@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Review } from '../../../../../core/models/review.model';
+import { Review } from '../../models/review.model';
 import { ReviewService } from '../../services/review.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
 

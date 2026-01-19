@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Group } from '../../../../../core/models/group.model';
+import { Group } from '../../models/group.model';
 
 export interface GroupInvitation {
   id: string;

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SocialConnection, FollowRequest } from '../../../../core/models/user-profile.model';
+import { SocialConnection, FollowRequest } from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { PaginatedResult } from '../../../../core/models/result.model';
 

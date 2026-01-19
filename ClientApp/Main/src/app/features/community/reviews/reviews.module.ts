@@ -15,9 +15,6 @@ import { MatChipsModule } from '@angular/material/chips';
 // Shared modules
 import { SharedModule } from '../../../shared/shared.module';
 
-// Pages
-import { ReviewListComponent } from './pages/review-list/review-list.component';
-
 // Services
 import { ReviewService } from './services/review.service';
 
@@ -46,17 +43,11 @@ import { ReviewsRoutingModule } from './reviews-routing.module';
     // Shared
     SharedModule,
     
-    // Standalone components
-    ReviewListComponent,
-    
     // Routing
     ReviewsRoutingModule
   ],
   providers: [
     ReviewService
-  ],
-  exports: [
-    ReviewListComponent
   ]
 })
 export class ReviewsModule { }

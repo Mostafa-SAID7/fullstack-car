@@ -15,7 +15,7 @@ import {
   ProfileStats,
   BlockUserRequest,
   ReportUserRequest
-} from '../models/user-profile.model';
+} from '../../features/profile/models/user-profile.model';
 import { PaginatedResult } from '../models/result.model';
 import { ToastService } from './toast.service';
 import { LoadingService } from '../../shared/services/loading/loading.service';

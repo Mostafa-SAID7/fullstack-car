@@ -5,7 +5,7 @@ import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FriendService } from '../../../features/community/friends/services/friend.service';
 import { MediaService } from '../../../features/media/services/media.service';
-import { Friend } from '../../../core/models/friend.model';
+import { Friend } from '../../../features/community/friends/models/friend.model';
 import { VideoList, PodcastList } from '../../../features/media/models';
 import { filter, Subscription } from 'rxjs';
 import { CommunitySidebarRightComponent } from '../sidebars/community/community-sidebar-right.component';

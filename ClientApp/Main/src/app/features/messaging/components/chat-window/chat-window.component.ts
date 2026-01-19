@@ -1,7 +1,7 @@
 import { Component, input, output, computed, signal, effect, inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConversationDto, MessageDto, MessageType, TypingIndicator } from '../../../../core/models/messaging.model';
+import { ConversationDto, MessageDto, MessageType, TypingIndicator } from '../../models/messaging.model';
 import { MessagingService } from '../../../../core/services/messaging.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MessageListComponent } from '../message-list/message-list.component';

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserProfile, ConnectionStatus } from '../../../../core/models/user-profile.model';
+import { UserProfile, ConnectionStatus } from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { AuthService } from '../../../../core/services/auth.service';
 

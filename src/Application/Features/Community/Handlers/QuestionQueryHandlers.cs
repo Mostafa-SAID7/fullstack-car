@@ -4,6 +4,7 @@ using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Queries;
 using Application.Features.Community.Services;
 using Domain.Enums.Community;
+using Domain.Enums.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +51,7 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
             var vote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == request.UserId.Value && 
                                         v.ContentId == question.Id && 
-                                        v.ContentType == "Question", cancellationToken);
+                                        v.ContentType == ContentType.Question, cancellationToken);
             userVote = vote?.VoteType.ToString();
         }
 
@@ -83,7 +84,7 @@ public class GetQuestionDetailHandler : IRequestHandler<GetQuestionDetailQuery, 
                     _context.Votes
                         .Where(v => v.UserId == request.UserId.Value && 
                                   v.ContentId == a.Id && 
-                                  v.ContentType == "Answer")
+                                  v.ContentType == ContentType.Answer)
                         .Select(v => v.VoteType.ToString())
                         .FirstOrDefault() : null
             })

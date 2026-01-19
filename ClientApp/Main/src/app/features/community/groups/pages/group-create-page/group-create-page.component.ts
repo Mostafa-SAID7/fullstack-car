@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GroupService } from '../../../../../core/services/group.service';
-import { CreateGroupRequest, GroupSettings } from '../../../../../core/models/group.model';
+import { CreateGroupRequest, GroupSettings } from '../../models/group.model';
 
 @Component({
   selector: 'app-group-create-page',

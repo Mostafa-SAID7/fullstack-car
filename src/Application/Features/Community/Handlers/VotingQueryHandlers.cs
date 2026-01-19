@@ -3,6 +3,7 @@ using Application.Common.Models;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Queries;
 using Domain.Enums.Community;
+using Domain.Enums.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,7 +70,7 @@ public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<Pag
                     CreatedAt = v.CreatedAt,
                     UpdatedAt = v.UpdatedAt,
                     // Get content title and vote score based on content type
-                    ContentTitle = v.ContentType == "Question" 
+                    ContentTitle = v.ContentType == ContentType.Question 
                         ? _context.Questions
                             .Where(q => q.Id == v.ContentId && !q.IsDeleted)
                             .Select(q => q.Title)
@@ -80,7 +81,7 @@ public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<Pag
                             .FirstOrDefault() ?? "Answer not found",
                     // ContentUrl will be set in post-processing to avoid LINQ translation issues
                     ContentUrl = "",
-                    ContentVoteScore = v.ContentType == "Question"
+                    ContentVoteScore = v.ContentType == ContentType.Question
                         ? _context.Questions
                             .Where(q => q.Id == v.ContentId && !q.IsDeleted)
                             .Select(q => q.UpvotesCount - q.DownvotesCount)
@@ -90,7 +91,7 @@ public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<Pag
                             .Select(a => a.UpvotesCount - a.DownvotesCount)
                             .FirstOrDefault(),
                     // Store QuestionId for answers to build URL later
-                    QuestionId = v.ContentType == "Answer" 
+                    QuestionId = v.ContentType == ContentType.Answer 
                         ? _context.Answers
                             .Where(a => a.Id == v.ContentId)
                             .Select(a => a.QuestionId)
@@ -106,17 +107,17 @@ public class GetUserVotesHandler : IRequestHandler<GetUserVotesQuery, Result<Pag
             foreach (var vote in paginatedVotes.Items)
             {
                 // Build content URLs
-                if (vote.ContentType == "Question")
+                if (vote.ContentType == ContentType.Question)
                 {
                     vote.ContentUrl = $"/questions/{vote.ContentId}";
                 }
-                else if (vote.ContentType == "Answer" && vote.QuestionId.HasValue)
+                else if (vote.ContentType == ContentType.Answer && vote.QuestionId.HasValue)
                 {
                     vote.ContentUrl = $"/questions/{vote.QuestionId}/answers/{vote.ContentId}";
                 }
 
                 // Truncate answer content for display
-                if (vote.ContentType == "Answer" && vote.ContentTitle.Length > 100)
+                if (vote.ContentType == ContentType.Answer && vote.ContentTitle.Length > 100)
                 {
                     vote.ContentTitle = vote.ContentTitle.Substring(0, 100) + "...";
                 }

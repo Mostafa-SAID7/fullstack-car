@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { PostService } from '../../services/post.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
-import { Post } from '../../../../../core/models/post.model';
+import { Post } from '../../../pages/models/post.model';
 import { PostItemComponent } from '../../components/post-item/post-item.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 

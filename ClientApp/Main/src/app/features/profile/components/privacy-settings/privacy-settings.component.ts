@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { PrivacySettings, UpdatePrivacySettingsRequest } from '../../../../core/models/user-profile.model';
+import { PrivacySettings, UpdatePrivacySettingsRequest } from '../../models/user-profile.model';
 
 @Component({
   selector: 'app-privacy-settings',

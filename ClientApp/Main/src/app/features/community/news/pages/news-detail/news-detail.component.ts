@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NewsService } from '../../services/news.service';
-import { Article } from '../../../../../core/models/news.model';
+import { Article } from '../../models/news.model';
 
 @Component({
   selector: 'app-news-detail',

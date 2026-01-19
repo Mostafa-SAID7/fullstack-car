@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Enums.Common;
+using Domain.Enums.Community;
+using VoteType = Domain.Enums.Community.VoteType;
 
 namespace Application.Features.Community.DTOs.Requests;
 
@@ -8,12 +11,10 @@ public class CreateVoteRequest
     public Guid ContentId { get; set; }
 
     [Required]
-    [RegularExpression("^(Question|Answer)$")]
-    public string ContentType { get; set; } = string.Empty; // "Question" or "Answer"
+    public ContentType ContentType { get; set; }
 
     [Required]
-    [RegularExpression("^(Up|Down)$")]
-    public string VoteType { get; set; } = string.Empty; // "Up" or "Down"
+    public VoteType VoteType { get; set; }
 }
 
 public class ChangeVoteRequest
@@ -22,10 +23,8 @@ public class ChangeVoteRequest
     public Guid ContentId { get; set; }
 
     [Required]
-    [RegularExpression("^(Question|Answer)$")]
-    public string ContentType { get; set; } = string.Empty; // "Question" or "Answer"
+    public ContentType ContentType { get; set; }
 
     [Required]
-    [RegularExpression("^(Up|Down)$")]
-    public string NewVoteType { get; set; } = string.Empty; // "Up" or "Down"
+    public VoteType NewVoteType { get; set; }
 }

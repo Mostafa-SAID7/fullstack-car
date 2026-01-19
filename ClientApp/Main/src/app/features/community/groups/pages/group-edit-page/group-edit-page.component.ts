@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GroupService } from '../../../../../core/services/group.service';
-import { Group, UpdateGroupRequest } from '../../../../../core/models/group.model';
+import { Group, UpdateGroupRequest } from '../../models/group.model';
 
 @Component({
   selector: 'app-group-edit-page',

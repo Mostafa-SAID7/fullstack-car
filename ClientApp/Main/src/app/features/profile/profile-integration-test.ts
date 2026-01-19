@@ -22,7 +22,7 @@ import {
   SocialConnection,
   UpdateProfileRequest,
   UpdatePrivacySettingsRequest
-} from '../../core/models/user-profile.model';
+} from './models/user-profile.model';
 
 // Test service
 import { UserProfileService } from '../../core/services/user-profile.service';

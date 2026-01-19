@@ -54,6 +54,8 @@ namespace Infrastructure.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }
         public DbSet<UserConnection> UserConnections { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
+        public DbSet<PostView> PostViews { get; set; }
         public DbSet<PostReport> PostReports { get; set; }
 
         // Community Events Tables
@@ -158,7 +160,14 @@ namespace Infrastructure.Data
 
         // Media Tables
         public DbSet<Domain.Entities.Media.Video> Videos { get; set; }
+        public DbSet<Domain.Entities.Media.VideoLike> VideoLikes { get; set; }
+        public DbSet<Domain.Entities.Media.VideoView> VideoViews { get; set; }
+        public DbSet<Domain.Entities.Media.VideoComment> VideoComments { get; set; }
+        public DbSet<Domain.Entities.Media.VideoCommentLike> VideoCommentLikes { get; set; }
         public DbSet<Domain.Entities.Media.Podcast> Podcasts { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastLike> PodcastLikes { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastComment> PodcastComments { get; set; }
+        public DbSet<Domain.Entities.Media.PodcastCommentLike> PodcastCommentLikes { get; set; }
         public DbSet<Domain.Entities.Media.PodcastSeries> PodcastSeries { get; set; }
         public DbSet<Domain.Entities.Media.MediaAnalytics> MediaAnalytics { get; set; }
         public DbSet<Domain.Entities.Media.PodcastSubscription> PodcastSubscriptions { get; set; }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FriendRequest } from '../../../../../core/models/friend.model';
+import { FriendRequest } from '../../models/friend.model';
 import { FriendService } from '../../services/friend.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
 import { NotificationService } from '../../../../../core/services/notification.service';

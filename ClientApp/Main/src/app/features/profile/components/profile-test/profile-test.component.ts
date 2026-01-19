@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserProfile, ConnectionStatus } from '../../../../core/models/user-profile.model';
+import { UserProfile, ConnectionStatus } from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { ProfileHeaderComponent } from '../profile-header/profile-header.component';
 

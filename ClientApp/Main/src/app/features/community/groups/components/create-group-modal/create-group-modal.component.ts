@@ -1,7 +1,7 @@
 import { Component, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CreateGroupRequest } from '../../../../../core/models/group.model';
+import { CreateGroupRequest } from '../../models/group.model';
 import { GroupService } from '../../../../../core/services/group.service';
 import { firstValueFrom } from 'rxjs';
 

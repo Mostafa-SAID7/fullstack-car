@@ -9,7 +9,7 @@ import {
   UpdatePrivacySettingsRequest,
   BlockUserRequest,
   ReportUserRequest
-} from '../../../../core/models/user-profile.model';
+} from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';

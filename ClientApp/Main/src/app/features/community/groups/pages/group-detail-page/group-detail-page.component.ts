@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Group, GroupMember } from '../../../../../core/models/group.model';
+import { Group, GroupMember } from '../../models/group.model';
 import { GroupService } from '../../../../../core/services/group.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { GroupHeaderComponent } from '../../components/group-header/group-header.component';

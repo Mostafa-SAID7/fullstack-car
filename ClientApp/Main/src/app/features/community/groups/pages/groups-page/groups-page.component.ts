@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { GroupService } from '../../../../../core/services/group.service';
 import { AuthService } from '../../../../../core/services/auth.service';
-import { Group, GroupSearchFilters } from '../../../../../core/models/group.model';
+import { Group, GroupSearchFilters } from '../../models/group.model';
 import { CreateGroupModalComponent } from '../../components/create-group-modal/create-group-modal.component';
 import { GroupCardComponent } from '../../components/group-card/group-card.component';
 

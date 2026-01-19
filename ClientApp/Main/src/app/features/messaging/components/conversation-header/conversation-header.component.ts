@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ConversationDto, ConversationType, TypingIndicator, OnlineStatus } from '../../../../core/models/messaging.model';
+import { ConversationDto, ConversationType, TypingIndicator, OnlineStatus } from '../../models/messaging.model';
 
 /**
  * Conversation Header Component

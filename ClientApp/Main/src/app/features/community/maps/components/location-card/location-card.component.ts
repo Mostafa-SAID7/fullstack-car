@@ -1,13 +1,24 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface Location {
+export interface Location {
   id: string;
   name: string;
   address: string;
   type: string;
   latitude: number;
   longitude: number;
+}
+
+export enum LocationType {
+  Dealership = 'dealership',
+  ServiceCenter = 'service_center',
+  CarWash = 'car_wash',
+  GasStation = 'gas_station',
+  ParkingLot = 'parking_lot',
+  ChargingStation = 'charging_station',
+  AutoParts = 'auto_parts',
+  Other = 'other'
 }
 
 @Component({

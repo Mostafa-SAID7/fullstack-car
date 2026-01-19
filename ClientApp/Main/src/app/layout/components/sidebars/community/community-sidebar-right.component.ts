@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FriendRequestsComponent } from '../../../../features/community/friends/components/friend-requests/friend-requests.component';
-import { Friend } from '../../../../core/models/friend.model';
+import { Friend } from '../../../../features/community/friends/models/friend.model';
 
 
 @Component({

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { Subject } from 'rxjs';
-import { UserSearchResult } from '../../../../core/models/user-profile.model';
+import { UserSearchResult } from '../../models/user-profile.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
 import { PaginatedResult } from '../../../../core/models/result.model';
 

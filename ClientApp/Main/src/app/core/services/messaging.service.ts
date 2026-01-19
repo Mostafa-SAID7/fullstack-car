@@ -26,12 +26,12 @@ import type {
   PushNotificationPayload,
   RegisterPushRequest,
   MessagingNotificationPreferences
-} from '../models/messaging.model';
+} from '../../features/messaging/models/messaging.model';
 import {
   MessageType,
   MessageStatus,
   ConversationType
-} from '../models/messaging.model';
+} from '../../features/messaging/models/messaging.model';
 import { ApiResponse } from '../models/api.model';
 
 @Injectable({

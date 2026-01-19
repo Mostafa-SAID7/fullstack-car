@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Group, GroupSearchFilters } from '../../../../../core/models/group.model';
+import { Group, GroupSearchFilters } from '../../models/group.model';
 import { GroupCardComponent } from '../group-card/group-card.component';
 
 /**
