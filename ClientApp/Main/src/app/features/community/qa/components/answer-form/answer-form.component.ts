@@ -5,9 +5,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 // Shared Components (reusing existing UI)
-import { ButtonComponent } from '../../../../../../shared/components/ui/button/button.component';
-import { LoadingSpinnerComponent } from '../../../../../../shared/components/ui/loading/loading-spinner.component';
-import { ErrorDisplayComponent } from '../../../../../../shared/components/error-display/error-display.component';
+import { ButtonComponent } from '../../../../../shared/components/ui/button/button.component';
+import { LoadingSpinnerComponent } from '../../../../../shared/components/ui/loading/loading-spinner.component';
+import { ErrorDisplayComponent } from '../../../../../shared/components/error-display/error-display.component';
 
 // QA Types
 import { CreateAnswerRequest } from '../../models/qa-api.types';

@@ -2,9 +2,10 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, LogLevel, HubConnectionState } from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
-import { AuthService } from '../../../../../core/services/auth.service';
-import { NotificationService } from '../../../../../core/services/notification.service';
+import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../../core/services/auth.service';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Question, Answer } from '../models/qa-api.types';
 
 // Connection management and reliability types
@@ -177,7 +178,8 @@ export class QASignalRService {
 
   constructor(
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private toastService: ToastService
   ) {
     // Auto-connect when user is authenticated (following existing pattern)
     this.authService.currentUser$.subscribe((user: any) => {
@@ -559,12 +561,8 @@ export class QASignalRService {
   // Helper method for showing notifications
   private showNotification(title: string, message: string): void {
     try {
-      // Use existing notification service method (adjust based on actual interface)
-      if (this.notificationService && typeof (this.notificationService as any).show === 'function') {
-        (this.notificationService as any).show(message, title);
-      } else {
-        console.log(`QA Notification - ${title}: ${message}`);
-      }
+      // Use the global toast service for notifications
+      this.toastService.info(message, title);
     } catch (error) {
       console.warn('Failed to show QA notification:', error);
     }

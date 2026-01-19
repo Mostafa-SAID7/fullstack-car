@@ -3,7 +3,8 @@ import { Observable, BehaviorSubject, map, tap, catchError, of } from 'rxjs';
 import { Review, CreateReviewRequest } from '../../../core/models/review.model';
 import { Result, PaginatedResult } from '../../../core/models/result.model';
 import { TranslationService } from '../../../core/services/translation.service';
-import { ReviewApiService } from '../../../shared/services/api/review-api.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import { ReviewDto } from '../../../shared/models/community/review.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
@@ -14,9 +15,10 @@ import { LoadingService } from '../../../shared/services/loading/loading.service
 export class ReviewService {
     private reviewsSubject = new BehaviorSubject<Review[]>([]);
     public reviews$ = this.reviewsSubject.asObservable();
+    private readonly apiUrl = `${environment.apiUrl}/v1/reviews`;
 
     constructor(
-        private reviewApiService: ReviewApiService,
+        private http: HttpClient,
         private translationService: TranslationService,
         private toastService: ToastService,
         private loadingService: LoadingService
@@ -87,10 +89,12 @@ export class ReviewService {
         this.loadingService.show('reviews-list');
 
         const params: any = { pageNumber, pageSize };
+        if (carBrand) params.carBrand = carBrand;
+        if (carModel) params.carModel = carModel;
 
-        return this.reviewApiService.getReviews(params).pipe(
-            map(result => {
-                const reviews = result.items.map(dto => this.mapToReview(dto));
+        return this.http.get<PaginatedResult<ReviewDto>>(`${this.apiUrl}`, { params }).pipe(
+            map((result: PaginatedResult<ReviewDto>) => {
+                const reviews = result.items.map((dto: ReviewDto) => this.mapToReview(dto));
                 this.reviewsSubject.next(reviews);
 
                 return {
@@ -126,8 +130,8 @@ export class ReviewService {
     getReview(id: string): Observable<Result<Review>> {
         this.loadingService.show('review-detail');
 
-        return this.reviewApiService.getReview(id).pipe(
-            map(dto => ({
+        return this.http.get<ReviewDto>(`${this.apiUrl}/${id}`).pipe(
+            map((dto: ReviewDto) => ({
                 succeeded: true,
                 data: this.mapToReview(dto),
                 errors: []
@@ -151,8 +155,8 @@ export class ReviewService {
     createReview(request: CreateReviewRequest): Observable<Result<Review>> {
         this.loadingService.show('create-review');
 
-        return this.reviewApiService.createReview(request).pipe(
-            map(dto => {
+        return this.http.post<ReviewDto>(`${this.apiUrl}`, request).pipe(
+            map((dto: ReviewDto) => {
                 const review = this.mapToReview(dto);
 
                 // Update local state
@@ -183,7 +187,7 @@ export class ReviewService {
     }
 
     markHelpful(id: string): Observable<Result<any>> {
-        return this.reviewApiService.markHelpful(id).pipe(
+        return this.http.post<any>(`${this.apiUrl}/${id}/helpful`, {}).pipe(
             map(() => {
                 // Update local state
                 const currentReviews = this.reviewsSubject.value;
@@ -219,9 +223,9 @@ export class ReviewService {
         // Use the main getReviews method with filtering
         // Note: The new API doesn't have separate car reviews endpoint, so we filter client-side
         return this.getReviews(pageNumber, pageSize).pipe(
-            map(result => ({
+            map((result: PaginatedResult<Review>) => ({
                 ...result,
-                items: result.items.filter(review =>
+                items: result.items.filter((review: Review) =>
                     review.carBrand?.toLowerCase() === brand.toLowerCase() &&
                     review.carModel?.toLowerCase() === model.toLowerCase()
                 )
@@ -233,9 +237,9 @@ export class ReviewService {
         // Use the main getReviews method with filtering
         // Note: The new API doesn't have separate user reviews endpoint, so we filter client-side
         return this.getReviews(pageNumber, pageSize).pipe(
-            map(result => ({
+            map((result: PaginatedResult<Review>) => ({
                 ...result,
-                items: result.items.filter(review => review.userId === userId)
+                items: result.items.filter((review: Review) => review.userId === userId)
             }))
         );
     }

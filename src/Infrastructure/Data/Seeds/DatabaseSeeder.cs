@@ -194,16 +194,16 @@ namespace Infrastructure.Data.Seeds
             _context.QuestionCategories.RemoveRange(_context.QuestionCategories);
 
             // Clear comprehensive QA system data
-            _context.QAUserActivities.RemoveRange(_context.QAUserActivities);
-            _context.QAAnalytics.RemoveRange(_context.QAAnalytics);
-            _context.QAExperts.RemoveRange(_context.QAExperts);
+            _context.UserActivities.RemoveRange(_context.UserActivities);
+            _context.Analytics.RemoveRange(_context.Analytics);
+            _context.Experts.RemoveRange(_context.Experts);
             _context.UserReputations.RemoveRange(_context.UserReputations);
-            _context.QAVotes.RemoveRange(_context.QAVotes);
+            _context.Votes.RemoveRange(_context.Votes);
             _context.QuestionTags.RemoveRange(_context.QuestionTags);
             _context.QuestionBookmarks.RemoveRange(_context.QuestionBookmarks);
             _context.QuestionViews.RemoveRange(_context.QuestionViews);
-            _context.QATags.RemoveRange(_context.QATags);
-            _context.QACategories.RemoveRange(_context.QACategories);
+            _context.Tags.RemoveRange(_context.Tags);
+            _context.Categories.RemoveRange(_context.Categories);
 
             _context.Notifications.RemoveRange(_context.Notifications);
             _context.CommentLikes.RemoveRange(_context.CommentLikes);
@@ -265,13 +265,13 @@ namespace Infrastructure.Data.Seeds
             var reviewCount = await _context.CommunityReviews.CountAsync();
             var questionCount = await _context.Questions.CountAsync();
             var answerCount = await _context.Answers.CountAsync();
-            var qaVoteCount = await _context.QAVotes.CountAsync();
+            var voteCount = await _context.Votes.CountAsync();
             var userReputationCount = await _context.UserReputations.CountAsync();
-            var qaExpertCount = await _context.QAExperts.CountAsync();
-            var qaCategoryCount = await _context.QACategories.CountAsync();
-            var qaTagCount = await _context.QATags.CountAsync();
-            var qaAnalyticsCount = await _context.QAAnalytics.CountAsync();
-            var qaUserActivityCount = await _context.QAUserActivities.CountAsync();
+            var expertCount = await _context.Experts.CountAsync();
+            var categoryCount = await _context.Categories.CountAsync();
+            var tagCount = await _context.Tags.CountAsync();
+            var analyticsCount = await _context.Analytics.CountAsync();
+            var userActivityCount = await _context.UserActivities.CountAsync();
             var locationCount = await _context.Locations.CountAsync();
             var articleCount = await _context.Articles.CountAsync();
             var guideCount = await _context.Guides.CountAsync();
@@ -298,13 +298,13 @@ namespace Infrastructure.Data.Seeds
             _logger.LogInformation("  Reviews: {ReviewCount:N0}", reviewCount);
             _logger.LogInformation("  Questions: {QuestionCount:N0}", questionCount);
             _logger.LogInformation("  Answers: {AnswerCount:N0}", answerCount);
-            _logger.LogInformation("  QA Votes: {QAVoteCount:N0}", qaVoteCount);
+            _logger.LogInformation("  Votes: {VoteCount:N0}", voteCount);
             _logger.LogInformation("  User Reputations: {UserReputationCount:N0}", userReputationCount);
-            _logger.LogInformation("  QA Experts: {QAExpertCount:N0}", qaExpertCount);
-            _logger.LogInformation("  QA Categories: {QACategoryCount:N0}", qaCategoryCount);
-            _logger.LogInformation("  QA Tags: {QATagCount:N0}", qaTagCount);
-            _logger.LogInformation("  QA Analytics: {QAAnalyticsCount:N0}", qaAnalyticsCount);
-            _logger.LogInformation("  QA User Activities: {QAUserActivityCount:N0}", qaUserActivityCount);
+            _logger.LogInformation("  Experts: {ExpertCount:N0}", expertCount);
+            _logger.LogInformation("  Categories: {CategoryCount:N0}", categoryCount);
+            _logger.LogInformation("  Tags: {TagCount:N0}", tagCount);
+            _logger.LogInformation("  Analytics: {AnalyticsCount:N0}", analyticsCount);
+            _logger.LogInformation("  User Activities: {UserActivityCount:N0}", userActivityCount);
             _logger.LogInformation("  Locations: {LocationCount:N0}", locationCount);
             _logger.LogInformation("  News Articles: {ArticleCount:N0}", articleCount);
             _logger.LogInformation("  Guides: {GuideCount:N0}", guideCount);

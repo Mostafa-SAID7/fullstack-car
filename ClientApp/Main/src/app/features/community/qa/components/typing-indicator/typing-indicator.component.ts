@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { QASignalRService } from '../../services/qa-signalr.service';
-import { TypingIndicatorComponent as SharedTypingIndicatorComponent } from '../../../../../../shared/components/typing-indicator/typing-indicator.component';
+import { TypingIndicatorComponent as SharedTypingIndicatorComponent } from '../../../../../shared/components/typing-indicator/typing-indicator.component';
 
 import { TypingUser } from '../../models/qa-ui.types';
 

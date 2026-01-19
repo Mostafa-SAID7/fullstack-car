@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { QAQuestionService } from '../../../../features/community/components/qa/services/qa-question.service';
+import { QAQuestionService } from '../../../../features/community/qa/services/qa-question.service';
 
 @Component({
     selector: 'app-community-sidebar-left',
@@ -56,7 +56,7 @@ export class CommunitySidebarLeftComponent implements OnInit {
     private loadQuestionsCount(): void {
         // Fetch total count of all questions
         this.qaQuestionService.getQuestions({ pageSize: 1 }).subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 if (response.succeeded && response.data) {
                     const questionsItem = this.menuItems.find(item => item.id === 'questions');
                     if (questionsItem) {
@@ -64,7 +64,7 @@ export class CommunitySidebarLeftComponent implements OnInit {
                     }
                 }
             },
-            error: (error) => console.error('Error loading questions count:', error)
+            error: (error: any) => console.error('Error loading questions count:', error)
         });
     }
 }

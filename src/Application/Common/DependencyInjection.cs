@@ -17,9 +17,12 @@ namespace Application.Common
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+                cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                cfg.AddOpenBehavior(typeof(TransactionBehavior<,>));
                 cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
                 cfg.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
-                // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
             // Register domain services

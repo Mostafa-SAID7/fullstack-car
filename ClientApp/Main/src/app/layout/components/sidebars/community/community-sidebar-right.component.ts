@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { FriendRequestsComponent } from '../../../../features/community/components/friends/friend-requests/friend-requests.component';
+import { FriendRequestsComponent } from '../../../../features/community/friends/components/friend-requests/friend-requests.component';
 import { Friend } from '../../../../core/models/friend.model';
 
 

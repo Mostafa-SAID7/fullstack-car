@@ -60,15 +60,15 @@ namespace Application.Common.Interfaces.Data
         DbSet<QuestionTag> QuestionTags { get; }
         DbSet<QuestionVote> QuestionVotes { get; }
         DbSet<AnswerVote> AnswerVotes { get; }
-        DbSet<QAVote> QAVotes { get; }
+        DbSet<Vote> Votes { get; }
         DbSet<QuestionView> QuestionViews { get; }
         DbSet<QuestionBookmark> QuestionBookmarks { get; }
         DbSet<UserReputation> UserReputations { get; }
-        DbSet<QAUserActivity> QAUserActivities { get; }
-        DbSet<QAExpert> QAExperts { get; }
-        DbSet<QACategory> QACategories { get; }
-        DbSet<QATag> QATags { get; }
-        DbSet<QAAnalytics> QAAnalytics { get; }
+        DbSet<UserActivity> UserActivities { get; }
+        DbSet<Expert> Experts { get; }
+        DbSet<Category> Categories { get; }
+        DbSet<Tag> Tags { get; }
+        DbSet<Analytics> Analytics { get; }
 
         // Shared Tables
         DbSet<Notification> Notifications { get; }

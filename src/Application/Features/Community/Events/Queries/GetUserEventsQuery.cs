@@ -1,7 +1,10 @@
 using Application.Common.DTOs;
+using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.Events.DTOs;
 using Application.Features.Community.Events.Interfaces;
 using MediatR;
+using System.Linq;
 
 namespace Application.Features.Community.Events.Queries
 {
@@ -41,18 +44,22 @@ namespace Application.Features.Community.Events.Queries
                         events = await _eventRepository.GetUserAttendingEventsAsync(request.UserId, cancellationToken);
                         break;
                     case "maybe":
-                        // Get events where user responded "Maybe"
                         var maybeAttendances = await _attendanceRepository.GetUserAttendancesByTypeAsync(
                             request.UserId, "Maybe", cancellationToken);
                         var maybeEventIds = maybeAttendances.Select(a => a.EventId).ToList();
-                        events = await Task.FromResult(new List<Domain.Entities.Community.Events.Event>());
-                        // TODO: Implement GetEventsByIdsAsync in repository
+                        
+                        events = await _eventRepository.FindAsync(e => maybeEventIds.Contains(e.Id), cancellationToken);
                         break;
                     default:
-                        // Get all user events (organized + attending)
-                        var organizedEvents = await _eventRepository.GetUserOrganizedEventsAsync(request.UserId, cancellationToken);
-                        var attendingEvents = await _eventRepository.GetUserAttendingEventsAsync(request.UserId, cancellationToken);
-                        events = organizedEvents.Union(attendingEvents).Distinct();
+                        // Get all user events (organized + attending + maybe)
+                        var organized = await _eventRepository.GetUserOrganizedEventsAsync(request.UserId, cancellationToken);
+                        var attending = await _eventRepository.GetUserAttendingEventsAsync(request.UserId, cancellationToken);
+                        var maybeAtt = await _attendanceRepository.GetUserAttendancesByTypeAsync(request.UserId, "Maybe", cancellationToken);
+                        var maybeIds = maybeAtt.Select(a => a.EventId).ToList();
+                        
+                        var maybeEvs = await _eventRepository.FindAsync(e => maybeIds.Contains(e.Id), cancellationToken);
+                        
+                        events = organized.Union(attending).Union(maybeEvs).DistinctBy(e => e.Id);
                         break;
                 }
 

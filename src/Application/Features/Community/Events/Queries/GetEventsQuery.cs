@@ -21,15 +21,18 @@ namespace Application.Features.Community.Events.Queries
         public bool? IsActive { get; set; } = true;
         public string? SortBy { get; set; } = "StartDate";
         public bool SortDescending { get; set; } = false;
+        public Guid? UserId { get; set; }
     }
 
     public class GetEventsQueryHandler : IRequestHandler<GetEventsQuery, Result<EventsPagedResponse>>
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IEventAttendanceRepository _attendanceRepository;
 
-        public GetEventsQueryHandler(IEventRepository eventRepository)
+        public GetEventsQueryHandler(IEventRepository eventRepository, IEventAttendanceRepository attendanceRepository)
         {
             _eventRepository = eventRepository;
+            _attendanceRepository = attendanceRepository;
         }
 
         public async Task<Result<EventsPagedResponse>> Handle(GetEventsQuery request, CancellationToken cancellationToken)
@@ -53,6 +56,15 @@ namespace Application.Features.Community.Events.Queries
                     request.SortDescending,
                     cancellationToken);
 
+                var userAttendances = request.UserId.HasValue 
+                    ? await _attendanceRepository.GetUserAttendancesAsync(request.UserId.Value, cancellationToken)
+                    : new List<Domain.Entities.Community.Events.EventAttendance>();
+
+                var attendingEventIds = userAttendances
+                    .Where(a => a.AttendanceType == "Going")
+                    .Select(a => a.EventId)
+                    .ToHashSet();
+
                 var eventDtos = pagedEvents.Items.Select(e => new EventSummaryDto
                 {
                     Id = e.Id,
@@ -68,7 +80,7 @@ namespace Application.Features.Community.Events.Queries
                     AttendeeCount = e.AttendeeCount,
                     MaxAttendees = e.MaxAttendees,
                     Status = e.Status,
-                    IsUserAttending = false, // TODO: Check if current user is attending
+                    IsUserAttending = attendingEventIds.Contains(e.Id),
                     IsFeatured = e.IsFeatured,
                     Price = e.Price,
                     Currency = e.Currency,

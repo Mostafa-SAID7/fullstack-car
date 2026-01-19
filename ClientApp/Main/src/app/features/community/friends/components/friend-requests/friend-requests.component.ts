@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FriendRequest } from '../../../../../core/models/friend.model';
 import { FriendService } from '../../services/friend.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
-import { NotificationService } from '../../../../../shared/services/notification/notification.service';
+import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-friend-requests',

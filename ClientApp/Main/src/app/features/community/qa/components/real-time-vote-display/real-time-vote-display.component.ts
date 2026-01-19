@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { QASignalRService } from '../../services/qa-signalr.service';
 import { QAVotingService } from '../../services/qa-voting.service';
-import { ToastService } from '../../../../../../core/services/toast.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
     selector: 'app-real-time-vote-display',

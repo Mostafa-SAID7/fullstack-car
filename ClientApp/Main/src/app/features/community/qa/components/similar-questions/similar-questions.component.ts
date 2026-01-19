@@ -8,7 +8,7 @@ import { SearchFilter, QuestionSimilarity } from '../../models/qa-api.types';
 import { SimilarQuestion } from '../../models/qa-ui.types';
 
 // Shared
-import { RelativeTimePipe } from '../../../../../../shared/pipes/relative-time.pipe';
+import { RelativeTimePipe } from '../../../../../shared/pipes/relative-time.pipe';
 
 @Component({
     selector: 'app-similar-questions',

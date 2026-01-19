@@ -64,19 +64,19 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Community.QA.AnswerHistory> AnswerHistories { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionVote> QuestionVotes { get; set; }
         public DbSet<Domain.Entities.Community.QA.AnswerVote> AnswerVotes { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QAVote> QAVotes { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Vote> Votes { get; set; }
         public DbSet<Domain.Entities.Community.QA.UserReputation> UserReputations { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QAExpert> QAExperts { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QAAnalytics> QAAnalytics { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QAUserActivity> QAUserActivities { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QACategory> QACategories { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QATag> QATags { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Expert> Experts { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Analytics> Analytics { get; set; }
+        public DbSet<Domain.Entities.Community.QA.UserActivity> UserActivities { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Category> Categories { get; set; }
+        public DbSet<Domain.Entities.Community.QA.Tag> Tags { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionCategory> QuestionCategories { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionTag> QuestionTags { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionView> QuestionViews { get; set; }
         public DbSet<Domain.Entities.Community.QA.QuestionBookmark> QuestionBookmarks { get; set; }
         public DbSet<Domain.Entities.Community.QA.AnswerComment> AnswerComments { get; set; }
-        public DbSet<Domain.Entities.Community.QA.QAUserFeedback> QAUserFeedback { get; set; }
+        public DbSet<Domain.Entities.Community.QA.UserFeedback> UserFeedback { get; set; }
 
         // Community Maps Tables
         public DbSet<Domain.Entities.Community.Maps.Location> Locations { get; set; }
@@ -263,6 +263,68 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Marketing.PlatformAnalytics> PlatformAnalytics { get; set; }
         public DbSet<Domain.Entities.Marketing.MarketingOverview> MarketingOverviews { get; set; }
 
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await OnBeforeSaveChanges();
+            var result = await base.SaveChangesAsync(cancellationToken);
+            return result;
+        }
+
+        private async Task OnBeforeSaveChanges()
+        {
+            ChangeTracker.DetectChanges();
+            var auditEntries = new List<AuditEntry>();
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is AuditLog || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                    continue;
+
+                var auditEntry = new AuditEntry(entry);
+                auditEntry.TableName = entry.Entity.GetType().Name;
+                auditEntry.UserId = null; // Should be handled by ICurrentUserService if accessible
+                auditEntries.Add(auditEntry);
+
+                foreach (var property in entry.Properties)
+                {
+                    string propertyName = property.Metadata.Name;
+                    if (property.Metadata.IsPrimaryKey())
+                    {
+                        auditEntry.KeyValues[propertyName] = property.CurrentValue;
+                        continue;
+                    }
+
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            auditEntry.AuditType = Domain.Enums.Admin.System.AuditActionType.Create;
+                            auditEntry.NewValues[propertyName] = property.CurrentValue;
+                            break;
+
+                        case EntityState.Deleted:
+                            auditEntry.AuditType = Domain.Enums.Admin.System.AuditActionType.Delete;
+                            auditEntry.OldValues[propertyName] = property.OriginalValue;
+                            break;
+
+                        case EntityState.Modified:
+                            if (property.IsModified)
+                            {
+                                auditEntry.ChangedColumns.Add(propertyName);
+                                auditEntry.AuditType = Domain.Enums.Admin.System.AuditActionType.Update;
+                                auditEntry.OldValues[propertyName] = property.OriginalValue;
+                                auditEntry.NewValues[propertyName] = property.CurrentValue;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            foreach (var auditEntry in auditEntries)
+            {
+                AuditLogs.Add(auditEntry.ToAuditLog());
+            }
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -273,6 +335,42 @@ namespace Infrastructure.Data
             // Suppress the pending model changes warning for now
             optionsBuilder.ConfigureWarnings(warnings => 
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        }
+
+        private class AuditEntry
+        {
+            public AuditEntry(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry)
+            {
+                Entry = entry;
+            }
+            public Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry Entry { get; }
+            public Guid? UserId { get; set; }
+            public string TableName { get; set; }
+            public Dictionary<string, object> KeyValues { get; } = new();
+            public Dictionary<string, object> OldValues { get; } = new();
+            public Dictionary<string, object> NewValues { get; } = new();
+            public Domain.Enums.Admin.System.AuditActionType AuditType { get; set; }
+            public List<string> ChangedColumns { get; } = new();
+            public AuditLog ToAuditLog()
+            {
+                var audit = new AuditLog();
+                audit.UserId = UserId;
+                audit.Action = AuditType;
+                audit.EntityType = TableName;
+                audit.EntityName = TableName;
+                audit.Timestamp = DateTime.UtcNow;
+                
+                if (KeyValues.Count == 1 && KeyValues.First().Value is Guid guidId)
+                {
+                    audit.EntityId = guidId;
+                }
+                
+                audit.OldValues = OldValues.Count == 0 ? null : System.Text.Json.JsonSerializer.Serialize(OldValues);
+                audit.NewValues = NewValues.Count == 0 ? null : System.Text.Json.JsonSerializer.Serialize(NewValues);
+                audit.Changes = ChangedColumns.Count == 0 ? string.Empty : System.Text.Json.JsonSerializer.Serialize(ChangedColumns);
+                
+                return audit;
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -292,8 +390,8 @@ namespace Infrastructure.Data
             builder.Entity<RoleClaim>().ToTable("AspNetRoleClaims");
             builder.Entity<SecurityLog>().ToTable("SecurityLogs");
 
-            // Configure QAUserFeedback Metadata property as JSON
-            builder.Entity<Domain.Entities.Community.QA.QAUserFeedback>()
+            // Configure UserFeedback Metadata property as JSON
+            builder.Entity<Domain.Entities.Community.QA.UserFeedback>()
                 .Property(e => e.Metadata)
                 .HasConversion(
                     v => v == null ? null : System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions?)null),

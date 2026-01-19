@@ -110,8 +110,8 @@ namespace WebAPI.Controllers.Community.Reviews
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("Review created successfully. Id: {ReviewId}", result.Data.Id);
-                return Created(result.Data, $"/reviews/{result.Data.Id}", await _localizationProvider.GetTranslationAsync("en-US", "Reviews.Created"));
+                _logger.LogInformation("Review created successfully. Id: {ReviewId}", result.Data);
+                return Created(result.Data, $"/reviews/{result.Data}", await _localizationProvider.GetTranslationAsync("en-US", "Reviews.Created"));
             }
 
             _logger.LogWarning("Failed to create review. Errors: {Errors}", string.Join(", ", result.Errors));

@@ -18,9 +18,6 @@ import { SharedModule } from '../../../shared/shared.module';
 // Pages
 import { ReviewListComponent } from './pages/review-list/review-list.component';
 
-// Components
-import { ReviewItemComponent } from './components/review-item/review-item.component';
-
 // Services
 import { ReviewService } from './services/review.service';
 
@@ -30,10 +27,7 @@ import { ReviewsRoutingModule } from './reviews-routing.module';
 @NgModule({
   declarations: [
     // Pages
-    ReviewListComponent,
-    
-    // Components
-    ReviewItemComponent
+    ReviewListComponent
   ],
   imports: [
     CommonModule,
@@ -60,7 +54,6 @@ import { ReviewsRoutingModule } from './reviews-routing.module';
     ReviewService
   ],
   exports: [
-    ReviewItemComponent,
     ReviewListComponent
   ]
 })

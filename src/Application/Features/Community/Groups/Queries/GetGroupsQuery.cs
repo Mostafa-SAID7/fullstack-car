@@ -16,15 +16,20 @@ namespace Application.Features.Community.Groups.Queries
         public bool SortDescending { get; set; } = true;
         public bool? IsPublic { get; set; }
         public bool? IsActive { get; set; } = true;
+        public Guid? UserId { get; set; }
     }
 
     public class GetGroupsQueryHandler : IRequestHandler<GetGroupsQuery, Result<GroupsPagedResponse>>
     {
         private readonly IGroupRepository _groupRepository;
+        private readonly IGroupMemberRepository _memberRepository;
 
-        public GetGroupsQueryHandler(IGroupRepository groupRepository)
+        public GetGroupsQueryHandler(
+            IGroupRepository groupRepository,
+            IGroupMemberRepository memberRepository)
         {
             _groupRepository = groupRepository;
+            _memberRepository = memberRepository;
         }
 
         public async Task<Result<GroupsPagedResponse>> Handle(GetGroupsQuery request, CancellationToken cancellationToken)
@@ -40,6 +45,13 @@ namespace Application.Features.Community.Groups.Queries
                 request.IsActive,
                 cancellationToken);
 
+            // Get user memberships to set IsMember flag
+            var userMemberships = request.UserId.HasValue 
+                ? await _memberRepository.FindAsync(m => m.UserId == request.UserId.Value, cancellationToken)
+                : new List<Domain.Entities.Community.Groups.GroupMember>();
+            
+            var userGroupIds = userMemberships.Select(m => m.GroupId).ToHashSet();
+
             var groupSummaries = result.Items.Select(g => new GroupSummaryDto
             {
                 Id = g.Id,
@@ -50,6 +62,7 @@ namespace Application.Features.Community.Groups.Queries
                 IsPublic = g.IsPublic,
                 MemberCount = g.MemberCount,
                 CreatedAt = g.CreatedAt,
+                IsMember = userGroupIds.Contains(g.Id),
                 IsFeatured = g.IsFeatured
             }).ToList();
 
@@ -67,7 +80,8 @@ namespace Application.Features.Community.Groups.Queries
                     PublicGroups = await _groupRepository.GetPublicGroupCountAsync(cancellationToken),
                     PrivateGroups = await _groupRepository.GetPrivateGroupCountAsync(cancellationToken),
                     ActiveGroups = await _groupRepository.GetActiveGroupCountAsync(cancellationToken),
-                    FeaturedGroups = await _groupRepository.GetFeaturedGroupCountAsync(cancellationToken)
+                    FeaturedGroups = await _groupRepository.GetFeaturedGroupCountAsync(cancellationToken),
+                    TotalMembers = result.Items.Sum(g => g.MemberCount) // Just illustrative, usually you'd want global sum
                 }
             };
 

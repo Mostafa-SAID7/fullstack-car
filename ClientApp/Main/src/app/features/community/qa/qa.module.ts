@@ -28,69 +28,27 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 // Shared modules
 import { SharedModule } from '../../../shared/shared.module';
 
-// Pages
-import { QuestionListComponent } from './pages/question-list/question-list.component';
-import { QuestionDetailComponent } from './pages/question-detail/question-detail.component';
-import { QuestionFormComponent } from './pages/question-form/question-form.component';
-
-// Components
-import { AnswerAcceptanceComponent } from './components/answer-acceptance/answer-acceptance.component';
-import { AnswerFormComponent } from './components/answer-form/answer-form.component';
-import { CategoryFilterComponent } from './components/category-filter/category-filter.component';
-import { ConnectionStatusComponent } from './components/connection-status/connection-status.component';
-import { DuplicateSuggestionsComponent } from './components/duplicate-suggestions/duplicate-suggestions.component';
-import { QuestionBookmarkComponent } from './components/question-bookmark/question-bookmark.component';
-import { QuestionFollowComponent } from './components/question-follow/question-follow.component';
-import { QuestionSearchComponent } from './components/question-search/question-search.component';
-import { QuestionShareComponent } from './components/question-share/question-share.component';
-import { RealTimeAnswerListComponent } from './components/real-time-answer-list/real-time-answer-list.component';
-import { RealTimeVoteDisplayComponent } from './components/real-time-vote-display/real-time-vote-display.component';
-import { ReputationDisplayComponent } from './components/reputation-display/reputation-display.component';
-import { SimilarQuestionsComponent } from './components/similar-questions/similar-questions.component';
-import { TagCloudComponent } from './components/tag-cloud/tag-cloud.component';
-import { TypingIndicatorComponent } from './components/typing-indicator/typing-indicator.component';
-
-// Services
-import { QaService } from './services/qa.service';
-import { QaAnswerService } from './services/qa-answer.service';
-import { QaBookmarkService } from './services/qa-bookmark.service';
-import { QaCategoryService } from './services/qa-category.service';
-import { QaExpertNotificationService } from './services/qa-expert-notification.service';
-import { QaFollowService } from './services/qa-follow.service';
-import { QaQuestionService } from './services/qa-question.service';
-import { QaReputationService } from './services/qa-reputation.service';
-import { QaSearchService } from './services/qa-search.service';
-import { QaSignalrService } from './services/qa-signalr.service';
-import { QaStateService } from './services/qa-state.service';
-import { QaTagService } from './services/qa-tag.service';
-import { QaVotingService } from './services/qa-voting.service';
+// Services - using correct class names
+import { QAService } from './services/qa.service';
+import { QAAnswerService } from './services/qa-answer.service';
+import { QABookmarkService } from './services/qa-bookmark.service';
+import { QACategoryService } from './services/qa-category.service';
+import { QAExpertNotificationService } from './services/qa-expert-notification.service';
+import { QAFollowService } from './services/qa-follow.service';
+import { QAQuestionService } from './services/qa-question.service';
+import { QAReputationService } from './services/qa-reputation.service';
+import { QASearchService } from './services/qa-search.service';
+import { QASignalRService } from './services/qa-signalr.service';
+import { QAStateService } from './services/qa-state.service';
+import { QATagService } from './services/qa-tag.service';
+import { QAVotingService } from './services/qa-voting.service';
 
 // Routing
 import { QaRoutingModule } from './qa-routing.module';
 
 @NgModule({
   declarations: [
-    // Pages
-    QuestionListComponent,
-    QuestionDetailComponent,
-    QuestionFormComponent,
-    
-    // Components
-    AnswerAcceptanceComponent,
-    AnswerFormComponent,
-    CategoryFilterComponent,
-    ConnectionStatusComponent,
-    DuplicateSuggestionsComponent,
-    QuestionBookmarkComponent,
-    QuestionFollowComponent,
-    QuestionSearchComponent,
-    QuestionShareComponent,
-    RealTimeAnswerListComponent,
-    RealTimeVoteDisplayComponent,
-    ReputationDisplayComponent,
-    SimilarQuestionsComponent,
-    TagCloudComponent,
-    TypingIndicatorComponent
+    // All QA components are standalone, so no components should be declared here
   ],
   imports: [
     CommonModule,
@@ -127,26 +85,22 @@ import { QaRoutingModule } from './qa-routing.module';
     QaRoutingModule
   ],
   providers: [
-    QaService,
-    QaAnswerService,
-    QaBookmarkService,
-    QaCategoryService,
-    QaExpertNotificationService,
-    QaFollowService,
-    QaQuestionService,
-    QaReputationService,
-    QaSearchService,
-    QaSignalrService,
-    QaStateService,
-    QaTagService,
-    QaVotingService
+    QAService,
+    QAAnswerService,
+    QABookmarkService,
+    QACategoryService,
+    QAExpertNotificationService,
+    QAFollowService,
+    QAQuestionService,
+    QAReputationService,
+    QASearchService,
+    QASignalRService,
+    QAStateService,
+    QATagService,
+    QAVotingService
   ],
   exports: [
-    // Export components that might be used in other modules
-    QuestionSearchComponent,
-    CategoryFilterComponent,
-    TagCloudComponent,
-    ReputationDisplayComponent
+    // No exports needed since all components are standalone
   ]
 })
 export class QaModule { }

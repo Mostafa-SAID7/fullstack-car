@@ -19,26 +19,13 @@ import { SharedModule } from '../../../shared/shared.module';
 // Pages
 import { PostListComponent } from './pages/post-list/post-list.component';
 
-// Components
-import { PostItemComponent } from './components/post-item/post-item.component';
-
 // Services
 import { PostService } from './services/post.service';
-
-// Routing
-import { PostsRoutingModule } from './posts-routing.module';
 
 @NgModule({
   declarations: [
     // Pages
-    PostListComponent,
-    PostDetailComponent,
-    PostCreateComponent,
-    
-    // Components
-    PostItemComponent,
-    PostCardComponent,
-    PostFiltersComponent
+    PostListComponent
   ],
   imports: [
     CommonModule,
@@ -66,8 +53,10 @@ import { PostsRoutingModule } from './posts-routing.module';
     PostService
   ],
   exports: [
-    PostItemComponent,
     PostListComponent
   ]
 })
 export class PostsModule { }
+
+// Import routing module
+import { PostsRoutingModule } from './posts-routing.module';

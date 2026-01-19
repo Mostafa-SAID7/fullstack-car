@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { Category } from '../../models/qa-api.types';
 import { QACategoryService } from '../../services/qa-category.service';
 
-import { FilterSelectComponent } from '../../../../../../shared/components/filter-select/filter-select.component';
-import { FilterChipsComponent } from '../../../../../../shared/components/filter-chips/filter-chips.component';
+import { FilterSelectComponent } from '../../../../../shared/components/filter-select/filter-select.component';
+import { FilterChipsComponent } from '../../../../../shared/components/filter-chips/filter-chips.component';
 
 @Component({
   selector: 'app-category-filter',

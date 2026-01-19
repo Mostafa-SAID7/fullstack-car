@@ -211,6 +211,7 @@ namespace Infrastructure.Extensions
 
             // Logging Services
             services.AddTransient(typeof(IAppLogger<>), typeof(AppLogger<>));
+            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
             // Add JWT Authentication
             var secret = configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
@@ -262,40 +263,40 @@ namespace Infrastructure.Extensions
             // Media Services
             // services.AddScoped<Application.Features.Media.Shared.Interfaces.IMediaService, Application.Features.Media.Shared.Services.MediaService>(); // Commented out - MediaService doesn't implement IMediaService
 
-            // QA Services
-            services.Configure<QASearchOptions>(configuration.GetSection(QASearchOptions.SectionName));
+            // Community Services
+            services.Configure<SearchOptions>(configuration.GetSection(SearchOptions.SectionName));
             services.Configure<DuplicatePreventionOptions>(configuration.GetSection(DuplicatePreventionOptions.SectionName));
             services.AddScoped<IContentQualityService, ContentQualityService>();
-            services.AddScoped<IQAService, QAService>();
-            services.AddScoped<IQASearchService, QASearchService>();
+            services.AddScoped<ICommunityService, CommunityService>();
+            services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IDuplicatePreventionService, DuplicatePreventionService>();
             services.AddScoped<IReputationService, ReputationService>();
-            services.AddSingleton<IQAHubService, QAHubService>();
-            services.AddSingleton<IQAConnectionManager, QAConnectionManager>();
-            services.AddHostedService<QAConnectionManager>(provider => 
-                (QAConnectionManager)provider.GetRequiredService<IQAConnectionManager>());
+            services.AddSingleton<IHubService, HubService>();
+            services.AddSingleton<IConnectionManager, ConnectionManager>();
+            services.AddHostedService<ConnectionManager>(provider => 
+                (ConnectionManager)provider.GetRequiredService<IConnectionManager>());
             services.AddScoped<IExpertService, ExpertService>();
             
-            // QA Health Monitoring Services
-            services.AddScoped<IQAHealthMonitoringService, QAHealthMonitoringService>();
-            services.AddScoped<IQAAlertService, QAAlertService>();
-            services.AddScoped<IQAUserSatisfactionService, QAUserSatisfactionService>();
-            services.AddHostedService<QAHealthMonitorBackgroundService>();
+            // Health Monitoring Services
+            services.AddScoped<IHealthMonitoringService, HealthMonitoringService>();
+            services.AddScoped<IAlertService, AlertService>();
+            services.AddScoped<IUserSatisfactionService, UserSatisfactionService>();
+            services.AddHostedService<HealthMonitorBackgroundService>();
             
-            // QA Performance Optimization Services
-            services.Configure<QAPerformanceOptions>(configuration.GetSection(QAPerformanceOptions.SectionName));
-            services.Configure<QAConnectionOptions>(configuration.GetSection(QAConnectionOptions.SectionName));
-            services.Configure<QASearchPerformanceOptions>(configuration.GetSection(QASearchPerformanceOptions.SectionName));
-            services.Configure<QACdnOptions>(configuration.GetSection(QACdnOptions.SectionName));
-            services.Configure<QAStaticAssetOptions>(configuration.GetSection(QAStaticAssetOptions.SectionName));
-            services.Configure<QAPerformanceMonitoringOptions>(configuration.GetSection(QAPerformanceMonitoringOptions.SectionName));
+            // Performance Optimization Services
+            services.Configure<PerformanceOptions>(configuration.GetSection(PerformanceOptions.SectionName));
+            services.Configure<ConnectionOptions>(configuration.GetSection(ConnectionOptions.SectionName));
+            services.Configure<SearchPerformanceOptions>(configuration.GetSection(SearchPerformanceOptions.SectionName));
+            services.Configure<CdnOptions>(configuration.GetSection(CdnOptions.SectionName));
+            services.Configure<StaticAssetOptions>(configuration.GetSection(StaticAssetOptions.SectionName));
+            services.Configure<PerformanceMonitoringOptions>(configuration.GetSection(PerformanceMonitoringOptions.SectionName));
             
-            services.AddScoped<IQAQueryOptimizationService, QAQueryOptimizationService>();
-            services.AddScoped<IQAConnectionOptimizationService, QAConnectionOptimizationService>();
-            services.AddScoped<IQASearchOptimizationService, QASearchOptimizationService>();
-            services.AddScoped<IQACdnOptimizationService, QACdnOptimizationService>();
-            services.AddScoped<IQAStaticAssetOptimizationService, QAStaticAssetOptimizationService>();
-            services.AddHostedService<QAPerformanceMonitoringService>();
+            services.AddScoped<IQueryOptimizationService, QueryOptimizationService>();
+            services.AddScoped<IConnectionOptimizationService, ConnectionOptimizationService>();
+            services.AddScoped<ISearchOptimizationService, SearchOptimizationService>();
+            services.AddScoped<ICdnOptimizationService, CdnOptimizationService>();
+            services.AddScoped<IStaticAssetOptimizationService, StaticAssetOptimizationService>();
+            services.AddHostedService<PerformanceMonitoringService>();
             
             // Domain Services
             services.AddScoped<Domain.Services.IExpertIdentificationService, Application.Features.Community.QA.Services.ExpertIdentificationService>();

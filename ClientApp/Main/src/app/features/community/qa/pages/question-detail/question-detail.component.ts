@@ -9,13 +9,14 @@ import { of } from 'rxjs';
 import { QAQuestionService } from '../../services/qa-question.service';
 import { QuestionDetail, Answer } from '../../models/qa-api.types';
 import { QASignalRService } from '../../services/qa-signalr.service';
-import { AuthService } from '../../../../../../core/services/auth.service';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 // QA Components
 import { ReputationDisplayComponent } from '../../components/reputation-display/reputation-display.component';
 
 // Shared pipes and services
-import { DateFormattingService } from '../../../../../../shared/services/date-formatting.service';
+import { DateFormattingService } from '../../../../../shared/services/date-formatting.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 // Real-time QA Components
 import { RealTimeAnswerListComponent } from '../../components/real-time-answer-list/real-time-answer-list.component';
@@ -24,7 +25,6 @@ import { ConnectionStatusComponent } from '../../components/connection-status/co
 import { RealTimeVoteDisplayComponent } from '../../components/real-time-vote-display/real-time-vote-display.component';
 import { AnswerFormComponent } from '../../components/answer-form/answer-form.component';
 import { QAAnswerService } from '../../services/qa-answer.service';
-import { ToastService } from '../../../../../../core/services/toast.service';
 import { CreateAnswerRequest } from '../../models/qa-api.types';
 import { RealTimeAnswer } from '../../models/qa-ui.types';
 

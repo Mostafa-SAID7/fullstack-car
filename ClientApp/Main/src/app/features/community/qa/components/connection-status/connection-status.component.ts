@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { QASignalRService, ConnectionStatus } from '../../services/qa-signalr.service';
-import { ToastService } from '../../../../../../core/services/toast.service';
-import { StatusIndicatorComponent, StatusType } from '../../../../../../shared/components/status-indicator/status-indicator.component';
+import { ToastService } from '../../../../../core/services/toast.service';
+import { StatusIndicatorComponent, StatusType } from '../../../../../shared/components/status-indicator/status-indicator.component';
 
 @Component({
     selector: 'app-connection-status',
