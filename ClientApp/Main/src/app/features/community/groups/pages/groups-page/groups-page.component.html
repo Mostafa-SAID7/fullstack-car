@@ -1,0 +1,199 @@
+<div class="groups-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">Groups</h1>
+        <p class="page-subtitle">Connect with communities that share your interests</p>
+      </div>
+      
+      <div class="header-actions" *ngIf="isAuthenticated()">
+        <button mat-raised-button color="primary" (click)="onCreateGroup()">
+          <mat-icon>add</mat-icon>
+          Create Group
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="search-section">
+    <form [formGroup]="searchForm" class="search-form">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search groups...</mat-label>
+        <input matInput formControlName="query" placeholder="Enter group name, description, or tags">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="category-field">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="">All Categories</mat-option>
+          <mat-option *ngFor="let category of categories()" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-stroked-button type="button" (click)="clearFilters()" class="clear-filters-btn">
+        <mat-icon>clear</mat-icon>
+        Clear
+      </button>
+    </form>
+  </div>
+
+  <!-- Featured Groups Section -->
+  <div class="featured-section" *ngIf="featuredGroups().length > 0">
+    <h2 class="section-title">Featured Groups</h2>
+    <div class="featured-grid">
+      <app-group-card 
+        *ngFor="let group of featuredGroups()" 
+        [group]="group"
+        [showJoinButton]="true"
+        [isUserMember]="isUserMember(group)"
+        (groupClick)="onGroupClick(group)"
+        (joinGroup)="onJoinGroup(group)"
+        (leaveGroup)="onLeaveGroup(group)">
+      </app-group-card>
+    </div>
+  </div>
+
+  <!-- Trending Groups Section -->
+  <div class="trending-section" *ngIf="trendingGroups().length > 0">
+    <h2 class="section-title">Trending Groups</h2>
+    <div class="trending-grid">
+      <app-group-card 
+        *ngFor="let group of trendingGroups()" 
+        [group]="group"
+        [showJoinButton]="true"
+        [isUserMember]="isUserMember(group)"
+        (groupClick)="onGroupClick(group)"
+        (joinGroup)="onJoinGroup(group)"
+        (leaveGroup)="onLeaveGroup(group)">
+      </app-group-card>
+    </div>
+  </div>
+
+  <!-- Recommended Groups Section (Authenticated Users) -->
+  <div class="recommended-section" *ngIf="isAuthenticated() && recommendedGroups().length > 0">
+    <h2 class="section-title">Recommended for You</h2>
+    <div class="recommended-grid">
+      <app-group-card 
+        *ngFor="let group of recommendedGroups()" 
+        [group]="group"
+        [showJoinButton]="true"
+        [isUserMember]="isUserMember(group)"
+        (groupClick)="onGroupClick(group)"
+        (joinGroup)="onJoinGroup(group)"
+        (leaveGroup)="onLeaveGroup(group)">
+      </app-group-card>
+    </div>
+  </div>
+
+  <!-- Main Content Tabs -->
+  <div class="main-content">
+    <mat-tab-group 
+      [selectedIndex]="selectedTab() === 'all' ? 0 : selectedTab() === 'my-groups' ? 1 : selectedTab() === 'joined' ? 2 : 3"
+      (selectedTabChange)="onTabChange($event.index === 0 ? 'all' : $event.index === 1 ? 'my-groups' : $event.index === 2 ? 'joined' : 'managed')"
+      class="groups-tabs">
+      
+      <mat-tab label="All Groups">
+        <div class="tab-content">
+          <div class="groups-grid" *ngIf="!isLoading() && displayedGroups().length > 0">
+            <app-group-card 
+              *ngFor="let group of displayedGroups()" 
+              [group]="group"
+              [showJoinButton]="true"
+              [isUserMember]="isUserMember(group)"
+              (groupClick)="onGroupClick(group)"
+              (joinGroup)="onJoinGroup(group)"
+              (leaveGroup)="onLeaveGroup(group)">
+            </app-group-card>
+          </div>
+          
+          <div class="empty-state" *ngIf="!isLoading() && displayedGroups().length === 0">
+            <mat-icon class="empty-icon">groups</mat-icon>
+            <h3>No groups found</h3>
+            <p>Try adjusting your search criteria or create a new group.</p>
+            <button mat-raised-button color="primary" (click)="onCreateGroup()" *ngIf="isAuthenticated()">
+              Create Group
+            </button>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="My Groups" *ngIf="isAuthenticated()">
+        <div class="tab-content">
+          <div class="groups-grid" *ngIf="userGroups().length > 0">
+            <app-group-card 
+              *ngFor="let group of userGroups()" 
+              [group]="group"
+              [showJoinButton]="false"
+              [showManageButton]="canManageGroup(group)"
+              (groupClick)="onGroupClick(group)">
+            </app-group-card>
+          </div>
+          
+          <div class="empty-state" *ngIf="userGroups().length === 0">
+            <mat-icon class="empty-icon">group_add</mat-icon>
+            <h3>You haven't joined any groups yet</h3>
+            <p>Discover and join groups that match your interests.</p>
+            <button mat-raised-button color="primary" (click)="onTabChange('all')">
+              Browse Groups
+            </button>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Joined Groups" *ngIf="isAuthenticated()">
+        <div class="tab-content">
+          <div class="groups-grid" *ngIf="joinedGroups().length > 0">
+            <app-group-card 
+              *ngFor="let group of joinedGroups()" 
+              [group]="group"
+              [showJoinButton]="false"
+              [showLeaveButton]="true"
+              (groupClick)="onGroupClick(group)"
+              (leaveGroup)="onLeaveGroup(group)">
+            </app-group-card>
+          </div>
+          
+          <div class="empty-state" *ngIf="joinedGroups().length === 0">
+            <mat-icon class="empty-icon">groups</mat-icon>
+            <h3>No joined groups</h3>
+            <p>Join groups to connect with like-minded people.</p>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Managed Groups" *ngIf="isAuthenticated()">
+        <div class="tab-content">
+          <div class="groups-grid" *ngIf="managedGroups().length > 0">
+            <app-group-card 
+              *ngFor="let group of managedGroups()" 
+              [group]="group"
+              [showJoinButton]="false"
+              [showManageButton]="true"
+              (groupClick)="onGroupClick(group)">
+            </app-group-card>
+          </div>
+          
+          <div class="empty-state" *ngIf="managedGroups().length === 0">
+            <mat-icon class="empty-icon">admin_panel_settings</mat-icon>
+            <h3>No managed groups</h3>
+            <p>Create a group to start building your community.</p>
+            <button mat-raised-button color="primary" (click)="onCreateGroup()">
+              Create Group
+            </button>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading groups...</p>
+  </div>
+</div>

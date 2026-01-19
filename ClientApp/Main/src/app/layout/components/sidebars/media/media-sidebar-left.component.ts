@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
             <!-- Media Section -->
             <div class="space-y-1">
                     <!-- Videos Link -->
-                    <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                    <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                         routerLink="/media/videos"
                         routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav"
                         [routerLinkActiveOptions]="{exact: false}">
@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
                     </div>
 
                     <!-- Podcasts Link -->
-                    <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                    <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                         routerLink="/media/podcasts"
                         routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav"
                         [routerLinkActiveOptions]="{exact: false}">

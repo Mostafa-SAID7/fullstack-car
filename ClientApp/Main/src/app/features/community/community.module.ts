@@ -3,47 +3,39 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { CommunityFeedComponent } from './components/feed/community-feed/community-feed.component';
-import { GuidesListComponent } from './components/guides/guides-list/guides-list.component';
-import { NewsListComponent } from './components/news/news-list/news-list.component';
-import { NewsDetailComponent } from './components/news/news-detail/news-detail.component';
-import { NewsPreferencesComponent } from './components/news/news-preferences/news-preferences.component';
-import { MapsExplorerComponent } from './components/maps/maps-explorer/maps-explorer.component';
-import { UserProfileComponent } from './components/profile/user-profile/user-profile.component';
-import { PostListComponent } from './components/posts/post-list/post-list.component';
-import { GroupListComponent } from './components/groups/group-list/group-list.component';
-import { ReviewListComponent } from './components/reviews/review-list/review-list.component';
-import { FriendListComponent } from './components/friends/friend-list/friend-list.component';
-import { PageListComponent } from './components/pages/page-list/page-list.component';
-
-import { QuestionListComponent } from './components/qa/pages/question-list/question-list.component';
-import { QuestionDetailComponent } from './components/qa/pages/question-detail/question-detail.component';
-import { QuestionFormComponent } from './components/qa/pages/question-form/question-form.component';
-import { QuestionSearchComponent } from './components/qa/components/question-search/question-search.component';
+import { CommunityFeedComponent } from './feed/community-feed/community-feed.component';
+import { GuidesListComponent } from './guides/guides-list/guides-list.component';
+import { MapsExplorerComponent } from './maps/maps-explorer/maps-explorer.component';
+import { PostListComponent } from './posts/post-list/post-list.component';
+import { ReviewListComponent } from './reviews/review-list/review-list.component';
+import { PageListComponent } from './pages/page-list/page-list.component';
 
 const routes: Routes = [
   { path: '', component: CommunityFeedComponent },
-  { path: 'profile', component: UserProfileComponent },
   { path: 'guides', component: GuidesListComponent },
-  { path: 'news', component: NewsListComponent },
-  { path: 'news/preferences', component: NewsPreferencesComponent },
-  { path: 'news/:id', component: NewsDetailComponent },
-  // QA Routes with sub-routes
+  // News Routes - lazy loaded module
+  {
+    path: 'news',
+    loadChildren: () => import('./news/news.module').then(m => m.NewsModule)
+  },
+  // QA Routes - lazy loaded module
   {
     path: 'qa',
-    children: [
-      { path: '', component: QuestionListComponent },
-      { path: 'ask', component: QuestionFormComponent },
-      { path: 'search', component: QuestionSearchComponent },
-      { path: ':id', component: QuestionDetailComponent },
-      { path: ':id/edit', component: QuestionFormComponent }
-    ]
+    loadChildren: () => import('./qa/qa.module').then(m => m.QaModule)
+  },
+  // Groups Routes - lazy loaded module
+  {
+    path: 'groups',
+    loadChildren: () => import('./groups/groups.module').then(m => m.GroupsModule)
+  },
+  // Friends Routes - lazy loaded module
+  {
+    path: 'friends',
+    loadChildren: () => import('./friends/friends.module').then(m => m.FriendsModule)
   },
   { path: 'maps', component: MapsExplorerComponent },
   { path: 'posts', component: PostListComponent },
-  { path: 'groups', component: GroupListComponent },
   { path: 'reviews', component: ReviewListComponent },
-  { path: 'friends', component: FriendListComponent },
   { path: 'pages', component: PageListComponent }
 ];
 
@@ -55,20 +47,10 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forChild(routes),
     CommunityFeedComponent,
-    NewsListComponent,
-    NewsDetailComponent,
-    NewsPreferencesComponent,
-    QuestionListComponent,
-    QuestionDetailComponent,
-    QuestionFormComponent,
-    QuestionSearchComponent,
     MapsExplorerComponent,
     GuidesListComponent,
-    UserProfileComponent,
     PostListComponent,
-    GroupListComponent,
     ReviewListComponent,
-    FriendListComponent,
     PageListComponent
   ],
   exports: [RouterModule]

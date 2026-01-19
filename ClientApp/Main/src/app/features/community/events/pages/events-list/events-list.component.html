@@ -1,0 +1,177 @@
+<div class="events-list-container">
+  <!-- Header Section -->
+  <div class="header-section bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-lg mb-8">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold mb-2">Community Events</h1>
+        <p class="text-blue-100">Discover and join amazing events in your community</p>
+      </div>
+      <div class="flex gap-3">
+        <button 
+          mat-raised-button 
+          color="accent"
+          (click)="navigateToCalendar()"
+          class="bg-white text-blue-600 hover:bg-gray-100">
+          <mat-icon>calendar_month</mat-icon>
+          Calendar View
+        </button>
+        <button 
+          mat-raised-button 
+          color="primary"
+          (click)="navigateToCreateEvent()"
+          class="bg-yellow-500 text-black hover:bg-yellow-400">
+          <mat-icon>add</mat-icon>
+          Create Event
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="search-filters-section mb-6">
+    <form [formGroup]="searchForm" class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex gap-4 items-end">
+        <!-- Search Input -->
+        <mat-form-field class="flex-1" appearance="outline">
+          <mat-label>Search events...</mat-label>
+          <input matInput formControlName="searchTerm" placeholder="Event name, description, or organizer">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Sort By -->
+        <mat-form-field appearance="outline" class="min-w-[200px]">
+          <mat-label>Sort by</mat-label>
+          <mat-select formControlName="sortBy">
+            <mat-option *ngFor="let option of sortOptions" [value]="option.value">
+              <mat-icon class="mr-2">{{ option.icon }}</mat-icon>
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Filter Toggle -->
+        <button 
+          mat-stroked-button 
+          type="button"
+          (click)="toggleFilters()"
+          [class.bg-blue-50]="showFilters">
+          <mat-icon>{{ showFilters ? 'filter_list_off' : 'filter_list' }}</mat-icon>
+          Filters
+        </button>
+
+        <!-- Clear Filters -->
+        <button 
+          mat-stroked-button 
+          type="button"
+          (click)="clearFilters()"
+          color="warn">
+          <mat-icon>clear</mat-icon>
+          Clear
+        </button>
+      </div>
+
+      <!-- Advanced Filters -->
+      <app-event-filters 
+        *ngIf="showFilters"
+        [categories]="categories"
+        (filtersChange)="onFiltersChange($event)"
+        class="mt-4 block">
+      </app-event-filters>
+    </form>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs mb-6">
+    <mat-tab-group 
+      [selectedIndex]="activeTabIndex" 
+      (selectedTabChange)="onTabChange(filterTabs[$event.index].value)"
+      class="custom-tabs">
+      <mat-tab *ngFor="let tab of filterTabs" [label]="tab.label">
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">{{ tab.icon }}</mat-icon>
+          {{ tab.label }}
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container text-center py-12">
+    <mat-spinner class="mx-auto mb-4"></mat-spinner>
+    <p class="text-gray-600">Loading events...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+    <div class="flex items-center text-red-700">
+      <mat-icon class="mr-2">error</mat-icon>
+      <span class="font-medium">{{ error }}</span>
+    </div>
+    <button mat-stroked-button color="primary" (click)="onRetry()" class="mt-3">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Events Grid -->
+  <div *ngIf="!loading && !error" class="events-grid">
+    <!-- No Events State -->
+    <div *ngIf="events.length === 0" class="no-events-container text-center py-12">
+      <mat-icon class="text-6xl text-gray-400 mb-4">event_busy</mat-icon>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">No events found</h3>
+      <p class="text-gray-500 mb-4">Try adjusting your search criteria or create a new event.</p>
+      <button mat-raised-button color="primary" (click)="navigateToCreateEvent()">
+        <mat-icon>add</mat-icon>
+        Create Event
+      </button>
+    </div>
+
+    <!-- Events List -->
+    <div *ngIf="events.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <app-event-card 
+        *ngFor="let event of events; trackBy: trackByEventId"
+        [event]="event"
+        (eventClick)="navigateToEvent($event)"
+        class="transform transition-transform hover:scale-105">
+      </app-event-card>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="pagination-container mt-8 flex justify-center">
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="flex items-center gap-2">
+          <!-- Previous Button -->
+          <button 
+            mat-icon-button 
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <!-- Page Numbers -->
+          <button 
+            *ngFor="let page of getPageNumbers()"
+            mat-button
+            [class.bg-blue-500]="page === currentPage"
+            [class.text-white]="page === currentPage"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+
+          <!-- Next Button -->
+          <button 
+            mat-icon-button 
+            [disabled]="currentPage === totalPages"
+            (click)="onPageChange(currentPage + 1)">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <!-- Page Info -->
+        <div class="text-sm text-gray-600 text-center mt-2">
+          Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, totalItems) }} of {{ totalItems }} events
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

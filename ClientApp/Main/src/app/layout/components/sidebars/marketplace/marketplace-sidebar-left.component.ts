@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="space-y-6">
             <div class="space-y-1">
 
-                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                     routerLink="/marketplace/products"
                     routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav">
                     <div
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
                     <span class="text-xs font-bold md:hidden lg:block">Products</span>
                 </div>
 
-                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                     routerLink="/marketplace/services"
                     routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav">
                     <div
@@ -31,7 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
                     <span class="text-xs font-bold md:hidden lg:block">Services</span>
                 </div>
 
-                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                     routerLink="/marketplace/providers"
                     routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav">
                     <div
@@ -41,7 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
                     <span class="text-xs font-bold md:hidden lg:block">Providers</span>
                 </div>
 
-                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                <div class="flex items-center justify-start md:justify-center lg:justify-start gap-3 p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                     routerLink="/marketplace/bookings"
                     routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav">
                     <div

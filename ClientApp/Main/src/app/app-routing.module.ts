@@ -25,7 +25,7 @@ export const routes: Routes = [
       // Home/Discovery page - using existing community feed for now
       {
         path: '',
-        loadComponent: () => import('./features/community/components/feed/community-feed/community-feed.component').then(m => m.CommunityFeedComponent),
+        loadComponent: () => import('./features/community/feed/community-feed/community-feed.component').then(m => m.CommunityFeedComponent),
         data: { preload: true, priority: 'high' }
       },
       // Media streaming routes - Medium priority

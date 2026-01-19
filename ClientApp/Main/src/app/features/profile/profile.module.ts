@@ -9,6 +9,7 @@ import { ProfileEditComponent } from './components/profile-edit/profile-edit.com
 import { PrivacySettingsComponent } from './components/privacy-settings/privacy-settings.component';
 import { ConnectionsListComponent } from './components/connections-list/connections-list.component';
 import { UserSearchComponent } from './components/user-search/user-search.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [],
@@ -23,7 +24,8 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     ProfileEditComponent,
     PrivacySettingsComponent,
     ConnectionsListComponent,
-    UserSearchComponent
+    UserSearchComponent,
+    UserProfileComponent
   ]
 })
 export class ProfileModule { }
