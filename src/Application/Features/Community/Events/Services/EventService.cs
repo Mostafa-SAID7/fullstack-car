@@ -180,7 +180,28 @@ namespace Application.Features.Community.Events.Services
                 SortDescending = request.SortDescending
             };
 
-            return await _mediator.Send(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            if (!result.Succeeded)
+                return Result<EventAttendeesPagedResponse>.Failure(result.Errors);
+                
+            var response = new EventAttendeesPagedResponse
+            {
+                Items = result.Data.Items,
+                TotalCount = result.Data.TotalCount,
+                PageNumber = result.Data.PageNumber,
+                PageSize = result.Data.PageSize,
+                TotalPages = result.Data.TotalPages,
+                HasPreviousPage = result.Data.HasPreviousPage,
+                HasNextPage = result.Data.HasNextPage,
+                Stats = new EventAttendanceStatsDto
+                {
+                    EventId = eventId,
+                    TotalAttendees = result.Data.TotalCount
+                }
+            };
+            
+            return Result<EventAttendeesPagedResponse>.Success(response);
         }
 
         public async Task<Result<bool>> ApproveAttendanceAsync(Guid eventId, Guid attendeeId, Guid approvedBy, CancellationToken cancellationToken = default)
@@ -237,7 +258,25 @@ namespace Application.Features.Community.Events.Services
                 IncludeReplies = request.IncludeReplies
             };
 
-            return await _mediator.Send(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            if (!result.Succeeded)
+                return Result<EventCommentsPagedResponse>.Failure(result.Errors);
+                
+            var response = new EventCommentsPagedResponse
+            {
+                Items = result.Data.Items,
+                TotalCount = result.Data.TotalCount,
+                PageNumber = result.Data.PageNumber,
+                PageSize = result.Data.PageSize,
+                TotalPages = result.Data.TotalPages,
+                HasPreviousPage = result.Data.HasPreviousPage,
+                HasNextPage = result.Data.HasNextPage,
+                TotalComments = result.Data.TotalCount,
+                TotalReplies = 0 // TODO: Calculate actual replies count
+            };
+            
+            return Result<EventCommentsPagedResponse>.Success(response);
         }
 
         // Invitation Management

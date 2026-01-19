@@ -91,11 +91,10 @@ public class ExpertPreferencesController : BaseController
     }
 
     [HttpPut("user/{userId}")]
-    public async Task<IActionResult> UpdateExpertPreferences(Guid userId, [FromBody] ExpertPreferencesDto preferences)
+    public async Task<IActionResult> UpdateExpertPreferences(Guid userId, [FromBody] Application.Features.Community.QA.Services.ExpertPreferencesDto preferences)
     {
         try
         {
-            preferences.UserId = userId;
             var command = new UpdateExpertPreferencesCommand { UserId = userId, Preferences = preferences };
             var result = await Mediator.Send(command);
             

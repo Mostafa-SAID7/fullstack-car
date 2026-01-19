@@ -25,14 +25,15 @@ public class DeleteLayoutCommand : IRequest<ApiResponseDto<object>>
 public class ActivateLayoutCommand : IRequest<ApiResponseDto<object>>
 {
     public Guid LayoutId { get; set; }
+    public ActivateLayoutRequest Request { get; set; } = new();
     public Guid ActivatedBy { get; set; }
 }
 
 public class DuplicateLayoutCommand : IRequest<ApiResponseDto<object>>
 {
     public Guid LayoutId { get; set; }
-    public string NewName { get; set; } = string.Empty;
-    public Guid DuplicatedBy { get; set; }
+    public DuplicateLayoutRequest Request { get; set; } = new();
+    public Guid CreatedBy { get; set; }
 }
 
 public class CreateCustomComponentCommand : IRequest<ApiResponseDto<object>>
@@ -45,6 +46,24 @@ public class UpdateCustomComponentCommand : IRequest<ApiResponseDto<object>>
 {
     public Guid ComponentId { get; set; }
     public UpdateCustomComponentRequest Request { get; set; } = null!;
+    public Guid UpdatedBy { get; set; }
+}
+
+public class CreateLayoutFromTemplateCommand : IRequest<ApiResponseDto<object>>
+{
+    public CreateLayoutFromTemplateRequest Request { get; set; } = null!;
+    public Guid CreatedBy { get; set; }
+}
+
+public class PreviewLayoutCommand : IRequest<ApiResponseDto<object>>
+{
+    public Guid LayoutId { get; set; }
+    public PreviewLayoutRequest Request { get; set; } = null!;
+}
+
+public class UpdateResponsiveBreakpointsCommand : IRequest<ApiResponseDto<object>>
+{
+    public UpdateResponsiveBreakpointsRequest Request { get; set; } = null!;
     public Guid UpdatedBy { get; set; }
 }
 
@@ -90,7 +109,7 @@ public class DuplicateLayoutCommandHandler : IRequestHandler<DuplicateLayoutComm
     public async Task<ApiResponseDto<object>> Handle(DuplicateLayoutCommand request, CancellationToken cancellationToken)
     {
         await Task.Delay(1, cancellationToken);
-        return ApiResponseDto<object>.Success(new { Id = Guid.NewGuid(), Message = "Layout duplicated", DuplicatedBy = request.DuplicatedBy });
+        return ApiResponseDto<object>.Success(new { Id = Guid.NewGuid(), Message = "Layout duplicated", CreatedBy = request.CreatedBy });
     }
 }
 
@@ -109,5 +128,32 @@ public class UpdateCustomComponentCommandHandler : IRequestHandler<UpdateCustomC
     {
         await Task.Delay(1, cancellationToken);
         return ApiResponseDto<object>.Success(new { Message = "Custom component updated", UpdatedBy = request.UpdatedBy });
+    }
+}
+
+public class CreateLayoutFromTemplateCommandHandler : IRequestHandler<CreateLayoutFromTemplateCommand, ApiResponseDto<object>>
+{
+    public async Task<ApiResponseDto<object>> Handle(CreateLayoutFromTemplateCommand request, CancellationToken cancellationToken)
+    {
+        await Task.Delay(1, cancellationToken);
+        return ApiResponseDto<object>.Success(new { Id = Guid.NewGuid(), Message = "Layout created from template", CreatedBy = request.CreatedBy });
+    }
+}
+
+public class PreviewLayoutCommandHandler : IRequestHandler<PreviewLayoutCommand, ApiResponseDto<object>>
+{
+    public async Task<ApiResponseDto<object>> Handle(PreviewLayoutCommand request, CancellationToken cancellationToken)
+    {
+        await Task.Delay(1, cancellationToken);
+        return ApiResponseDto<object>.Success(new { PreviewUrl = "https://example.com/preview", Message = "Layout preview generated" });
+    }
+}
+
+public class UpdateResponsiveBreakpointsCommandHandler : IRequestHandler<UpdateResponsiveBreakpointsCommand, ApiResponseDto<object>>
+{
+    public async Task<ApiResponseDto<object>> Handle(UpdateResponsiveBreakpointsCommand request, CancellationToken cancellationToken)
+    {
+        await Task.Delay(1, cancellationToken);
+        return ApiResponseDto<object>.Success(new { Message = "Responsive breakpoints updated", UpdatedBy = request.UpdatedBy });
     }
 }

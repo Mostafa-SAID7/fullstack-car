@@ -26,7 +26,8 @@ export class GroupService {
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
 
-  private readonly apiUrl = '/api/groups';
+  private readonly apiUrl = '/api/v2/groups';
+  private readonly filesUrl = '/api/v4/files';
 
   // Reactive state
   private userGroupsSubject = new BehaviorSubject<Group[]>([]);
@@ -89,7 +90,7 @@ export class GroupService {
    * Get all groups for current user
    */
   getUserGroups(): Observable<Group[]> {
-    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/user`)
+    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/my`)
       .pipe(
         map(response => response.data || []),
         tap(groups => this.userGroupsSubject.next(groups))
@@ -97,10 +98,21 @@ export class GroupService {
   }
 
   /**
+   * Upload file
+   */
+  uploadFile(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<any>(`${this.filesUrl}/upload`, formData).pipe(
+      map(response => response.fileUrl)
+    );
+  }
+
+  /**
    * Get joined groups
    */
   getJoinedGroups(): Observable<Group[]> {
-    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/joined`)
+    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/my?role=Member`)
       .pipe(
         map(response => response.data || []),
         tap(groups => {
@@ -114,7 +126,7 @@ export class GroupService {
    * Get managed groups (owned or moderated)
    */
   getManagedGroups(): Observable<Group[]> {
-    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/managed`)
+    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/my/owned`)
       .pipe(
         map(response => response.data || []),
         tap(groups => {
@@ -159,25 +171,7 @@ export class GroupService {
    * Create new group
    */
   createGroup(request: CreateGroupRequest): Observable<Group> {
-    const formData = new FormData();
-
-    formData.append('name', request.name);
-    formData.append('description', request.description);
-    formData.append('type', request.type);
-    formData.append('category', request.category);
-    formData.append('tags', JSON.stringify(request.tags));
-    formData.append('rules', JSON.stringify(request.rules));
-    formData.append('settings', JSON.stringify(request.settings));
-
-    if (request.coverImage) {
-      formData.append('coverImage', request.coverImage);
-    }
-
-    if (request.avatar) {
-      formData.append('avatar', request.avatar);
-    }
-
-    return this.http.post<ApiResponse<Group>>(this.apiUrl, formData)
+    return this.http.post<ApiResponse<Group>>(this.apiUrl, request)
       .pipe(
         map(response => response.data!),
         tap(group => {
@@ -191,25 +185,7 @@ export class GroupService {
    * Update group
    */
   updateGroup(groupId: string, request: UpdateGroupRequest): Observable<Group> {
-    const formData = new FormData();
-
-    if (request.name) formData.append('name', request.name);
-    if (request.description) formData.append('description', request.description);
-    if (request.type) formData.append('type', request.type);
-    if (request.category) formData.append('category', request.category);
-    if (request.tags) formData.append('tags', JSON.stringify(request.tags));
-    if (request.rules) formData.append('rules', JSON.stringify(request.rules));
-    if (request.settings) formData.append('settings', JSON.stringify(request.settings));
-
-    if (request.coverImage) {
-      formData.append('coverImage', request.coverImage);
-    }
-
-    if (request.avatar) {
-      formData.append('avatar', request.avatar);
-    }
-
-    return this.http.put<ApiResponse<Group>>(`${this.apiUrl}/${groupId}`, formData)
+    return this.http.put<ApiResponse<Group>>(`${this.apiUrl}/${groupId}`, request)
       .pipe(
         map(response => response.data!),
         tap(group => {
@@ -493,6 +469,106 @@ export class GroupService {
     const params = new HttpParams().set('limit', limit.toString());
 
     return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/recommended`, { params })
+      .pipe(map(response => response.data || []));
+  }
+
+  /**
+   * Get featured groups
+   */
+  getFeaturedGroups(limit: number = 6): Observable<Group[]> {
+    const params = new HttpParams().set('pageSize', limit.toString());
+    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/featured`, { params })
+      .pipe(map(response => response.data || []));
+  }
+
+  /**
+   * Get trending groups
+   */
+  getTrendingGroups(limit: number = 10, timeframe: string = 'week'): Observable<Group[]> {
+    const params = new HttpParams()
+      .set('pageSize', limit.toString())
+      .set('timeframe', timeframe);
+    return this.http.get<ApiResponse<Group[]>>(`${this.apiUrl}/trending`, { params })
+      .pipe(map(response => response.data || []));
+  }
+
+  /**
+   * Get group stats
+   */
+  getGroupsStats(): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/stats`)
+      .pipe(map(response => response.data));
+  }
+
+  /**
+   * Ban member
+   */
+  banMember(groupId: string, memberId: string, reason: string): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/${groupId}/members/${memberId}/ban`, { reason })
+      .pipe(
+        map(() => void 0),
+        tap(() => {
+          this._groupMembers.update(members => members.filter(m => m.userId !== memberId));
+          this.notificationService.success('Member banned successfully!');
+        })
+      );
+  }
+
+  /**
+   * Get group event
+   */
+  getGroupEvent(groupId: string, eventId: string): Observable<GroupEvent> {
+    return this.http.get<ApiResponse<GroupEvent>>(`${this.apiUrl}/${groupId}/events/${eventId}`)
+      .pipe(map(response => response.data!));
+  }
+
+  /**
+   * Attend event
+   */
+  attendEvent(groupId: string, eventId: string, status: 'going' | 'interested' | 'not_going'): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/${groupId}/events/${eventId}/attend`, { status })
+      .pipe(
+        map(() => void 0),
+        tap(() => this.notificationService.success('Event attendance updated!'))
+      );
+  }
+
+  /**
+   * Get event attendees
+   */
+  getEventAttendees(groupId: string, eventId: string, page: number = 1, limit: number = 20): Observable<PaginatedResponse<GroupMember>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', limit.toString());
+    return this.http.get<PaginatedResponse<GroupMember>>(`${this.apiUrl}/${groupId}/events/${eventId}/attendees`, { params });
+  }
+
+  /**
+   * Get discussion replies
+   */
+  getDiscussionReplies(groupId: string, discussionId: string, page: number = 1, limit: number = 20): Observable<PaginatedResponse<any>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', limit.toString());
+    return this.http.get<PaginatedResponse<any>>(`${this.apiUrl}/${groupId}/discussions/${discussionId}/replies`, { params });
+  }
+
+  /**
+   * Lock discussion
+   */
+  lockDiscussion(groupId: string, discussionId: string, reason?: string): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/${groupId}/discussions/${discussionId}/lock`, { reason })
+      .pipe(
+        map(() => void 0),
+        tap(() => this.notificationService.success('Discussion locked!'))
+      );
+  }
+
+  /**
+   * Get discussion categories
+   */
+  getDiscussionCategories(groupId: string): Observable<string[]> {
+    return this.http.get<ApiResponse<string[]>>(`${this.apiUrl}/${groupId}/discussions/categories`)
       .pipe(map(response => response.data || []));
   }
 }

@@ -65,7 +65,7 @@ namespace WebAPI.Controllers.Profile
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        public async Task<IActionResult> UpdateProfile([FromBody] Application.Features.Identity.Profile.DTOs.Requests.UpdateProfileRequest request)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {

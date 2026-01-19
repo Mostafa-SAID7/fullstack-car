@@ -6,5 +6,5 @@ namespace Application.Features.Admin.StaticPages.Queries;
 
 public class GetStaticPageByIdQuery : IRequest<ApiResponseDto<StaticPageDto>>
 {
-    public Guid Id { get; set; }
+    public Guid PageId { get; set; }
 }

@@ -105,7 +105,8 @@ namespace WebAPI.Controllers.Community.Groups
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetGroupDiscussion), new { groupId, discussionId = result.Data.Id });
+                dynamic discussionData = result.Data;
+                var location = Url.Action(nameof(GetGroupDiscussion), new { groupId, discussionId = discussionData.Id });
                 return Created(result.Data, location!, "Group discussion created successfully");
             }
 

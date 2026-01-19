@@ -104,7 +104,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetLayout), new { layoutId = result.Data.Id });
+                dynamic resultData = result.Data;
+                var location = Url.Action(nameof(GetLayout), new { layoutId = resultData.Id });
                 return Created(result.Data, location!, "Layout created successfully");
             }
 
@@ -224,7 +225,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetLayout), new { layoutId = result.Data.Id });
+                dynamic resultData = result.Data;
+                var location = Url.Action(nameof(GetLayout), new { layoutId = resultData.Id });
                 return Created(result.Data, location!, "Layout duplicated successfully");
             }
 
@@ -339,7 +341,6 @@ namespace WebAPI.Controllers.SiteSettings
 
             var command = new CreateLayoutFromTemplateCommand
             {
-                TemplateId = templateId,
                 Request = request,
                 CreatedBy = userGuid
             };
@@ -348,7 +349,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetLayout), new { layoutId = result.Data.Id });
+                dynamic resultData = result.Data;
+                var location = Url.Action(nameof(GetLayout), new { layoutId = resultData.Id });
                 return Created(result.Data, location!, "Layout created from template successfully");
             }
 

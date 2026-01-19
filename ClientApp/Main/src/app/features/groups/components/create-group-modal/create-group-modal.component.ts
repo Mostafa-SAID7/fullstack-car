@@ -2,6 +2,8 @@ import { Component, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateGroupRequest } from '../../../../core/models/group.model';
+import { GroupService } from '../../../../core/services/group.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Create Group Modal Component
@@ -328,6 +330,7 @@ import { CreateGroupRequest } from '../../../../core/models/group.model';
 })
 export class CreateGroupModalComponent {
   private fb = inject(FormBuilder);
+  private groupService = inject(GroupService);
 
   // Output events
   cancel = output<void>();
@@ -459,40 +462,49 @@ export class CreateGroupModalComponent {
     this.rules.update(rules => rules.filter((_, i) => i !== index));
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.createGroupForm.valid) {
       this.isSubmitting.set(true);
 
-      const formValue = this.createGroupForm.value;
-      const request: CreateGroupRequest = {
-        name: formValue.name,
-        description: formValue.description,
-        type: formValue.type,
-        category: formValue.category,
-        tags: this.tags(),
-        rules: this.rules().filter(rule => rule.trim()),
-        settings: {
-          allowMemberPosts: formValue.allowMemberPosts,
-          requirePostApproval: formValue.requirePostApproval,
-          allowMemberInvites: formValue.allowMemberInvites,
-          autoApproveMembers: formValue.autoApproveMembers,
-          allowDiscussions: true,
-          allowEvents: true,
-          allowPolls: true,
-          showMemberList: true,
-          allowExternalSharing: true
+      try {
+        let imageUrl: string | undefined;
+
+        if (this.coverImageFile) {
+          try {
+            imageUrl = await firstValueFrom(this.groupService.uploadFile(this.coverImageFile));
+          } catch (error) {
+            console.error('Failed to upload image', error);
+            // Continue without image or show error? For now, continue.
+          }
         }
-      };
 
-      if (this.coverImageFile) {
-        request.coverImage = this.coverImageFile;
+        const formValue = this.createGroupForm.value;
+        const request: CreateGroupRequest = {
+          name: formValue.name,
+          description: formValue.description,
+          type: formValue.type,
+          category: formValue.category,
+          tags: this.tags(),
+          rules: this.rules().filter(rule => rule.trim()),
+          imageUrl: imageUrl,
+          settings: {
+            allowMemberPosts: formValue.allowMemberPosts,
+            requirePostApproval: formValue.requirePostApproval,
+            allowMemberInvites: formValue.allowMemberInvites,
+            autoApproveMembers: formValue.autoApproveMembers,
+            allowDiscussions: true,
+            allowEvents: true,
+            allowPolls: true,
+            showMemberList: true,
+            allowExternalSharing: true
+          }
+        };
+
+        this.create.emit(request);
+      } catch (error) {
+        console.error('Error creating group:', error);
+        this.isSubmitting.set(false);
       }
-
-      if (this.avatarFile) {
-        request.avatar = this.avatarFile;
-      }
-
-      this.create.emit(request);
     }
   }
 

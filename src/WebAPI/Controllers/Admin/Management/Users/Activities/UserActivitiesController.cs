@@ -31,7 +31,7 @@ namespace WebAPI.Controllers.Admin.Management.Users.Activities
             {
                 _logger.LogInformation("Admin requested activities for user {UserId}", userId);
 
-                var query = new GetUserActivityQuery
+                var query = new Application.Features.Admin.Management.Users.Activities.Queries.GetUserActivityQuery
                 {
                     UserId = userId,
                     Page = page,

@@ -27,11 +27,7 @@ namespace WebAPI.Controllers.Community.Maps
         public async Task<IActionResult> GetLocations([FromQuery] Application.Features.Community.Maps.Queries.GetLocationsQuery query)
         {
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Locations retrieved successfully");
-
-            return BadRequest("Failed to retrieve locations", result.Errors);
+            return Success(result, "Locations retrieved successfully");
         }
 
         [HttpGet("nearby")]
@@ -100,16 +96,9 @@ namespace WebAPI.Controllers.Community.Maps
 
             var result = await Mediator.Send(command);
 
-            if (result.Succeeded)
-            {
-                var location = Url.Action(nameof(GetLocation), new { id = result.Data.Id });
-                return Created(result.Data, location!, "Location created successfully");
-            }
-
-            if (result.Errors.Any(e => e.Contains("duplicate")))
-                return BadRequest("A location with this name already exists at this address", result.Errors);
-
-            return BadRequest("Failed to create location", result.Errors);
+            dynamic resultData = result;
+            var location = Url.Action(nameof(GetLocation), new { id = resultData.Id });
+            return Created(result, location!, "Location created successfully");
         }
 
         [HttpPut("{id}")]
@@ -134,17 +123,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location updated successfully");
-
-            if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound("Location not found");
-
-            if (result.Errors.Any(e => e.Contains("unauthorized") || e.Contains("permission")))
-                return Forbidden("You don't have permission to update this location");
-
-            return BadRequest("Failed to update location", result.Errors);
+            return Success(result, "Location updated successfully");
         }
 
         [HttpDelete("{id}")]
@@ -168,17 +147,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-
-            if (result.Succeeded)
-                return Success("Location deleted successfully");
-
-            if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound("Location not found");
-
-            if (result.Errors.Any(e => e.Contains("unauthorized") || e.Contains("permission")))
-                return Forbidden("You don't have permission to delete this location");
-
-            return BadRequest("Failed to delete location", result.Errors);
+            return Success("Location deleted successfully");
         }
 
         [HttpPost("{id}/checkin")]
@@ -203,17 +172,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Check-in successful");
-
-            if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound("Location not found");
-
-            if (result.Errors.Any(e => e.Contains("already checked in")))
-                return BadRequest("You have already checked in at this location today", result.Errors);
-
-            return BadRequest("Failed to check in", result.Errors);
+            return Success(result, "Check-in successful");
         }
 
         [HttpGet("{id}/checkins")]
@@ -232,11 +191,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location check-ins retrieved successfully");
-
-            return BadRequest("Failed to retrieve location check-ins", result.Errors);
+            return Success(result, "Location check-ins retrieved successfully");
         }
 
         [HttpPost("{id}/reviews")]
@@ -261,17 +216,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location review created successfully");
-
-            if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound("Location not found");
-
-            if (result.Errors.Any(e => e.Contains("already reviewed")))
-                return BadRequest("You have already reviewed this location", result.Errors);
-
-            return BadRequest("Failed to create location review", result.Errors);
+            return Success(result, "Location review created successfully");
         }
 
         [HttpGet("{id}/reviews")]
@@ -290,11 +235,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location reviews retrieved successfully");
-
-            return BadRequest("Failed to retrieve location reviews", result.Errors);
+            return Success(result, "Location reviews retrieved successfully");
         }
 
         [HttpGet("search")]
@@ -303,11 +244,7 @@ namespace WebAPI.Controllers.Community.Maps
         public async Task<IActionResult> SearchLocations([FromQuery] Application.Features.Community.Maps.Queries.SearchLocationsQuery query)
         {
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location search completed successfully");
-
-            return BadRequest("Failed to search locations", result.Errors);
+            return Success(result, "Location search completed successfully");
         }
 
         [HttpGet("categories")]
@@ -317,11 +254,7 @@ namespace WebAPI.Controllers.Community.Maps
         {
             var query = new GetLocationCategoriesQuery();
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Location categories retrieved successfully");
-
-            return BadRequest("Failed to retrieve location categories", result.Errors);
+            return Success(result, "Location categories retrieved successfully");
         }
 
         [HttpGet("my-checkins")]
@@ -348,11 +281,7 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "My check-ins retrieved successfully");
-
-            return BadRequest("Failed to retrieve my check-ins", result.Errors);
+            return Success(result, "My check-ins retrieved successfully");
         }
 
         [HttpGet("stats")]
@@ -362,11 +291,7 @@ namespace WebAPI.Controllers.Community.Maps
         {
             var query = new GetMapStatsQuery();
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Map statistics retrieved successfully");
-
-            return BadRequest("Failed to retrieve map statistics", result.Errors);
+            return Success(result, "Map statistics retrieved successfully");
         }
     }
 }

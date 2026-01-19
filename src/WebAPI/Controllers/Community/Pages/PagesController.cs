@@ -124,7 +124,8 @@ namespace WebAPI.Controllers.Community.Pages
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetPage), new { id = result.Data.Id });
+                dynamic pageData = result.Data;
+                var location = Url.Action(nameof(GetPage), new { id = pageData.Id });
                 return Created(result.Data, location!, "Page created successfully");
             }
 

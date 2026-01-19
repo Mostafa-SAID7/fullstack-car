@@ -91,13 +91,10 @@ public class PublicProfileDto
     public int FollowingCount { get; set; }
 }
 
-namespace Application.Features.Identity.Profile.DTOs.Requests
+public class UpdateProfileRequestV2
 {
-    public class UpdateProfileRequest
-    {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Bio { get; set; } = string.Empty;
-        public string Location { get; set; } = string.Empty;
-    }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Bio { get; set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
 }

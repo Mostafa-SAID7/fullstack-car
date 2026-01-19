@@ -4,4 +4,5 @@ public class BookmarkGuideRequest
 {
     public Guid GuideId { get; set; }
     public bool IsBookmarked { get; set; }
+    public string? Notes { get; set; }
 }

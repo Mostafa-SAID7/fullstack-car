@@ -130,7 +130,8 @@ namespace WebAPI.Controllers.Community.News
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetArticle), new { id = result.Data.Id });
+                dynamic articleData = result.Data;
+                var location = Url.Action(nameof(GetArticle), new { id = articleData.Id });
                 return Created(result.Data, location!, "Article created successfully");
             }
 

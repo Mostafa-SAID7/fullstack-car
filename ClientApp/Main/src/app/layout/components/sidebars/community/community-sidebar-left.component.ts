@@ -13,7 +13,7 @@ import { QAQuestionService } from '../../../../features/community/components/qa/
             <!-- Navigation Links -->
             <div class="space-y-1">
                 <div *ngFor="let item of menuItems"
-                    class="flex items-center justify-between p-2 rounded-xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
+                    class="flex items-center justify-between p-2 rounded-xl transition-all duration-300 ease-in-out cursor-pointer group text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:bg-secondary dark:hover:bg-white/5"
                     [routerLink]="item.link"
                     routerLinkActive="!text-primary bg-primary/10 dark:bg-primary/20 shadow-sm active-nav">
                     

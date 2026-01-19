@@ -2,8 +2,7 @@ export interface Group {
   id: string;
   name: string;
   description: string;
-  coverImage?: string;
-  avatar?: string;
+  imageUrl?: string;
   type: 'public' | 'private' | 'secret';
   category: string;
   memberCount: number;
@@ -170,8 +169,7 @@ export interface CreateGroupRequest {
   category: string;
   tags: string[];
   rules: string[];
-  coverImage?: File;
-  avatar?: File;
+  imageUrl?: string;
   settings: Partial<GroupSettings>;
 }
 
@@ -182,8 +180,7 @@ export interface UpdateGroupRequest {
   category?: string;
   tags?: string[];
   rules?: string[];
-  coverImage?: File;
-  avatar?: File;
+  imageUrl?: string;
   settings?: Partial<GroupSettings>;
 }
 

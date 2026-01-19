@@ -15,11 +15,14 @@ import { SignalRService } from './signalr.service';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  error(arg0: string) {
+    throw new Error("Method not implemented.");
+  }
   private readonly apiUrl = `${environment.apiUrl}/v1/notifications`;
-  
+
   private notificationsSubject = new BehaviorSubject<NotificationDto[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
-  
+
   private unreadCountSubject = new BehaviorSubject<number>(0);
   public unreadCount$ = this.unreadCountSubject.asObservable();
 
@@ -55,7 +58,7 @@ export class NotificationService {
    */
   getNotifications(filters?: NotificationFilters): Observable<NotificationListResponse> {
     const params: any = {};
-    
+
     if (filters) {
       if (filters.page) params.page = filters.page;
       if (filters.pageSize) params.pageSize = filters.pageSize;

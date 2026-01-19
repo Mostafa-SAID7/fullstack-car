@@ -118,7 +118,10 @@ namespace WebAPI.Controllers.SiteSettings
             var result = await Mediator.Send(query);
 
             if (result.Succeeded)
-                return Content(result.Data.CssContent, "text/css");
+            {
+                dynamic cssData = result.Data;
+                return Content(cssData.CssContent, "text/css");
+            }
 
             return BadRequest("Failed to retrieve compiled CSS", result.Errors);
         }

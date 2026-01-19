@@ -169,3 +169,17 @@ public class UpdateMaintenanceSettingsCommandHandler : IRequestHandler<UpdateMai
         return ApiResponseDto<object>.Success(new { Message = "Maintenance settings updated", UpdatedBy = request.UpdatedBy });
     }
 }
+public class DeleteSettingsBackupCommand : IRequest<ApiResponseDto<object>>
+{
+    public Guid BackupId { get; set; }
+    public Guid DeletedBy { get; set; }
+}
+
+public class DeleteSettingsBackupCommandHandler : IRequestHandler<DeleteSettingsBackupCommand, ApiResponseDto<object>>
+{
+    public async Task<ApiResponseDto<object>> Handle(DeleteSettingsBackupCommand request, CancellationToken cancellationToken)
+    {
+        await Task.Delay(1, cancellationToken);
+        return ApiResponseDto<object>.Success(new { Message = "Settings backup deleted", BackupId = request.BackupId, DeletedBy = request.DeletedBy });
+    }
+}

@@ -119,7 +119,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetStaticPage), new { id = result.Data.Id });
+                dynamic pageData = result.Data;
+                var location = Url.Action(nameof(GetStaticPage), new { id = pageData.Id });
                 return Created(result.Data, location!, "Static page created successfully");
             }
 
@@ -293,7 +294,8 @@ namespace WebAPI.Controllers.SiteSettings
 
             if (result.Succeeded)
             {
-                var location = Url.Action(nameof(GetStaticPage), new { id = result.Data.Id });
+                dynamic pageData = result.Data;
+                var location = Url.Action(nameof(GetStaticPage), new { id = pageData.Id });
                 return Created(result.Data, location!, "Static page duplicated successfully");
             }
 
@@ -426,7 +428,7 @@ namespace WebAPI.Controllers.SiteSettings
                 return Unauthorized("Invalid user context");
             }
 
-            var query = new GetUserStaticPagesQuery
+            var query = new Application.Features.Admin.StaticPages.Commands.GetUserStaticPagesQuery
             {
                 AuthorId = userGuid,
                 PageNumber = page,

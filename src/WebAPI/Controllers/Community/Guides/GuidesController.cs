@@ -60,10 +60,7 @@ namespace WebAPI.Controllers.Community.Guides
             var query = new GetGuidesQuery(page, pageSize, category, difficulty, searchTerm, isFeatured, sortBy, sortDescending, userId);
             var result = await Mediator.Send(query);
 
-            if (result.Succeeded)
-                return Success(result.Data, "Guides retrieved successfully");
-
-            return BadRequest("Failed to retrieve guides", result.Errors);
+            return Success(result, "Guides retrieved successfully");
         }
 
         [HttpGet("trending")]
@@ -112,13 +109,10 @@ namespace WebAPI.Controllers.Community.Guides
             var query = new GetGuideByIdQuery(id, userId);
             var result = await Mediator.Send(query);
             
-            if (result.Succeeded)
-                return Success(result.Data, "Guide retrieved successfully");
+            if (result != null)
+                return Success(result, "Guide retrieved successfully");
 
-            if (result.Errors.Any(e => e.Contains("not found")))
-                return NotFound("Guide not found");
-
-            return BadRequest("Failed to retrieve guide", result.Errors);
+            return NotFound("Guide not found");
         }
 
         [HttpPost]
@@ -130,16 +124,9 @@ namespace WebAPI.Controllers.Community.Guides
                 var command = new CreateGuideCommand(request, userId);
                 var result = await Mediator.Send(command);
 
-                if (result.Succeeded)
-                {
-                    var location = Url.Action(nameof(GetGuideById), new { id = result.Data.Id });
-                    return Created(result.Data, location!, "Guide created successfully");
-                }
-
-                if (result.Errors.Any(e => e.Contains("duplicate")))
-                    return BadRequest("A guide with this title already exists", result.Errors);
-
-                return BadRequest("Failed to create guide", result.Errors);
+                dynamic resultData = result;
+                var location = Url.Action(nameof(GetGuideById), new { id = resultData.Id });
+                return Created(result, location!, "Guide created successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -159,16 +146,7 @@ namespace WebAPI.Controllers.Community.Guides
                 var command = new UpdateGuideCommand(request, userId);
                 var result = await Mediator.Send(command);
 
-                if (result.Succeeded)
-                    return Success(result.Data, "Guide updated successfully");
-
-                if (result.Errors.Any(e => e.Contains("not found")))
-                    return NotFound("Guide not found");
-
-                if (result.Errors.Any(e => e.Contains("unauthorized") || e.Contains("permission")))
-                    return Forbidden("You don't have permission to update this guide");
-
-                return BadRequest("Failed to update guide", result.Errors);
+                return Success(result, "Guide updated successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -189,17 +167,7 @@ namespace WebAPI.Controllers.Community.Guides
                 };
 
                 var result = await Mediator.Send(command);
-
-                if (result.Succeeded)
-                    return Success("Guide deleted successfully");
-
-                if (result.Errors.Any(e => e.Contains("not found")))
-                    return NotFound("Guide not found");
-
-                if (result.Errors.Any(e => e.Contains("unauthorized") || e.Contains("permission")))
-                    return Forbidden("You don't have permission to delete this guide");
-
-                return BadRequest("Failed to delete guide", result.Errors);
+                return Success("Guide deleted successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -222,19 +190,7 @@ namespace WebAPI.Controllers.Community.Guides
                 var command = new RateGuideCommand(request, userId);
                 var result = await Mediator.Send(command);
                 
-                if (result.Succeeded)
-                    return Success("Guide rated successfully");
-
-                if (result.Errors.Any(e => e.Contains("not found")))
-                    return NotFound("Guide not found");
-
-                if (result.Errors.Any(e => e.Contains("own guide")))
-                    return BadRequest("Cannot rate your own guide", result.Errors);
-
-                if (result.Errors.Any(e => e.Contains("already rated")))
-                    return BadRequest("You have already rated this guide", result.Errors);
-
-                return BadRequest("Failed to rate guide", result.Errors);
+                return Success("Guide rated successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -251,16 +207,7 @@ namespace WebAPI.Controllers.Community.Guides
                 var command = new BookmarkGuideCommand(id, userId, request?.Notes);
                 var result = await Mediator.Send(command);
                 
-                if (result.Succeeded)
-                    return Success("Guide bookmarked successfully");
-
-                if (result.Errors.Any(e => e.Contains("not found")))
-                    return NotFound("Guide not found");
-
-                if (result.Errors.Any(e => e.Contains("already bookmarked")))
-                    return BadRequest("Guide is already bookmarked", result.Errors);
-
-                return BadRequest("Failed to bookmark guide", result.Errors);
+                return Success("Guide bookmarked successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -282,13 +229,7 @@ namespace WebAPI.Controllers.Community.Guides
 
                 var result = await Mediator.Send(command);
                 
-                if (result.Succeeded)
-                    return Success("Bookmark removed successfully");
-
-                if (result.Errors.Any(e => e.Contains("not found")))
-                    return NotFound("Bookmark not found");
-
-                return BadRequest("Failed to remove bookmark", result.Errors);
+                return Success("Bookmark removed successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -308,10 +249,7 @@ namespace WebAPI.Controllers.Community.Guides
                 var query = new GetUserBookmarkedGuidesQuery(userId, page, pageSize);
                 var result = await Mediator.Send(query);
 
-                if (result.Succeeded)
-                    return Success(result.Data, "Bookmarked guides retrieved successfully");
-
-                return BadRequest("Failed to retrieve bookmarked guides", result.Errors);
+                return Success(result, "Bookmarked guides retrieved successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -336,11 +274,7 @@ namespace WebAPI.Controllers.Community.Guides
                 };
 
                 var result = await Mediator.Send(query);
-
-                if (result.Succeeded)
-                    return Success(result.Data, "My guides retrieved successfully");
-
-                return BadRequest("Failed to retrieve my guides", result.Errors);
+                return Success(result, "My guides retrieved successfully");
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -377,11 +311,7 @@ namespace WebAPI.Controllers.Community.Guides
         {
             var query = new GetGuideStatsQuery();
             var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Guide statistics retrieved successfully");
-
-            return BadRequest("Failed to retrieve guide statistics", result.Errors);
+            return Success(result, "Guide statistics retrieved successfully");
         }
     }
 }

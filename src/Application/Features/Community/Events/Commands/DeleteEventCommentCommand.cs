@@ -7,6 +7,7 @@ public class DeleteEventCommentCommand : IRequest<Result<bool>>
 {
     public Guid CommentId { get; set; }
     public Guid UserId { get; set; }
+    public bool HardDelete { get; set; } = false;
 }
 
 public class DeleteEventCommentCommandHandler : IRequestHandler<DeleteEventCommentCommand, Result<bool>>
