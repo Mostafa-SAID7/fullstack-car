@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NewsService, NewsFilters } from '../../../services/news.service';
+import { NewsService, NewsFilters } from '../../services/news.service';
 import { Article } from '../../../../../core/models/news.model';
 import { NewsCardComponent } from '../news-card/news-card.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';

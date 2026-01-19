@@ -6,8 +6,8 @@ import { Subject } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { TranslationService } from '../../../../../core/services/translation.service';
-import { FriendService } from '../../../services/friend.service';
-import { MessageInterfaceComponent, Conversation } from '../../messaging/message-interface/message-interface.component';
+import { FriendService } from '../../services/friend.service';
+import { MessageInterfaceComponent, Conversation } from '../../../../messaging/components/message-interface/message-interface.component';
 
 @Component({
   selector: 'app-friend-list',
@@ -179,7 +179,7 @@ export class FriendListComponent implements OnInit, OnDestroy {
       await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'social');
 
       // Update ngx-translate with the loaded translations
-      const translations = await this.translationService.loadTranslations(currentLanguage, 'social').toPromise();
+      const translations = await this.translationService.loadTranslations(currentLanguage, 'social').pipe(takeUntil(this.destroy$)).toPromise();
       this.translate.setTranslation(currentLanguage, translations, true);
 
       console.log('Social translations loaded successfully from backend API');
@@ -188,7 +188,7 @@ export class FriendListComponent implements OnInit, OnDestroy {
       // Fallback to English if current language fails
       if (this.translationService.getCurrentLanguage().code !== 'en-US') {
         try {
-          const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').toPromise();
+          const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').pipe(takeUntil(this.destroy$)).toPromise();
           this.translate.setTranslation('en-US', fallbackTranslations, true);
           console.log('Loaded fallback English translations for social features');
         } catch (fallbackError) {

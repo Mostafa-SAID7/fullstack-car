@@ -338,4 +338,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
     };
     return colors[category] || 'bg-gray-500';
   }
+
+  trackByEventId(index: number, event: EventSummaryDto): string {
+    return event.id;
+  }
 }

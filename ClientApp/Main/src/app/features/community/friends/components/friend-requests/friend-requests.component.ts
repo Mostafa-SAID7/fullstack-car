@@ -4,9 +4,9 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FriendRequest } from '../../../../../core/models/friend.model';
-import { FriendService } from '../../../services/friend.service';
+import { FriendService } from '../../services/friend.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
-import { NotificationService } from '../../../services/notification.service';
+import { NotificationService } from '../../../../../shared/services/notification/notification.service';
 
 @Component({
     selector: 'app-friend-requests',
@@ -97,7 +97,7 @@ export class FriendRequestsComponent implements OnInit, OnDestroy {
             await this.translationService.loadSingleFeatureTranslations(currentLanguage, 'social');
             
             // Update ngx-translate with the loaded translations
-            const translations = await this.translationService.loadTranslations(currentLanguage, 'social').toPromise();
+            const translations = await this.translationService.loadTranslations(currentLanguage, 'social').pipe(takeUntil(this.destroy$)).toPromise();
             this.translate.setTranslation(currentLanguage, translations, true);
             
             console.log('Social translations loaded for friend requests from backend API');
@@ -106,7 +106,7 @@ export class FriendRequestsComponent implements OnInit, OnDestroy {
             // Fallback to English if current language fails
             if (this.translationService.getCurrentLanguage().code !== 'en-US') {
                 try {
-                    const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').toPromise();
+                    const fallbackTranslations = await this.translationService.loadTranslations('en-US', 'social').pipe(takeUntil(this.destroy$)).toPromise();
                     this.translate.setTranslation('en-US', fallbackTranslations, true);
                 } catch (fallbackError) {
                     console.error('Failed to load fallback translations:', fallbackError);

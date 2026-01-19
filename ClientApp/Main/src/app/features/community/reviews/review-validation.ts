@@ -5,9 +5,9 @@
  * to the backend translation APIs and implement the required localization features.
  */
 
-import { ReviewService } from '../services/review.service';
-import { ReviewItemComponent } from './review-item/review-item.component';
-import { ReviewListComponent } from './review-list/review-list.component';
+import { ReviewService } from './services/review.service';
+import { ReviewItemComponent } from './components/review-item/review-item.component';
+import { ReviewListComponent } from './pages/review-list/review-list.component';
 
 export interface ReviewLocalizationValidation {
   backendApiIntegration: boolean;

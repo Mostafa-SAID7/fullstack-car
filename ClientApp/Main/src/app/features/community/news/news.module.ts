@@ -25,7 +25,7 @@ import { NewsPreferencesComponent } from './pages/news-preferences/news-preferen
 import { NewsCardComponent } from './components/news-card/news-card.component';
 
 // Services
-import { NewsService } from '../services/news.service';
+import { NewsService } from './services/news.service';
 
 // Routing
 import { NewsRoutingModule } from './news-routing.module';

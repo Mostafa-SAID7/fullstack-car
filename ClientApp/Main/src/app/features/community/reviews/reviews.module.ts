@@ -1,0 +1,67 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+// Angular Material
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+
+// Shared modules
+import { SharedModule } from '../../../shared/shared.module';
+
+// Pages
+import { ReviewListComponent } from './pages/review-list/review-list.component';
+
+// Components
+import { ReviewItemComponent } from './components/review-item/review-item.component';
+
+// Services
+import { ReviewService } from './services/review.service';
+
+// Routing
+import { ReviewsRoutingModule } from './reviews-routing.module';
+
+@NgModule({
+  declarations: [
+    // Pages
+    ReviewListComponent,
+    
+    // Components
+    ReviewItemComponent
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    
+    // Angular Material
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatChipsModule,
+    
+    // Shared
+    SharedModule,
+    
+    // Routing
+    ReviewsRoutingModule
+  ],
+  providers: [
+    ReviewService
+  ],
+  exports: [
+    ReviewItemComponent,
+    ReviewListComponent
+  ]
+})
+export class ReviewsModule { }

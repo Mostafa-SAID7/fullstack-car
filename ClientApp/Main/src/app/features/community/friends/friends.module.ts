@@ -21,7 +21,7 @@ import { FriendCardComponent } from './components/friend-card/friend-card.compon
 import { FriendRequestsComponent } from './components/friend-requests/friend-requests.component';
 
 // Services
-import { FriendService } from '../services/friend.service';
+import { FriendService } from './services/friend.service';
 
 // Routing
 import { FriendsRoutingModule } from './friends-routing.module';

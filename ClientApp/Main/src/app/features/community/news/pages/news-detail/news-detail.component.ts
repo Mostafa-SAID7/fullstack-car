@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { NewsService } from '../../../services/news.service';
+import { NewsService } from '../../services/news.service';
 import { Article } from '../../../../../core/models/news.model';
 
 @Component({

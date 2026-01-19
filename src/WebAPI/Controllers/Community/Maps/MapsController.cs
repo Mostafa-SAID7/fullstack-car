@@ -1,7 +1,10 @@
+using Application.Common.Attributes;
 using Application.Features.Community.Maps.Commands;
 using Application.Features.Community.Maps.DTOs;
 using Application.Features.Community.Maps.Queries;
 using Application.Features.Identity.Core.Interfaces;
+using Application.Features.Shared.Localization.Interfaces;
+using Application.Features.Shared.Notifications.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -9,57 +12,46 @@ using Asp.Versioning;
 
 namespace WebAPI.Controllers.Community.Maps
 {
+    /// <summary>
+    /// Core CRUD operations for Maps/Locations
+    /// </summary>
     [Authorize]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/maps")]
     public class MapsController : BaseController
     {
         private readonly ICurrentUserService _currentUserService;
+        private readonly ILocalizationProvider _localizationProvider;
+        private readonly INotificationService _notificationService;
+        private readonly ILogger<MapsController> _logger;
 
-        public MapsController(ICurrentUserService currentUserService)
+        public MapsController(
+            ICurrentUserService currentUserService,
+            ILocalizationProvider localizationProvider,
+            INotificationService notificationService,
+            ILogger<MapsController> logger)
         {
             _currentUserService = currentUserService;
+            _localizationProvider = localizationProvider;
+            _notificationService = notificationService;
+            _logger = logger;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [OutputCache(Duration = 300, Tags = new[] { "Maps" })]
+        [Cache(Duration = 300, Tags = new[] { "Maps" })]
+        [OutputCache(PolicyName = "MediumCache")]
         public async Task<IActionResult> GetLocations([FromQuery] Application.Features.Community.Maps.Queries.GetLocationsQuery query)
         {
+            _logger.LogInformation("Retrieving locations with query: {@Query}", query);
             var result = await Mediator.Send(query);
-            return Success(result, "Locations retrieved successfully");
-        }
-
-        [HttpGet("nearby")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 180, Tags = new[] { "Maps", "Nearby" })]
-        public async Task<IActionResult> GetNearbyLocations(
-            [FromQuery] double latitude,
-            [FromQuery] double longitude,
-            [FromQuery] double radiusKm = 10,
-            [FromQuery] string? category = null,
-            [FromQuery] int pageSize = 20)
-        {
-            var query = new GetNearbyLocationsQuery
-            {
-                Latitude = latitude,
-                Longitude = longitude,
-                RadiusKm = radiusKm,
-                Category = category,
-                PageSize = pageSize
-            };
-
-            var result = await Mediator.Send(query);
-
-            if (result.Succeeded)
-                return Success(result.Data, "Nearby locations retrieved successfully");
-
-            return BadRequest("Failed to retrieve nearby locations", result.Errors);
+            return Success(result, await _localizationProvider.GetTranslationAsync("en-US", "Maps.Retrieved"));
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [OutputCache(Duration = 300, Tags = new[] { "Maps" })]
+        [Cache(Duration = 300, Tags = new[] { "Maps" })]
+        [OutputCache(PolicyName = "MediumCache", VaryByRouteValueNames = new[] { "id" })]
         public async Task<IActionResult> GetLocation(Guid id)
         {
             var query = new GetLocationByIdQuery { LocationId = id };
@@ -79,14 +71,12 @@ namespace WebAPI.Controllers.Community.Maps
         public async Task<IActionResult> CreateLocation([FromBody] CreateLocationRequest request)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
                 return Unauthorized("User authentication required");
-            }
 
             if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
                 return Unauthorized("Invalid user context");
-            }
+
+            _logger.LogInformation("Creating location for user {UserId}: {LocationName}", userGuid, request.Name);
 
             var command = new CreateLocationCommand
             {
@@ -96,9 +86,16 @@ namespace WebAPI.Controllers.Community.Maps
 
             var result = await Mediator.Send(command);
 
-            dynamic resultData = result;
-            var location = Url.Action(nameof(GetLocation), new { id = resultData.Id });
-            return Created(result, location!, "Location created successfully");
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Location created successfully. Id: {LocationId}", result.Data);
+                dynamic resultData = result.Data;
+                var location = Url.Action(nameof(GetLocation), new { id = resultData.Id });
+                return Created(result.Data, location!, await _localizationProvider.GetTranslationAsync("en-US", "Maps.Created"));
+            }
+
+            _logger.LogWarning("Failed to create location. Errors: {Errors}", string.Join(", ", result.Errors));
+            return BadRequest(await _localizationProvider.GetTranslationAsync("en-US", "Error"), result.Errors);
         }
 
         [HttpPut("{id}")]
@@ -106,14 +103,10 @@ namespace WebAPI.Controllers.Community.Maps
         public async Task<IActionResult> UpdateLocation(Guid id, [FromBody] UpdateLocationRequest request)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
                 return Unauthorized("User authentication required");
-            }
 
             if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
                 return Unauthorized("Invalid user context");
-            }
 
             var command = new UpdateLocationCommand
             {
@@ -123,7 +116,20 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-            return Success(result, "Location updated successfully");
+            
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Location updated successfully. Id: {LocationId}", id);
+                return Success(result, "Location updated successfully");
+            }
+
+            if (result.Errors.Any(e => e.Contains("not found")))
+                return NotFound("Location not found");
+
+            if (result.Errors.Any(e => e.Contains("unauthorized") || e.Contains("permission")))
+                return Forbidden("You don't have permission to update this location");
+
+            return BadRequest("Failed to update location", result.Errors);
         }
 
         [HttpDelete("{id}")]
@@ -131,14 +137,10 @@ namespace WebAPI.Controllers.Community.Maps
         public async Task<IActionResult> DeleteLocation(Guid id)
         {
             if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
                 return Unauthorized("User authentication required");
-            }
 
             if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
                 return Unauthorized("Invalid user context");
-            }
 
             var command = new DeleteLocationCommand
             {
@@ -147,153 +149,17 @@ namespace WebAPI.Controllers.Community.Maps
             };
 
             var result = await Mediator.Send(command);
-            return Success("Location deleted successfully");
-        }
-
-        [HttpPost("{id}/checkin")]
-        [Authorize]
-        public async Task<IActionResult> CheckIn(Guid id, [FromBody] CheckInRequest request)
-        {
-            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
+            
+            if (result.Succeeded)
             {
-                return Unauthorized("User authentication required");
+                _logger.LogInformation("Location deleted successfully. Id: {LocationId}", id);
+                return Success("Location deleted successfully");
             }
 
-            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
-                return Unauthorized("Invalid user context");
-            }
+            if (result.Errors.Any(e => e.Contains("not found")))
+                return NotFound("Location not found");
 
-            var command = new CheckInCommand
-            {
-                LocationId = id,
-                UserId = userGuid,
-                Request = request
-            };
-
-            var result = await Mediator.Send(command);
-            return Success(result, "Check-in successful");
-        }
-
-        [HttpGet("{id}/checkins")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 300, Tags = new[] { "Maps", "CheckIns" })]
-        public async Task<IActionResult> GetLocationCheckIns(
-            Guid id,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
-        {
-            var query = new GetLocationCheckInsQuery
-            {
-                LocationId = id,
-                PageNumber = page,
-                PageSize = pageSize
-            };
-
-            var result = await Mediator.Send(query);
-            return Success(result, "Location check-ins retrieved successfully");
-        }
-
-        [HttpPost("{id}/reviews")]
-        [Authorize]
-        public async Task<IActionResult> CreateLocationReview(Guid id, [FromBody] CreateLocationReviewRequest request)
-        {
-            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
-                return Unauthorized("User authentication required");
-            }
-
-            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
-                return Unauthorized("Invalid user context");
-            }
-
-            var command = new CreateLocationReviewCommand
-            {
-                LocationId = id,
-                UserId = userGuid,
-                Request = request
-            };
-
-            var result = await Mediator.Send(command);
-            return Success(result, "Location review created successfully");
-        }
-
-        [HttpGet("{id}/reviews")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 300, Tags = new[] { "Maps", "Reviews" })]
-        public async Task<IActionResult> GetLocationReviews(
-            Guid id,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
-        {
-            var query = new GetLocationReviewsQuery
-            {
-                LocationId = id,
-                PageNumber = page,
-                PageSize = pageSize
-            };
-
-            var result = await Mediator.Send(query);
-            return Success(result, "Location reviews retrieved successfully");
-        }
-
-        [HttpGet("search")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 180, Tags = new[] { "Maps", "Search" })]
-        public async Task<IActionResult> SearchLocations([FromQuery] Application.Features.Community.Maps.Queries.SearchLocationsQuery query)
-        {
-            var result = await Mediator.Send(query);
-            return Success(result, "Location search completed successfully");
-        }
-
-        [HttpGet("categories")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 3600, Tags = new[] { "Maps", "Categories" })]
-        public async Task<IActionResult> GetLocationCategories()
-        {
-            var query = new GetLocationCategoriesQuery();
-            var result = await Mediator.Send(query);
-            return Success(result, "Location categories retrieved successfully");
-        }
-
-        [HttpGet("my-checkins")]
-        [OutputCache(Duration = 60, Tags = new[] { "Maps", "MyCheckIns" })]
-        public async Task<IActionResult> GetMyCheckIns(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
-        {
-            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
-            {
-                return Unauthorized("User authentication required");
-            }
-
-            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
-            {
-                return Unauthorized("Invalid user context");
-            }
-
-            var query = new GetUserCheckInsQuery
-            {
-                UserId = userGuid,
-                PageNumber = page,
-                PageSize = pageSize
-            };
-
-            var result = await Mediator.Send(query);
-            return Success(result, "My check-ins retrieved successfully");
-        }
-
-        [HttpGet("stats")]
-        [AllowAnonymous]
-        [OutputCache(Duration = 1800, Tags = new[] { "Maps", "Stats" })]
-        public async Task<IActionResult> GetMapStats()
-        {
-            var query = new GetMapStatsQuery();
-            var result = await Mediator.Send(query);
-            return Success(result, "Map statistics retrieved successfully");
+            return BadRequest("Failed to delete location", result.Errors);
         }
     }
 }
-
-

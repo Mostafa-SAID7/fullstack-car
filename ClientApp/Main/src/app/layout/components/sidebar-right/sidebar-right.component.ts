@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FriendService } from '../../../features/community/services/friend.service';
+import { FriendService } from '../../../features/community/friends/services/friend.service';
 import { MediaService } from '../../../features/media/services/media.service';
 import { Friend } from '../../../core/models/friend.model';
 import { VideoList, PodcastList } from '../../../features/media/models';

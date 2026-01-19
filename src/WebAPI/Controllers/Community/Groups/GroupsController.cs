@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Application.Common.Attributes;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Community.Groups.Commands;
 using Application.Features.Community.Groups.DTOs;
@@ -22,20 +23,24 @@ namespace WebAPI.Controllers.Community.Groups
         private readonly ICurrentUserService _currentUserService;
         private readonly ILocalizationProvider _localizationProvider;
         private readonly INotificationService _notificationService;
+        private readonly ILogger<GroupsController> _logger;
 
         public GroupsController(
             ICurrentUserService currentUserService,
             ILocalizationProvider localizationProvider,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ILogger<GroupsController> logger)
         {
             _currentUserService = currentUserService;
             _localizationProvider = localizationProvider;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [OutputCache(Duration = 300, Tags = new[] { "Groups" })]
+        [Cache(Duration = 300, Tags = new[] { "Groups" }, VaryByParameters = new[] { "page", "pageSize", "category", "searchTerm", "sortBy", "isPublic", "isActive" })]
+        [OutputCache(PolicyName = "MediumCache", VaryByQueryKeys = new[] { "page", "pageSize", "category", "searchTerm", "sortBy", "sortDescending", "isPublic", "isActive" })]
         public async Task<IActionResult> GetGroups(
             [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10, 
@@ -46,6 +51,7 @@ namespace WebAPI.Controllers.Community.Groups
             [FromQuery] bool? isPublic = null,
             [FromQuery] bool? isActive = true)
         {
+            _logger.LogInformation("Retrieving groups with filters: Category={Category}, SearchTerm={SearchTerm}", category, searchTerm);
             var query = new GetGroupsQuery 
             { 
                 PageNumber = page, 
@@ -167,6 +173,8 @@ namespace WebAPI.Controllers.Community.Groups
                 return Unauthorized("Invalid user context");
             }
 
+            _logger.LogInformation("Creating group for user {UserId}: {GroupName}", userGuid, request.Name);
+
             var command = new CreateGroupCommand
             {
                 OwnerId = userGuid,
@@ -177,6 +185,7 @@ namespace WebAPI.Controllers.Community.Groups
 
             if (result.Succeeded)
             {
+                _logger.LogInformation("Group created successfully. Id: {GroupId}", result.Data.Id);
                 var location = Url.Action(nameof(GetGroup), new { id = result.Data.Id });
                 
                 // Send notification
@@ -220,7 +229,10 @@ namespace WebAPI.Controllers.Community.Groups
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
+            {
+                _logger.LogInformation("Group updated successfully. Id: {GroupId}", id);
                 return Success(result.Data, "Group updated successfully");
+            }
 
             if (result.Errors.Any(e => e.Contains("not found")))
                 return NotFound("Group not found");
@@ -253,7 +265,10 @@ namespace WebAPI.Controllers.Community.Groups
             var result = await Mediator.Send(command);
 
             if (result.Succeeded)
+            {
+                _logger.LogInformation("Group deleted successfully. Id: {GroupId}", id);
                 return Success("Group deleted successfully");
+            }
 
             if (result.Errors.Any(e => e.Contains("not found")))
                 return NotFound("Group not found");
