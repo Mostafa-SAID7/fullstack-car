@@ -1,10 +1,11 @@
+using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Community.DTOs.Responses;
 
 namespace Application.Features.Community.Interfaces;
 public interface IHubService
 {
     Task NotifyNewAnswerAsync(AnswerDto answer);
-    Task NotifyVoteUpdateAsync(VoteUpdateDto voteUpdate);
+    Task NotifyVoteUpdateAsync(VoteUpdateResponse voteUpdate);
     Task NotifyQuestionUpdateAsync(QuestionDto question);
     Task NotifyAnswerAcceptedAsync(AnswerAcceptedDto answerAccepted);
     Task NotifyReputationUpdateAsync(ReputationUpdateDto reputationUpdate);

@@ -1,3 +1,4 @@
+using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Community.DTOs.Responses;
 
 namespace Application.Features.Community.Interfaces;
@@ -16,7 +17,7 @@ public interface ICommunityHub
     /// <summary>
     /// Receive a vote update notification
     /// </summary>
-    Task ReceiveVoteUpdate(VoteUpdateDto voteUpdate);
+    Task ReceiveVoteUpdate(VoteUpdateResponse voteUpdate);
 
     /// <summary>
     /// Receive a question update notification

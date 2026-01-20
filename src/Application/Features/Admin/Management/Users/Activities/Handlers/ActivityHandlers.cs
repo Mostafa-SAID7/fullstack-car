@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Admin.Management.Users.Activities.Handlers
 {
-    public class GetUserActivityHandler : IRequestHandler<GetUserActivityQuery, Result<List<UserActivity>>>
+    public class GetUserActivityHandler : IRequestHandler<GetUserActivityQuery, Result<List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>>
     {
         private readonly IApplicationDbContext _context;
 
@@ -16,14 +16,14 @@ namespace Application.Features.Admin.Management.Users.Activities.Handlers
             _context = context;
         }
 
-        public async Task<Result<List<UserActivity>>> Handle(GetUserActivityQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>> Handle(GetUserActivityQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 // TODO: Implement actual user activity tracking
                 // For now, return mock data based on user posts, comments, etc.
                 
-                var activities = new List<UserActivity>();
+                var activities = new List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>();
 
                 // Get user posts as activities
                 var posts = await _context.Posts
@@ -34,7 +34,7 @@ namespace Application.Features.Admin.Management.Users.Activities.Handlers
 
                 foreach (var post in posts)
                 {
-                    activities.Add(new UserActivity
+                    activities.Add(new Application.Features.Admin.Management.Users.Activities.Models.UserActivity
                     {
                         Id = Guid.NewGuid(),
                         UserId = request.UserId,
@@ -58,12 +58,12 @@ namespace Application.Features.Admin.Management.Users.Activities.Handlers
 
                 foreach (var comment in comments)
                 {
-                    activities.Add(new UserActivity
+                    activities.Add(new Application.Features.Admin.Management.Users.Activities.Models.UserActivity
                     {
                         Id = Guid.NewGuid(),
                         UserId = request.UserId,
                         ActivityType = "Comment Posted",
-                        Description = $"Posted comment: {comment.Content.Substring(0, Math.Min(50, comment.Content.Length))}...",
+                        Description = $"Posted comment: {(comment.Content.Length > 50 ? comment.Content.Substring(0, 50) : comment.Content)}...",
                         Timestamp = comment.CreatedAt,
                         Metadata = new Dictionary<string, object>
                         {
@@ -98,11 +98,11 @@ namespace Application.Features.Admin.Management.Users.Activities.Handlers
                     .Take(request.PageSize)
                     .ToList();
 
-                return Result<List<UserActivity>>.Success(paginatedActivities);
+                return Result<List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>.Success(paginatedActivities);
             }
             catch (Exception ex)
             {
-                return Result<List<UserActivity>>.Failure($"Error retrieving user activities: {ex.Message}");
+                return Result<List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>.Failure($"Error retrieving user activities: {ex.Message}");
             }
         }
     }

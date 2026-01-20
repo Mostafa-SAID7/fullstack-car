@@ -3,8 +3,8 @@ using Application.Common.Models;
 using Application.Features.Community.Commands;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Services;
-using Domain.Entities.Community;
-using Domain.Enums.Community;
+using Domain.Entities.Community.QA;
+using Domain.Enums.Community.QA;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

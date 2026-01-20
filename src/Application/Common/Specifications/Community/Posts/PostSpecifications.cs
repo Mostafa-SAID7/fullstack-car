@@ -44,7 +44,7 @@ namespace Application.Common.Specifications.Community.Posts
         }
     }
 
-    public class PostCommentsSpecification : BaseSpecification<Comment>
+    public class PostCommentsSpecification : BaseSpecification<Domain.Entities.Community.Posts.Comment>
     {
         public PostCommentsSpecification(Guid postId, int skip, int take)
             : base(c => c.PostId == postId && !c.IsDeleted)

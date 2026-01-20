@@ -1,4 +1,4 @@
-using Application.Features.QA.DTOs;
+using Application.Features.Community.QA.DTOs.Responses;
 using Domain.Entities.Community;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Admin.Management.Users.Activities.Queries
 {
-    public class GetUserActivityQuery : IRequest<Result<List<UserActivity>>>
+    public class GetUserActivityQuery : IRequest<Result<List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>>
     {
         public Guid UserId { get; set; }
         public int Page { get; set; } = 1;

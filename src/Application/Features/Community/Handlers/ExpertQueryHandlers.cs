@@ -1,6 +1,7 @@
 using Application.Common.Patterns;
 using Application.Features.Community.Queries;
 using Application.Features.Community.Services;
+using Application.Features.Community.QA.DTOs.Responses;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

@@ -1,5 +1,5 @@
 using Application.Common.Specifications;
-using Domain.Entities.Shared.Chat;
+using Domain.Entities.Messaging;
 
 namespace Application.Common.Specifications.Shared.Chat
 {

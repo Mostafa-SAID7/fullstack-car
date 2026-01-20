@@ -40,3 +40,24 @@ export interface AuditableEntity extends BaseEntity {
   createdBy: string;
   updatedBy?: string;
 }
+
+export interface UserProfileDto {
+  id: string;
+  userName: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  isVerified: boolean;
+  isOnline: boolean;
+  lastSeen?: Date;
+  joinedAt: Date;
+  followersCount: number;
+  followingCount: number;
+  postsCount: number;
+  reputation: number;
+}

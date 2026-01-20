@@ -1,6 +1,5 @@
 using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.QA.Interfaces;
-using Infrastructure.Services.QA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;

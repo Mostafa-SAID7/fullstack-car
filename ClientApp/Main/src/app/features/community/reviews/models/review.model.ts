@@ -11,11 +11,17 @@ export interface Review {
   targetId: string;
   targetName: string;
   
+  // Car-specific information (for car reviews)
+  carBrand?: string;
+  carModel?: string;
+  carYear?: number;
+  
   // Author information
   authorId: string;
   authorName: string;
   authorAvatar?: string;
   authorVerified: boolean;
+  userId: string; // Same as authorId for compatibility
   
   // Media
   images: string[];

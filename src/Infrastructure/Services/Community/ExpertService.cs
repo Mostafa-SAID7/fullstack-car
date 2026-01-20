@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.Services;
-using Domain.Entities.Community;
+using Domain.Entities.Community.QA;
 using Domain.Entities.Identity;
 using Domain.Events.Community;
 using Domain.Interfaces;
@@ -8,6 +9,11 @@ using Domain.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ExpertRankingDto = Application.Features.Community.QA.DTOs.Responses.ExpertRankingDto;
+using ExpertPreferencesDto = Application.Features.Community.QA.DTOs.Responses.ExpertPreferencesDto;
+using ExpertAnalyticsDto = Application.Features.Community.QA.DTOs.Responses.ExpertAnalyticsDto;
+using ExpertLeaderboardDto = Application.Features.Community.QA.DTOs.Responses.ExpertLeaderboardDto;
+using ExpertPerformanceDto = Application.Features.Community.QA.DTOs.Responses.ExpertPerformanceDto;
 
 namespace Infrastructure.Services.Community;
 public class ExpertService : IExpertService
@@ -104,7 +110,7 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task UpdateExpertStatsAsync(Guid userId, string category, string activityType)
+    public async Task UpdateExpertStatsInternalAsync(Guid userId, string category, string activityType)
     {
         try
         {
@@ -180,7 +186,7 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task PromoteToExpertAsync(Guid userId, string category)
+    public async Task PromoteToExpertInternalAsync(Guid userId, string category)
     {
         try
         {
@@ -220,7 +226,7 @@ public class ExpertService : IExpertService
             await _mediator.Publish(expertPromotedEvent);
 
             // Award expert badge
-            await _reputationService.AwardBadgeAsync(userId, $"Expert in {category}", $"Promoted to expert in {category}");
+            await _reputationService.AwardBadgeWithCategoryAsync(userId, $"Expert in {category}", category);
         }
         catch (Exception ex)
         {
@@ -260,7 +266,7 @@ public class ExpertService : IExpertService
 
     #region Expert Notification System
 
-    public async Task NotifyExpertsForQuestionAsync(Guid questionId, string category)
+    public async Task NotifyExpertsForQuestionInternalAsync(Guid questionId, string category)
     {
         try
         {
@@ -308,7 +314,7 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task UpdateExpertNotificationPreferencesAsync(Guid userId, string category, bool enabled)
+    public async Task UpdateExpertNotificationPreferencesInternalAsync(Guid userId, string category, bool enabled)
     {
         try
         {
@@ -354,7 +360,7 @@ public class ExpertService : IExpertService
 
     #region Expert Badge and Recognition
 
-    public async Task CheckAndAwardExpertBadgesAsync(Guid userId, string category)
+    public async Task CheckAndAwardExpertBadgesInternalAsync(Guid userId, string category)
     {
         try
         {
@@ -378,7 +384,7 @@ public class ExpertService : IExpertService
             {
                 if (!await HasExpertBadgeAsync(userId, badge))
                 {
-                    await _reputationService.AwardBadgeAsync(userId, badge, $"Earned for expertise in {category}");
+                    await _reputationService.AwardBadgeWithCategoryAsync(userId, badge, category);
                     
                     // Raise domain event for badge awarded
                     var badgeAwardedEvent = new ExpertBadgeAwardedEvent(userId, badge, category, $"Earned for expertise in {category}");
@@ -443,7 +449,7 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task AddExpertiseCategoryAsync(Guid userId, string category)
+    public async Task AddExpertiseCategoryInternalAsync(Guid userId, string category)
     {
         try
         {
@@ -478,7 +484,7 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task RemoveExpertiseCategoryAsync(Guid userId, string category)
+    public async Task RemoveExpertiseCategoryInternalAsync(Guid userId, string category)
     {
         try
         {
@@ -497,14 +503,14 @@ public class ExpertService : IExpertService
         }
     }
 
-    public async Task UpdateExpertPreferencesAsync(Guid userId, ExpertPreferencesDto preferences)
+    public async Task UpdateExpertPreferencesInternalAsync(Guid userId, ExpertPreferencesDto preferences)
     {
         try
         {
             // Update notification preferences for each category
             foreach (var categoryPref in preferences.CategoryNotifications)
             {
-                await UpdateExpertNotificationPreferencesAsync(userId, categoryPref.Key, categoryPref.Value);
+                await UpdateExpertNotificationPreferencesInternalAsync(userId, categoryPref.Key, categoryPref.Value);
             }
 
             // TODO: Store other preferences (email, push, quiet hours, etc.) in user profile or separate table
@@ -632,21 +638,203 @@ public class ExpertService : IExpertService
             return new ExpertPerformanceDto
             {
                 UserId = userId,
-                Category = category,
-                ExpertiseLevel = expert.ExpertiseLevel,
-                AnswerCount = expert.AnswerCount,
-                AcceptedAnswerCount = expert.AcceptedAnswerCount,
-                AcceptanceRate = acceptanceRate,
+                UserName = "", // TODO: Get user name
+                PeriodStart = DateTime.UtcNow.AddDays(-30), // Last 30 days
+                PeriodEnd = DateTime.UtcNow,
+                QuestionsAnswered = expert.AnswerCount,
+                BestAnswers = expert.AcceptedAnswerCount,
                 AverageRating = expert.AverageRating,
-                ResponseRate = expert.ResponseRate,
-                LastActivity = userAnswers.Any() ? userAnswers.Max(a => a.CreatedAt) : DateTime.MinValue,
-                RecentBadges = new List<string>() // TODO: Get recent badges
+                AverageResponseTime = TimeSpan.FromHours(2), // TODO: Calculate actual response time
+                HelpfulVotes = 0, // TODO: Calculate helpful votes
+                ExpertiseGrowth = 0.0, // TODO: Calculate growth
+                Achievements = new List<string>(), // TODO: Get recent badges
+                CategoryScores = new Dictionary<string, double> { [category] = expert.AverageRating }
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting expert performance for user {UserId} in category {Category}", userId, category);
-            return new ExpertPerformanceDto { UserId = userId, Category = category };
+            return new ExpertPerformanceDto { UserId = userId, UserName = "" };
+        }
+    }
+
+    #endregion
+
+    #region Interface Method Implementations
+
+    public async Task<Result<bool>> IsUserExpertAsync(Guid userId, string category)
+    {
+        try
+        {
+            var isExpert = await IsUserExpertInCategoryAsync(userId, category);
+            return Result<bool>.Success(isExpert);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking if user is expert");
+            return Result<bool>.Failure("Error checking expert status");
+        }
+    }
+
+    public async Task<Result<List<Guid>>> GetExpertsForCategoryAsync(string category)
+    {
+        try
+        {
+            var experts = await GetExpertsByCategoryAsync(category);
+            return Result<List<Guid>>.Success(experts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting experts for category");
+            return Result<List<Guid>>.Failure("Error retrieving experts");
+        }
+    }
+
+    public async Task<Result<bool>> PromoteToExpertAsync(Guid userId, string category)
+    {
+        try
+        {
+            await PromoteToExpertInternalAsync(userId, category);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error promoting user to expert");
+            return Result<bool>.Failure("Error promoting to expert");
+        }
+    }
+
+    public async Task<Result<List<string>>> GetUserExpertiseAreasAsync(Guid userId)
+    {
+        try
+        {
+            var areas = await GetUserExpertiseCategoriesAsync(userId);
+            return Result<List<string>>.Success(areas);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting user expertise areas");
+            return Result<List<string>>.Failure("Error retrieving expertise areas");
+        }
+    }
+
+    public async Task<Result<Dictionary<string, int>>> GetExpertStatsAsync(Guid userId)
+    {
+        try
+        {
+            var analytics = await GetExpertAnalyticsAsync(userId);
+            var stats = new Dictionary<string, int>
+            {
+                ["totalAnswers"] = analytics.QuestionsAnswered,
+                ["acceptedAnswers"] = analytics.AnswersAccepted,
+                ["totalUpvotes"] = analytics.UpvotesReceived,
+                ["totalDownvotes"] = analytics.DownvotesReceived,
+                ["reputationScore"] = (int)analytics.EngagementScore
+            };
+            return Result<Dictionary<string, int>>.Success(stats);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting expert stats");
+            return Result<Dictionary<string, int>>.Failure("Error retrieving expert stats");
+        }
+    }
+
+    public async Task<bool> UpdateExpertNotificationPreferencesAsync(Guid userId, string category, bool enabled)
+    {
+        try
+        {
+            await UpdateExpertNotificationPreferencesInternalAsync(userId, category, enabled);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating expert notification preferences");
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateExpertPreferencesAsync(Guid userId, ExpertPreferencesDto preferences)
+    {
+        try
+        {
+            await UpdateExpertPreferencesInternalAsync(userId, preferences);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating expert preferences");
+            return false;
+        }
+    }
+
+    public async Task<bool> AddExpertiseCategoryAsync(Guid userId, string category)
+    {
+        try
+        {
+            await AddExpertiseCategoryInternalAsync(userId, category);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding expertise category");
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveExpertiseCategoryAsync(Guid userId, string category)
+    {
+        try
+        {
+            await RemoveExpertiseCategoryInternalAsync(userId, category);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error removing expertise category");
+            return false;
+        }
+    }
+
+    public async Task<bool> NotifyExpertsForQuestionAsync(Guid questionId, string category)
+    {
+        try
+        {
+            await NotifyExpertsForQuestionInternalAsync(questionId, category);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error notifying experts");
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateExpertStatsAsync(Guid userId, string category, string activityType)
+    {
+        try
+        {
+            await UpdateExpertStatsInternalAsync(userId, category, activityType);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating expert stats");
+            return false;
+        }
+    }
+
+    public async Task<List<string>> CheckAndAwardExpertBadgesAsync(Guid userId, string category)
+    {
+        try
+        {
+            await CheckAndAwardExpertBadgesInternalAsync(userId, category);
+            return new List<string>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking and awarding expert badges");
+            return new List<string>();
         }
     }
 

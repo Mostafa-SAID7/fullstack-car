@@ -19,7 +19,7 @@ namespace Application.Features.Community.Posts.Commands
     public class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, Result<bool>>
     {
         private readonly IRepository<Post> _postRepository;
-        private readonly IRepository<Comment> _commentRepository;
+        private readonly IRepository<Domain.Entities.Common.Comment> _commentRepository;
         private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cacheService;
@@ -27,7 +27,7 @@ namespace Application.Features.Community.Posts.Commands
 
         public AddCommentCommandHandler(
             IRepository<Post> postRepository,
-            IRepository<Comment> commentRepository,
+            IRepository<Domain.Entities.Common.Comment> commentRepository,
             IRepository<ApplicationUser> userRepository,
             IUnitOfWork unitOfWork,
             ICacheService cacheService,
@@ -49,9 +49,10 @@ namespace Application.Features.Community.Posts.Commands
                 return Result<bool>.Failure(new[] { "Post not found" });
             }
 
-            var comment = new Comment
+            var comment = new Domain.Entities.Common.Comment
             {
-                PostId = request.PostId,
+                ContentId = request.PostId,
+                ContentType = Domain.Enums.Common.ContentType.Post,
                 UserId = request.UserId,
                 Content = request.Request.Content,
                 ParentCommentId = request.Request.ParentCommentId

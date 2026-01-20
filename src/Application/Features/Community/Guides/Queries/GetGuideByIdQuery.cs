@@ -98,7 +98,7 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
                 IsRequired = s.IsRequired,
                 Tips = s.Tips,
                 WarningNotes = s.WarningNotes,
-                EstimatedTime = s.EstimatedTime
+                EstimatedTime = s.EstimatedTime ?? 0
             }).ToList(),
             IsBookmarked = isBookmarked,
             UserRating = userRating,

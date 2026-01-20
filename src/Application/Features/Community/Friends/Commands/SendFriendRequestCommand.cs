@@ -1,10 +1,10 @@
 using Application.Common.DTOs;
 using Application.Common.Models;
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 using Domain.Entities.Identity;
 using Domain.Enums.Community.Social;
 using Domain.Interfaces;
-using Application.Common.Specifications.Community.Social;
+using Application.Common.Specifications.Profile;
 using Application.Features.Shared.Caching.Interfaces.Services;
 using Application.Features.Shared.Notifications.Interfaces;
 using MediatR;

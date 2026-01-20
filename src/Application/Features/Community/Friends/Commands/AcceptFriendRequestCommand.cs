@@ -1,5 +1,5 @@
 using Application.Common.Models;
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 using Domain.Entities.Identity;
 using Domain.Enums.Community.Social;
 using Domain.Interfaces;

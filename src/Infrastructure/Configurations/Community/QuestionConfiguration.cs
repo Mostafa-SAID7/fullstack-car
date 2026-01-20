@@ -1,4 +1,4 @@
-using Domain.Entities.Community;
+using Domain.Entities.Community.QA;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

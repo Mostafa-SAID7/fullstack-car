@@ -38,7 +38,7 @@ namespace Application.Features.Admin.Dashboard.Handlers
 
                 var posts = await _context.Posts.ToListAsync(cancellationToken);
                 var groups = await _context.Groups.ToListAsync(cancellationToken);
-                var reviews = await _context.Reviews.ToListAsync(cancellationToken);
+                var reviews = await _context.CommunityReviews.ToListAsync(cancellationToken);
 
                 var totalUsers = users.Count;
                 var activeUsers = users.Count(u => u.IsActive && u.LastLoginAt.HasValue && u.LastLoginAt > DateTime.UtcNow.AddDays(-30));

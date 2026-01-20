@@ -1,6 +1,6 @@
 using AutoMapper;
 using Application.Features.Shared.Chat.DTOs;
-using Domain.Entities.Shared.Chat;
+using Domain.Entities.Messaging;
 
 namespace Application.Features.Shared.Chat.Mappings
 {

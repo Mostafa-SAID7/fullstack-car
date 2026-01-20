@@ -1,7 +1,8 @@
 using System.Text.RegularExpressions;
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Common.Models;
 using Application.Features.Community.Services;
 using Microsoft.Extensions.Logging;
+using ContentQualityAssessmentDto = Application.Features.Community.DTOs.Responses.ContentQualityAssessmentDto;
 
 namespace Infrastructure.Services.Community;
 public class ContentQualityService : IContentQualityService
@@ -552,4 +553,76 @@ public class ContentQualityService : IContentQualityService
     }
 
     #endregion
+
+    public async Task<Result<bool>> ValidateQuestionQualityAsync(string title, string content, string tags)
+    {
+        try
+        {
+            var titleScore = await EvaluateQuestionQualityAsync(title, content);
+            var isValid = titleScore >= MinimumQualityThreshold;
+            return Result<bool>.Success(isValid);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error validating question quality");
+            return Result<bool>.Failure("Error validating question quality");
+        }
+    }
+
+    public async Task<Result<bool>> ValidateAnswerQualityAsync(string content)
+    {
+        try
+        {
+            var score = await EvaluateAnswerQualityAsync(content);
+            var isValid = score >= MinimumQualityThreshold;
+            return Result<bool>.Success(isValid);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error validating answer quality");
+            return Result<bool>.Failure("Error validating answer quality");
+        }
+    }
+
+    public async Task<Result<double>> CalculateContentScoreAsync(string content)
+    {
+        try
+        {
+            var score = await EvaluateAnswerQualityAsync(content);
+            return Result<double>.Success(score);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error calculating content score");
+            return Result<double>.Failure("Error calculating content score");
+        }
+    }
+
+    public async Task<Result<List<string>>> GetContentSuggestionsAsync(string content)
+    {
+        try
+        {
+            var assessment = await GetDetailedQualityAssessmentAsync(content, "answer");
+            return Result<List<string>>.Success(assessment.Recommendations);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting content suggestions");
+            return Result<List<string>>.Failure("Error getting content suggestions");
+        }
+    }
+
+    public async Task<Result<bool>> CheckForSpamAsync(string content, Guid userId)
+    {
+        try
+        {
+            var isSpam = await IsSpamAsync(content);
+            return Result<bool>.Success(isSpam);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking for spam");
+            return Result<bool>.Failure("Error checking for spam");
+        }
+    }
 }

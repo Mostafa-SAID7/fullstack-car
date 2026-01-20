@@ -1,3 +1,4 @@
+using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Interfaces;
 using Domain.Events.Community;
@@ -123,7 +124,7 @@ public class RealtimeEventHandlers :
                 notification.ContentType, notification.ContentId);
 
             // Create vote update DTO
-            var voteUpdateDto = new VoteUpdateDto
+            var voteUpdateDto = new VoteUpdateResponse
             {
                 ContentId = notification.ContentId,
                 ContentType = notification.ContentType,
@@ -157,7 +158,7 @@ public class RealtimeEventHandlers :
                 notification.ContentType, notification.ContentId);
 
             // Create vote update DTO
-            var voteUpdateDto = new VoteUpdateDto
+            var voteUpdateDto = new VoteUpdateResponse
             {
                 ContentId = notification.ContentId,
                 ContentType = notification.ContentType,

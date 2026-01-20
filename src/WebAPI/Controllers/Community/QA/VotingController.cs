@@ -1,6 +1,6 @@
 using Application.Features.Community.QA.Commands;
 using Application.Features.Community.QA.DTOs.Requests;
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Community.QA.Queries;
 using Application.Features.Community.QA.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers.Community.QA
                 // Send real-time notification about vote update
                 try
                 {
-                    var voteUpdateDto = new VoteUpdateDto
+                    var voteUpdateDto = new VoteUpdateResponse
                     {
                         ContentId = request.ContentId,
                         ContentType = request.ContentType,
@@ -120,7 +120,7 @@ namespace WebAPI.Controllers.Community.QA
                 // Send real-time notification about vote removal
                 try
                 {
-                    var voteUpdateDto = new VoteUpdateDto
+                    var voteUpdateDto = new VoteUpdateResponse
                     {
                         ContentId = contentId,
                         ContentType = contentType,
@@ -175,7 +175,7 @@ namespace WebAPI.Controllers.Community.QA
                 // Send real-time notification about vote change
                 try
                 {
-                    var voteUpdateDto = new VoteUpdateDto
+                    var voteUpdateDto = new VoteUpdateResponse
                     {
                         ContentId = request.ContentId,
                         ContentType = request.ContentType,

@@ -2,7 +2,7 @@ using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.Services;
-using Domain.Entities.Community;
+using Domain.Entities.Community.QA;
 using Domain.Enums.Community;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -717,6 +717,107 @@ public class DuplicatePreventionService : IDuplicatePreventionService
         // Ensure consistent ordering for cache key
         var orderedTexts = new[] { text1, text2 }.OrderBy(t => t).ToArray();
         return $"{SIMILARITY_CACHE_PREFIX}{orderedTexts[0].GetHashCode()}_{orderedTexts[1].GetHashCode()}";
+    }
+
+    // Interface method implementations
+    public async Task<Result<List<Application.Features.Community.QA.DTOs.Responses.QuestionListDto>>> FindSimilarQuestionsAsync(string title, string content, string tags)
+    {
+        try
+        {
+            var tagList = string.IsNullOrWhiteSpace(tags) ? new List<string>() : tags.Split(',').Select(t => t.Trim()).ToList();
+            var result = await FindSimilarQuestionsAsync(title, content, "General", tagList, null, 5, 0.7, CancellationToken.None);
+            
+            if (result.IsSuccess)
+            {
+                var questionDtos = result.Data.Select(sq => new Application.Features.Community.QA.DTOs.Responses.QuestionListDto
+                {
+                    Id = sq.QuestionId,
+                    Title = sq.Title,
+                    Category = sq.Category,
+                    Tags = sq.Tags,
+                    VoteScore = sq.VoteScore,
+                    AnswerCount = sq.AnswerCount,
+                    HasAcceptedAnswer = sq.HasAcceptedAnswer,
+                    CreatedAt = sq.CreatedAt,
+                    UserName = sq.UserName
+                }).ToList();
+
+                return Result<List<Application.Features.Community.QA.DTOs.Responses.QuestionListDto>>.Success(questionDtos);
+            }
+
+            return Result<List<Application.Features.Community.QA.DTOs.Responses.QuestionListDto>>.Failure(result.ErrorMessage ?? "Error finding similar questions");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in simple similar questions search");
+            return Result<List<Application.Features.Community.QA.DTOs.Responses.QuestionListDto>>.Failure("Error finding similar questions");
+        }
+    }
+
+    public async Task<Result<bool>> IsDuplicateQuestionAsync(string title, string content, string tags)
+    {
+        try
+        {
+            var tagList = string.IsNullOrWhiteSpace(tags) ? new List<string>() : tags.Split(',').Select(t => t.Trim()).ToList();
+            var result = await DetectDuplicateQuestionAsync(title, content, "General", tagList, _options.DefaultDuplicateThreshold, CancellationToken.None);
+            
+            if (result.IsSuccess)
+            {
+                return Result<bool>.Success(result.Data.IsDuplicate);
+            }
+
+            return Result<bool>.Failure(result.ErrorMessage ?? "Error checking for duplicates");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking if question is duplicate");
+            return Result<bool>.Failure("Error checking for duplicates");
+        }
+    }
+
+    public async Task<Result<double>> CalculateSimilarityScoreAsync(string content1, string content2)
+    {
+        try
+        {
+            var similarity = await CalculateSemanticSimilarityAsync(content1, content2, CancellationToken.None);
+            return Result<double>.Success(similarity);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error calculating similarity score");
+            return Result<double>.Failure("Error calculating similarity");
+        }
+    }
+
+    public async Task<Result<List<string>>> GetDuplicatePreventionSuggestionsAsync(string title, string content)
+    {
+        try
+        {
+            var suggestions = new List<string>();
+            
+            // Basic suggestions based on content analysis
+            if (string.IsNullOrWhiteSpace(title) || title.Length < 10)
+            {
+                suggestions.Add("Consider adding a more descriptive title");
+            }
+
+            if (string.IsNullOrWhiteSpace(content) || content.Length < 50)
+            {
+                suggestions.Add("Provide more details in your question to help identify potential duplicates");
+            }
+
+            if (!content.Contains("?"))
+            {
+                suggestions.Add("Make sure to include a clear question in your content");
+            }
+
+            return Result<List<string>>.Success(suggestions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting duplicate prevention suggestions");
+            return Result<List<string>>.Failure("Error getting suggestions");
+        }
     }
 
     private async Task RecordDuplicateAnalyticsAsync(DuplicateDetectionResult result, long durationMs)

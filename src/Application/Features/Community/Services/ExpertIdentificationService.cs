@@ -1,7 +1,7 @@
 using Application.Common.Interfaces;
 using Domain.Enums.Community;
 using Domain.Services;
-using Domain.Entities.Community;
+using Domain.Entities.Community.QA;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Community.Services

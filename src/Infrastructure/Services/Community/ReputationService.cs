@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.Services;
 using Domain.Entities.Community;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,20 @@ public class ReputationService : IReputationService
         await Task.CompletedTask;
     }
 
+    public async Task<bool> AwardBadgeWithCategoryAsync(Guid userId, string badgeName, string category)
+    {
+        try
+        {
+            await AwardBadgeAsync(userId, badgeName, $"Badge awarded for {category}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error awarding badge {BadgeName} to user {UserId}", badgeName, userId);
+            return false;
+        }
+    }
+
     public async Task<List<string>> CheckForNewBadgesAsync(Guid userId)
     {
         // TODO: Implement badge checking logic
@@ -156,5 +171,103 @@ public class ReputationService : IReputationService
         // TODO: Implement reputation recalculation logic
         // This will be implemented in later tasks
         await Task.CompletedTask;
+    }
+
+    public async Task<Result<int>> GetUserReputationAsync(Guid userId)
+    {
+        try
+        {
+            var userReputation = await _context.UserReputations
+                .FirstOrDefaultAsync(ur => ur.UserId == userId);
+
+            var reputationScore = userReputation?.ReputationScore ?? 0;
+            return Result<int>.Success(reputationScore);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting user reputation for user {UserId}", userId);
+            return Result<int>.Failure("Error retrieving user reputation");
+        }
+    }
+
+    public async Task<Result<bool>> UpdateReputationAsync(Guid userId, int change, string reason)
+    {
+        try
+        {
+            await UpdateUserReputationAsync(userId, change, reason, null, "Manual");
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating reputation for user {UserId}", userId);
+            return Result<bool>.Failure("Error updating reputation");
+        }
+    }
+
+    public async Task<Result<List<string>>> GetUserBadgesAsync(Guid userId)
+    {
+        try
+        {
+            // TODO: Implement badge retrieval from badge system
+            return Result<List<string>>.Success(new List<string>());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting user badges for user {UserId}", userId);
+            return Result<List<string>>.Failure("Error retrieving user badges");
+        }
+    }
+
+    public async Task<Result<bool>> AwardBadgeAsync(Guid userId, string badgeName)
+    {
+        try
+        {
+            await AwardBadgeAsync(userId, badgeName, "Badge awarded");
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error awarding badge {BadgeName} to user {UserId}", badgeName, userId);
+            return Result<bool>.Failure("Error awarding badge");
+        }
+    }
+
+    public async Task<Result<Dictionary<string, int>>> GetReputationBreakdownAsync(Guid userId)
+    {
+        try
+        {
+            var userReputation = await _context.UserReputations
+                .FirstOrDefaultAsync(ur => ur.UserId == userId);
+
+            var breakdown = new Dictionary<string, int>();
+            if (userReputation != null)
+            {
+                breakdown["upvotes"] = userReputation.UpvotesReceived * 10;
+                breakdown["downvotes"] = userReputation.DownvotesReceived * -2;
+                breakdown["acceptedAnswers"] = userReputation.AcceptedAnswers * 25;
+                breakdown["total"] = userReputation.ReputationScore;
+            }
+
+            return Result<Dictionary<string, int>>.Success(breakdown);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting reputation breakdown for user {UserId}", userId);
+            return Result<Dictionary<string, int>>.Failure("Error retrieving reputation breakdown");
+        }
+    }
+
+    public async Task<bool> UpdateUserReputationAsync(Guid userId, int reputationChange, string reason = "", Guid? sourceId = null, string sourceType = "")
+    {
+        try
+        {
+            await UpdateUserReputationAsync(userId, reputationChange, reason, sourceId ?? Guid.Empty, sourceType);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating user reputation for user {UserId}", userId);
+            return false;
+        }
     }
 }

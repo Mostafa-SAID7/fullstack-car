@@ -1,5 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Community.Services;
+using Application.Features.Community.QA.DTOs.Responses;
 using MediatR;
 
 namespace Application.Features.Community.Queries;

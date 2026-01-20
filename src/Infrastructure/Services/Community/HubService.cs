@@ -1,3 +1,4 @@
+using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Community.QA.DTOs.Responses;
 using Application.Features.Community.QA.Interfaces;
 using Infrastructure.Hubs;
@@ -39,7 +40,7 @@ public class HubService : IHubService
             throw;
         }
     }
-    public async Task NotifyVoteUpdateAsync(VoteUpdateDto voteUpdate)
+    public async Task NotifyVoteUpdateAsync(VoteUpdateResponse voteUpdate)
     {
         try
         {
@@ -52,7 +53,7 @@ public class HubService : IHubService
             else if (voteUpdate.ContentType == "Answer")
             {
                 // For answers, we need to notify users viewing the parent question
-                // This would require the QuestionId to be included in the VoteUpdateDto
+                // This would require the QuestionId to be included in the VoteUpdateResponse
                 // For now, we'll use a more general approach
                 await _hubContext.Clients.All
                     .ReceiveVoteUpdate(voteUpdate);
@@ -293,5 +294,51 @@ public class HubService : IHubService
                 questionId);
             throw;
         }
+    }
+
+    // QA Interface Methods
+    public async Task NotifyAnswerUpdated(AnswerDto answer)
+    {
+        await NotifyNewAnswerAsync(answer);
+    }
+
+    public async Task NotifyVoteUpdated(VoteUpdateResponse voteUpdate)
+    {
+        await NotifyVoteUpdateAsync(voteUpdate);
+    }
+
+    public async Task NotifyAnswerAccepted(AnswerAcceptedDto answerAccepted)
+    {
+        await NotifyAnswerAcceptedAsync(answerAccepted);
+    }
+
+    public async Task NotifyReputationUpdated(ReputationUpdateDto reputationUpdate)
+    {
+        await NotifyReputationUpdateAsync(reputationUpdate);
+    }
+
+    public async Task NotifyQuestionClosed(QuestionClosedDto questionClosed)
+    {
+        await NotifyQuestionClosedAsync(questionClosed);
+    }
+
+    public async Task NotifyExpertsOfNewQuestion(ExpertNotificationDto notification)
+    {
+        await NotifyExpertsAsync(notification);
+    }
+
+    public async Task NotifyQuestionViewUpdated(QuestionViewUpdateDto viewUpdate)
+    {
+        await NotifyQuestionViewUpdateAsync(viewUpdate);
+    }
+
+    public async Task NotifyNewQuestion(NewQuestionNotificationDto notification)
+    {
+        await NotifyNewQuestionToCategoryAsync(notification, "");
+    }
+
+    public async Task SendConnectionStatus(string connectionId, ConnectionStatusDto status)
+    {
+        await _hubContext.Clients.Client(connectionId).ReceiveConnectionStatus(status);
     }
 }

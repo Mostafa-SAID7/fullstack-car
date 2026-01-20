@@ -26,6 +26,10 @@ namespace Domain.Entities.Community.Events
         public string? Currency { get; set; }
         public List<string> Tags { get; set; } = new();
 
+        // Generic Content Reference
+        public Domain.Enums.Common.ContentType? TargetContentType { get; set; }
+        public Guid? TargetId { get; set; }
+
         // Foreign Keys
         public Guid OrganizerId { get; set; }
 

@@ -11,6 +11,7 @@ namespace Domain.Entities.Common
         public string Color { get; set; } = "#000000"; // Hex color code
         public Domain.Enums.Common.ContentType ContentType { get; set; } // What this category is for
         public bool IsActive { get; set; } = true;
+        public int QuestionsCount { get; set; } = 0; // Count of questions in this category
         
         public Guid? ParentCategoryId { get; set; }
         public virtual Category? ParentCategory { get; set; }

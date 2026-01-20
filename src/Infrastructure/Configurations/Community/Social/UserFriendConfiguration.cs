@@ -1,4 +1,4 @@
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

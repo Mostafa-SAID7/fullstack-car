@@ -21,9 +21,9 @@ namespace Application.Features.Community.Posts.Queries
 
     public class GetPostCommentsQueryHandler : IRequestHandler<GetPostCommentsQuery, Result<PaginatedList<CommentDto>>>
     {
-        private readonly IRepository<Comment> _commentRepository;
+        private readonly IRepository<Domain.Entities.Community.Posts.Comment> _commentRepository;
 
-        public GetPostCommentsQueryHandler(IRepository<Comment> commentRepository)
+        public GetPostCommentsQueryHandler(IRepository<Domain.Entities.Community.Posts.Comment> commentRepository)
         {
             _commentRepository = commentRepository;
         }

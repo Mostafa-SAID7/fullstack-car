@@ -32,7 +32,7 @@ namespace Application.Features.Admin.Management.Users.Users.DTOs.Responses
         public Domain.Enums.Identity.UserStatus UserStatus { get; set; }
         public DateTime? SuspendedUntil { get; set; }
         public string? SuspensionReason { get; set; }
-        public List<UserActivity> RecentActivity { get; set; } = new();
+        public List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity> RecentActivity { get; set; } = new();
         public List<UserReport> Reports { get; set; } = new();
     }
 

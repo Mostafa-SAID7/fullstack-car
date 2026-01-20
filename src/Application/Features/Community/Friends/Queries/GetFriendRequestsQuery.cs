@@ -1,8 +1,8 @@
 using Application.Common.Models;
 using Application.Features.Community.Friends.DTOs;
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 using Domain.Interfaces;
-using Application.Common.Specifications.Community.Social;
+using Application.Common.Specifications.Profile;
 using Application.Features.Shared.Caching.Interfaces.Services;
 using MediatR;
 

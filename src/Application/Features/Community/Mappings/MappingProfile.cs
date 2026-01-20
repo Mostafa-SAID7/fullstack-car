@@ -1,6 +1,6 @@
 using Application.Features.Community.DTOs.Responses;
 using AutoMapper;
-using Domain.Entities.Community;
+using Domain.Entities.Community.QA;
 
 namespace Application.Features.Community.Mappings;
 

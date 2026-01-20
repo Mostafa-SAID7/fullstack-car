@@ -189,7 +189,7 @@ namespace Application.Features.Admin.Management.Users.Users.Handlers
                     UserStatus = user.Status,
                     SuspendedUntil = null,
                     SuspensionReason = null,
-                    RecentActivity = new List<UserActivity>(), // TODO: Implement activity tracking
+                    RecentActivity = new List<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>(), // TODO: Implement activity tracking
                     Reports = new List<UserReport>() // TODO: Implement user reports
                 };
 

@@ -80,7 +80,7 @@ namespace Application.Features.Admin.System.Queries
         public DateTime ToDate { get; set; }
     }
 
-    public class GetUserActivityQuery : IRequest<Result<PaginatedList<UserActivity>>>
+    public class GetUserActivityQuery : IRequest<Result<PaginatedList<Application.Features.Admin.Management.Users.Activities.Models.UserActivity>>>
     {
         public Guid UserId { get; set; }
         public int Page { get; set; } = 1;

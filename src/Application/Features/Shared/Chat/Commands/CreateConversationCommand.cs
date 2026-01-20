@@ -1,6 +1,6 @@
 using Application.Common.Models;
 using Application.Features.Shared.Chat.DTOs;
-using Domain.Entities.Shared.Chat;
+using Domain.Entities.Messaging;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
 using MediatR;

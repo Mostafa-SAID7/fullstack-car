@@ -1,4 +1,4 @@
-using Domain.Entities.Shared.Chat;
+using Domain.Entities.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

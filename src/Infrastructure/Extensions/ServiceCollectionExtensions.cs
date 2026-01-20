@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Features.Community.Groups.Interfaces;
 using Application.Features.Community.Events.Interfaces;
+using Application.Features.Community.Services;
 using Application.Features.Identity.Auth.Interfaces;
 using Application.Features.Identity.Core.Interfaces;
 using Application.Features.Identity.Core.Services;
@@ -18,13 +19,14 @@ using Application.Features.Shared.Localization.Services;
 using Application.Features.Admin.Analytics.Interfaces;
 using Application.Features.Admin.Analytics.Services;
 using Application.Features.Identity.Auth.Services;
+using Infrastructure.Common;
+using Infrastructure.Services.Community;
 using Application.Features.Identity.OAuth.Interfaces;
 using Infrastructure.Services;
 using Application.Features.Community.QA.Interfaces;
 using Application.Features.Media.Analytics.Services;
 using Application.Features.Community.QA.Services;
 using Infrastructure.Services.Analytics;
-using Infrastructure.Services.QA;
 using Application.Features.Identity.Profile.Interfaces;
 using Application.Features.Identity.Profile.Services;
 using Application.Features.Identity.Password.Interfaces;
@@ -45,7 +47,6 @@ using Infrastructure.Repositories.Community.Groups;
 using Infrastructure.Repositories.Community.Events;
 using Infrastructure.Common;
 using Infrastructure.Services.FileStorage;
-using Infrastructure.Services;
 using Application.Features.Shared.Logging.Interfaces;
 using Application.Features.Shared.Logging.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -347,21 +348,11 @@ namespace Infrastructure.Extensions
 
             // Add Database Seeding Services
             services.AddScoped<IdentitySeeder>();
-            services.AddScoped<CommunitySocialSeeder>();
-            services.AddScoped<CommunityContentSeeder>();
-            services.AddScoped<CommunityKnowledgeSeeder>();
-            services.AddScoped<CommunityMapsSeeder>();
-            services.AddScoped<MarketplaceSeeder>();
-            services.AddScoped<AdminSeeder>();
-            services.AddScoped<NotificationSeeder>();
-            services.AddScoped<MediaSeeder>();
-            services.AddScoped<QASeedDataService>();
             
             // Management Seeders
             services.AddScoped<UserManagementSeeder>();
             services.AddScoped<UserRolesSeeder>();
             services.AddScoped<UserPermissionsSeeder>();
-            services.AddScoped<ManagementSeeder>();
             
             services.AddScoped<DatabaseSeeder>();
 

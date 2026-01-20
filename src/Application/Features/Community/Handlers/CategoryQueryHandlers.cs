@@ -25,7 +25,7 @@ public class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, Result<L
     {
         try
         {
-            var query = _context.QuestionCategories.AsQueryable();
+            var query = _context.Categories.AsQueryable();
 
             // Apply filters
             if (request.IsActive.HasValue)
@@ -91,7 +91,7 @@ public class GetCategoryDetailHandler : IRequestHandler<GetCategoryDetailQuery, 
     {
         try
         {
-            var category = await _context.QuestionCategories
+            var category = await _context.Categories
                 .Where(c => c.Id == request.CategoryId)
                 .Select(c => new CategoryDto
                 {
@@ -140,7 +140,7 @@ public class GetCategoryExpertsHandler : IRequestHandler<GetCategoryExpertsQuery
         try
         {
             // Verify category exists
-            var categoryExists = await _context.QuestionCategories
+            var categoryExists = await _context.Categories
                 .AnyAsync(c => c.Id == request.CategoryId && c.IsActive, cancellationToken);
 
             if (!categoryExists)
@@ -224,7 +224,7 @@ public class GetPopularCategoriesHandler : IRequestHandler<GetPopularCategoriesQ
             var cutoffDate = DateTime.UtcNow.AddDays(-request.DaysBack);
 
             // Get categories with recent activity
-            var popularCategories = await _context.QuestionCategories
+            var popularCategories = await _context.Categories
                 .Where(c => c.IsActive)
                 .Select(c => new
                 {

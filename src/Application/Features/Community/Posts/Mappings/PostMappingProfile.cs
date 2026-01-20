@@ -15,7 +15,7 @@ namespace Application.Features.Community.Posts.Mappings
                 .ForMember(dest => dest.UserProfileImageUrl, opt => opt.MapFrom(src => src.User.ProfileImageUrl))
                 .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.Group != null ? src.Group.Name : null));
 
-            CreateMap<Comment, CommentDto>()
+            CreateMap<Domain.Entities.Community.Posts.Comment, CommentDto>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
                 .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User.FirstName))
                 .ForMember(dest => dest.UserLastName, opt => opt.MapFrom(src => src.User.LastName))
@@ -43,7 +43,7 @@ namespace Application.Features.Community.Posts.Mappings
                 .ForMember(dest => dest.Views, opt => opt.Ignore())
                 .ForMember(dest => dest.Reports, opt => opt.Ignore());
 
-            CreateMap<AddCommentRequest, Comment>()
+            CreateMap<AddCommentRequest, Domain.Entities.Community.Posts.Comment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())

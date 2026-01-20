@@ -61,7 +61,7 @@ public class CreateCampaignContentRequest
     public string Title { get; set; } = string.Empty;
 
     public string? Content { get; set; }
-    public ContentType Type { get; set; }
+    public Domain.Entities.Marketing.ContentType Type { get; set; }
 
     [MaxLength(500)]
     public string? MediaUrl { get; set; }
@@ -85,7 +85,7 @@ public class UpdateCampaignContentRequest
     public string Title { get; set; } = string.Empty;
 
     public string? Content { get; set; }
-    public ContentType Type { get; set; }
+    public Domain.Entities.Marketing.ContentType Type { get; set; }
     public ContentStatus Status { get; set; }
 
     [MaxLength(500)]

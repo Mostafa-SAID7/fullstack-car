@@ -1,5 +1,5 @@
 using Application.Common.Models;
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 
 namespace Application.Features.Community.Friends.Interfaces
 {

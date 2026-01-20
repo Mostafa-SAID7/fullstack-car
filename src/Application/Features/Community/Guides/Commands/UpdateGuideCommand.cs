@@ -137,7 +137,7 @@ public class UpdateGuideCommandHandler : IRequestHandler<UpdateGuideCommand, Gui
                 IsRequired = s.IsRequired,
                 Tips = s.Tips,
                 WarningNotes = s.WarningNotes,
-                EstimatedTime = s.EstimatedTime
+                EstimatedTime = s.EstimatedTime ?? 0
             }).ToList(),
             IsBookmarked = false,
             UserRating = null,

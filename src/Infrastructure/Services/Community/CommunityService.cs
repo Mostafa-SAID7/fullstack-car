@@ -1,5 +1,7 @@
-using Application.Features.Community.QA.DTOs.Responses;
+using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Features.Community.Services;
+using QuestionSimilarityDto = Application.Features.Community.DTOs.Responses.QuestionSimilarityDto;
 
 namespace Infrastructure.Services.Community;
 
@@ -57,5 +59,82 @@ public class CommunityService : ICommunityService
     {
         // Delegate to the comprehensive content quality service
         return await _contentQualityService.ValidateContentQualityAsync(content);
+    }
+
+    public async Task<Result<bool>> IsUserActiveAsync(Guid userId)
+    {
+        try
+        {
+            // TODO: Implement user activity check logic
+            // For now, return true as a placeholder
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure($"Error checking user activity: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<int>> GetUserReputationAsync(Guid userId)
+    {
+        try
+        {
+            // TODO: Implement user reputation retrieval
+            // For now, return 0 as a placeholder
+            return Result<int>.Success(0);
+        }
+        catch (Exception ex)
+        {
+            return Result<int>.Failure($"Error getting user reputation: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<List<string>>> GetUserBadgesAsync(Guid userId)
+    {
+        try
+        {
+            // TODO: Implement user badges retrieval
+            // For now, return empty list as a placeholder
+            return Result<List<string>>.Success(new List<string>());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<string>>.Failure($"Error getting user badges: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<bool>> CanUserPerformActionAsync(Guid userId, string action)
+    {
+        try
+        {
+            // TODO: Implement user permission check logic
+            // For now, return true as a placeholder
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure($"Error checking user permissions: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<Dictionary<string, object>>> GetCommunityStatsAsync()
+    {
+        try
+        {
+            // TODO: Implement community statistics retrieval
+            // For now, return empty dictionary as a placeholder
+            var stats = new Dictionary<string, object>
+            {
+                ["totalQuestions"] = 0,
+                ["totalAnswers"] = 0,
+                ["totalUsers"] = 0,
+                ["totalExperts"] = 0
+            };
+            return Result<Dictionary<string, object>>.Success(stats);
+        }
+        catch (Exception ex)
+        {
+            return Result<Dictionary<string, object>>.Failure($"Error getting community stats: {ex.Message}");
+        }
     }
 }

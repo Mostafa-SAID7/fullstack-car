@@ -54,4 +54,4 @@ global using Domain.Entities.Common;
 global using Domain.Entities.Marketplace.Services;
 global using Domain.Entities.Marketplace.Providers;
 global using Domain.Entities.Marketplace.Bookings;
-global using Domain.Entities.Shared.Chat;
+global using Domain.Entities.Messaging;

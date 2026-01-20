@@ -268,7 +268,7 @@ public class GetCampaignContentsQueryHandler : IRequestHandler<GetCampaignConten
                 query = query.Where(c => c.Status == status);
             }
 
-            if (!string.IsNullOrEmpty(request.Type) && Enum.TryParse<ContentType>(request.Type, out var type))
+            if (!string.IsNullOrEmpty(request.Type) && Enum.TryParse<Domain.Entities.Marketing.ContentType>(request.Type, out var type))
             {
                 query = query.Where(c => c.Type == type);
             }

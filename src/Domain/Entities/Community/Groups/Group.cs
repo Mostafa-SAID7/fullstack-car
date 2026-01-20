@@ -21,6 +21,10 @@ namespace Domain.Entities.Community.Groups
         public int EventCount { get; set; } = 0;
         public DateTime? LastActivity { get; set; }
 
+        // Generic Content Reference
+        public Domain.Enums.Common.ContentType? TargetContentType { get; set; }
+        public Guid? TargetId { get; set; }
+
         // Foreign Keys
         public Guid OwnerId { get; set; }
 

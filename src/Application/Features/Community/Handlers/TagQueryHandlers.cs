@@ -25,7 +25,7 @@ public class GetTagsHandler : IRequestHandler<GetTagsQuery, Result<List<TagDto>>
     {
         try
         {
-            var query = _contextTags.AsQueryable();
+            var query = _context.Tags.AsQueryable();
 
             // Apply filters
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
@@ -97,7 +97,7 @@ public class GetPopularTagsHandler : IRequestHandler<GetPopularTagsQuery, Result
         {
             var cutoffDate = DateTime.UtcNow.AddDays(-request.DaysBack);
 
-            var query = _contextTags.AsQueryable();
+            var query = _context.Tags.AsQueryable();
 
             if (request.CategoryId.HasValue)
             {
@@ -156,7 +156,7 @@ public class GetTagDetailHandler : IRequestHandler<GetTagDetailQuery, Result<Tag
     {
         try
         {
-            var tag = await _contextTags
+            var tag = await _context.Tags
                 .Include(t => t.Category)
                 .Where(t => t.Id == request.TagId)
                 .Select(t => new TagDto
@@ -208,7 +208,7 @@ public class SearchTagsHandler : IRequestHandler<SearchTagsQuery, Result<List<Ta
             }
 
             var searchTerm = request.SearchTerm.ToLower();
-            var query = _contextTags.AsQueryable();
+            var query = _context.Tags.AsQueryable();
 
             if (request.CategoryId.HasValue)
             {

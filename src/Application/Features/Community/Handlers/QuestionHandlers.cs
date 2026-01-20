@@ -4,8 +4,8 @@ using Application.Features.Community.Commands;
 using Application.Features.Community.DTOs.Responses;
 using Application.Features.Community.Queries;
 using Application.Features.Community.Services;
-using Domain.Entities.Community;
-using Domain.Enums.Community;
+using Domain.Entities.Community.QA;
+using Domain.Enums.Community.QA;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,18 +76,19 @@ public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Resu
 
         if (!duplicateValidation.Data.IsValid)
         {
-            if (duplicateValidation.Data.ValidationStatus == "Duplicate")
+            if (duplicateValidation.Data.HasDuplicates)
             {
-                var duplicateInfo = duplicateValidation.Data.DuplicateInfo;
+                var similarQuestions = duplicateValidation.Data.SimilarQuestions;
+                var firstSimilar = similarQuestions.FirstOrDefault();
                 return Result<QuestionDto>.Failure(
-                    $"This question is a duplicate of an existing question: '{duplicateInfo?.DuplicateQuestionTitle}'. " +
-                    $"Please check the existing question at {duplicateInfo?.RedirectUrl}");
+                    $"This question is a duplicate of an existing question: '{firstSimilar?.Title}'. " +
+                    $"Please check the existing question with ID {firstSimilar?.Id}");
             }
-            else if (duplicateValidation.Data.ValidationStatus == "Similar")
+            else if (duplicateValidation.Data.SimilarQuestions.Any())
             {
                 // For similar questions, we could either warn or proceed
                 // For now, let's proceed but log the similar questions for analytics
-                var similarCount = duplicateValidation.Data.SuggestedQuestions.Count;
+                var similarCount = duplicateValidation.Data.SimilarQuestions.Count;
                 // Log similar questions found for potential user notification
             }
         }
@@ -128,7 +129,7 @@ public class CreateQuestionHandler : IRequestHandler<CreateQuestionCommand, Resu
             DownvotesCount = question.DownvotesCount,
             AnswerCount = question.AnswersCount,
             AcceptedAnswerId = question.AcceptedAnswerId,
-            IsClosed = question.Status != Domain.Enums.Community.QuestionStatus.Open,
+            IsClosed = question.Status != QuestionStatus.Open,
             ClosedReason = null, // TODO: Add closed reason mapping in later tasks
             IsScheduled = false, // TODO: Add scheduling support in later tasks
             ScheduledAt = null,

@@ -1,6 +1,5 @@
 using Application.Features.Shared.Storage.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,8 +13,8 @@ namespace Application.Features.Shared.Storage.Services
         public FileService(ILogger<FileService> logger)
         {
             _logger = logger;
-            _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
-            Directory.CreateDirectory(_uploadPath);
+            _uploadPath = global::System.IO.Path.Combine(global::System.IO.Directory.GetCurrentDirectory(), "uploads");
+            global::System.IO.Directory.CreateDirectory(_uploadPath);
         }
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
@@ -26,9 +25,9 @@ namespace Application.Features.Shared.Storage.Services
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken)
         {
             var fileId = Guid.NewGuid().ToString();
-            var filePath = Path.Combine(_uploadPath, fileId);
+            var filePath = global::System.IO.Path.Combine(_uploadPath, fileId);
             
-            using var fileStreamOutput = new FileStream(filePath, FileMode.Create);
+            using var fileStreamOutput = new global::System.IO.FileStream(filePath, global::System.IO.FileMode.Create);
             await fileStream.CopyToAsync(fileStreamOutput, cancellationToken);
             
             _logger.LogInformation("File uploaded: {FileName} -> {FileId}", fileName, fileId);
@@ -42,11 +41,11 @@ namespace Application.Features.Shared.Storage.Services
 
         public async Task<Stream> DownloadFileAsync(string fileId, CancellationToken cancellationToken)
         {
-            var filePath = Path.Combine(_uploadPath, fileId);
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File with ID {fileId} not found");
+            var filePath = global::System.IO.Path.Combine(_uploadPath, fileId);
+            if (!global::System.IO.File.Exists(filePath))
+                throw new global::System.IO.FileNotFoundException($"File with ID {fileId} not found");
 
-            return await Task.FromResult(new FileStream(filePath, FileMode.Open, FileAccess.Read));
+            return await Task.FromResult(new global::System.IO.FileStream(filePath, global::System.IO.FileMode.Open, global::System.IO.FileAccess.Read));
         }
 
         public async Task DeleteFileAsync(string fileId)
@@ -56,10 +55,10 @@ namespace Application.Features.Shared.Storage.Services
 
         public async Task DeleteFileAsync(string fileId, CancellationToken cancellationToken)
         {
-            var filePath = Path.Combine(_uploadPath, fileId);
-            if (File.Exists(filePath))
+            var filePath = global::System.IO.Path.Combine(_uploadPath, fileId);
+            if (global::System.IO.File.Exists(filePath))
             {
-                File.Delete(filePath);
+                global::System.IO.File.Delete(filePath);
                 _logger.LogInformation("File deleted: {FileId}", fileId);
             }
             await Task.CompletedTask;
@@ -72,8 +71,8 @@ namespace Application.Features.Shared.Storage.Services
 
         public async Task<bool> FileExistsAsync(string fileId, CancellationToken cancellationToken)
         {
-            var filePath = Path.Combine(_uploadPath, fileId);
-            return await Task.FromResult(File.Exists(filePath));
+            var filePath = global::System.IO.Path.Combine(_uploadPath, fileId);
+            return await Task.FromResult(global::System.IO.File.Exists(filePath));
         }
 
         public async Task<long> GetFileSizeAsync(string fileId)
@@ -83,11 +82,11 @@ namespace Application.Features.Shared.Storage.Services
 
         public async Task<long> GetFileSizeAsync(string fileId, CancellationToken cancellationToken)
         {
-            var filePath = Path.Combine(_uploadPath, fileId);
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File with ID {fileId} not found");
+            var filePath = global::System.IO.Path.Combine(_uploadPath, fileId);
+            if (!global::System.IO.File.Exists(filePath))
+                throw new global::System.IO.FileNotFoundException($"File with ID {fileId} not found");
 
-            var fileInfo = new FileInfo(filePath);
+            var fileInfo = new global::System.IO.FileInfo(filePath);
             return await Task.FromResult(fileInfo.Length);
         }
     }

@@ -97,11 +97,11 @@ namespace Application.Features.Shared.Localization.Services
             foreach (var directory in resourceDirectories)
             {
                 var filePath = Path.Combine(_resourcesPath, directory, $"{language}.json");
-                if (File.Exists(filePath))
+                if (global::System.IO.File.Exists(filePath))
                 {
                     try
                     {
-                        var jsonContent = File.ReadAllText(filePath);
+                        var jsonContent = global::System.IO.File.ReadAllText(filePath);
                         var jsonDocument = JsonDocument.Parse(jsonContent);
                         var resources = FlattenJsonObject(jsonDocument.RootElement, directory.Replace("/", ".").ToLower());
 

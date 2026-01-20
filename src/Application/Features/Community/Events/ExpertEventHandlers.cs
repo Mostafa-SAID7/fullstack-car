@@ -34,10 +34,10 @@ public class ExpertPromotedEventHandler : INotificationHandler<ExpertPromotedEve
                 notification.Category);
 
             // Award expert badge
-            await _reputationService.AwardBadgeAsync(
+            await _reputationService.AwardBadgeWithCategoryAsync(
                 notification.UserId, 
                 $"Expert in {notification.Category}", 
-                notification.Reason);
+                notification.Category);
 
             _logger.LogInformation("Processed expert promotion for user {UserId} in category {Category}", 
                 notification.UserId, notification.Category);

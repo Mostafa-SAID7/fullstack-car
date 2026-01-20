@@ -159,7 +159,7 @@ public class MediaService
             
             _logger.LogInformation("Validating video file {VideoPath}", videoPath);
             
-            if (!File.Exists(videoPath))
+            if (!global::System.IO.File.Exists(videoPath))
             {
                 return Result<bool>.Failure("Video file does not exist");
             }
@@ -185,7 +185,7 @@ public class MediaService
             
             _logger.LogInformation("Validating audio file {AudioPath}", audioPath);
             
-            if (!File.Exists(audioPath))
+            if (!global::System.IO.File.Exists(audioPath))
             {
                 return Result<bool>.Failure("Audio file does not exist");
             }

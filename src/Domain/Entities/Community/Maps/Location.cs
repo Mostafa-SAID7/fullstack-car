@@ -30,6 +30,10 @@ namespace Domain.Entities.Community.Maps
         public bool IsVerified { get; set; } = false;
         public DateTime? VerifiedAt { get; set; }
 
+        // Generic Content Reference
+        public Domain.Enums.Common.ContentType? TargetContentType { get; set; }
+        public Guid? TargetId { get; set; }
+
         // Foreign Keys
         public Guid UserId { get; set; } // User who added the location
         public Guid? CategoryId { get; set; }

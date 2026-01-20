@@ -40,7 +40,7 @@ public class CampaignContentDto
     public Guid CampaignId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Content { get; set; }
-    public ContentType Type { get; set; }
+    public Domain.Entities.Marketing.ContentType Type { get; set; }
     public string TypeName => Type.ToString();
     public string? MediaUrl { get; set; }
     public string? ThumbnailUrl { get; set; }

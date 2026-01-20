@@ -22,7 +22,7 @@ public class ReputationHistoryDto
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public string ActivityType { get; set; } = string.Empty;
-    public Guid ContentId { get; set; }
+    public Guid? ContentId { get; set; }
     public string Category { get; set; } = string.Empty;
     public int ReputationChange { get; set; }
     public string Description { get; set; } = string.Empty;

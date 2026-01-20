@@ -1,6 +1,6 @@
 using AutoMapper;
 using Application.Features.Community.Friends.DTOs;
-using Domain.Entities.Community.Social;
+using Domain.Entities.Profile;
 using Domain.Entities.Identity;
 
 namespace Application.Features.Community.Friends.Mappings
