@@ -11,7 +11,7 @@ import {
   GuideCategory,
   GuideDifficulty
 } from '../../models/guide.model';
-import { PaginatedResult } from '../../../../core/models/pagination.model';
+import { PaginatedResult } from '@core/models/pagination.model';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { GuideCardComponent } from '../guide-card/guide-card.component';
 

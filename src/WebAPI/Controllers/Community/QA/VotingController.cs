@@ -1,9 +1,11 @@
-using Application.Features.Community.QA.Commands;
-using Application.Features.Community.QA.DTOs.Requests;
+also for using Application.Features.Common.Votes.Commands;
+using Application.Features.Common.Votes.DTOs.Requests;
 using Application.Features.Common.Votes.DTOs.Responses;
-using Application.Features.Community.QA.Queries;
+using Application.Features.Common.Votes.Queries;
 using Application.Features.Community.QA.Interfaces;
+using Application.Features.Community.Queries;
 using Application.Features.Identity.Core.Interfaces;
+using Domain.Enums.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -100,8 +102,8 @@ namespace WebAPI.Controllers.Community.QA
                 return Unauthorized("Invalid user context");
             }
 
-            // Validate content type
-            if (contentType != "Question" && contentType != "Answer")
+            // Validate and parse content type
+            if (!Enum.TryParse<ContentType>(contentType, out var parsedContentType))
             {
                 return BadRequest("Invalid content type. Must be 'Question' or 'Answer'");
             }
@@ -110,7 +112,7 @@ namespace WebAPI.Controllers.Community.QA
             {
                 UserId = userGuid,
                 ContentId = contentId,
-                ContentType = contentType
+                ContentType = parsedContentType
             };
 
             var result = await Mediator.Send(command);
@@ -247,8 +249,8 @@ namespace WebAPI.Controllers.Community.QA
                 return Unauthorized("Invalid user context");
             }
 
-            // Validate content type
-            if (contentType != "Question" && contentType != "Answer")
+            // Validate and parse content type
+            if (!Enum.TryParse<ContentType>(contentType, out var parsedContentType))
             {
                 return BadRequest("Invalid content type. Must be 'Question' or 'Answer'");
             }
@@ -286,15 +288,15 @@ namespace WebAPI.Controllers.Community.QA
         [OutputCache(Duration = 30, Tags = new[] { "Votes", "VoteStats" })]
         public async Task<IActionResult> GetVoteStats(Guid contentId, string contentType)
         {
-            // Validate content type
-            if (contentType != "Question" && contentType != "Answer")
+            // Validate and parse content type
+            if (!Enum.TryParse<ContentType>(contentType, out var parsedContentType))
             {
                 return BadRequest("Invalid content type. Must be 'Question' or 'Answer'");
             }
 
             try
             {
-                if (contentType == "Question")
+                if (parsedContentType == ContentType.Question)
                 {
                     var question = await Mediator.Send(new GetQuestionDetailQuery { QuestionId = contentId });
                     if (question.Succeeded)

@@ -5,51 +5,52 @@ export interface Review {
   rating: number; // 1-5 stars
   pros?: string[];
   cons?: string[];
-  
+
   // Target information
   targetType: 'car' | 'dealership' | 'service' | 'product';
   targetId: string;
   targetName: string;
-  
+
   // Car-specific information (for car reviews)
   carBrand?: string;
   carModel?: string;
   carYear?: number;
-  
+
   // Author information
   authorId: string;
   authorName: string;
   authorAvatar?: string;
   authorVerified: boolean;
   userId: string; // Same as authorId for compatibility
-  
+
   // Media
   images: string[];
+  imageUrl?: string;
   videos?: string[];
-  
+
   // Engagement
   likesCount: number;
   dislikesCount: number;
   helpfulCount: number;
   commentsCount: number;
-  
+
   // User interactions
   isLiked?: boolean;
   isDisliked?: boolean;
   isHelpful?: boolean;
-  
+
   // Status
   status: ReviewStatus;
   isVerifiedPurchase: boolean;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt?: Date;
-  
+
   // Moderation
   isFlagged: boolean;
   moderationStatus: 'pending' | 'approved' | 'rejected';
-  
+
   // Additional metadata
   tags: string[];
   category?: string;

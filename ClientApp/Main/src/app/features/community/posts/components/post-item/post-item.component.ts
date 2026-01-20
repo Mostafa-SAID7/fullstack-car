@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { Post } from '../../../../core/models/post.model';
+import { Post } from '@shared/models/community/post.model';
 import { PostService } from '../../services/post.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class PostItemComponent implements OnInit, OnDestroy {
     showComments = false;
     commentContent = '';
     isSubmittingComment = false;
-    
+
     private destroy$ = new Subject<void>();
 
     constructor(

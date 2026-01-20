@@ -1,10 +1,12 @@
-using Application.Features.Community.Posts.DTOs;
+using Application.Features.Common.Comments.Commands;
+using Application.Features.Common.Comments.DTOs.Requests;
+using Application.Features.Common.Likes.Commands;
 using Application.Features.Identity.Core.Interfaces;
+using Domain.Enums.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Asp.Versioning;
-using WebAPI.Extensions;
 
 namespace WebAPI.Controllers.Community.Posts
 {
@@ -29,78 +31,41 @@ namespace WebAPI.Controllers.Community.Posts
             [FromQuery] int pageSize = 20,
             [FromQuery] string sortBy = "recent") // recent, popular, oldest
         {
-            try
-            {
-                var comments = new List<object>
-                {
-                    new {
-                        Id = Guid.NewGuid(),
-                        PostId = postId,
-                        Content = "Great post! Very informative.",
-                        Author = new { Id = Guid.NewGuid(), Name = "John Doe", Avatar = "/avatars/john.jpg" },
-                        CreatedAt = DateTime.UtcNow.AddHours(-2),
-                        Likes = 5,
-                        Replies = 2,
-                        IsLiked = false
-                    },
-                    new {
-                        Id = Guid.NewGuid(),
-                        PostId = postId,
-                        Content = "Thanks for sharing this information!",
-                        Author = new { Id = Guid.NewGuid(), Name = "Jane Smith", Avatar = "/avatars/jane.jpg" },
-                        CreatedAt = DateTime.UtcNow.AddHours(-1),
-                        Likes = 3,
-                        Replies = 0,
-                        IsLiked = true
-                    }
-                };
-
-                var paginatedComments = comments
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-
-                var result = new
-                {
-                    PostId = postId,
-                    Comments = paginatedComments,
-                    TotalCount = comments.Count,
-                    Page = page,
-                    PageSize = pageSize
-                };
-
-                return Success(result, "Comments retrieved successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error occurred", new[] { "Failed to retrieve comments" });
-            }
+            // Redirect to Common Comments API
+            return Redirect($"/api/v2.0/common/comments/Post/{postId}?page={page}&pageSize={pageSize}");
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddComment(Guid postId, [FromBody] AddCommentRequest request)
+        public async Task<IActionResult> AddComment(Guid postId, [FromBody] CreateCommentRequest request)
         {
-            try
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
-                var userId = _currentUserService.UserId;
-                var comment = new
-                {
-                    Id = Guid.NewGuid(),
-                    PostId = postId,
-                    Content = request.Content,
-                    AuthorId = userId,
-                    CreatedAt = DateTime.UtcNow,
-                    Likes = 0,
-                    Replies = 0
-                };
+                return Unauthorized("User authentication required");
+            }
 
-                return Success(comment, "Comment added successfully");
-            }
-            catch (Exception ex)
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
             {
-                return BadRequest("Error occurred", new[] { "Failed to add comment" });
+                return Unauthorized("Invalid user context");
             }
+
+            var command = new CreateCommentCommand
+            {
+                ContentId = postId,
+                ContentType = ContentType.Post,
+                UserId = userGuid,
+                Content = request.Content,
+                ParentCommentId = request.ParentCommentId
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+            {
+                return Created(string.Empty, new { message = "Comment created successfully" });
+            }
+
+            return BadRequest("Failed to create comment", result.Errors);
         }
 
         [HttpPut("{commentId}")]
@@ -139,16 +104,31 @@ namespace WebAPI.Controllers.Community.Posts
         [Authorize]
         public async Task<IActionResult> LikeComment(Guid postId, Guid commentId)
         {
-            try
+            if (!_currentUserService.IsAuthenticated || string.IsNullOrEmpty(_currentUserService.UserId))
             {
-                var userId = _currentUserService.UserId;
-                var result = new { CommentId = commentId, PostId = postId, UserId = userId, LikedAt = DateTime.UtcNow };
-                return Success(result, "Comment liked successfully");
+                return Unauthorized("User authentication required");
             }
-            catch (Exception ex)
+
+            if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
             {
-                return BadRequest("Error occurred", new[] { "Failed to like comment" });
+                return Unauthorized("Invalid user context");
             }
+
+            var command = new LikeCommand
+            {
+                ContentId = commentId,
+                ContentType = ContentType.Comment,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
+
+            if (result.Succeeded)
+            {
+                return Success("Comment liked successfully");
+            }
+
+            return BadRequest("Failed to like comment", result.Errors);
         }
 
         [HttpPost("{commentId}/report")]

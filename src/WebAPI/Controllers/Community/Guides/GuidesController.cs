@@ -2,9 +2,13 @@ using Application.Features.Community.Guides.Commands;
 using Application.Features.Community.Guides.DTOs.Requests;
 using Application.Features.Community.Guides.DTOs;
 using Application.Features.Community.Guides.Queries;
+using Application.Features.Common.Bookmarks.Commands;
+using Application.Features.Common.Bookmarks.DTOs.Requests;
+using Application.Features.Common.Bookmarks.Queries;
 using Application.Features.Identity.Core.Interfaces;
 using Asp.Versioning;
 using Domain.Enums.Community.Guides;
+using Domain.Enums.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -199,12 +203,12 @@ namespace WebAPI.Controllers.Community.Guides
         }
 
         [HttpPost("{id}/bookmark")]
-        public async Task<IActionResult> BookmarkGuide(Guid id, [FromBody] BookmarkGuideRequest? request = null)
+        public async Task<IActionResult> BookmarkGuide(Guid id, [FromBody] BookmarkRequest? request = null)
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var command = new BookmarkGuideCommand(id, userId, request?.Notes);
+                var command = new BookmarkCommand(id, ContentType.Guide, userId, request?.Notes);
                 var result = await Mediator.Send(command);
                 
                 return Success("Guide bookmarked successfully");
@@ -246,7 +250,7 @@ namespace WebAPI.Controllers.Community.Guides
             try
             {
                 var userId = GetCurrentUserId();
-                var query = new GetUserBookmarkedGuidesQuery(userId, page, pageSize);
+                var query = new GetUserBookmarksQuery(userId, ContentType.Guide, page, pageSize);
                 var result = await Mediator.Send(query);
 
                 return Success(result, "Bookmarked guides retrieved successfully");

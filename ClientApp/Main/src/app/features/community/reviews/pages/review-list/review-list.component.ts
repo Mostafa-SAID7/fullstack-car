@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Review } from '../models/review.model';
+import { Review } from '../../models/review.model';
 import { ReviewService } from '../../services/review.service';
 import { ReviewItemComponent } from '../review-item/review-item.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
@@ -229,6 +229,7 @@ export class ReviewListComponent implements OnInit, OnDestroy {
    * Check if current language is RTL
    */
   isRTL(): boolean {
-    return this.translateService.isCurrentLanguageRTL();
+    const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
+    return rtlLanguages.includes(this.translateService.currentLang);
   }
 }

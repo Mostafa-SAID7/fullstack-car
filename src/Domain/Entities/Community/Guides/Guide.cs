@@ -30,6 +30,4 @@ public class Guide : BaseAuditableEntity
     
     public ICollection<GuideStep> Steps { get; set; } = new List<GuideStep>();
     public ICollection<GuideRating> Ratings { get; set; } = new List<GuideRating>();
-    public ICollection<GuideBookmark> Bookmarks { get; set; } = new List<GuideBookmark>();
-    public ICollection<GuideView> Views { get; set; } = new List<GuideView>();
 }

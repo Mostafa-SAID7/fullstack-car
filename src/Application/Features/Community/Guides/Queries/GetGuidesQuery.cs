@@ -33,7 +33,6 @@ public class GetGuidesQueryHandler : IRequestHandler<GetGuidesQuery, PaginatedLi
         var query = _context.Guides
             .Include(g => g.Author)
             .Include(g => g.Ratings)
-            .Include(g => g.Bookmarks)
             .Where(g => g.IsPublished);
 
         // Apply filters
@@ -93,11 +92,27 @@ public class GetGuidesQueryHandler : IRequestHandler<GetGuidesQuery, PaginatedLi
             CreatedAt = g.CreatedAt,
             AuthorName = g.Author?.UserName ?? "Unknown",
             AuthorAvatar = g.Author?.ProfileImageUrl,
-            IsBookmarked = request.UserId.HasValue && 
-                          g.Bookmarks.Any(b => b.UserId == request.UserId.Value),
+            IsBookmarked = false, // Will be set below if user is provided
             AverageRating = g.Ratings.Any() ? g.Ratings.Average(r => r.Rating) : 0,
             RatingCount = g.Ratings.Count
         }).ToList();
+
+        // Set bookmark status if user is provided
+        if (request.UserId.HasValue)
+        {
+            var guideIds = guideDtos.Select(g => g.Id).ToList();
+            var userBookmarks = await _context.Bookmarks
+                .Where(b => b.UserId == request.UserId.Value && 
+                           b.ContentType == Domain.Enums.Common.ContentType.Guide &&
+                           guideIds.Contains(b.ContentId))
+                .Select(b => b.ContentId)
+                .ToListAsync(cancellationToken);
+
+            foreach (var guide in guideDtos)
+            {
+                guide.IsBookmarked = userBookmarks.Contains(guide.Id);
+            }
+        }
 
         return new PaginatedList<GuideListDto>(guideDtos, totalCount, request.Page, request.PageSize);
     }

@@ -1,6 +1,8 @@
 using Application.Common.Interfaces;
 using Application.Features.Community.Guides.DTOs.Responses;
+using Application.Features.Common.Views.Commands;
 using Domain.Entities.Community.Guides;
+using Domain.Enums.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,12 @@ public record GetGuideByIdQuery(Guid Id, Guid? UserId = null) : IRequest<GuideDt
 public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, GuideDto?>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
 
-    public GetGuideByIdQueryHandler(IApplicationDbContext context)
+    public GetGuideByIdQueryHandler(IApplicationDbContext context, IMediator mediator)
     {
         _context = context;
+        _mediator = mediator;
     }
 
     public async Task<GuideDto?> Handle(GetGuideByIdQuery request, CancellationToken cancellationToken)
@@ -23,7 +27,6 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
             .Include(g => g.Author)
             .Include(g => g.Steps)
             .Include(g => g.Ratings)
-            .Include(g => g.Bookmarks)
             .FirstOrDefaultAsync(g => g.Id == request.Id && g.IsPublished, cancellationToken);
 
         if (guide == null)
@@ -32,36 +35,30 @@ public class GetGuideByIdQueryHandler : IRequestHandler<GetGuideByIdQuery, Guide
         // Record view if user is provided
         if (request.UserId.HasValue)
         {
-            var existingView = await _context.GuideViews
-                .FirstOrDefaultAsync(v => v.GuideId == request.Id && v.UserId == request.UserId.Value, cancellationToken);
-
-            if (existingView == null)
-            {
-                var view = new GuideView
-                {
-                    GuideId = request.Id,
-                    UserId = request.UserId.Value,
-                    ViewedAt = DateTime.UtcNow,
-                    TimeSpent = 0,
-                    CompletedReading = false
-                };
-
-                _context.GuideViews.Add(view);
-                guide.ViewCount++;
-                await _context.SaveChangesAsync(cancellationToken);
-            }
+            var trackViewCommand = new TrackViewCommand(
+                request.Id, 
+                ContentType.Guide, 
+                request.UserId.Value
+            );
+            await _mediator.Send(trackViewCommand, cancellationToken);
         }
 
-        return MapToDto(guide, request.UserId);
+        return await MapToDto(guide, request.UserId, _context, cancellationToken);
     }
 
-    private static GuideDto MapToDto(Guide guide, Guid? currentUserId)
+    private static async Task<GuideDto> MapToDto(Guide guide, Guid? currentUserId, IApplicationDbContext context, CancellationToken cancellationToken)
     {
         var userRating = currentUserId.HasValue ? 
             guide.Ratings.FirstOrDefault(r => r.UserId == currentUserId.Value)?.Rating : null;
 
-        var isBookmarked = currentUserId.HasValue && 
-            guide.Bookmarks.Any(b => b.UserId == currentUserId.Value);
+        var isBookmarked = false;
+        if (currentUserId.HasValue)
+        {
+            isBookmarked = await context.Bookmarks
+                .AnyAsync(b => b.ContentId == guide.Id && 
+                              b.ContentType == Domain.Enums.Common.ContentType.Guide && 
+                              b.UserId == currentUserId.Value, cancellationToken);
+        }
 
         return new GuideDto
         {

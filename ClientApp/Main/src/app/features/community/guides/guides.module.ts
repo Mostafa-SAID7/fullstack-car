@@ -20,7 +20,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { GuidesListComponent } from './pages/guides-list/guides-list.component';
 
 // Services
-import { GuideService } from './services/guide.service';
+import { GuidesService } from './services/guides.service';
 
 // Routing
 import { GuidesRoutingModule } from './guides-routing.module';
@@ -34,7 +34,7 @@ import { GuidesRoutingModule } from './guides-routing.module';
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-    
+
     // Angular Material
     MatCardModule,
     MatButtonModule,
@@ -44,18 +44,18 @@ import { GuidesRoutingModule } from './guides-routing.module';
     MatSelectModule,
     MatChipsModule,
     MatBadgeModule,
-    
+
     // Shared
     SharedModule,
-    
+
     // Standalone components
     GuidesListComponent,
-    
+
     // Routing
     GuidesRoutingModule
   ],
   providers: [
-    GuideService
+    GuidesService
   ],
   exports: [
     GuidesListComponent

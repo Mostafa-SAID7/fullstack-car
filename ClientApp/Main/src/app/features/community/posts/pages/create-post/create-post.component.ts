@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PostService } from '../../services/post.service';
-import { Post } from '../../../../core/models/post.model';
+import { Post } from '@shared/models/community/post.model';
 
 @Component({
     selector: 'app-create-post',
@@ -88,7 +88,11 @@ export class CreatePostComponent implements OnInit, OnDestroy {
             this.postService.createPost(this.postForm.value).subscribe({
                 next: (result) => {
                     if (result.succeeded && result.data) {
-                        this.postCreated.emit(result.data as Post);
+                        const post = result.data as unknown as Post;
+                        if (typeof post.createdAt === 'string') {
+                            post.createdAt = new Date(post.createdAt);
+                        }
+                        this.postCreated.emit(post);
                         this.postForm.reset({ type: 0 });
                         this.isExpanded = false;
                     }

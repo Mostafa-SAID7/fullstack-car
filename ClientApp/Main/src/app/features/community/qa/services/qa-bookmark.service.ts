@@ -25,7 +25,7 @@ export interface BookmarkStatus {
   providedIn: 'root'
 })
 export class QABookmarkService {
-  private readonly apiUrl = `${environment.apiUrl}/v7/qa/bookmarks`;
+  private readonly apiUrl = `${environment.apiUrl}/v2/common/bookmarks`;
 
   // Cache for bookmark status
   private bookmarkCache = new Map<string, BookmarkStatus>();
@@ -36,7 +36,12 @@ export class QABookmarkService {
    * Toggle bookmark status for a question
    */
   toggleBookmark(questionId: string): Observable<BookmarkResponse> {
-    return this.http.post<BookmarkResponse>(`${this.apiUrl}/toggle`, { questionId }).pipe(
+    const request = {
+      contentId: questionId,
+      contentType: 'Question'
+    };
+    
+    return this.http.post<BookmarkResponse>(`${this.apiUrl}`, request).pipe(
       tap(response => {
         if (response.succeeded && response.data) {
           // Update cache
@@ -62,7 +67,7 @@ export class QABookmarkService {
     }
 
     // Fetch from API
-    return this.http.get<BookmarkResponse>(`${this.apiUrl}/status/${questionId}`).pipe(
+    return this.http.get<BookmarkResponse>(`${this.apiUrl}/Question/${questionId}/status`).pipe(
       map(response => {
         if (response.succeeded && response.data) {
           const status: BookmarkStatus = {
@@ -84,7 +89,11 @@ export class QABookmarkService {
    */
   getUserBookmarks(page = 1, pageSize = 20): Observable<any> {
     return this.http.get(`${this.apiUrl}/user`, {
-      params: { page: page.toString(), pageSize: pageSize.toString() }
+      params: { 
+        page: page.toString(), 
+        pageSize: pageSize.toString(),
+        contentType: 'Question'
+      }
     });
   }
 

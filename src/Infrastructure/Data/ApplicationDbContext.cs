@@ -88,9 +88,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<PostView> PostViews { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
     public DbSet<PostReport> PostReports { get; set; }
-    public DbSet<GuideView> GuideViews { get; set; }
     public DbSet<GuideRating> GuideRatings { get; set; }
-    public DbSet<GuideBookmark> GuideBookmarks { get; set; }
     public DbSet<VideoLike> VideoLikes { get; set; }
     public DbSet<VideoView> VideoViews { get; set; }
     public DbSet<PodcastLike> PodcastLikes { get; set; }

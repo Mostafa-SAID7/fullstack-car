@@ -85,3 +85,5 @@ export interface PostAnalytics {
   sharesCount: number;
   engagementRate: number;
 }
+
+export interface Post extends PostDto { }

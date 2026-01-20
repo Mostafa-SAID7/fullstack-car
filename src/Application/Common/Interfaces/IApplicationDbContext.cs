@@ -86,9 +86,7 @@ public interface IApplicationDbContext
     DbSet<PostView> PostViews { get; set; }
     DbSet<PostLike> PostLikes { get; set; }
     DbSet<PostReport> PostReports { get; set; }
-    DbSet<GuideView> GuideViews { get; set; }
     DbSet<GuideRating> GuideRatings { get; set; }
-    DbSet<GuideBookmark> GuideBookmarks { get; set; }
     
     // Media Sets
     DbSet<Video> Videos { get; set; }

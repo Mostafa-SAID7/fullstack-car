@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 import { PageService } from '../../services/page.service';
-import { PageDto, PageStatus, PageType } from '../../../../shared/models/community/page.model';
+import { PageDto, PageStatus, PageType } from '@shared/models/community/page.model';
 
 @Component({
   selector: 'app-page-list',

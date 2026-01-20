@@ -1,7 +1,13 @@
-import { AuthorInfo, ThreadedComment } from '../../../core/models/common.models';
-import { BaseEntity, WithAuthor, WithContent, WithMetadata, WithUserInteraction } from '../../../core/models/base.models';
+import { AuthorInfo, ThreadedComment } from '@core/models/common.models';
+import { BaseEntity, WithAuthor, WithContent, WithMetadata, WithUserInteraction } from '@core/models/base.models';
 
-export interface Guide extends BaseEntity, WithContent, WithAuthor, WithMetadata, WithUserInteraction {
+export interface Guide extends BaseEntity, WithContent, WithAuthor, WithUserInteraction {
+  // From WithMetadata (manual override to avoid conflict)
+  tags: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  featuredImageUrl?: string;
+
   category: GuideCategory;
   categoryName: string;
   difficulty: GuideDifficulty;
@@ -9,8 +15,10 @@ export interface Guide extends BaseEntity, WithContent, WithAuthor, WithMetadata
   estimatedReadTime: number;
   isFeatured: boolean;
   isPublished: boolean;
-  tags: string[];
   thumbnailUrl?: string;
+
+  summary: string; // Added
+
   userRating?: number;
   averageRating: number;
   ratingCount: number;
@@ -26,7 +34,7 @@ export interface GuideWithDetails extends Guide {
 }
 
 export interface GuideListItem {
-  id: number;
+  id: string;
   title: string;
   summary: string;
   category: GuideCategory;
@@ -49,7 +57,7 @@ export interface GuideListItem {
 }
 
 export interface GuideStep extends BaseEntity, WithContent {
-  guideId: number;
+  guideId: string;
   stepNumber: number;
   imageUrl?: string;
   videoUrl?: string;
@@ -63,14 +71,14 @@ export interface GuideStep extends BaseEntity, WithContent {
  * Comment on a guide with threading support
  */
 export interface GuideComment extends ThreadedComment {
-  guideId: number;
+  guideId: string;
 }
 
 /**
  * Rating/Review for a guide
  */
 export interface GuideRating extends BaseEntity, WithAuthor {
-  guideId: number;
+  guideId: string;
   rating: number;
   comment?: string;
   isHelpful: boolean;
@@ -93,7 +101,9 @@ export interface CreateGuideStepRequest {
   stepNumber: number;
   title: string;
   content: string;
-  imageUrl?: string;
+  summary: string;
+  excerpt?: string;
+  imageUrl?: string; // Added
   videoUrl?: string;
   isRequired: boolean;
   tips?: string;
@@ -102,7 +112,7 @@ export interface CreateGuideStepRequest {
 }
 
 export interface RateGuideRequest {
-  guideId: number;
+  guideId: string;
   rating: number;
   comment?: string;
   isHelpful: boolean;

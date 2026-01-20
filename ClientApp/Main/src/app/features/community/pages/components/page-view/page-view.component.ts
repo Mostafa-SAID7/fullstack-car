@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, switchMap } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageService } from '../../services/page.service';
-import { PageDto, PageContentDto, PageStatus, PageType } from '../../../../shared/models/community/page.model';
+import { PageDto, PageContentDto, PageStatus, PageType } from '@shared/models/community/page.model';
 
 @Component({
   selector: 'app-page-view',
@@ -183,11 +183,11 @@ export class PageViewComponent implements OnInit, OnDestroy {
   page: PageDto | null = null;
   content: PageContentDto | null = null;
   loading = false;
-  
+
   // Expose enums to template
   PageStatus = PageStatus;
   PageType = PageType;
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -199,7 +199,7 @@ export class PageViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadPage();
   }
-  
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -208,13 +208,13 @@ export class PageViewComponent implements OnInit, OnDestroy {
 
   private loadPage(): void {
     this.loading = true;
-    
+
     this.route.params.pipe(
       takeUntil(this.destroy$),
       switchMap(params => {
         const id = params['id'];
         const slug = params['slug'];
-        
+
         if (slug) {
           return this.pageService.getPageBySlug(slug);
         } else if (id) {
@@ -252,11 +252,11 @@ export class PageViewComponent implements OnInit, OnDestroy {
   goBack(): void {
     this.router.navigate(['/community/pages']);
   }
-  
+
   getStatusLabel(status: PageStatus): string {
     return this.pageService.getPageStatusLabel(status);
   }
-  
+
   getTypeLabel(type: PageType): string {
     return this.pageService.getPageTypeLabel(type);
   }

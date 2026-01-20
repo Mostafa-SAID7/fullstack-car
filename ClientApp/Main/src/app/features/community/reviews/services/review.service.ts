@@ -69,19 +69,33 @@ export class ReviewService {
             title: dto.title,
             content: dto.content,
             rating: dto.rating,
-            type: dto.type,
+            targetType: this.mapReviewType(dto.type),
             imageUrl: dto.imageUrl,
-            isVerified: dto.isVerified,
+            isVerifiedPurchase: dto.isVerified,
             helpfulCount: dto.helpfulCount,
             createdAt: new Date(dto.createdAt),
             updatedAt: dto.updatedAt ? new Date(dto.updatedAt) : undefined,
+            authorId: dto.userId,
+            authorName: `${dto.userFirstName} ${dto.userLastName}`,
+            authorAvatar: dto.userProfileImageUrl,
+            authorVerified: dto.isVerified,
             userId: dto.userId,
-            userFirstName: dto.userFirstName,
-            userLastName: dto.userLastName,
-            userProfileImageUrl: dto.userProfileImageUrl,
             carBrand: dto.carBrand,
             carModel: dto.carModel,
-            carYear: dto.carYear
+            carYear: dto.carYear,
+
+            // Defaults for missing DTO properties
+            targetId: '',
+            targetName: `${dto.carBrand || ''} ${dto.carModel || ''}`.trim() || 'Unknown Target',
+            images: dto.imageUrl ? [dto.imageUrl] : [],
+            likesCount: 0,
+            dislikesCount: 0,
+            commentsCount: 0,
+            isFlagged: false,
+            moderationStatus: 'approved',
+            tags: [],
+            category: 'General',
+            location: ''
         };
     }
 
@@ -242,5 +256,20 @@ export class ReviewService {
                 items: result.items.filter((review: Review) => review.userId === userId)
             }))
         );
+    }
+
+    private mapReviewType(type: number): 'car' | 'dealership' | 'service' | 'product' {
+        switch (type) {
+            case 1: // CarReview
+                return 'car';
+            case 2: // DealerReview
+                return 'dealership';
+            case 3: // ServiceReview
+                return 'service';
+            case 4: // ProductReview
+                return 'product';
+            default:
+                return 'product';
+        }
     }
 }

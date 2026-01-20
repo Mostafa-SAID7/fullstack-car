@@ -1,6 +1,8 @@
+using Application.Features.Common.Likes.Commands;
 using Application.Features.Community.Posts.Commands;
 using Application.Features.Community.Posts.DTOs;
 using Application.Features.Identity.Core.Interfaces;
+using Domain.Enums.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
@@ -31,7 +33,14 @@ namespace WebAPI.Controllers.Community.Posts
             if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
                 return Unauthorized("Invalid user context");
 
-            var result = await Mediator.Send(new LikePostCommand { PostId = id, UserId = userGuid });
+            var command = new LikeCommand
+            {
+                ContentId = id,
+                ContentType = ContentType.Post,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
             
             if (result.Succeeded)
                 return Success("Post liked successfully");
@@ -48,7 +57,14 @@ namespace WebAPI.Controllers.Community.Posts
             if (!Guid.TryParse(_currentUserService.UserId, out var userGuid))
                 return Unauthorized("Invalid user context");
 
-            var result = await Mediator.Send(new UnlikePostCommand { PostId = id, UserId = userGuid });
+            var command = new UnlikeCommand
+            {
+                ContentId = id,
+                ContentType = ContentType.Post,
+                UserId = userGuid
+            };
+
+            var result = await Mediator.Send(command);
             
             if (result.Succeeded)
                 return Success("Post unliked successfully");

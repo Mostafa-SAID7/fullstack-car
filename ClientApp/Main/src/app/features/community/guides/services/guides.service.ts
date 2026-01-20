@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { GuideApiService } from '../../../shared/services/api/guide-api.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
-import { 
+import { GuideApiService } from '@shared/services/api/guide-api.service';
+import { ToastService } from '@core/services/toast.service';
+import { LoadingService } from '@shared/services/loading/loading.service';
+import {
   GuideDto,
   CreateGuideRequest as NewCreateGuideRequest,
   UpdateGuideRequest,
   GuideStepDto,
   GuideDifficulty as NewGuideDifficulty,
   GuideCategory as NewGuideCategory
-} from '../../../shared/models/community/guide.model';
-import { PagedResult } from '../../../shared/models/community/common.model';
-import { 
-  Guide, 
-  GuideListItem, 
-  CreateGuideRequest, 
-  RateGuideRequest, 
+} from '@shared/models/community/guide.model';
+import { PagedResult } from '@shared/models/community/common.model';
+import {
+  Guide,
+  GuideListItem,
+  CreateGuideRequest,
+  RateGuideRequest,
   GuideFilters,
   GuideCategory,
   GuideDifficulty,
   GuideStep
 } from '../models/guide.model';
-import { PaginatedResult } from '../../../core/models/pagination.model';
+import { PaginatedResult } from '@core/models/pagination.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +39,11 @@ export class GuidesService {
     private guideApi: GuideApiService,
     private toastService: ToastService,
     private loadingService: LoadingService
-  ) {}
+  ) { }
 
   getGuides(filters?: GuideFilters): Observable<PaginatedResult<GuideListItem>> {
     this.loadingService.show('guides-list', 'Loading guides...');
-    
+
     return this.guideApi.getGuides({
       pageNumber: filters?.page || 1,
       pageSize: filters?.pageSize || 10,
@@ -64,9 +64,9 @@ export class GuidesService {
     );
   }
 
-  getGuideById(id: number): Observable<Guide> {
+  getGuideById(id: string): Observable<Guide> {
     this.loadingService.show('guide-detail', 'Loading guide...');
-    
+
     return this.guideApi.getGuide(id.toString()).pipe(
       map(dto => {
         const guide = this.mapDtoToGuide(dto);
@@ -83,7 +83,7 @@ export class GuidesService {
 
   createGuide(request: CreateGuideRequest): Observable<Guide> {
     this.loadingService.show('create-guide', 'Creating guide...');
-    
+
     const newRequest: NewCreateGuideRequest = {
       title: request.title,
       description: request.summary,
@@ -101,7 +101,7 @@ export class GuidesService {
         warnings: step.warningNotes ? [step.warningNotes] : undefined
       }))
     };
-    
+
     return this.guideApi.createGuide(newRequest).pipe(
       map(dto => {
         const guide = this.mapDtoToGuide(dto);
@@ -118,7 +118,7 @@ export class GuidesService {
 
   updateGuide(id: number, request: CreateGuideRequest): Observable<Guide> {
     this.loadingService.show('update-guide', 'Updating guide...');
-    
+
     const updateRequest: UpdateGuideRequest = {
       title: request.title,
       description: request.summary,
@@ -127,7 +127,7 @@ export class GuidesService {
       estimatedTime: request.estimatedReadTime,
       imageUrl: request.thumbnailUrl
     };
-    
+
     return this.guideApi.updateGuide(id.toString(), updateRequest).pipe(
       map(dto => {
         const guide = this.mapDtoToGuide(dto);
@@ -144,7 +144,7 @@ export class GuidesService {
 
   rateGuide(request: RateGuideRequest): Observable<void> {
     this.loadingService.show('rate-guide', 'Submitting rating...');
-    
+
     return this.guideApi.rateGuide(request.guideId.toString(), request.rating, request.comment).pipe(
       map(() => {
         this.toastService.success('Rating submitted successfully');
@@ -157,7 +157,7 @@ export class GuidesService {
     );
   }
 
-  bookmarkGuide(id: number, notes?: string): Observable<void> {
+  bookmarkGuide(id: string, notes?: string): Observable<void> {
     return this.guideApi.bookmarkGuide(id.toString()).pipe(
       tap(() => {
         this.toastService.success('Guide bookmarked successfully');
@@ -240,7 +240,7 @@ export class GuidesService {
 
   private mapDtoToGuide(dto: GuideDto): Guide {
     return {
-      id: parseInt(dto.id),
+      id: dto.id,
       title: dto.title,
       content: dto.description,
       summary: dto.description,
@@ -261,11 +261,11 @@ export class GuidesService {
       authorAvatar: dto.userProfileImageUrl,
       createdAt: typeof dto.createdAt === 'string' ? new Date(dto.createdAt) : dto.createdAt,
       updatedAt: dto.updatedAt ? (typeof dto.updatedAt === 'string' ? new Date(dto.updatedAt) : dto.updatedAt) : undefined,
-      viewCount: dto.viewsCount,
-      likeCount: 0,
-      commentCount: 0,
-      shareCount: 0,
-      bookmarkCount: dto.bookmarksCount,
+      viewsCount: dto.viewsCount,
+      likesCount: 0,
+      commentsCount: 0,
+      sharesCount: 0,
+      bookmarksCount: dto.bookmarksCount,
       isLiked: false,
       isBookmarked: false
     };
@@ -273,7 +273,7 @@ export class GuidesService {
 
   private mapDtoToGuideListItem(dto: GuideDto): GuideListItem {
     return {
-      id: parseInt(dto.id),
+      id: dto.id,
       title: dto.title,
       summary: dto.description,
       category: dto.category as unknown as GuideCategory,
