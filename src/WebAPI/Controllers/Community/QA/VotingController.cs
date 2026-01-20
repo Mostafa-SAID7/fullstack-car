@@ -1,4 +1,4 @@
-also for using Application.Features.Common.Votes.Commands;
+using Application.Features.Common.Votes.Commands;
 using Application.Features.Common.Votes.DTOs.Requests;
 using Application.Features.Common.Votes.DTOs.Responses;
 using Application.Features.Common.Votes.Queries;

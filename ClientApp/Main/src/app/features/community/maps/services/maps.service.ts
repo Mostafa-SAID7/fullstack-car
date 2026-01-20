@@ -255,9 +255,9 @@ export class MapsService {
 
     private mapCategoryToType(category: LocationCategory): LocationType {
         switch (category) {
-            case LocationCategory.Dealership: return LocationType.Showroom;
+            case LocationCategory.Dealership: return LocationType.Dealership;
             case LocationCategory.ServiceCenter: return LocationType.ServiceCenter;
-            case LocationCategory.PartsStore: return LocationType.SpareParts;
+            case LocationCategory.PartsStore: return LocationType.AutoParts;
             case LocationCategory.ChargingStation: return LocationType.ChargingStation;
             case LocationCategory.GasStation: return LocationType.GasStation;
             default: return LocationType.Other;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, of } from 'rxjs';
-import { Review, CreateReviewRequest } from '../models/review.model';
+import { Review, CreateReviewRequest, ReviewStatus } from '../models/review.model';
 import { Result, PaginatedResult } from '../../../../core/models/result.model';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { HttpClient } from '@angular/common/http';
@@ -95,7 +95,8 @@ export class ReviewService {
             moderationStatus: 'approved',
             tags: [],
             category: 'General',
-            location: ''
+            location: '',
+            status: ReviewStatus.Published
         };
     }
 

@@ -103,9 +103,9 @@ export class MapsExplorerComponent implements OnInit {
   searchForm: FormGroup;
 
   locationTypes = [
-    { name: 'Showroom', value: LocationType.Showroom, translationKey: 'locations.categories.showroom' },
+    { name: 'Showroom', value: LocationType.Dealership, translationKey: 'locations.categories.showroom' },
     { name: 'Service Center', value: LocationType.ServiceCenter, translationKey: 'locations.categories.serviceCenter' },
-    { name: 'Spare Parts', value: LocationType.SpareParts, translationKey: 'locations.categories.spareParts' },
+    { name: 'Spare Parts', value: LocationType.AutoParts, translationKey: 'locations.categories.spareParts' },
     { name: 'Charging Station', value: LocationType.ChargingStation, translationKey: 'locations.categories.chargingStation' },
     { name: 'Gas Station', value: LocationType.GasStation, translationKey: 'locations.categories.gasStation' },
     { name: 'Other', value: LocationType.Other, translationKey: 'locations.categories.other' }

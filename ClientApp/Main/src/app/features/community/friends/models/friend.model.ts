@@ -2,7 +2,7 @@ export interface Friend {
     id: string;
     userId: string;
     friendId: string;
-    status: number;
+    status: string | number;
     createdAt: string;
     acceptedAt?: string;
     firstName: string;
@@ -19,7 +19,7 @@ export interface FriendRequest {
     id: string; // request record id
     senderId: string;
     receiverId: string;
-    status: number;
+    status: string | number;
     message?: string;
     createdAt: string;
     respondedAt?: string;

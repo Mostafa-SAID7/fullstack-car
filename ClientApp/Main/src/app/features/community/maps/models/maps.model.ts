@@ -7,11 +7,17 @@ export interface Location {
   longitude: number;
   description?: string;
   imageUrl?: string;
+  featuredImageUrl?: string;
   rating?: number;
   reviewCount?: number;
   isVerified: boolean;
+  status: number;
+  phoneNumber?: string;
+  email?: string;
+  website?: string;
+  hours?: any;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export enum LocationType {
@@ -35,13 +41,32 @@ export interface LocationSearchFilters {
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface LocationReview {
+export interface PlaceReview {
   id: string;
   locationId: string;
   userId: string;
   rating: number;
-  comment: string;
+  title: string;
+  content: string;
   createdAt: Date;
-  userName: string;
-  userAvatar?: string;
+  visitDate: Date;
+  user: {
+    firstName: string;
+    lastName: string;
+    profileImageUrl?: string;
+  };
+}
+
+export interface CheckIn {
+  id: string;
+  locationId: string;
+  userId: string;
+  checkInTime: Date;
+  comment?: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    profileImageUrl?: string;
+  };
+  location?: Location;
 }

@@ -17,9 +17,9 @@ namespace Infrastructure.Hubs;
 public class CommunityHub : Hub<ICommunityHub>
 {
     private readonly ILogger<CommunityHub> _logger;
-    private readonly IConnectionManager _connectionManager;
+    private readonly Application.Features.Community.QA.Interfaces.IConnectionManager _connectionManager;
 
-    public CommunityHub(ILogger<CommunityHub> logger, IConnectionManager connectionManager)
+    public CommunityHub(ILogger<CommunityHub> logger, Application.Features.Community.QA.Interfaces.IConnectionManager connectionManager)
     {
         _logger = logger;
         _connectionManager = connectionManager;

@@ -1,7 +1,15 @@
 export interface BaseEntity {
   id: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
+}
+
+export interface TreeNode<T> {
+  data: T;
+  children?: TreeNode<T>[];
+  isExpanded?: boolean;
+  parent?: TreeNode<T>;
+  depth?: number;
 }
 
 export interface WithAuthor {

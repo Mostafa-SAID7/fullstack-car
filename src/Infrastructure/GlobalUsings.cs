@@ -107,3 +107,44 @@ global using SecurityEvent = Application.Features.Admin.Analytics.Models.Events.
 global using TopUser = Application.Features.Admin.Analytics.Models.TopItems.TopUser;
 global using TopEngagedContent = Application.Features.Admin.Analytics.Models.TopItems.TopEngagedContent;
 global using PopularContent = Application.Features.Admin.Analytics.Models.TopItems.PopularContent;
+
+// Community Interfaces & Services
+global using Application.Features.Community.Groups.Interfaces;
+global using Application.Features.Community.Events.Interfaces;
+global using Application.Features.Community.Services;
+global using Application.Features.Community.QA.Interfaces;
+global using Application.Features.Community.QA.Services;
+
+// Shared & Media Services
+global using Application.Features.Shared.Email.Interfaces;
+global using Application.Features.Media.Analytics.Services;
+global using Application.Features.Media.Shared.Interfaces;
+
+// Infrastructure Services
+global using Infrastructure.Services;
+global using Infrastructure.Services.Community;
+global using Infrastructure.Services.Analytics;
+global using Infrastructure.Services.FileStorage;
+
+// Infrastructure Seeds
+global using Infrastructure.Data.Seeds.Management;
+global using Infrastructure.Data.Seeds.Management.Users;
+
+// Infrastructure Repositories
+global using Infrastructure.Repositories.Media;
+global using Infrastructure.Repositories.Community.Groups;
+global using Infrastructure.Repositories.Community.Events;
+
+// System & AspNetCore
+global using System.Globalization;
+global using System.Security.Claims;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Localization;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Google;
+global using Microsoft.AspNetCore.Authentication.Facebook;
+
+// Third-party
+global using AspNet.Security.OAuth.GitHub;
+global using Amazon;
+global using Amazon.S3;

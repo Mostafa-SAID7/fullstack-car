@@ -276,7 +276,7 @@ export class DataTransformerService {
         if (!node.children || node.children.length === 0) {
             return 1;
         }
-        return 1 + Math.max(...node.children.map(child => this.calculateDepth(child)));
+        return 1 + Math.max(...node.children.map((child: TreeNode<T>) => this.calculateDepth(child)));
     }
 
     /**
@@ -288,7 +288,7 @@ export class DataTransformerService {
         const traverse = (node: TreeNode<T>, depth: number = 0) => {
             result.push({ ...node, depth });
             if (node.children) {
-                node.children.forEach(child => traverse(child, depth + 1));
+                node.children.forEach((child: TreeNode<T>) => traverse(child, depth + 1));
             }
         };
 
