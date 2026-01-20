@@ -14,7 +14,7 @@ namespace Infrastructure.Extensions
             services.AddCommonInfrastructureServices();
             services.AddLocalizationServices(configuration);
             services.AddCachingServices(configuration);
-            services.AddMediaServices(configuration);
+            services.AddStorageServices(configuration);
             services.AddCommunityServices(configuration);
             services.AddAnalyticsServices(configuration);
             services.AddBackgroundJobs();
