@@ -56,13 +56,13 @@ import { PageDto, PageContentDto, PageStatus, PageType } from '@shared/models/co
           </h1>
           
           <p class="text-muted-foreground font-bold text-sm mb-4">
-            {{ page.description }}
+            {{ page.excerpt }}
           </p>
           
           <div class="flex items-center gap-6 text-xs text-muted-foreground">
             <span>
               <i class="fas fa-user mr-2"></i>
-              {{ page.authorFirstName }} {{ page.authorLastName }}
+              {{ page.authorName }}
             </span>
             <span>
               <i class="fas fa-calendar mr-2"></i>
@@ -74,7 +74,7 @@ import { PageDto, PageContentDto, PageStatus, PageType } from '@shared/models/co
             </span>
             <span>
               <i class="fas fa-eye mr-2"></i>
-              {{ page.viewsCount }} views
+              {{ page.viewCount }} views
             </span>
           </div>
         </div>

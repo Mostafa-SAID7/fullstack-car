@@ -13,7 +13,7 @@ import {
 } from '../../models/guide.model';
 import { PaginatedResult } from '@core/models/pagination.model';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
-import { GuideCardComponent } from '../guide-card/guide-card.component';
+import { GuideCardComponent } from '../../components/guide-card/guide-card.component';
 
 @Component({
   selector: 'app-guides-list',

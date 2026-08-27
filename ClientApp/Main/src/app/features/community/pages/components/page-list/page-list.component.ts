@@ -126,10 +126,10 @@ import { PageDto, PageStatus, PageType } from '@shared/models/community/page.mod
                 </span>
               </div>
               <h3 class="font-black uppercase text-sm tracking-widest text-foreground line-clamp-2">{{ page.title }}</h3>
-              <p class="text-[10px] font-bold text-muted-foreground uppercase mt-1 line-clamp-2">{{ page.description }}</p>
+              <p class="text-[10px] font-bold text-muted-foreground uppercase mt-1 line-clamp-2">{{ page.excerpt }}</p>
               <div class="flex items-center gap-4 mt-3 text-[10px] text-muted-foreground">
-                <span><i class="fas fa-eye mr-1"></i>{{ page.viewsCount }}</span>
-                <span><i class="fas fa-user mr-1"></i>{{ page.authorFirstName }} {{ page.authorLastName }}</span>
+                <span><i class="fas fa-eye mr-1"></i>{{ page.viewCount }}</span>
+                <span><i class="fas fa-user mr-1"></i>{{ page.authorName }}</span>
               </div>
             </div>
           </div>

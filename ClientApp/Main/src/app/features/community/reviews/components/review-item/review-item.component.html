@@ -3,13 +3,12 @@
         <div class="flex gap-3" [class.flex-row-reverse]="isRTL()">
             <div
                 class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary/10 to-primary/5 flex items-center justify-center font-black text-primary overflow-hidden shadow-sm border border-primary/10">
-                <img *ngIf="review.userProfileImageUrl" [src]="review.userProfileImageUrl"
+                <img *ngIf="review.authorAvatar" [src]="review.authorAvatar"
                     class="w-full h-full object-cover">
-                <span *ngIf="!review.userProfileImageUrl">{{ review.userFirstName[0] }}{{ review.userLastName[0]
-                    }}</span>
+                <span *ngIf="!review.authorAvatar">{{ review.authorName[0] }}</span>
             </div>
             <div [class.text-right]="isRTL()">
-                <h4 class="text-sm font-black">{{ review.userFirstName }} {{ review.userLastName }}</h4>
+                <h4 class="text-sm font-black">{{ review.authorName }}</h4>
                 <div class="flex items-center gap-2 mt-0.5" [class.flex-row-reverse]="isRTL()">
                     <!-- Star Rating with Localized Description -->
                     <div class="flex text-[10px] text-amber-500" [title]="getRatingDescription()">
@@ -22,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="review.isVerified"
+        <div *ngIf="review.authorVerified"
             class="flex items-center gap-1.5 bg-emerald-500/5 text-emerald-500 px-3 py-1.5 rounded-lg border border-emerald-500/10 scale-90">
             <i class="fa-solid fa-circle-check text-[10px]"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">{{ getVerificationText() }}</span>

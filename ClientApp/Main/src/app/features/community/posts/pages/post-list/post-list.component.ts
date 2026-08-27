@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { PostService } from '../../services/post.service';
 import { TranslationService } from '../../../../../core/services/translation.service';
-import { Post } from '../../../pages/models/post.model';
+import { Post } from '@shared/models/community/post.model';
 import { PostItemComponent } from '../../components/post-item/post-item.component';
 import { PaginationComponent } from '@shared/components/ui/pagination/pagination.component';
 
@@ -134,8 +134,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         userFirstName: i % 2 === 0 ? 'Mahmoud' : 'Ahmed',
         userLastName: 'Said',
         likesCount: 10 + i * 5,
-        commentsCount: i,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
         type: 1,
         status: 1,
         viewsCount: 100 + i * 10,

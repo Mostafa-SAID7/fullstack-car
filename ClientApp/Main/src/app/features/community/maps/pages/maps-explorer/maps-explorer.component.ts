@@ -70,7 +70,7 @@ import { PaginationComponent } from '@shared/components/ui/pagination/pagination
 
         <!-- List -->
         <div *ngIf="!loading && locations.length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <app-location-card *ngFor="let loc of locations" [location]="loc" (onCheckIn)="handleCheckIn($event)"></app-location-card>
+          <app-location-card *ngFor="let loc of locations" [location]="loc"></app-location-card>
         </div>
 
         <!-- Empty State -->

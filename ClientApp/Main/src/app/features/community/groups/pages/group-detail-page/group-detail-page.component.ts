@@ -33,11 +33,7 @@ import { GroupDiscussionsComponent } from '../../components/group-discussions/gr
       } @else if (group()) {
         <!-- Group Header -->
         <app-group-header 
-          [group]="group()!" 
-          [canManage]="canManageGroup()"
-          (joinClick)="onJoinGroup()"
-          (leaveClick)="onLeaveGroup()"
-          (editClick)="onEditGroup()">
+          [group]="group()!">
         </app-group-header>
 
         <!-- Main Content -->
@@ -49,7 +45,7 @@ import { GroupDiscussionsComponent } from '../../components/group-discussions/gr
               <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
                 <nav class="flex space-x-8 px-6" aria-label="Tabs">
                   <button
-                    *ngFor="let tab of tabs"
+                    *ngFor="let tab of tabs()"
                     [class]="getTabClasses(tab.key)"
                     (click)="setActiveTab(tab.key)">
                     <i [class]="tab.icon + ' mr-2'"></i>
@@ -67,16 +63,16 @@ import { GroupDiscussionsComponent } from '../../components/group-discussions/gr
               <div class="space-y-6">
                 @switch (activeTab()) {
                   @case ('posts') {
-                    <app-group-posts [groupId]="groupId()"></app-group-posts>
+                    <app-group-posts [group]="group()!"></app-group-posts>
                   }
                   @case ('members') {
-                    <app-group-members [groupId]="groupId()"></app-group-members>
+                    <app-group-members [group]="group()!"></app-group-members>
                   }
                   @case ('events') {
-                    <app-group-events [groupId]="groupId()"></app-group-events>
+                    <app-group-events [group]="group()!"></app-group-events>
                   }
                   @case ('discussions') {
-                    <app-group-discussions [groupId]="groupId()"></app-group-discussions>
+                    <app-group-discussions [group]="group()!"></app-group-discussions>
                   }
                 }
               </div>
@@ -85,9 +81,7 @@ import { GroupDiscussionsComponent } from '../../components/group-discussions/gr
             <!-- Sidebar -->
             <div class="lg:col-span-1">
               <app-group-sidebar 
-                [group]="group()!" 
-                [members]="members()"
-                [canManage]="canManageGroup()">
+                [group]="group()!">
               </app-group-sidebar>
             </div>
           </div>
